@@ -244,10 +244,10 @@ export default function ProductEditForm({
             >
               商品名 <span className="text-red-500">*</span>
             </label>
-            <input
-              type="text"
+            <textarea
               id="edit-name"
               required
+              rows={2}
               value={formData.name}
               onChange={(e) =>
                 setFormData((prev) => ({ ...prev, name: e.target.value }))

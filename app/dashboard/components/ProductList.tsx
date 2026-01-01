@@ -135,7 +135,7 @@ const ProductList = forwardRef<ProductListRef, ProductListProps>(
                     {/* 商品名と公開状態 */}
                     <div className="mb-1 flex items-start gap-1 sm:mb-2 sm:gap-2">
                       <h3
-                        className={`flex-1 text-xs font-semibold leading-tight sm:text-sm md:text-lg ${
+                        className={`flex-1 whitespace-pre-wrap text-xs font-semibold leading-tight sm:text-sm md:text-lg ${
                           !product.published ? "text-gray-500" : ""
                         }`}
                       >
