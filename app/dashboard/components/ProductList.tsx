@@ -117,9 +117,20 @@ const ProductList = forwardRef<ProductListRef, ProductListProps>(
                     <div className="flex-1">
                       <div className="flex items-start justify-between">
                         <div className="flex-1">
-                          <h3 className="text-lg font-semibold">
-                            {product.name}
-                          </h3>
+                          <div className="flex items-center gap-2">
+                            <h3 className="text-lg font-semibold">
+                              {product.name}
+                            </h3>
+                            <span
+                              className={`rounded-full px-2 py-1 text-xs font-medium ${
+                                product.published
+                                  ? "bg-green-100 text-green-800"
+                                  : "bg-gray-100 text-gray-600"
+                              }`}
+                            >
+                              {product.published ? "公開" : "非公開"}
+                            </span>
+                          </div>
                           <p className="mt-1 text-sm text-gray-600">
                             {product.description}
                           </p>
