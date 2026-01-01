@@ -290,7 +290,7 @@ export default function ProductEditForm({
               onChange={(e) =>
                 setFormData((prev) => ({ ...prev, name: e.target.value }))
               }
-              className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"
+              className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-base shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"
             />
           </div>
 
@@ -313,7 +313,7 @@ export default function ProductEditForm({
                   description: e.target.value,
                 }))
               }
-              className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"
+              className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-base shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"
             />
           </div>
 
@@ -373,7 +373,7 @@ export default function ProductEditForm({
                 onChange={(e) =>
                   setFormData((prev) => ({ ...prev, priceS: e.target.value }))
                 }
-                className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"
+                className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-base shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"
               />
             </div>
             <div>
@@ -392,7 +392,7 @@ export default function ProductEditForm({
                 onChange={(e) =>
                   setFormData((prev) => ({ ...prev, priceL: e.target.value }))
                 }
-                className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"
+                className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-base shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"
               />
             </div>
           </div>
@@ -415,7 +415,7 @@ export default function ProductEditForm({
                   categoryId: e.target.value,
                 }))
               }
-              className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"
+              className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-base shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"
             >
               {categories.map((category) => (
                 <option key={category.id} value={category.id}>
@@ -512,7 +512,7 @@ export default function ProductEditForm({
                       publishedAt: e.target.value,
                     }))
                   }
-                  className="block w-full rounded-md border border-gray-300 px-3 py-2 pr-10 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"
+                  className="block w-full rounded-md border border-gray-300 px-3 py-2 pr-10 text-base shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"
                 />
                 {formData.publishedAt && (
                   <button
@@ -546,7 +546,7 @@ export default function ProductEditForm({
                       endedAt: e.target.value,
                     }))
                   }
-                  className="block w-full rounded-md border border-gray-300 px-3 py-2 pr-10 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"
+                  className="block w-full rounded-md border border-gray-300 px-3 py-2 pr-10 text-base shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"
                 />
                 {formData.endedAt && (
                   <button

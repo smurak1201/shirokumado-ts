@@ -108,15 +108,28 @@ const ProductList = forwardRef<ProductListRef, ProductListProps>(
       // 編集フォームはProductEditFormのonCloseで閉じられるため、ここでは閉じない
     };
 
+    // カタカナをひらがなに変換する関数
+    const toHiragana = (str: string): string => {
+      return str.replace(/[\u30A1-\u30F6]/g, (match) => {
+        return String.fromCharCode(match.charCodeAt(0) - 0x60);
+      });
+    };
+
+    // 検索用の正規化関数（ひらがな・カタカナを統一し、大文字小文字も統一）
+    const normalizeForSearch = (str: string): string => {
+      return toHiragana(str.toLowerCase());
+    };
+
     // 検索条件に基づいて商品をフィルタリング
     const filteredProducts = useMemo(() => {
       return products.filter((product) => {
-        // 商品名で検索
-        if (
-          searchName &&
-          !product.name.toLowerCase().includes(searchName.toLowerCase())
-        ) {
-          return false;
+        // 商品名で検索（ひらがな・カタカナ、大文字小文字を区別しない）
+        if (searchName) {
+          const normalizedProductName = normalizeForSearch(product.name);
+          const normalizedSearchName = normalizeForSearch(searchName);
+          if (!normalizedProductName.includes(normalizedSearchName)) {
+            return false;
+          }
         }
 
         // 公開/非公開でフィルタリング
@@ -186,7 +199,7 @@ const ProductList = forwardRef<ProductListRef, ProductListProps>(
                   placeholder="商品名で検索..."
                   value={searchName}
                   onChange={(e) => setSearchName(e.target.value)}
-                  className="w-full max-w-[224px] rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"
+                  className="w-full max-w-[224px] rounded-md border border-gray-300 px-3 py-2 text-base focus:border-blue-500 focus:outline-none focus:ring-blue-500"
                 />
               </div>
 
@@ -202,7 +215,7 @@ const ProductList = forwardRef<ProductListRef, ProductListProps>(
                       e.target.value ? parseInt(e.target.value) : null
                     )
                   }
-                  className="w-full max-w-[224px] rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"
+                  className="w-full max-w-[224px] rounded-md border border-gray-300 px-3 py-2 text-base focus:border-blue-500 focus:outline-none focus:ring-blue-500"
                 >
                   <option value="">すべてのカテゴリー</option>
                   {categories.map((category) => (
