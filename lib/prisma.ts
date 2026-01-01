@@ -2,9 +2,11 @@ import { PrismaClient } from '@prisma/client';
 
 /**
  * Prisma Client シングルトンインスタンス
- * 
+ *
  * 開発環境ではホットリロード時に新しいインスタンスが作成されないように、
  * グローバル変数に保存します
+ *
+ * Prisma 7では、prisma.config.tsで設定された接続情報を使用します
  */
 
 const globalForPrisma = globalThis as unknown as {
@@ -27,4 +29,3 @@ if (process.env.NODE_ENV !== 'production') {
 export async function disconnectPrisma() {
   await prisma.$disconnect();
 }
-
