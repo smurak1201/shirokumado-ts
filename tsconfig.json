@@ -20,7 +20,13 @@
     ],
     "paths": {
       "@/*": ["./*"]
-    }
+    },
+    // より厳格な型チェック
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUncheckedIndexedAccess": true,
+    "forceConsistentCasingInFileNames": true
   },
   "include": [
     "next-env.d.ts",

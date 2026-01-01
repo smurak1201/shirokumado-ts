@@ -97,7 +97,9 @@ shirokumado-ts/
 ├── lib/              # ユーティリティ・ライブラリ
 │   ├── prisma.ts    # Prisma Clientインスタンス
 │   ├── blob.ts      # Blobストレージユーティリティ
-│   └── env.ts       # 環境変数管理
+│   ├── env.ts       # 環境変数管理
+│   ├── errors.ts    # 統一されたエラーハンドリング
+│   └── api-helpers.ts # API Routes用ヘルパー
 ├── prisma/           # Prisma設定
 │   ├── schema.prisma # データベーススキーマ定義
 │   └── migrations/  # マイグレーションファイル

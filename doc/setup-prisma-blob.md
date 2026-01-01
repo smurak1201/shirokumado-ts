@@ -250,78 +250,77 @@ await deleteFiles([
 
 ## API Routesでの使用例
 
-### Prismaを使用するAPI Route
+### Prismaを使用するAPI Route（ベストプラクティス）
 
 ```typescript
 // app/api/users/route.ts
-import { NextResponse } from 'next/server';
-import { prisma } from '@/lib/prisma';
+import { prisma, safePrismaOperation } from '@/lib/prisma';
+import { apiSuccess, handleApiError, withErrorHandling } from '@/lib/api-helpers';
+import { NotFoundError, ValidationError } from '@/lib/errors';
 
-export async function GET() {
-  try {
-    const users = await prisma.user.findMany({
+// エラーハンドリングを自動化
+export const GET = withErrorHandling(async () => {
+  const users = await safePrismaOperation(
+    () => prisma.user.findMany({
       orderBy: {
         createdAt: 'desc',
       },
-    });
-    return NextResponse.json({ users });
-  } catch (error) {
-    console.error('Error fetching users:', error);
-    return NextResponse.json(
-      { error: 'Failed to fetch users' },
-      { status: 500 }
-    );
-  }
-}
+    }),
+    'GET /api/users'
+  );
 
-export async function POST(request: Request) {
-  try {
-    const body = await request.json();
-    const user = await prisma.user.create({
-      data: body,
-    });
-    return NextResponse.json({ user }, { status: 201 });
-  } catch (error) {
-    console.error('Error creating user:', error);
-    return NextResponse.json(
-      { error: 'Failed to create user' },
-      { status: 500 }
-    );
+  return apiSuccess({ users });
+});
+
+export const POST = withErrorHandling(async (request: Request) => {
+  const body = await request.json();
+
+  // バリデーション
+  if (!body.name || !body.email) {
+    throw new ValidationError('Name and email are required');
   }
-}
+
+  const user = await safePrismaOperation(
+    () => prisma.user.create({
+      data: body,
+    }),
+    'POST /api/users'
+  );
+
+  return apiSuccess({ user }, 201);
+});
 ```
 
-### Blob Storageを使用するAPI Route
+### Blob Storageを使用するAPI Route（ベストプラクティス）
 
 ```typescript
 // app/api/upload/route.ts
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest } from 'next/server';
 import { uploadImage } from '@/lib/blob';
+import { apiSuccess, withErrorHandling } from '@/lib/api-helpers';
+import { ValidationError } from '@/lib/errors';
 
-export async function POST(request: NextRequest) {
-  try {
-    const formData = await request.formData();
-    const file = formData.get('file') as File;
+// ファイルサイズ制限（5MB）
+const MAX_FILE_SIZE = 5 * 1024 * 1024;
 
-    if (!file) {
-      return NextResponse.json(
-        { error: 'No file provided' },
-        { status: 400 }
-      );
-    }
+export const POST = withErrorHandling(async (request: NextRequest) => {
+  const formData = await request.formData();
+  const file = formData.get('file') as File | null;
 
-    const buffer = Buffer.from(await file.arrayBuffer());
-    const blob = await uploadImage(file.name, buffer, file.type);
-
-    return NextResponse.json({ url: blob.url });
-  } catch (error) {
-    console.error('Error uploading file:', error);
-    return NextResponse.json(
-      { error: 'Failed to upload file' },
-      { status: 500 }
-    );
+  if (!file) {
+    throw new ValidationError('No file provided');
   }
-}
+
+  // ファイルサイズの検証
+  if (file.size > MAX_FILE_SIZE) {
+    throw new ValidationError('File size exceeds 5MB limit');
+  }
+
+  const buffer = Buffer.from(await file.arrayBuffer());
+  const blob = await uploadImage(file.name, buffer, file.type);
+
+  return apiSuccess({ url: blob.url });
+});
 ```
 
 ### PrismaとBlob Storageを組み合わせた例

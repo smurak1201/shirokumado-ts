@@ -1,10 +1,16 @@
 import { put, list, head, del } from '@vercel/blob';
+import { BlobStorageError, logError } from './errors';
 
 /**
  * Vercel Blob Storage ユーティリティ
  *
  * 画像やファイルのアップロード・管理に使用します
  * 環境変数 BLOB_READ_WRITE_TOKEN を使用します
+ *
+ * ベストプラクティス:
+ * - すべての操作でエラーハンドリングを実装
+ * - ファイルサイズの検証を推奨
+ * - 適切なキャッシュ制御を設定
  */
 
 /**
@@ -25,6 +31,11 @@ export async function uploadFile(
   }
 ) {
   try {
+    // ファイル名の検証
+    if (!filename || filename.trim().length === 0) {
+      throw new BlobStorageError('Filename is required');
+    }
+
     const { access, ...restOptions } = options ?? {};
     const blob = await put(filename, content, {
       ...restOptions,
@@ -32,8 +43,14 @@ export async function uploadFile(
     });
     return blob;
   } catch (error) {
-    console.error('Blob upload error:', error);
-    throw error;
+    logError(error, 'uploadFile');
+    if (error instanceof BlobStorageError) {
+      throw error;
+    }
+    throw new BlobStorageError(
+      `Failed to upload file: ${filename}`,
+      error
+    );
   }
 }
 
@@ -70,8 +87,8 @@ export async function listFiles(options?: {
     const { blobs, cursor } = await list(options);
     return { blobs, cursor };
   } catch (error) {
-    console.error('Blob list error:', error);
-    throw error;
+    logError(error, 'listFiles');
+    throw new BlobStorageError('Failed to list files', error);
   }
 }
 
@@ -82,11 +99,14 @@ export async function listFiles(options?: {
  */
 export async function getBlobInfo(url: string) {
   try {
+    if (!url || url.trim().length === 0) {
+      throw new BlobStorageError('URL is required');
+    }
     const blob = await head(url);
     return blob;
   } catch (error) {
-    console.error('Blob head error:', error);
-    throw error;
+    logError(error, 'getBlobInfo');
+    throw new BlobStorageError(`Failed to get blob info: ${url}`, error);
   }
 }
 
@@ -97,11 +117,14 @@ export async function getBlobInfo(url: string) {
  */
 export async function deleteFile(url: string) {
   try {
+    if (!url || url.trim().length === 0) {
+      throw new BlobStorageError('URL is required');
+    }
     await del(url);
     return true;
   } catch (error) {
-    console.error('Blob delete error:', error);
-    throw error;
+    logError(error, 'deleteFile');
+    throw new BlobStorageError(`Failed to delete file: ${url}`, error);
   }
 }
 
@@ -112,10 +135,13 @@ export async function deleteFile(url: string) {
  */
 export async function deleteFiles(urls: string[]) {
   try {
+    if (!urls || urls.length === 0) {
+      throw new BlobStorageError('URLs array is required');
+    }
     await Promise.all(urls.map(url => del(url)));
     return true;
   } catch (error) {
-    console.error('Blob delete error:', error);
-    throw error;
+    logError(error, 'deleteFiles');
+    throw new BlobStorageError('Failed to delete files', error);
   }
 }
