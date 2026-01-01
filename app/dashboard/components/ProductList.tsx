@@ -172,7 +172,10 @@ const ProductList = forwardRef<ProductListRef, ProductListProps>(
 
     return (
       <>
-        <div className="rounded-lg bg-white p-6 shadow">
+        <div
+          className="rounded-lg bg-white p-6 shadow"
+          style={{ scrollbarGutter: "stable" }}
+        >
           {/* タブ */}
           <div className="mb-6 border-b border-gray-200">
             <nav className="flex space-x-8">
