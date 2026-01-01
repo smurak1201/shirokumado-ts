@@ -25,9 +25,10 @@ export async function uploadFile(
   }
 ) {
   try {
+    const { access, ...restOptions } = options ?? {};
     const blob = await put(filename, content, {
-      access: 'public',
-      ...options,
+      ...restOptions,
+      access: (access ?? 'public') as 'public',
     });
     return blob;
   } catch (error) {
