@@ -27,28 +27,40 @@ const globalForPrisma = globalThis as unknown as {
 
 const createPrismaClient = (): PrismaClient => {
   // Prisma 7では、Neonに接続するためにアダプターを使用します
-  const connectionString = process.env.DATABASE_URL || process.env.POSTGRES_URL;
+  const rawConnectionString = process.env.DATABASE_URL || process.env.POSTGRES_URL;
 
-  if (!connectionString) {
+  if (!rawConnectionString) {
     throw new Error('DATABASE_URL or POSTGRES_URL environment variable is not set');
   }
 
-  // 接続文字列が文字列であることを確認
-  if (typeof connectionString !== 'string') {
-    throw new Error('DATABASE_URL must be a string');
+  // 接続文字列を確実に文字列に変換
+  // process.envの値は常にstring | undefinedなので、String()で変換
+  const connectionString = String(rawConnectionString).trim();
+
+  // 接続文字列が空でないことを確認
+  if (!connectionString || connectionString.length === 0) {
+    throw new Error('DATABASE_URL must be a non-empty string');
   }
 
-  // Poolのコンストラクタに接続文字列を設定オブジェクトとして渡す
-  const pool = new Pool({ connectionString: String(connectionString) });
-  const adapter = new PrismaNeon(pool as any);
+  try {
+    // Poolのコンストラクタに接続文字列を設定オブジェクトとして渡す
+    // Vercelの本番環境では、接続文字列が正しく処理されるように明示的に設定
+    const pool = new Pool({ connectionString });
+    const adapter = new PrismaNeon(pool as any);
 
-  return new PrismaClient({
-    adapter,
-    log:
-      process.env.NODE_ENV === 'development'
-        ? ['query', 'error', 'warn']
-        : ['error'],
-  });
+    return new PrismaClient({
+      adapter,
+      log:
+        process.env.NODE_ENV === 'development'
+          ? ['query', 'error', 'warn']
+          : ['error'],
+    });
+  } catch (error) {
+    console.error('Failed to create Prisma Client:', error);
+    console.error('Connection string type:', typeof connectionString);
+    console.error('Connection string length:', connectionString.length);
+    throw error;
+  }
 };
 
 export const prisma =
