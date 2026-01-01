@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { calculatePublishedStatus, hasDateRange } from "@/lib/product-utils";
+import { compressImage, needsCompression } from "@/lib/image-compression";
 
 interface Category {
   id: number;
@@ -44,6 +45,7 @@ export default function ProductEditForm({
 }: ProductEditFormProps) {
   const [submitting, setSubmitting] = useState(false);
   const [uploading, setUploading] = useState(false);
+  const [compressing, setCompressing] = useState(false);
   const [imagePreview, setImagePreview] = useState<string | null>(
     product.imageUrl
   );
@@ -68,7 +70,7 @@ export default function ProductEditForm({
   });
 
   // 画像ファイル選択
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) {
       setFormData((prev) => ({ ...prev, imageFile: null }));
@@ -82,17 +84,29 @@ export default function ProductEditForm({
       return;
     }
 
-    // ファイルサイズの検証（4MB制限 - Vercelの関数ペイロードサイズ制限に合わせる）
-    const MAX_FILE_SIZE = 4 * 1024 * 1024; // 4MB
-    if (file.size > MAX_FILE_SIZE) {
-      alert("ファイルサイズは4MB以下である必要があります");
-      return;
+    // 大きな画像の場合は自動的に圧縮
+    let processedFile = file;
+    if (needsCompression(file)) {
+      setCompressing(true);
+      try {
+        processedFile = await compressImage(file);
+        console.log(
+          `画像を圧縮しました: ${(file.size / 1024 / 1024).toFixed(2)}MB → ${(processedFile.size / 1024 / 1024).toFixed(2)}MB`
+        );
+      } catch (error) {
+        console.error("画像の圧縮に失敗しました:", error);
+        alert("画像の圧縮に失敗しました。別の画像を選択してください。");
+        setCompressing(false);
+        return;
+      } finally {
+        setCompressing(false);
+      }
     }
 
-    setFormData((prev) => ({ ...prev, imageFile: file }));
+    setFormData((prev) => ({ ...prev, imageFile: processedFile }));
 
     // プレビュー用のURLを生成
-    const previewUrl = URL.createObjectURL(file);
+    const previewUrl = URL.createObjectURL(processedFile);
     setImagePreview(previewUrl);
   };
 
@@ -305,9 +319,14 @@ export default function ProductEditForm({
               id="edit-image"
               accept="image/*"
               onChange={handleImageChange}
-              disabled={submitting || uploading}
+              disabled={submitting || uploading || compressing}
               className="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:rounded-md file:border-0 file:bg-blue-50 file:px-4 file:py-2 file:text-sm file:font-semibold file:text-blue-700 hover:file:bg-blue-100"
             />
+            {compressing && (
+              <p className="mt-2 text-sm text-gray-500">
+                画像を圧縮中...
+              </p>
+            )}
             {(uploading || submitting) && (
               <p className="mt-2 text-sm text-gray-500">
                 {uploading ? "画像をアップロード中..." : "更新中..."}
@@ -539,14 +558,14 @@ export default function ProductEditForm({
             <button
               type="button"
               onClick={onClose}
-              disabled={submitting || uploading}
+              disabled={submitting || uploading || compressing}
               className="flex-1 rounded-md border border-gray-300 bg-white px-4 py-2 font-medium text-gray-700 hover:bg-gray-50 disabled:bg-gray-100"
             >
               キャンセル
             </button>
             <button
               type="submit"
-              disabled={submitting || uploading}
+              disabled={submitting || uploading || compressing}
               className="flex-1 rounded-md bg-blue-600 px-4 py-2 font-medium text-white hover:bg-blue-700 disabled:bg-gray-400"
             >
               {uploading
