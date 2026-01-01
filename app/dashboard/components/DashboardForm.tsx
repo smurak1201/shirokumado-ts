@@ -374,7 +374,7 @@ export default function DashboardForm({
           </div>
 
           {/* 公開日・終了日 */}
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
             <div>
               <label
                 htmlFor="publishedAt"
@@ -382,18 +382,32 @@ export default function DashboardForm({
               >
                 公開日
               </label>
-              <input
-                type="datetime-local"
-                id="publishedAt"
-                value={formData.publishedAt}
-                onChange={(e) =>
-                  setFormData((prev) => ({
-                    ...prev,
-                    publishedAt: e.target.value,
-                  }))
-                }
-                className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"
-              />
+              <div className="relative mt-1">
+                <input
+                  type="datetime-local"
+                  id="publishedAt"
+                  value={formData.publishedAt}
+                  onChange={(e) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      publishedAt: e.target.value,
+                    }))
+                  }
+                  className="block w-full rounded-md border border-gray-300 px-3 py-2 pr-10 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"
+                />
+                {formData.publishedAt && (
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setFormData((prev) => ({ ...prev, publishedAt: "" }))
+                    }
+                    className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                    aria-label="公開日をクリア"
+                  >
+                    ✕
+                  </button>
+                )}
+              </div>
             </div>
             <div>
               <label
@@ -402,15 +416,29 @@ export default function DashboardForm({
               >
                 終了日
               </label>
-              <input
-                type="datetime-local"
-                id="endedAt"
-                value={formData.endedAt}
-                onChange={(e) =>
-                  setFormData((prev) => ({ ...prev, endedAt: e.target.value }))
-                }
-                className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"
-              />
+              <div className="relative mt-1">
+                <input
+                  type="datetime-local"
+                  id="endedAt"
+                  value={formData.endedAt}
+                  onChange={(e) =>
+                    setFormData((prev) => ({ ...prev, endedAt: e.target.value }))
+                  }
+                  className="block w-full rounded-md border border-gray-300 px-3 py-2 pr-10 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"
+                />
+                {formData.endedAt && (
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setFormData((prev) => ({ ...prev, endedAt: "" }))
+                    }
+                    className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                    aria-label="終了日をクリア"
+                  >
+                    ✕
+                  </button>
+                )}
+              </div>
             </div>
           </div>
 
