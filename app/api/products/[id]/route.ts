@@ -4,6 +4,7 @@ import { prisma } from '@/lib/prisma';
 import { ValidationError, NotFoundError } from '@/lib/errors';
 import { NextRequest } from 'next/server';
 import { calculatePublishedStatus } from '@/lib/product-utils';
+import { deleteFile } from '@/lib/blob';
 
 /**
  * 商品を取得
@@ -130,6 +131,21 @@ export const PUT = withErrorHandling(async (
     published = body.published !== undefined ? body.published : existingProduct.published;
   }
 
+  // 画像が更新される場合、元の画像を削除
+  const oldImageUrl = existingProduct.imageUrl;
+  const newImageUrl = body.imageUrl !== undefined ? (body.imageUrl || null) : oldImageUrl;
+
+  // 新しい画像URLが設定され、元の画像URLと異なる場合、元の画像を削除
+  if (oldImageUrl && newImageUrl && oldImageUrl !== newImageUrl) {
+    try {
+      await deleteFile(oldImageUrl);
+      console.log(`元の画像を削除しました: ${oldImageUrl}`);
+    } catch (error) {
+      // 画像削除に失敗しても商品更新は続行（エラーログのみ）
+      console.error(`元の画像の削除に失敗しました: ${oldImageUrl}`, error);
+    }
+  }
+
   // 商品を更新
   const updateData: any = {};
   if (body.name !== undefined) updateData.name = body.name.trim();
@@ -187,6 +203,17 @@ export const DELETE = withErrorHandling(async (
 
   if (!existingProduct) {
     throw new NotFoundError('商品');
+  }
+
+  // 商品に画像が設定されている場合、画像を削除
+  if (existingProduct.imageUrl) {
+    try {
+      await deleteFile(existingProduct.imageUrl);
+      console.log(`商品削除時に画像を削除しました: ${existingProduct.imageUrl}`);
+    } catch (error) {
+      // 画像削除に失敗しても商品削除は続行（エラーログのみ）
+      console.error(`商品削除時の画像削除に失敗しました: ${existingProduct.imageUrl}`, error);
+    }
   }
 
   // 商品を削除
