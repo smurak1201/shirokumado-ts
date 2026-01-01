@@ -493,15 +493,15 @@ export default function ProductEditForm({
           </div>
 
           {/* 公開日・終了日 */}
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-            <div className="min-w-0 w-full">
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2 min-w-0">
+            <div className="min-w-0">
               <label
                 htmlFor="edit-publishedAt"
                 className="block text-sm font-medium text-gray-700"
               >
                 公開日
               </label>
-              <div className="relative mt-1 min-w-0 w-full">
+              <div className="relative mt-1 min-w-0">
                 <input
                   type="datetime-local"
                   id="edit-publishedAt"
@@ -512,7 +512,8 @@ export default function ProductEditForm({
                       publishedAt: e.target.value,
                     }))
                   }
-                  className="block w-full min-w-0 max-w-full box-border rounded-md border border-gray-300 px-3 py-2 pr-10 text-base shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"
+                  className="block w-full min-w-0 box-border rounded-md border border-gray-300 px-3 py-2 pr-10 text-base shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"
+                  style={{ width: '100%', maxWidth: '100%' }}
                 />
                 {formData.publishedAt && (
                   <button
@@ -528,14 +529,14 @@ export default function ProductEditForm({
                 )}
               </div>
             </div>
-            <div className="min-w-0 w-full">
+            <div className="min-w-0">
               <label
                 htmlFor="edit-endedAt"
                 className="block text-sm font-medium text-gray-700"
               >
                 終了日
               </label>
-              <div className="relative mt-1 min-w-0 w-full">
+              <div className="relative mt-1 min-w-0">
                 <input
                   type="datetime-local"
                   id="edit-endedAt"
@@ -546,7 +547,8 @@ export default function ProductEditForm({
                       endedAt: e.target.value,
                     }))
                   }
-                  className="block w-full min-w-0 max-w-full box-border rounded-md border border-gray-300 px-3 py-2 pr-10 text-base shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"
+                  className="block w-full min-w-0 box-border rounded-md border border-gray-300 px-3 py-2 pr-10 text-base shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"
+                  style={{ width: '100%', maxWidth: '100%' }}
                 />
                 {formData.endedAt && (
                   <button
