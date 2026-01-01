@@ -257,11 +257,11 @@ export default function DashboardForm({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-white/80 backdrop-blur-sm"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-white/80 backdrop-blur-sm overflow-x-hidden"
       onClick={onClose}
     >
       <div
-        className="max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-lg bg-white p-4 sm:p-6 shadow-lg mx-4"
+        className="max-h-[90vh] w-full max-w-full sm:max-w-2xl overflow-y-auto overflow-x-hidden rounded-lg bg-white p-4 sm:p-6 shadow-lg mx-2 sm:mx-4"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="mb-4 flex items-center justify-between">
@@ -273,7 +273,7 @@ export default function DashboardForm({
             ✕
           </button>
         </div>
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-4 min-w-0">
           {/* 商品名 */}
           <div>
             <label
@@ -492,14 +492,14 @@ export default function DashboardForm({
 
           {/* 公開日・終了日 */}
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-            <div>
+            <div className="min-w-0">
               <label
                 htmlFor="publishedAt"
                 className="block text-sm font-medium text-gray-700"
               >
                 公開日
               </label>
-              <div className="relative mt-1">
+              <div className="relative mt-1 min-w-0">
                 <input
                   type="datetime-local"
                   id="publishedAt"
@@ -510,7 +510,7 @@ export default function DashboardForm({
                       publishedAt: e.target.value,
                     }))
                   }
-                  className="block w-full rounded-md border border-gray-300 px-3 py-2 pr-10 text-base shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"
+                  className="block w-full min-w-0 max-w-full rounded-md border border-gray-300 px-3 py-2 pr-10 text-base shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"
                 />
                 {formData.publishedAt && (
                   <button
@@ -526,14 +526,14 @@ export default function DashboardForm({
                 )}
               </div>
             </div>
-            <div>
+            <div className="min-w-0">
               <label
                 htmlFor="endedAt"
                 className="block text-sm font-medium text-gray-700"
               >
                 終了日
               </label>
-              <div className="relative mt-1">
+              <div className="relative mt-1 min-w-0">
                 <input
                   type="datetime-local"
                   id="endedAt"
@@ -544,7 +544,7 @@ export default function DashboardForm({
                       endedAt: e.target.value,
                     }))
                   }
-                  className="block w-full rounded-md border border-gray-300 px-3 py-2 pr-10 text-base shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"
+                  className="block w-full min-w-0 max-w-full rounded-md border border-gray-300 px-3 py-2 pr-10 text-base shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"
                 />
                 {formData.endedAt && (
                   <button
