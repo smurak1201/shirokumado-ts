@@ -30,8 +30,10 @@
 ## バックエンド
 
 ### ランタイム
-- **Node.js** (Vercelのランタイム)
+- **Node.js** `>=24.0.0` (LTS: Krypton)
+  - Vercelのランタイムで使用
   - Next.js API Routesでバックエンド機能を実装
+  - `.nvmrc`ファイルでバージョンを指定
 
 ### データベース
 - **Vercel Neon** (PostgreSQL)

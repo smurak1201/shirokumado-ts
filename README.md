@@ -14,9 +14,11 @@
 
 ## 📋 前提条件
 
-- Node.js 20以上
-- npm または yarn
+- Node.js 24以上（LTS推奨）
+- npm 11以上 または yarn
 - Git
+
+> **WSL上のUbuntuを使用している場合**: [WSLでのNode.jsセットアップガイド](./doc/nodejs-setup-wsl.md)を参照してください。
 
 ## 🛠️ セットアップ
 
