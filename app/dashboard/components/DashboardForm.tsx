@@ -25,12 +25,13 @@ export default function DashboardForm({
 }: DashboardFormProps) {
   const [submitting, setSubmitting] = useState(false);
   const [uploading, setUploading] = useState(false);
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
 
   // フォーム状態
   const [formData, setFormData] = useState({
     name: "",
     description: "",
-    imageUrl: "",
+    imageFile: null as File | null,
     priceS: "",
     priceL: "",
     categoryId: "",
@@ -39,54 +40,88 @@ export default function DashboardForm({
     endedAt: "",
   });
 
-  // 画像アップロード
-  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  // 画像ファイル選択
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (!file) return;
-
-    setUploading(true);
-    try {
-      const formData = new FormData();
-      formData.append("file", file);
-
-      const response = await fetch("/api/products/upload", {
-        method: "POST",
-        body: formData,
-      });
-
-      if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.error || "アップロードに失敗しました");
-      }
-
-      const data = await response.json();
-      setFormData((prev) => ({ ...prev, imageUrl: data.url }));
-      alert("画像のアップロードが完了しました");
-    } catch (error) {
-      console.error("画像アップロードエラー:", error);
-      alert(
-        error instanceof Error
-          ? error.message
-          : "画像のアップロードに失敗しました"
-      );
-    } finally {
-      setUploading(false);
+    if (!file) {
+      setFormData((prev) => ({ ...prev, imageFile: null }));
+      setImagePreview(null);
+      return;
     }
+
+    // ファイルタイプの検証
+    if (!file.type.startsWith("image/")) {
+      alert("画像ファイルのみ選択可能です");
+      return;
+    }
+
+    // ファイルサイズの検証（5MB制限）
+    const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
+    if (file.size > MAX_FILE_SIZE) {
+      alert("ファイルサイズは5MB以下である必要があります");
+      return;
+    }
+
+    setFormData((prev) => ({ ...prev, imageFile: file }));
+
+    // プレビュー用のURLを生成
+    const previewUrl = URL.createObjectURL(file);
+    setImagePreview(previewUrl);
   };
 
   // フォーム送信
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSubmitting(true);
+    setUploading(false);
 
     try {
+      let imageUrl: string | null = null;
+
+      // 画像ファイルがある場合は先にBlobにアップロード
+      if (formData.imageFile) {
+        setUploading(true);
+        try {
+          const uploadFormData = new FormData();
+          uploadFormData.append("file", formData.imageFile);
+
+          const uploadResponse = await fetch("/api/products/upload", {
+            method: "POST",
+            body: uploadFormData,
+          });
+
+          if (!uploadResponse.ok) {
+            const error = await uploadResponse.json();
+            throw new Error(error.error || "画像のアップロードに失敗しました");
+          }
+
+          const uploadData = await uploadResponse.json();
+          imageUrl = uploadData.url;
+        } catch (error) {
+          console.error("画像アップロードエラー:", error);
+          alert(
+            error instanceof Error
+              ? error.message
+              : "画像のアップロードに失敗しました"
+          );
+          setUploading(false);
+          setSubmitting(false);
+          return;
+        } finally {
+          setUploading(false);
+        }
+      }
+
+      // 商品を登録
       const response = await fetch("/api/products", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          ...formData,
+          name: formData.name,
+          description: formData.description,
+          imageUrl,
           categoryId: parseInt(formData.categoryId),
           priceS: formData.priceS ? parseFloat(formData.priceS) : null,
           priceL: formData.priceL ? parseFloat(formData.priceL) : null,
@@ -104,11 +139,16 @@ export default function DashboardForm({
       await response.json();
       alert("商品の登録が完了しました");
 
+      // プレビューURLをクリーンアップ
+      if (imagePreview) {
+        URL.revokeObjectURL(imagePreview);
+      }
+
       // フォームをリセット
       setFormData({
         name: "",
         description: "",
-        imageUrl: "",
+        imageFile: null,
         priceS: "",
         priceL: "",
         categoryId: "",
@@ -116,6 +156,7 @@ export default function DashboardForm({
         publishedAt: "",
         endedAt: "",
       });
+      setImagePreview(null);
 
       // 親コンポーネントに通知
       if (onProductCreated) {
@@ -128,6 +169,7 @@ export default function DashboardForm({
       );
     } finally {
       setSubmitting(false);
+      setUploading(false);
     }
   };
 
@@ -197,21 +239,23 @@ export default function DashboardForm({
             type="file"
             id="image"
             accept="image/*"
-            onChange={handleImageUpload}
-            disabled={uploading}
+            onChange={handleImageChange}
+            disabled={submitting || uploading}
             className="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:rounded-md file:border-0 file:bg-blue-50 file:px-4 file:py-2 file:text-sm file:font-semibold file:text-blue-700 hover:file:bg-blue-100"
           />
-          {uploading && (
-            <p className="mt-2 text-sm text-gray-500">アップロード中...</p>
+          {(uploading || submitting) && (
+            <p className="mt-2 text-sm text-gray-500">
+              {uploading ? "画像をアップロード中..." : "登録中..."}
+            </p>
           )}
-          {formData.imageUrl && (
+          {imagePreview && (
             <div className="mt-2">
               <img
-                src={formData.imageUrl}
+                src={imagePreview}
                 alt="プレビュー"
                 className="h-32 w-32 rounded object-cover"
               />
-              <p className="mt-1 text-xs text-gray-500">アップロード済み</p>
+              <p className="mt-1 text-xs text-gray-500">プレビュー</p>
             </div>
           )}
         </div>
@@ -352,10 +396,14 @@ export default function DashboardForm({
         <div className="pt-4">
           <button
             type="submit"
-            disabled={submitting}
+            disabled={submitting || uploading}
             className="w-full rounded-md bg-blue-600 px-4 py-2 font-medium text-white hover:bg-blue-700 disabled:bg-gray-400"
           >
-            {submitting ? "登録中..." : "商品を登録"}
+            {uploading
+              ? "画像をアップロード中..."
+              : submitting
+              ? "登録中..."
+              : "商品を登録"}
           </button>
         </div>
       </form>
