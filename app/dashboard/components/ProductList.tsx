@@ -105,14 +105,20 @@ const ProductList = forwardRef<ProductListRef, ProductListProps>(
               {products.map((product) => (
                 <div
                   key={product.id}
-                  className="border-b border-gray-200 pb-4 last:border-0"
+                  className={`border-b border-gray-200 pb-4 last:border-0 ${
+                    !product.published
+                      ? "bg-gray-50 opacity-60"
+                      : ""
+                  }`}
                 >
                   <div className="flex gap-4">
                     {product.imageUrl && (
                       <img
                         src={product.imageUrl}
                         alt={product.name}
-                        className="h-24 w-24 rounded object-cover"
+                        className={`h-24 w-24 rounded object-cover ${
+                          !product.published ? "opacity-50" : ""
+                        }`}
                         loading="lazy"
                       />
                     )}
@@ -120,7 +126,11 @@ const ProductList = forwardRef<ProductListRef, ProductListProps>(
                       <div className="flex items-start justify-between">
                         <div className="flex-1">
                           <div className="flex items-center gap-2">
-                            <h3 className="text-lg font-semibold">
+                            <h3
+                              className={`text-lg font-semibold ${
+                                !product.published ? "text-gray-500" : ""
+                              }`}
+                            >
                               {product.name}
                             </h3>
                             <span
@@ -133,23 +143,41 @@ const ProductList = forwardRef<ProductListRef, ProductListProps>(
                               {product.published ? "公開" : "非公開"}
                             </span>
                           </div>
-                          <p className="mt-1 text-sm text-gray-600">
+                          <p
+                            className={`mt-1 text-sm ${
+                              !product.published ? "text-gray-400" : "text-gray-600"
+                            }`}
+                          >
                             {product.description}
                           </p>
                           <div className="mt-2 flex flex-wrap gap-2">
-                            <span className="rounded-full bg-blue-100 px-2 py-1 text-xs text-blue-800">
+                            <span
+                              className={`rounded-full px-2 py-1 text-xs ${
+                                !product.published
+                                  ? "bg-gray-200 text-gray-500"
+                                  : "bg-blue-100 text-blue-800"
+                              }`}
+                            >
                               {product.category.name}
                             </span>
                             {product.tags.map((tag) => (
                               <span
                                 key={tag.id}
-                                className="rounded-full bg-gray-100 px-2 py-1 text-xs text-gray-800"
+                                className={`rounded-full px-2 py-1 text-xs ${
+                                  !product.published
+                                    ? "bg-gray-200 text-gray-500"
+                                    : "bg-gray-100 text-gray-800"
+                                }`}
                               >
                                 {tag.name}
                               </span>
                             ))}
                           </div>
-                          <div className="mt-2 text-sm text-gray-500">
+                          <div
+                            className={`mt-2 text-sm ${
+                              !product.published ? "text-gray-400" : "text-gray-500"
+                            }`}
+                          >
                             {product.priceS && (
                               <span>S: ¥{product.priceS.toLocaleString()}</span>
                             )}
