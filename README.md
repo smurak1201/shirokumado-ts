@@ -1,36 +1,143 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 白熊堂（しろくまどう）
 
-## Getting Started
+白熊堂のかき氷屋のホームページプロジェクトです。
 
-First, run the development server:
+## 🚀 技術スタック
+
+- **フロントエンド**: Next.js 16.1.1 (App Router), React 19.2.3, TypeScript 5, Tailwind CSS 4
+- **バックエンド**: Next.js API Routes, Prisma 7.2.0
+- **データベース**: Vercel Neon (PostgreSQL)
+- **ストレージ**: Vercel Blob Storage
+- **デプロイ**: Vercel
+
+詳細は [技術スタックドキュメント](./doc/tech-stack.md) を参照してください。
+
+## 📋 前提条件
+
+- Node.js 20以上
+- npm または yarn
+- Git
+
+## 🛠️ セットアップ
+
+### 1. リポジトリのクローン
+
+```bash
+git clone <repository-url>
+cd shirokumado-ts
+```
+
+### 2. 依存関係のインストール
+
+```bash
+npm install
+```
+
+### 3. 環境変数の設定
+
+`.env`ファイルを作成し、以下の環境変数を設定してください：
+
+```env
+# データベース接続（Neon）
+DATABASE_URL=postgresql://...
+DATABASE_URL_UNPOOLED=postgresql://...
+POSTGRES_URL=postgresql://...
+POSTGRES_URL_NON_POOLING=postgresql://...
+
+# Blob Storage
+BLOB_READ_WRITE_TOKEN=vercel_blob_rw_...
+```
+
+### 4. データベースのセットアップ
+
+```bash
+# Prisma Clientを生成
+npm run db:generate
+
+# マイグレーションを実行（初回）
+npm run db:migrate
+
+# または、スキーマを直接プッシュ（開発環境のみ）
+npm run db:push
+```
+
+### 5. 開発サーバーの起動
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+ブラウザで [http://localhost:3000](http://localhost:3000) を開いてください。
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 📚 ドキュメント
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- [技術スタック](./doc/tech-stack.md) - 使用している技術の詳細
+- [Prisma & Blob セットアップガイド](./doc/setup-prisma-blob.md) - データベースとストレージの使用方法
+- [開発ガイドライン](./doc/development-guide.md) - コーディング規約とベストプラクティス
+- [コーディング標準](./doc/coding-standards.md) - コード生成時のベストプラクティス
+- [プロジェクト構造](./doc/project-structure.md) - ディレクトリ構造の説明
+- [デプロイメントガイド](./doc/deployment.md) - デプロイ手順
 
-## Learn More
+## 🧑‍💻 開発コマンド
 
-To learn more about Next.js, take a look at the following resources:
+```bash
+# 開発サーバー起動
+npm run dev
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+# プロダクションビルド
+npm run build
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+# プロダクションサーバー起動
+npm start
 
-## Deploy on Vercel
+# リンター実行
+npm run lint
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+# Prisma関連
+npm run db:generate    # Prisma Clientを生成
+npm run db:push        # スキーマをデータベースにプッシュ
+npm run db:migrate     # マイグレーションを作成・適用
+npm run db:migrate:deploy  # 本番環境でマイグレーションを適用
+npm run db:studio      # Prisma Studioを起動
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## 📁 プロジェクト構造
+
+```
+shirokumado-ts/
+├── app/              # Next.js App Router
+│   ├── api/         # API Routes
+│   ├── layout.tsx   # ルートレイアウト
+│   └── page.tsx     # ホームページ
+├── lib/              # ユーティリティ・ライブラリ
+│   ├── prisma.ts    # Prisma Clientインスタンス
+│   ├── blob.ts      # Blobストレージユーティリティ
+│   ├── env.ts       # 環境変数管理
+│   ├── errors.ts    # 統一されたエラーハンドリング
+│   └── api-helpers.ts # API Routes用ヘルパー
+├── prisma/           # Prisma設定
+│   ├── schema.prisma # データベーススキーマ定義
+│   └── migrations/  # マイグレーションファイル
+├── public/          # 静的ファイル
+├── doc/             # ドキュメント
+└── package.json     # 依存関係
+```
+
+詳細は [プロジェクト構造ドキュメント](./doc/project-structure.md) を参照してください。
+
+## 🚢 デプロイ
+
+このプロジェクトはVercelにデプロイされています。
+
+- **本番環境**: [本番URL]
+- **プレビュー環境**: プルリクエストごとに自動生成
+
+詳細は [デプロイメントガイド](./doc/deployment.md) を参照してください。
+
+## 📝 ライセンス
+
+[ライセンス情報]
+
+## 🤝 コントリビューション
+
+プロジェクトへの貢献を歓迎します。詳細は [開発ガイドライン](./doc/development-guide.md) を参照してください。

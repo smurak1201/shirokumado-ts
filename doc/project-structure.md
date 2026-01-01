@@ -1,0 +1,267 @@
+# プロジェクト構造
+
+白熊堂プロジェクトのディレクトリ構造と各ファイルの役割を説明します。
+
+## 📁 ディレクトリ構造
+
+```
+shirokumado-ts/
+├── app/                    # Next.js App Router
+│   ├── api/               # API Routes
+│   │   └── [resource]/
+│   │       └── route.ts  # APIエンドポイント
+│   ├── (routes)/          # ルートグループ
+│   │   ├── page.tsx      # ページコンポーネント
+│   │   ├── layout.tsx    # レイアウトコンポーネント
+│   │   └── loading.tsx   # ローディングUI
+│   ├── globals.css       # グローバルスタイル
+│   ├── layout.tsx        # ルートレイアウト
+│   └── page.tsx          # ホームページ
+│
+├── lib/                    # ユーティリティ・ライブラリ
+│   ├── prisma.ts         # Prisma Clientインスタンス
+│   ├── blob.ts           # Blobストレージユーティリティ
+│   ├── env.ts            # 環境変数管理
+│   ├── errors.ts         # 統一されたエラーハンドリング
+│   ├── api-helpers.ts     # API Routes用ヘルパー
+│   └── utils/            # 汎用ユーティリティ
+│       ├── format.ts     # フォーマット関数
+│       └── validation.ts # バリデーション関数
+│
+├── prisma/                 # Prisma設定
+│   ├── schema.prisma     # データベーススキーマ定義
+│   ├── migrations/       # マイグレーションファイル
+│   └── seed.ts           # シードデータ（オプション）
+│
+├── public/                 # 静的ファイル
+│   ├── images/           # 画像ファイル
+│   └── favicon.ico       # ファビコン
+│
+├── doc/                    # ドキュメント
+│   ├── tech-stack.md     # 技術スタック
+│   ├── setup-prisma-blob.md # Prisma & Blob セットアップ
+│   ├── development-guide.md # 開発ガイドライン
+│   ├── project-structure.md # プロジェクト構造（このファイル）
+│   └── deployment.md     # デプロイメントガイド
+│
+├── .env                    # 環境変数（.gitignoreに含まれる）
+├── .gitignore            # Git除外設定
+├── eslint.config.mjs      # ESLint設定
+├── next.config.ts         # Next.js設定
+├── package.json           # 依存関係
+├── prisma.config.ts       # Prisma設定（Prisma 7）
+├── tsconfig.json          # TypeScript設定
+└── README.md              # プロジェクト概要
+```
+
+## 📂 各ディレクトリの詳細
+
+### `app/` - Next.js App Router
+
+Next.js 16のApp Routerを使用しています。
+
+#### `app/api/` - API Routes
+
+サーバーサイドのAPIエンドポイントを定義します。
+
+```
+app/api/
+├── users/
+│   └── route.ts          # GET /api/users, POST /api/users
+├── products/
+│   ├── route.ts          # GET /api/products, POST /api/products
+│   └── [id]/
+│       └── route.ts       # GET /api/products/[id], PUT /api/products/[id]
+└── upload/
+    └── route.ts          # POST /api/upload
+```
+
+#### `app/(routes)/` - ページルート
+
+ページコンポーネントを定義します。
+
+```
+app/
+├── page.tsx              # / (ホームページ)
+├── about/
+│   └── page.tsx          # /about
+├── products/
+│   ├── page.tsx          # /products (一覧)
+│   └── [id]/
+│       └── page.tsx      # /products/[id] (詳細)
+└── (admin)/              # ルートグループ（URLに影響しない）
+    └── dashboard/
+        └── page.tsx      # /dashboard
+```
+
+### `lib/` - ユーティリティ・ライブラリ
+
+再利用可能な関数やユーティリティを定義します。
+
+#### `lib/prisma.ts`
+
+Prisma Clientのシングルトンインスタンスを管理します。
+
+```typescript
+import { prisma, safePrismaOperation } from '@/lib/prisma';
+
+// 使用例
+const users = await safePrismaOperation(
+  () => prisma.user.findMany(),
+  'getUsers'
+);
+```
+
+#### `lib/blob.ts`
+
+Vercel Blob Storageの操作を提供します。
+
+```typescript
+import { uploadImage, deleteFile } from '@/lib/blob';
+
+// 使用例
+const blob = await uploadImage('images/product.jpg', buffer, 'image/jpeg');
+```
+
+#### `lib/errors.ts`
+
+統一されたエラーハンドリングを提供します。
+
+```typescript
+import { AppError, DatabaseError, ValidationError } from '@/lib/errors';
+
+// 使用例
+throw new ValidationError('Invalid input');
+```
+
+#### `lib/api-helpers.ts`
+
+API Routes用のヘルパー関数を提供します。
+
+```typescript
+import { withErrorHandling, apiSuccess } from '@/lib/api-helpers';
+
+export const GET = withErrorHandling(async () => {
+  const data = await fetchData();
+  return apiSuccess({ data });
+});
+```
+
+#### `lib/utils/` - 汎用ユーティリティ
+
+フォーマット、バリデーションなどの汎用関数を定義します。
+
+```
+lib/utils/
+├── format.ts      # 日付、金額などのフォーマット
+├── validation.ts  # バリデーション関数
+└── constants.ts   # 定数定義
+```
+
+### `prisma/` - Prisma設定
+
+データベーススキーマとマイグレーションを管理します。
+
+#### `prisma/schema.prisma`
+
+データベーススキーマを定義します。
+
+```prisma
+model User {
+  id        Int      @id @default(autoincrement())
+  name      String
+  email     String   @unique
+  createdAt DateTime @default(now())
+}
+```
+
+#### `prisma/migrations/`
+
+マイグレーションファイルが自動生成されます。
+
+```
+prisma/migrations/
+├── 20240101000000_init/
+│   └── migration.sql
+└── 20240102000000_add_user_table/
+    └── migration.sql
+```
+
+### `public/` - 静的ファイル
+
+静的ファイル（画像、ファビコンなど）を配置します。
+
+```
+public/
+├── images/
+│   ├── logo.png
+│   └── products/
+├── favicon.ico
+└── robots.txt
+```
+
+## 🔄 ファイル命名規則
+
+### コンポーネント
+
+- **ページ**: `page.tsx`（Next.js App Routerの規約）
+- **レイアウト**: `layout.tsx`
+- **ローディング**: `loading.tsx`
+- **エラー**: `error.tsx`
+- **404**: `not-found.tsx`
+
+### API Routes
+
+- **ルートハンドラー**: `route.ts`
+- **動的ルート**: `[id]/route.ts`
+
+### ユーティリティ
+
+- **単一機能**: `camelCase.ts`（例: `formatDate.ts`）
+- **複数機能**: `plural.ts`（例: `formatters.ts`）
+
+## 📝 ファイルの役割
+
+### 設定ファイル
+
+- **`next.config.ts`**: Next.jsの設定（画像最適化、環境変数など）
+- **`tsconfig.json`**: TypeScriptの設定
+- **`prisma.config.ts`**: Prisma 7の設定（接続情報など）
+- **`eslint.config.mjs`**: ESLintの設定
+
+### ドキュメント
+
+- **`README.md`**: プロジェクトの概要とセットアップ手順
+- **`doc/tech-stack.md`**: 技術スタックの詳細
+- **`doc/setup-prisma-blob.md`**: PrismaとBlobのセットアップガイド
+- **`doc/development-guide.md`**: 開発ガイドライン
+- **`doc/project-structure.md`**: プロジェクト構造（このファイル）
+- **`doc/deployment.md`**: デプロイメントガイド
+
+## 🎯 ベストプラクティス
+
+### ファイルの配置
+
+1. **コンポーネント**: 再利用可能なものは`app/components/`に配置
+2. **ユーティリティ**: 汎用的なものは`lib/utils/`に配置
+3. **型定義**: 共有型は`lib/types/`に配置（必要に応じて）
+
+### インポートパス
+
+- **絶対パス**: `@/lib/prisma`を使用（`tsconfig.json`で設定）
+- **相対パス**: 同じディレクトリ内のみで使用
+
+```typescript
+// ✅ 良い例
+import { prisma } from '@/lib/prisma';
+import { formatDate } from '@/lib/utils/format';
+
+// ❌ 悪い例（深い相対パス）
+import { prisma } from '../../../lib/prisma';
+```
+
+## 📚 参考リンク
+
+- [Next.js App Router](https://nextjs.org/docs/app)
+- [Prisma Schema](https://www.prisma.io/docs/concepts/components/prisma-schema)
+- [TypeScript Project References](https://www.typescriptlang.org/docs/handbook/project-references.html)
