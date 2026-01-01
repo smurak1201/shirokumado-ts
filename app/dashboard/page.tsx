@@ -51,7 +51,11 @@ export default async function DashboardPage() {
         <h1 className="mb-8 text-3xl font-bold">商品管理ダッシュボード</h1>
 
         <DashboardFormWrapper categories={categories} tags={tags} />
-        <ProductList initialProducts={products} />
+        <ProductList
+          initialProducts={products}
+          categories={categories}
+          tags={tags}
+        />
       </div>
     </div>
   );
