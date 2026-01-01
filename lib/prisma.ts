@@ -1,4 +1,7 @@
 import { PrismaClient } from '@prisma/client';
+import { Pool, neonConfig } from '@neondatabase/serverless';
+import { PrismaNeon } from '@prisma/adapter-neon';
+import ws from 'ws';
 import { DatabaseError, logError } from './errors';
 
 /**
@@ -10,20 +13,35 @@ import { DatabaseError, logError } from './errors';
  * - 本番環境では各リクエストで新しいインスタンスを使用しますが、
  *   接続プールにより効率的に管理されます
  *
- * Prisma 7では、prisma.config.tsで設定された接続情報を使用します
+ * Prisma 7では、Neon（PostgreSQL）に接続するために@prisma/adapter-neonを使用します
  */
+
+// WebSocketの設定（Node.js環境用）
+if (typeof globalThis !== 'undefined' && !globalThis.WebSocket) {
+  neonConfig.webSocketConstructor = ws;
+}
 
 const globalForPrisma = globalThis as unknown as {
   prisma: PrismaClient | undefined;
 };
 
 const createPrismaClient = (): PrismaClient => {
+  // Prisma 7では、Neonに接続するためにアダプターを使用します
+  const connectionString = process.env.DATABASE_URL || process.env.POSTGRES_URL;
+
+  if (!connectionString) {
+    throw new Error('DATABASE_URL or POSTGRES_URL environment variable is not set');
+  }
+
+  const pool = new Pool({ connectionString });
+  const adapter = new PrismaNeon(pool as any);
+
   return new PrismaClient({
+    adapter,
     log:
       process.env.NODE_ENV === 'development'
         ? ['query', 'error', 'warn']
         : ['error'],
-    errorFormat: 'pretty',
   });
 };
 

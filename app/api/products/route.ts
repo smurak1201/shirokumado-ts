@@ -1,4 +1,4 @@
-import { withErrorHandling, apiSuccess, apiError } from '@/lib/api-helpers';
+import { withErrorHandling, apiSuccess } from '@/lib/api-helpers';
 import { safePrismaOperation } from '@/lib/prisma';
 import { prisma } from '@/lib/prisma';
 import { ValidationError } from '@/lib/errors';
@@ -88,8 +88,8 @@ export const POST = withErrorHandling(async (request: NextRequest) => {
           endedAt: body.endedAt ? new Date(body.endedAt) : null,
           tags: body.tagIds
             ? {
-                connect: body.tagIds.map((id: number) => ({ id })),
-              }
+              connect: body.tagIds.map((id: number) => ({ id })),
+            }
             : undefined,
         },
         include: {
