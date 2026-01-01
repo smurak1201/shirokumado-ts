@@ -109,9 +109,7 @@ const ProductList = forwardRef<ProductListRef, ProductListProps>(
                 <div
                   key={product.id}
                   className={`border-b border-gray-200 pb-4 last:border-0 ${
-                    !product.published
-                      ? "bg-gray-50 opacity-60"
-                      : ""
+                    !product.published ? "bg-gray-50" : ""
                   }`}
                 >
                   <div className="flex gap-4">
