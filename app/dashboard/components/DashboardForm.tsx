@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { calculatePublishedStatus, hasDateRange } from "@/lib/product-utils";
+import { calculatePublishedStatus, hasDateRange, formatPrice, parsePrice, isNumericKey } from "@/lib/product-utils";
 import { compressImage } from "@/lib/image-compression";
 
 interface Category {
@@ -345,14 +345,19 @@ export default function DashboardForm({
                 Sサイズの料金（円）
               </label>
               <input
-                type="number"
+                type="text"
                 id="priceS"
-                min="0"
-                step="1"
-                value={formData.priceS}
-                onChange={(e) =>
-                  setFormData((prev) => ({ ...prev, priceS: e.target.value }))
-                }
+                inputMode="numeric"
+                value={formatPrice(formData.priceS)}
+                onKeyDown={(e) => {
+                  if (!isNumericKey(e)) {
+                    e.preventDefault();
+                  }
+                }}
+                onChange={(e) => {
+                  const cleaned = parsePrice(e.target.value);
+                  setFormData((prev) => ({ ...prev, priceS: cleaned }));
+                }}
                 className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-base shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"
               />
             </div>
@@ -364,14 +369,19 @@ export default function DashboardForm({
                 Lサイズの料金（円）
               </label>
               <input
-                type="number"
+                type="text"
                 id="priceL"
-                min="0"
-                step="1"
-                value={formData.priceL}
-                onChange={(e) =>
-                  setFormData((prev) => ({ ...prev, priceL: e.target.value }))
-                }
+                inputMode="numeric"
+                value={formatPrice(formData.priceL)}
+                onKeyDown={(e) => {
+                  if (!isNumericKey(e)) {
+                    e.preventDefault();
+                  }
+                }}
+                onChange={(e) => {
+                  const cleaned = parsePrice(e.target.value);
+                  setFormData((prev) => ({ ...prev, priceL: cleaned }));
+                }}
                 className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-base shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"
               />
             </div>

@@ -55,3 +55,64 @@ export function calculatePublishedStatus(
 export function hasDateRange(publishedAt: Date | null, endedAt: Date | null): boolean {
   return publishedAt !== null || endedAt !== null;
 }
+
+/**
+ * 数値をカンマ区切りの文字列に変換
+ * @param value 数値または数値文字列
+ * @returns カンマ区切りの文字列（空の場合は空文字列）
+ */
+export function formatPrice(value: string | number | null | undefined): string {
+  if (value === null || value === undefined || value === "") {
+    return "";
+  }
+  const numValue = typeof value === "string" ? parseFloat(value.replace(/,/g, "")) : value;
+  if (isNaN(numValue)) {
+    return "";
+  }
+  return numValue.toLocaleString("ja-JP");
+}
+
+/**
+ * カンマ区切りの文字列を数値に変換
+ * @param value カンマ区切りの文字列
+ * @returns 数値文字列（空の場合は空文字列）
+ */
+export function parsePrice(value: string): string {
+  // カンマを除去して数字のみを抽出（小数点は除外）
+  const cleaned = value.replace(/,/g, "").replace(/[^\d]/g, "");
+  return cleaned;
+}
+
+/**
+ * キー入力が数字かどうかを判定
+ * @param e キーボードイベント
+ * @returns 数字または許可された制御キーの場合はtrue
+ */
+export function isNumericKey(e: React.KeyboardEvent<HTMLInputElement>): boolean {
+  // 数字キー（0-9）
+  if (e.key >= "0" && e.key <= "9") {
+    return true;
+  }
+  // 許可する制御キー
+  const allowedKeys = [
+    "Backspace",
+    "Delete",
+    "Tab",
+    "Escape",
+    "Enter",
+    "ArrowLeft",
+    "ArrowRight",
+    "ArrowUp",
+    "ArrowDown",
+    "Home",
+    "End",
+  ];
+  if (allowedKeys.includes(e.key)) {
+    return true;
+  }
+  // Ctrl/Cmd + A, C, V, X などのコピー&ペースト操作
+  if ((e.ctrlKey || e.metaKey) && ["a", "c", "v", "x"].includes(e.key.toLowerCase())) {
+    return true;
+  }
+  return false;
+}
