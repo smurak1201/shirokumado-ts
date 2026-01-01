@@ -3,6 +3,7 @@
  *
  * スマホで撮影した大きな画像を、アップロード前に自動的に圧縮・リサイズします。
  * Canvas APIを使用してブラウザ側で処理を行います。
+ * WebP形式で圧縮することで、JPEGよりも約25-35%小さなファイルサイズを実現します。
  */
 
 interface CompressionOptions {
@@ -10,13 +11,25 @@ interface CompressionOptions {
   maxHeight?: number;
   quality?: number; // 0.0 - 1.0
   maxSizeMB?: number; // 目標ファイルサイズ（MB）
+  format?: 'webp' | 'jpeg'; // 出力形式
+}
+
+/**
+ * WebP形式がサポートされているかどうかを判定します
+ * @returns WebPがサポートされている場合true
+ */
+function supportsWebP(): boolean {
+  const canvas = document.createElement('canvas');
+  canvas.width = 1;
+  canvas.height = 1;
+  return canvas.toDataURL('image/webp').indexOf('data:image/webp') === 0;
 }
 
 /**
  * 画像ファイルを圧縮・リサイズします
  * @param file 元の画像ファイル
  * @param options 圧縮オプション
- * @returns 圧縮された画像ファイル（JPEG形式）
+ * @returns 圧縮された画像ファイル（WebP形式、サポートされていない場合はJPEG形式）
  */
 export async function compressImage(
   file: File,
@@ -27,7 +40,13 @@ export async function compressImage(
     maxHeight = 1920,
     quality = 0.85,
     maxSizeMB = 3.5, // Vercelの制限より少し小さめに設定
+    format = 'webp', // デフォルトでWebP形式を使用
   } = options;
+
+  // WebP形式が指定されているが、ブラウザがサポートしていない場合はJPEGにフォールバック
+  const useWebP = format === 'webp' && supportsWebP();
+  const outputFormat = useWebP ? 'image/webp' : 'image/jpeg';
+  const outputExtension = useWebP ? '.webp' : '.jpg';
 
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
@@ -62,7 +81,7 @@ export async function compressImage(
 
         ctx.drawImage(img, 0, 0, width, height);
 
-        // JPEG形式で圧縮（品質を段階的に下げながら目標サイズに近づける）
+        // WebP形式（またはJPEG形式）で圧縮（品質を段階的に下げながら目標サイズに近づける）
         const compressWithQuality = (q: number): Promise<File> => {
           return new Promise((resolveCompress) => {
             canvas.toBlob(
@@ -79,16 +98,16 @@ export async function compressImage(
                 } else {
                   const compressedFile = new File(
                     [blob],
-                    file.name.replace(/\.[^/.]+$/, ".jpg"),
+                    file.name.replace(/\.[^/.]+$/, outputExtension),
                     {
-                      type: "image/jpeg",
+                      type: outputFormat,
                       lastModified: Date.now(),
                     }
                   );
                   resolveCompress(compressedFile);
                 }
               },
-              "image/jpeg",
+              outputFormat,
               q
             );
           });
