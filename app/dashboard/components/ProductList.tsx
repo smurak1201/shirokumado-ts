@@ -159,41 +159,9 @@ const ProductList = forwardRef<ProductListRef, ProductListProps>(
     return (
       <>
         <div className="rounded-lg bg-white p-6 shadow">
-          {/* ヘッダー: タイトル、検索、ボタン */}
-          <div className="mb-4 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+          {/* ヘッダー: タイトルとボタン */}
+          <div className="mb-4 flex items-center justify-between">
             <h2 className="text-xl font-semibold">登録済み商品一覧</h2>
-
-            {/* 検索エリア */}
-            <div className="flex flex-1 flex-col gap-3 md:flex-row md:items-center md:justify-center">
-              {/* 商品名検索 */}
-              <input
-                type="text"
-                placeholder="商品名で検索..."
-                value={searchName}
-                onChange={(e) => setSearchName(e.target.value)}
-                className="flex-1 min-w-[200px] rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"
-              />
-
-              {/* カテゴリーフィルター */}
-              <select
-                value={searchCategoryId || ""}
-                onChange={(e) =>
-                  setSearchCategoryId(
-                    e.target.value ? parseInt(e.target.value) : null
-                  )
-                }
-                className="rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"
-              >
-                <option value="">すべてのカテゴリー</option>
-                {categories.map((category) => (
-                  <option key={category.id} value={category.id}>
-                    {category.name}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            {/* 新規商品登録ボタン */}
             {onNewProductClick && (
               <button
                 onClick={onNewProductClick}
@@ -204,65 +172,105 @@ const ProductList = forwardRef<ProductListRef, ProductListProps>(
             )}
           </div>
 
-          {/* 公開/非公開フィルター */}
-          <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              公開情報
-            </label>
-            <div className="flex items-center gap-4">
-              <label className="flex cursor-pointer items-center">
-                <input
-                  type="radio"
-                  name="search-published"
-                  checked={searchPublished === null}
-                  onChange={() => setSearchPublished(null)}
-                  className="mr-2"
-                />
-                <span>すべて</span>
+          {/* 検索・フィルターエリア */}
+          <div className="mb-4 space-y-4">
+            {/* 商品名検索 */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                商品名
               </label>
-              <label className="flex cursor-pointer items-center">
-                <input
-                  type="radio"
-                  name="search-published"
-                  checked={searchPublished === true}
-                  onChange={() => setSearchPublished(true)}
-                  className="mr-2"
-                />
-                <span>公開</span>
-              </label>
-              <label className="flex cursor-pointer items-center">
-                <input
-                  type="radio"
-                  name="search-published"
-                  checked={searchPublished === false}
-                  onChange={() => setSearchPublished(false)}
-                  className="mr-2"
-                />
-                <span>非公開</span>
-              </label>
+              <input
+                type="text"
+                placeholder="商品名で検索..."
+                value={searchName}
+                onChange={(e) => setSearchName(e.target.value)}
+                className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"
+              />
             </div>
-          </div>
 
-          {/* タグフィルター */}
-          <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              タグ
-            </label>
-            <div className="flex flex-wrap gap-2">
-              {tags.map((tag) => (
-                <label
-                  key={tag.id}
-                  className="flex cursor-pointer items-center rounded-full border border-gray-300 px-3 py-1 text-sm hover:bg-gray-50"
-                >
+            {/* カテゴリーフィルター */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                カテゴリー
+              </label>
+              <select
+                value={searchCategoryId || ""}
+                onChange={(e) =>
+                  setSearchCategoryId(
+                    e.target.value ? parseInt(e.target.value) : null
+                  )
+                }
+                className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"
+              >
+                <option value="">すべてのカテゴリー</option>
+                {categories.map((category) => (
+                  <option key={category.id} value={category.id}>
+                    {category.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            {/* 公開/非公開フィルター */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                公開情報
+              </label>
+              <div className="flex items-center gap-4">
+                <label className="flex cursor-pointer items-center">
                   <input
-                    type="checkbox"
-                    checked={searchTagIds.includes(tag.id)}
-                    onChange={() => handleTagToggle(tag.id)}
+                    type="radio"
+                    name="search-published"
+                    checked={searchPublished === null}
+                    onChange={() => setSearchPublished(null)}
                     className="mr-2"
                   />
-                  {tag.name}
+                  <span>すべて</span>
                 </label>
-              ))}
+                <label className="flex cursor-pointer items-center">
+                  <input
+                    type="radio"
+                    name="search-published"
+                    checked={searchPublished === true}
+                    onChange={() => setSearchPublished(true)}
+                    className="mr-2"
+                  />
+                  <span>公開</span>
+                </label>
+                <label className="flex cursor-pointer items-center">
+                  <input
+                    type="radio"
+                    name="search-published"
+                    checked={searchPublished === false}
+                    onChange={() => setSearchPublished(false)}
+                    className="mr-2"
+                  />
+                  <span>非公開</span>
+                </label>
+              </div>
+            </div>
+
+            {/* タグフィルター */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                タグ
+              </label>
+              <div className="flex flex-wrap gap-2">
+                {tags.map((tag) => (
+                  <label
+                    key={tag.id}
+                    className="flex cursor-pointer items-center rounded-full border border-gray-300 px-3 py-1 text-sm hover:bg-gray-50"
+                  >
+                    <input
+                      type="checkbox"
+                      checked={searchTagIds.includes(tag.id)}
+                      onChange={() => handleTagToggle(tag.id)}
+                      className="mr-2"
+                    />
+                    {tag.name}
+                  </label>
+                ))}
+              </div>
             </div>
           </div>
           {filteredProducts.length === 0 ? (
