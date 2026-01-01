@@ -165,7 +165,6 @@ export default function ProductEditForm({
       }
 
       await response.json();
-      alert("商品の更新が完了しました");
 
       // プレビューURLをクリーンアップ
       if (imagePreview && imagePreview !== product.imageUrl) {

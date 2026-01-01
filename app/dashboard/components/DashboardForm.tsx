@@ -145,7 +145,6 @@ export default function DashboardForm({
       }
 
       await response.json();
-      alert("商品の登録が完了しました");
 
       // プレビューURLをクリーンアップ
       if (imagePreview) {
