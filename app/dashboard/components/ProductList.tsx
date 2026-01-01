@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useImperativeHandle, forwardRef } from "react";
+import { useState, useImperativeHandle, forwardRef, useMemo } from "react";
 import ProductEditForm from "./ProductEditForm";
 
 interface Category {
@@ -42,6 +42,17 @@ const ProductList = forwardRef<ProductListRef, ProductListProps>(
   ({ initialProducts, categories, tags, onNewProductClick }, ref) => {
     const [products, setProducts] = useState<Product[]>(initialProducts);
     const [editingProduct, setEditingProduct] = useState<Product | null>(null);
+
+    // 検索条件の状態
+    const [searchName, setSearchName] = useState("");
+    const [searchPublished, setSearchPublished] = useState<boolean | null>(
+      null
+    ); // null: すべて, true: 公開のみ, false: 非公開のみ
+    const [searchCategoryId, setSearchCategoryId] = useState<number | null>(
+      null
+    );
+    const [searchTagIds, setSearchTagIds] = useState<number[]>([]);
+    const [isTagDropdownOpen, setIsTagDropdownOpen] = useState(false);
 
     const refreshProducts = async () => {
       try {
@@ -98,25 +109,215 @@ const ProductList = forwardRef<ProductListRef, ProductListProps>(
       // 編集フォームはProductEditFormのonCloseで閉じられるため、ここでは閉じない
     };
 
+    // 検索条件に基づいて商品をフィルタリング
+    const filteredProducts = useMemo(() => {
+      return products.filter((product) => {
+        // 商品名で検索
+        if (
+          searchName &&
+          !product.name.toLowerCase().includes(searchName.toLowerCase())
+        ) {
+          return false;
+        }
+
+        // 公開/非公開でフィルタリング
+        if (searchPublished !== null && product.published !== searchPublished) {
+          return false;
+        }
+
+        // カテゴリーでフィルタリング
+        if (
+          searchCategoryId !== null &&
+          product.category.id !== searchCategoryId
+        ) {
+          return false;
+        }
+
+        // タグでフィルタリング（選択されたタグのすべてが含まれている必要がある）
+        if (searchTagIds.length > 0) {
+          const productTagIds = product.tags.map((tag) => tag.id);
+          const hasAllTags = searchTagIds.every((tagId) =>
+            productTagIds.includes(tagId)
+          );
+          if (!hasAllTags) {
+            return false;
+          }
+        }
+
+        return true;
+      });
+    }, [products, searchName, searchPublished, searchCategoryId, searchTagIds]);
+
+    // タグの選択/解除
+    const handleTagToggle = (tagId: number) => {
+      setSearchTagIds((prev) =>
+        prev.includes(tagId)
+          ? prev.filter((id) => id !== tagId)
+          : [...prev, tagId]
+      );
+    };
+
     return (
       <>
         <div className="rounded-lg bg-white p-6 shadow">
-          <div className="mb-4 flex items-center justify-between">
+          {/* ヘッダー: タイトル、検索、ボタン */}
+          <div className="mb-4 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
             <h2 className="text-xl font-semibold">登録済み商品一覧</h2>
+
+            {/* 検索エリア */}
+            <div className="flex flex-1 flex-wrap items-center gap-2 md:justify-center">
+              {/* 商品名検索 */}
+              <input
+                type="text"
+                placeholder="商品名で検索..."
+                value={searchName}
+                onChange={(e) => setSearchName(e.target.value)}
+                className="flex-1 min-w-[200px] rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"
+              />
+
+              {/* 公開/非公開フィルター */}
+              <div className="flex items-center gap-2 rounded-md border border-gray-300 px-2 py-1">
+                <label className="text-sm text-gray-700">公開:</label>
+                <select
+                  value={
+                    searchPublished === null
+                      ? "all"
+                      : searchPublished
+                      ? "published"
+                      : "unpublished"
+                  }
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    setSearchPublished(
+                      value === "all" ? null : value === "published"
+                    );
+                  }}
+                  className="rounded border-0 text-sm focus:outline-none"
+                >
+                  <option value="all">すべて</option>
+                  <option value="published">公開のみ</option>
+                  <option value="unpublished">非公開のみ</option>
+                </select>
+              </div>
+
+              {/* カテゴリーフィルター */}
+              <select
+                value={searchCategoryId || ""}
+                onChange={(e) =>
+                  setSearchCategoryId(
+                    e.target.value ? parseInt(e.target.value) : null
+                  )
+                }
+                className="rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"
+              >
+                <option value="">すべてのカテゴリー</option>
+                {categories.map((category) => (
+                  <option key={category.id} value={category.id}>
+                    {category.name}
+                  </option>
+                ))}
+              </select>
+
+              {/* タグフィルター（ドロップダウン） */}
+              <div className="relative">
+                <button
+                  type="button"
+                  onClick={() => setIsTagDropdownOpen(!isTagDropdownOpen)}
+                  className="rounded-md border border-gray-300 px-3 py-2 text-sm hover:bg-gray-50 focus:border-blue-500 focus:outline-none focus:ring-blue-500"
+                >
+                  タグ {searchTagIds.length > 0 && `(${searchTagIds.length})`}
+                </button>
+                {isTagDropdownOpen && (
+                  <>
+                    <div
+                      className="fixed inset-0 z-10"
+                      onClick={() => setIsTagDropdownOpen(false)}
+                    />
+                    <div className="absolute right-0 z-20 mt-1 max-h-60 w-48 overflow-y-auto rounded-md border border-gray-300 bg-white shadow-lg">
+                      <div className="p-2">
+                        {tags.length === 0 ? (
+                          <p className="text-sm text-gray-500">
+                            タグがありません
+                          </p>
+                        ) : (
+                          <>
+                            {tags.map((tag) => (
+                              <label
+                                key={tag.id}
+                                className="flex cursor-pointer items-center gap-2 rounded px-2 py-1 hover:bg-gray-100"
+                              >
+                                <input
+                                  type="checkbox"
+                                  checked={searchTagIds.includes(tag.id)}
+                                  onChange={() => handleTagToggle(tag.id)}
+                                  className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                                />
+                                <span className="text-sm">{tag.name}</span>
+                              </label>
+                            ))}
+                            {searchTagIds.length > 0 && (
+                              <button
+                                onClick={() => {
+                                  setSearchTagIds([]);
+                                  setIsTagDropdownOpen(false);
+                                }}
+                                className="mt-2 w-full rounded bg-gray-100 px-2 py-1 text-xs text-gray-700 hover:bg-gray-200"
+                              >
+                                すべてクリア
+                              </button>
+                            )}
+                          </>
+                        )}
+                      </div>
+                    </div>
+                  </>
+                )}
+              </div>
+            </div>
+
+            {/* 新規商品登録ボタン */}
             {onNewProductClick && (
               <button
                 onClick={onNewProductClick}
-                className="rounded-md bg-blue-600 px-4 py-2 font-medium text-white hover:bg-blue-700"
+                className="rounded-md bg-blue-600 px-4 py-2 font-medium text-white hover:bg-blue-700 whitespace-nowrap"
               >
                 新規商品登録
               </button>
             )}
           </div>
-          {products.length === 0 ? (
-            <p className="text-gray-500">登録されている商品はありません</p>
+
+          {/* 選択されたタグの表示 */}
+          {searchTagIds.length > 0 && (
+            <div className="mb-4 flex flex-wrap gap-2">
+              <span className="text-sm text-gray-600">選択中のタグ:</span>
+              {searchTagIds.map((tagId) => {
+                const tag = tags.find((t) => t.id === tagId);
+                return tag ? (
+                  <span
+                    key={tagId}
+                    className="inline-flex items-center gap-1 rounded-full bg-blue-100 px-2 py-1 text-xs text-blue-800"
+                  >
+                    {tag.name}
+                    <button
+                      onClick={() => handleTagToggle(tagId)}
+                      className="text-blue-600 hover:text-blue-800"
+                    >
+                      ×
+                    </button>
+                  </span>
+                ) : null;
+              })}
+            </div>
+          )}
+          {filteredProducts.length === 0 ? (
+            <p className="text-gray-500">
+              {products.length === 0
+                ? "登録されている商品はありません"
+                : "検索条件に一致する商品がありません"}
+            </p>
           ) : (
             <div className="grid grid-cols-3 gap-1 sm:gap-2 md:gap-4">
-              {products.map((product) => (
+              {filteredProducts.map((product) => (
                 <div
                   key={product.id}
                   className={`flex flex-col rounded-lg border border-gray-200 p-1 sm:p-2 md:p-4 ${
