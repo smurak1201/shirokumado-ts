@@ -17,14 +17,23 @@ interface DashboardFormWrapperProps {
   categories: Category[];
   tags: Tag[];
   onProductCreated?: () => Promise<void>;
+  isFormOpen?: boolean;
+  onFormOpenChange?: (isOpen: boolean) => void;
 }
 
 export default function DashboardFormWrapper({
   categories,
   tags,
   onProductCreated,
+  isFormOpen: externalIsFormOpen,
+  onFormOpenChange,
 }: DashboardFormWrapperProps) {
-  const [isFormOpen, setIsFormOpen] = useState(false);
+  const [internalIsFormOpen, setInternalIsFormOpen] = useState(false);
+
+  // 外部から制御される場合はそれを使用、そうでない場合は内部状態を使用
+  const isFormOpen =
+    externalIsFormOpen !== undefined ? externalIsFormOpen : internalIsFormOpen;
+  const setIsFormOpen = onFormOpenChange || setInternalIsFormOpen;
 
   const handleProductCreated = async () => {
     // 親コンポーネントに通知（一覧の更新を待つ）
@@ -35,22 +44,12 @@ export default function DashboardFormWrapper({
   };
 
   return (
-    <>
-      <div className="mb-8 flex justify-end">
-        <button
-          onClick={() => setIsFormOpen(true)}
-          className="rounded-md bg-blue-600 px-4 py-2 font-medium text-white hover:bg-blue-700"
-        >
-          新規商品登録
-        </button>
-      </div>
-      <DashboardForm
-        categories={categories}
-        tags={tags}
-        onProductCreated={handleProductCreated}
-        onClose={() => setIsFormOpen(false)}
-        isOpen={isFormOpen}
-      />
-    </>
+    <DashboardForm
+      categories={categories}
+      tags={tags}
+      onProductCreated={handleProductCreated}
+      onClose={() => setIsFormOpen(false)}
+      isOpen={isFormOpen}
+    />
   );
 }

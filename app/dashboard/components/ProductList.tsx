@@ -31,6 +31,7 @@ interface ProductListProps {
   initialProducts: Product[];
   categories: Category[];
   tags: Tag[];
+  onNewProductClick?: () => void;
 }
 
 export interface ProductListRef {
@@ -38,7 +39,7 @@ export interface ProductListRef {
 }
 
 const ProductList = forwardRef<ProductListRef, ProductListProps>(
-  ({ initialProducts, categories, tags }, ref) => {
+  ({ initialProducts, categories, tags, onNewProductClick }, ref) => {
     const [products, setProducts] = useState<Product[]>(initialProducts);
     const [editingProduct, setEditingProduct] = useState<Product | null>(null);
 
@@ -100,7 +101,17 @@ const ProductList = forwardRef<ProductListRef, ProductListProps>(
     return (
       <>
         <div className="rounded-lg bg-white p-6 shadow">
-          <h2 className="mb-4 text-xl font-semibold">登録済み商品一覧</h2>
+          <div className="mb-4 flex items-center justify-between">
+            <h2 className="text-xl font-semibold">登録済み商品一覧</h2>
+            {onNewProductClick && (
+              <button
+                onClick={onNewProductClick}
+                className="rounded-md bg-blue-600 px-4 py-2 font-medium text-white hover:bg-blue-700"
+              >
+                新規商品登録
+              </button>
+            )}
+          </div>
           {products.length === 0 ? (
             <p className="text-gray-500">登録されている商品はありません</p>
           ) : (

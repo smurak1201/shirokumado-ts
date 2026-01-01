@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import DashboardFormWrapper from "./DashboardFormWrapper";
 import ProductList from "./ProductList";
 
@@ -40,10 +40,12 @@ export default function DashboardContent({
   initialProducts,
 }: DashboardContentProps) {
   const productListRef = useRef<{ refreshProducts: () => Promise<void> }>(null);
+  const [isFormOpen, setIsFormOpen] = useState(false);
 
   const handleProductCreated = async () => {
     // 商品一覧を更新
     await productListRef.current?.refreshProducts();
+    setIsFormOpen(false);
   };
 
   return (
@@ -52,12 +54,15 @@ export default function DashboardContent({
         categories={categories}
         tags={tags}
         onProductCreated={handleProductCreated}
+        isFormOpen={isFormOpen}
+        onFormOpenChange={setIsFormOpen}
       />
       <ProductList
         ref={productListRef}
         initialProducts={initialProducts}
         categories={categories}
         tags={tags}
+        onNewProductClick={() => setIsFormOpen(true)}
       />
     </>
   );
