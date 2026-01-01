@@ -37,9 +37,11 @@
 - **Vercel Neon** (PostgreSQL)
   - サーバーレスPostgreSQLデータベース
   - 開発環境から本番環境まで統一して使用
-- **@neondatabase/serverless** `^1.0.2`
-  - Neonデータベースへの接続とクエリ実行
-  - `lib/db.ts`にユーティリティ関数を実装
+- **Prisma** `^7.2.0`
+  - 型安全なORM（Object-Relational Mapping）
+  - データベーススキーマ管理とマイグレーション
+  - `lib/prisma.ts`にPrisma Clientインスタンスを実装
+  - `prisma/schema.prisma`でスキーマを定義
 
 ### ストレージ
 - **Vercel Blob Storage**
@@ -93,13 +95,16 @@ shirokumado-ts/
 │   ├── page.tsx     # ホームページ
 │   └── globals.css  # グローバルスタイル
 ├── lib/              # ユーティリティ・ライブラリ
-│   ├── db.ts        # データベース接続ユーティリティ
+│   ├── prisma.ts    # Prisma Clientインスタンス
 │   ├── blob.ts      # Blobストレージユーティリティ
 │   └── env.ts       # 環境変数管理
+├── prisma/           # Prisma設定
+│   ├── schema.prisma # データベーススキーマ定義
+│   └── migrations/  # マイグレーションファイル
 ├── public/          # 静的ファイル
 ├── doc/             # ドキュメント
 │   ├── tech-stack.md           # 技術スタック
-│   └── setup-neon-blob.md     # Neon & Blob セットアップガイド
+│   └── setup-prisma-blob.md    # Prisma & Blob セットアップガイド
 ├── package.json     # 依存関係
 ├── tsconfig.json    # TypeScript設定
 ├── next.config.ts   # Next.js設定
@@ -107,10 +112,6 @@ shirokumado-ts/
 ```
 
 ## 今後の追加予定
-
-### データベース関連
-- ORM（Prisma、Drizzle等）の検討
-- マイグレーションツールの導入
 
 ### その他
 - フォームバリデーションライブラリ
@@ -132,6 +133,12 @@ npm start
 
 # リンター実行
 npm run lint
+
+# Prisma関連
+npm run db:generate    # Prisma Clientを生成
+npm run db:push        # スキーマをデータベースにプッシュ
+npm run db:migrate     # マイグレーションを作成・適用
+npm run db:studio      # Prisma Studioを起動
 ```
 
 ## 参考リンク
@@ -140,5 +147,6 @@ npm run lint
 - [Vercel Documentation](https://vercel.com/docs)
 - [Vercel Neon Documentation](https://neon.tech/docs)
 - [Vercel Blob Documentation](https://vercel.com/docs/storage/vercel-blob)
+- [Prisma Documentation](https://www.prisma.io/docs)
 - [Tailwind CSS Documentation](https://tailwindcss.com/docs)
 - [TypeScript Documentation](https://www.typescriptlang.org/docs/)
