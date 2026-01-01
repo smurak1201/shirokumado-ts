@@ -2,11 +2,14 @@ import { withErrorHandling, apiSuccess } from '@/lib/api-helpers';
 import { safePrismaOperation } from '@/lib/prisma';
 import { prisma } from '@/lib/prisma';
 import { ValidationError } from '@/lib/errors';
-import { NextRequest } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 
 /**
  * 商品一覧を取得
+ * キャッシュ: 60秒
  */
+export const dynamic = 'force-dynamic'; // 動的レンダリング（キャッシュはクライアント側で制御）
+
 export const GET = withErrorHandling(async () => {
   const products = await safePrismaOperation(
     () =>
@@ -22,7 +25,10 @@ export const GET = withErrorHandling(async () => {
     'GET /api/products'
   );
 
-  return apiSuccess({ products });
+  const response = NextResponse.json({ products }, { status: 200 });
+  // キャッシュヘッダーを設定（60秒）
+  response.headers.set('Cache-Control', 'public, s-maxage=60, stale-while-revalidate=120');
+  return response;
 });
 
 /**
