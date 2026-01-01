@@ -118,8 +118,21 @@ export default function ProductEditForm({
           });
 
           if (!uploadResponse.ok) {
-            const error = await uploadResponse.json();
-            throw new Error(error.error || "画像のアップロードに失敗しました");
+            let errorMessage = "画像のアップロードに失敗しました";
+            try {
+              const contentType = uploadResponse.headers.get("content-type");
+              if (contentType && contentType.includes("application/json")) {
+                const error = await uploadResponse.json();
+                errorMessage = error.error || errorMessage;
+              } else {
+                const text = await uploadResponse.text();
+                errorMessage = text || errorMessage;
+              }
+            } catch (parseError) {
+              // JSONパースエラーの場合はデフォルトメッセージを使用
+              errorMessage = `画像のアップロードに失敗しました (${uploadResponse.status})`;
+            }
+            throw new Error(errorMessage);
           }
 
           const uploadData = await uploadResponse.json();
