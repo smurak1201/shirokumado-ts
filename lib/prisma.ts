@@ -45,7 +45,12 @@ const createPrismaClient = (): PrismaClient => {
   try {
     // Poolのコンストラクタに接続文字列を設定オブジェクトとして渡す
     // Vercelの本番環境では、接続文字列が正しく処理されるように明示的に設定
-    const pool = new Pool({ connectionString });
+    // connectionStringを確実に文字列として扱うため、新しい変数に代入
+    const poolConfig: { connectionString: string } = {
+      connectionString: connectionString,
+    };
+
+    const pool = new Pool(poolConfig);
     const adapter = new PrismaNeon(pool as any);
 
     return new PrismaClient({
@@ -59,6 +64,7 @@ const createPrismaClient = (): PrismaClient => {
     console.error('Failed to create Prisma Client:', error);
     console.error('Connection string type:', typeof connectionString);
     console.error('Connection string length:', connectionString.length);
+    console.error('Connection string preview:', connectionString.substring(0, 20) + '...');
     throw error;
   }
 };
