@@ -1,6 +1,5 @@
 import { prisma } from "@/lib/prisma";
-import DashboardFormWrapper from "./components/DashboardFormWrapper";
-import ProductList from "./components/ProductList";
+import DashboardContent from "./components/DashboardContent";
 
 // 動的レンダリングを強制（データベース接続が必要なため）
 export const dynamic = "force-dynamic";
@@ -50,11 +49,10 @@ export default async function DashboardPage() {
       <div className="mx-auto max-w-4xl px-4">
         <h1 className="mb-8 text-3xl font-bold">商品管理ダッシュボード</h1>
 
-        <DashboardFormWrapper categories={categories} tags={tags} />
-        <ProductList
-          initialProducts={products}
+        <DashboardContent
           categories={categories}
           tags={tags}
+          initialProducts={products}
         />
       </div>
     </div>

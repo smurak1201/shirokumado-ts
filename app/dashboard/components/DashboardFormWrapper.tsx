@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 import DashboardForm from "./DashboardForm";
 
 interface Category {
@@ -17,19 +16,22 @@ interface Tag {
 interface DashboardFormWrapperProps {
   categories: Category[];
   tags: Tag[];
+  onProductCreated?: () => void;
 }
 
 export default function DashboardFormWrapper({
   categories,
   tags,
+  onProductCreated,
 }: DashboardFormWrapperProps) {
-  const router = useRouter();
   const [isFormOpen, setIsFormOpen] = useState(false);
 
   const handleProductCreated = () => {
-    // ページをリフレッシュして最新のデータを取得
-    router.refresh();
     setIsFormOpen(false);
+    // 親コンポーネントに通知
+    if (onProductCreated) {
+      onProductCreated();
+    }
   };
 
   return (
