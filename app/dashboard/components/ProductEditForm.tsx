@@ -32,7 +32,7 @@ interface ProductEditFormProps {
   categories: Category[];
   tags: Tag[];
   onClose: () => void;
-  onUpdated: () => void;
+  onUpdated: () => Promise<void>;
 }
 
 export default function ProductEditForm({
@@ -172,7 +172,8 @@ export default function ProductEditForm({
         URL.revokeObjectURL(imagePreview);
       }
 
-      onUpdated();
+      // 一覧の更新を待ってからフォームを閉じる
+      await onUpdated();
       onClose();
     } catch (error) {
       console.error("更新エラー:", error);

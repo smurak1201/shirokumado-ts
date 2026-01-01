@@ -88,8 +88,10 @@ const ProductList = forwardRef<ProductListRef, ProductListProps>(
       }
     };
 
-    const handleUpdated = () => {
-      refreshProducts();
+    const handleUpdated = async () => {
+      await refreshProducts();
+      // 編集フォームを閉じる（更新後に最新データが反映される）
+      setEditingProduct(null);
     };
 
     return (

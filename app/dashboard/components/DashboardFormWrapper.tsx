@@ -16,7 +16,7 @@ interface Tag {
 interface DashboardFormWrapperProps {
   categories: Category[];
   tags: Tag[];
-  onProductCreated?: () => void;
+  onProductCreated?: () => Promise<void>;
 }
 
 export default function DashboardFormWrapper({
@@ -26,12 +26,12 @@ export default function DashboardFormWrapper({
 }: DashboardFormWrapperProps) {
   const [isFormOpen, setIsFormOpen] = useState(false);
 
-  const handleProductCreated = () => {
-    setIsFormOpen(false);
-    // 親コンポーネントに通知
+  const handleProductCreated = async () => {
+    // 親コンポーネントに通知（一覧の更新を待つ）
     if (onProductCreated) {
-      onProductCreated();
+      await onProductCreated();
     }
+    setIsFormOpen(false);
   };
 
   return (

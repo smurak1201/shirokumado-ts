@@ -41,9 +41,9 @@ export default function DashboardContent({
 }: DashboardContentProps) {
   const productListRef = useRef<{ refreshProducts: () => Promise<void> }>(null);
 
-  const handleProductCreated = () => {
+  const handleProductCreated = async () => {
     // 商品一覧を更新
-    productListRef.current?.refreshProducts();
+    await productListRef.current?.refreshProducts();
   };
 
   return (

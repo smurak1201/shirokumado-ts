@@ -16,7 +16,7 @@ interface Tag {
 interface DashboardFormProps {
   categories: Category[];
   tags: Tag[];
-  onProductCreated?: () => void;
+  onProductCreated?: () => Promise<void>;
   onClose?: () => void;
   isOpen: boolean;
 }
@@ -167,9 +167,9 @@ export default function DashboardForm({
       });
       setImagePreview(null);
 
-      // 親コンポーネントに通知
+      // 親コンポーネントに通知（一覧の更新を待つ）
       if (onProductCreated) {
-        onProductCreated();
+        await onProductCreated();
       }
 
       // モーダルを閉じる
