@@ -104,11 +104,11 @@ const ProductList = forwardRef<ProductListRef, ProductListProps>(
           {products.length === 0 ? (
             <p className="text-gray-500">登録されている商品はありません</p>
           ) : (
-            <div className="grid grid-cols-3 gap-2 sm:gap-3 md:gap-4">
+            <div className="grid grid-cols-3 gap-1 sm:gap-2 md:gap-4">
               {products.map((product) => (
                 <div
                   key={product.id}
-                  className={`flex flex-col rounded-lg border border-gray-200 p-2 sm:p-3 md:p-4 ${
+                  className={`flex flex-col rounded-lg border border-gray-200 p-1 sm:p-2 md:p-4 ${
                     !product.published ? "bg-gray-50" : "bg-white"
                   }`}
                 >
@@ -117,24 +117,24 @@ const ProductList = forwardRef<ProductListRef, ProductListProps>(
                     <img
                       src={product.imageUrl}
                       alt={product.name}
-                      className={`h-32 w-full rounded object-cover sm:h-40 md:h-48 ${
+                      className={`h-20 w-full rounded object-cover sm:h-32 md:h-48 ${
                         !product.published ? "opacity-50" : ""
                       }`}
                       loading="lazy"
                     />
                   ) : (
                     <div
-                      className={`h-32 w-full rounded bg-gray-200 sm:h-40 md:h-48 ${
+                      className={`h-20 w-full rounded bg-gray-200 sm:h-32 md:h-48 ${
                         !product.published ? "opacity-50" : ""
                       }`}
                     />
                   )}
 
                   {/* 商品情報 */}
-                  <div className="mt-2 flex flex-1 flex-col sm:mt-3 md:mt-4">
+                  <div className="mt-1 flex flex-1 flex-col sm:mt-2 md:mt-4">
                     {/* 商品名 */}
                     <h3
-                      className={`mb-2 whitespace-pre-wrap text-center text-sm font-semibold leading-tight md:text-lg ${
+                      className={`mb-1 whitespace-pre-wrap text-center text-[10px] font-semibold leading-tight sm:mb-2 sm:text-xs md:text-lg ${
                         !product.published ? "text-gray-500" : ""
                       }`}
                     >
@@ -142,9 +142,9 @@ const ProductList = forwardRef<ProductListRef, ProductListProps>(
                     </h3>
 
                     {/* 公開状態・カテゴリ・タグ */}
-                    <div className="mb-2 flex flex-wrap gap-2">
+                    <div className="mb-1 flex flex-wrap gap-0.5 sm:mb-2 sm:gap-1 md:gap-2">
                       <span
-                        className={`rounded-full px-2 py-1 text-xs font-medium ${
+                        className={`rounded-full px-1 py-0.5 text-[8px] font-medium sm:px-1.5 sm:py-0.5 sm:text-[10px] md:px-2 md:py-1 md:text-xs ${
                           product.published
                             ? "bg-green-100 text-green-800"
                             : "bg-gray-100 text-gray-600"
@@ -153,7 +153,7 @@ const ProductList = forwardRef<ProductListRef, ProductListProps>(
                         {product.published ? "公開" : "非公開"}
                       </span>
                       <span
-                        className={`rounded-full px-2 py-1 text-xs ${
+                        className={`rounded-full px-1 py-0.5 text-[8px] sm:px-1.5 sm:py-0.5 sm:text-[10px] md:px-2 md:py-1 md:text-xs ${
                           !product.published
                             ? "bg-gray-200 text-gray-500"
                             : "bg-blue-100 text-blue-800"
@@ -164,7 +164,7 @@ const ProductList = forwardRef<ProductListRef, ProductListProps>(
                       {product.tags.map((tag) => (
                         <span
                           key={tag.id}
-                          className={`rounded-full px-2 py-1 text-xs ${
+                          className={`rounded-full px-1 py-0.5 text-[8px] sm:px-1.5 sm:py-0.5 sm:text-[10px] md:px-2 md:py-1 md:text-xs ${
                             !product.published
                               ? "bg-gray-200 text-gray-500"
                               : "bg-gray-100 text-gray-800"
@@ -177,7 +177,7 @@ const ProductList = forwardRef<ProductListRef, ProductListProps>(
 
                     {/* 価格 */}
                     <div
-                      className={`mb-4 text-xs md:text-sm ${
+                      className={`mb-1 text-[8px] sm:mb-2 sm:text-[10px] md:mb-4 md:text-sm ${
                         !product.published ? "text-gray-400" : "text-gray-500"
                       }`}
                     >
@@ -185,7 +185,7 @@ const ProductList = forwardRef<ProductListRef, ProductListProps>(
                         <span>S: ¥{product.priceS.toLocaleString()}</span>
                       )}
                       {product.priceS && product.priceL && (
-                        <span className="mx-2">/</span>
+                        <span className="mx-0.5 sm:mx-1 md:mx-2">/</span>
                       )}
                       {product.priceL && (
                         <span>L: ¥{product.priceL.toLocaleString()}</span>
@@ -193,16 +193,16 @@ const ProductList = forwardRef<ProductListRef, ProductListProps>(
                     </div>
 
                     {/* ボタン */}
-                    <div className="mt-auto flex gap-2">
+                    <div className="mt-auto flex gap-0.5 sm:gap-1 md:gap-2">
                       <button
                         onClick={() => handleEdit(product)}
-                        className="flex-1 rounded-md bg-blue-600 px-2 py-1.5 text-xs font-medium text-white hover:bg-blue-700 md:px-3 md:py-2 md:text-sm"
+                        className="flex-1 rounded-md bg-blue-600 px-0.5 py-0.5 text-[8px] font-medium text-white hover:bg-blue-700 sm:px-1 sm:py-1 sm:text-[10px] md:px-3 md:py-2 md:text-sm"
                       >
                         編集
                       </button>
                       <button
                         onClick={() => handleDelete(product.id)}
-                        className="flex-1 rounded-md bg-red-600 px-2 py-1.5 text-xs font-medium text-white hover:bg-red-700 md:px-3 md:py-2 md:text-sm"
+                        className="flex-1 rounded-md bg-red-600 px-0.5 py-0.5 text-[8px] font-medium text-white hover:bg-red-700 sm:px-1 sm:py-1 sm:text-[10px] md:px-3 md:py-2 md:text-sm"
                       >
                         削除
                       </button>
