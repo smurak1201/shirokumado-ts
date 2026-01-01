@@ -6,13 +6,8 @@ export const dynamic = "force-dynamic";
 
 // データをサーバーサイドで取得（Server Component）
 async function getDashboardData() {
-  const [categories, tags, products] = await Promise.all([
+  const [categories, products] = await Promise.all([
     prisma.category.findMany({
-      orderBy: {
-        name: "asc",
-      },
-    }),
-    prisma.tag.findMany({
       orderBy: {
         name: "asc",
       },
@@ -20,7 +15,6 @@ async function getDashboardData() {
     prisma.product.findMany({
       include: {
         category: true,
-        tags: true,
       },
       orderBy: {
         createdAt: "desc",
@@ -30,7 +24,6 @@ async function getDashboardData() {
 
   return {
     categories,
-    tags,
     products: products.map((product) => ({
       ...product,
       priceS: product.priceS ? Number(product.priceS) : null,
@@ -43,7 +36,7 @@ async function getDashboardData() {
 }
 
 export default async function DashboardPage() {
-  const { categories, tags, products } = await getDashboardData();
+  const { categories, products } = await getDashboardData();
 
   return (
     <div className="min-h-screen bg-gray-50 py-8">
@@ -52,7 +45,6 @@ export default async function DashboardPage() {
 
         <DashboardContent
           categories={categories}
-          tags={tags}
           initialProducts={products}
         />
       </div>

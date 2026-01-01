@@ -20,17 +20,6 @@ model Category {
   @@map("categories")
 }
 
-// タグテーブル
-model Tag {
-  id        Int       @id @default(autoincrement())
-  name      String    @unique
-  products  Product[]
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-
-  @@map("tags")
-}
-
 // 商品テーブル
 model Product {
   id          Int       @id @default(autoincrement())
@@ -44,7 +33,6 @@ model Product {
   published   Boolean   @default(true) // 公開情報（true: 公開、false: 非公開）
   publishedAt DateTime? @map("published_at") // 公開日
   endedAt     DateTime? @map("ended_at") // 終了日
-  tags        Tag[] // タグ（多対多）
   createdAt   DateTime  @default(now()) @map("created_at")
   updatedAt   DateTime  @updatedAt @map("updated_at")
 

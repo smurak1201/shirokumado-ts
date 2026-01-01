@@ -26,17 +26,6 @@ async function main() {
 
   console.log('カテゴリーを作成しました:', category1.name, category2.name);
 
-  // タグの作成
-  const tag1 = await prisma.tag.upsert({
-    where: { name: '限定商品' },
-    update: {},
-    create: {
-      name: '限定商品',
-    },
-  });
-
-  console.log('タグを作成しました:', tag1.name);
-
   console.log('シードデータの投入が完了しました！');
 }
 

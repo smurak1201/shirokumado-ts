@@ -9,11 +9,6 @@ interface Category {
   name: string;
 }
 
-interface Tag {
-  id: number;
-  name: string;
-}
-
 interface Product {
   id: number;
   name: string;
@@ -22,7 +17,6 @@ interface Product {
   priceS: number | null;
   priceL: number | null;
   category: Category;
-  tags: Tag[];
   published: boolean;
   publishedAt: string | null;
   endedAt: string | null;
@@ -31,7 +25,6 @@ interface Product {
 interface ProductEditFormProps {
   product: Product;
   categories: Category[];
-  tags: Tag[];
   onClose: () => void;
   onUpdated: () => Promise<void>;
 }
@@ -39,7 +32,6 @@ interface ProductEditFormProps {
 export default function ProductEditForm({
   product,
   categories,
-  tags,
   onClose,
   onUpdated,
 }: ProductEditFormProps) {
@@ -59,7 +51,6 @@ export default function ProductEditForm({
     priceS: product.priceS?.toString() || "",
     priceL: product.priceL?.toString() || "",
     categoryId: product.category.id.toString(),
-    tagIds: product.tags.map((tag) => tag.id),
     published: product.published ?? true,
     publishedAt: product.publishedAt
       ? new Date(product.publishedAt).toISOString().slice(0, 16)
@@ -190,7 +181,6 @@ export default function ProductEditForm({
           categoryId: parseInt(formData.categoryId),
           priceS: formData.priceS ? parseFloat(formData.priceS) : null,
           priceL: formData.priceL ? parseFloat(formData.priceL) : null,
-          tagIds: formData.tagIds.length > 0 ? formData.tagIds : [],
           published: formData.published,
           publishedAt: formData.publishedAt || null,
           endedAt: formData.endedAt || null,
@@ -221,16 +211,6 @@ export default function ProductEditForm({
       setSubmitting(false);
       setUploading(false);
     }
-  };
-
-  // タグの選択
-  const handleTagToggle = (tagId: number) => {
-    setFormData((prev) => ({
-      ...prev,
-      tagIds: prev.tagIds.includes(tagId)
-        ? prev.tagIds.filter((id) => id !== tagId)
-        : [...prev.tagIds, tagId],
-    }));
   };
 
   // 公開日・終了日の変更時に公開情報を自動計算
@@ -423,29 +403,6 @@ export default function ProductEditForm({
                 </option>
               ))}
             </select>
-          </div>
-
-          {/* タグ */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700">
-              タグ
-            </label>
-            <div className="mt-2 flex flex-wrap gap-2">
-              {tags.map((tag) => (
-                <label
-                  key={tag.id}
-                  className="flex cursor-pointer items-center rounded-full border border-gray-300 px-3 py-1 text-sm hover:bg-gray-50"
-                >
-                  <input
-                    type="checkbox"
-                    checked={formData.tagIds.includes(tag.id)}
-                    onChange={() => handleTagToggle(tag.id)}
-                    className="mr-2"
-                  />
-                  {tag.name}
-                </label>
-              ))}
-            </div>
           </div>
 
           {/* 公開情報 */}

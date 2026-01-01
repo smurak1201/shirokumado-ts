@@ -8,14 +8,8 @@ interface Category {
   name: string;
 }
 
-interface Tag {
-  id: number;
-  name: string;
-}
-
 interface DashboardFormWrapperProps {
   categories: Category[];
-  tags: Tag[];
   onProductCreated?: () => Promise<void>;
   isFormOpen?: boolean;
   onFormOpenChange?: (isOpen: boolean) => void;
@@ -23,7 +17,6 @@ interface DashboardFormWrapperProps {
 
 export default function DashboardFormWrapper({
   categories,
-  tags,
   onProductCreated,
   isFormOpen: externalIsFormOpen,
   onFormOpenChange,
@@ -46,7 +39,6 @@ export default function DashboardFormWrapper({
   return (
     <DashboardForm
       categories={categories}
-      tags={tags}
       onProductCreated={handleProductCreated}
       onClose={() => setIsFormOpen(false)}
       isOpen={isFormOpen}

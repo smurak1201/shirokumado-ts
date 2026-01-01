@@ -17,7 +17,6 @@ export const GET = withErrorHandling(async () => {
       prisma.product.findMany({
         include: {
           category: true,
-          tags: true,
         },
         orderBy: {
           createdAt: 'desc',
@@ -61,25 +60,6 @@ export const POST = withErrorHandling(async (request: NextRequest) => {
     throw new ValidationError('指定されたカテゴリーが存在しません');
   }
 
-  // タグの存在確認（指定されている場合）
-  if (body.tagIds && Array.isArray(body.tagIds) && body.tagIds.length > 0) {
-    const tags = await safePrismaOperation(
-      () =>
-        prisma.tag.findMany({
-          where: {
-            id: {
-              in: body.tagIds,
-            },
-          },
-        }),
-      'POST /api/products - tags check'
-    );
-
-    if (tags.length !== body.tagIds.length) {
-      throw new ValidationError('指定されたタグの一部が存在しません');
-    }
-  }
-
   // 公開日・終了日の処理
   const publishedAt = body.publishedAt ? new Date(body.publishedAt) : null;
   const endedAt = body.endedAt ? new Date(body.endedAt) : null;
@@ -109,15 +89,9 @@ export const POST = withErrorHandling(async (request: NextRequest) => {
           published,
           publishedAt,
           endedAt,
-          tags: body.tagIds
-            ? {
-              connect: body.tagIds.map((id: number) => ({ id })),
-            }
-            : undefined,
         },
         include: {
           category: true,
-          tags: true,
         },
       }),
     'POST /api/products'

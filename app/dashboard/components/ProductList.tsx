@@ -8,11 +8,6 @@ interface Category {
   name: string;
 }
 
-interface Tag {
-  id: number;
-  name: string;
-}
-
 interface Product {
   id: number;
   name: string;
@@ -21,7 +16,6 @@ interface Product {
   priceS: number | null;
   priceL: number | null;
   category: Category;
-  tags: Tag[];
   published: boolean;
   publishedAt: string | null;
   endedAt: string | null;
@@ -30,7 +24,6 @@ interface Product {
 interface ProductListProps {
   initialProducts: Product[];
   categories: Category[];
-  tags: Tag[];
   onNewProductClick?: () => void;
 }
 
@@ -39,7 +32,7 @@ export interface ProductListRef {
 }
 
 const ProductList = forwardRef<ProductListRef, ProductListProps>(
-  ({ initialProducts, categories, tags, onNewProductClick }, ref) => {
+  ({ initialProducts, categories, onNewProductClick }, ref) => {
     const [products, setProducts] = useState<Product[]>(initialProducts);
     const [editingProduct, setEditingProduct] = useState<Product | null>(null);
     const [activeTab, setActiveTab] = useState<"list" | "layout">("list");
@@ -52,7 +45,6 @@ const ProductList = forwardRef<ProductListRef, ProductListProps>(
     const [searchCategoryId, setSearchCategoryId] = useState<number | null>(
       null
     );
-    const [searchTagIds, setSearchTagIds] = useState<number[]>([]);
 
     const refreshProducts = async () => {
       try {
@@ -146,29 +138,9 @@ const ProductList = forwardRef<ProductListRef, ProductListProps>(
           return false;
         }
 
-        // タグでフィルタリング（選択されたタグのすべてが含まれている必要がある）
-        if (searchTagIds.length > 0) {
-          const productTagIds = product.tags.map((tag) => tag.id);
-          const hasAllTags = searchTagIds.every((tagId) =>
-            productTagIds.includes(tagId)
-          );
-          if (!hasAllTags) {
-            return false;
-          }
-        }
-
         return true;
       });
-    }, [products, searchName, searchPublished, searchCategoryId, searchTagIds]);
-
-    // タグの選択/解除
-    const handleTagToggle = (tagId: number) => {
-      setSearchTagIds((prev) =>
-        prev.includes(tagId)
-          ? prev.filter((id) => id !== tagId)
-          : [...prev, tagId]
-      );
-    };
+    }, [products, searchName, searchPublished, searchCategoryId]);
 
     return (
       <>
@@ -295,29 +267,6 @@ const ProductList = forwardRef<ProductListRef, ProductListProps>(
                       </div>
                     </div>
                   </div>
-
-                  {/* タグフィルター */}
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      タグ
-                    </label>
-                    <div className="flex flex-wrap gap-2">
-                      {tags.map((tag) => (
-                        <label
-                          key={tag.id}
-                          className="flex cursor-pointer items-center rounded-full border border-gray-300 px-3 py-1 text-sm hover:bg-gray-50"
-                        >
-                          <input
-                            type="checkbox"
-                            checked={searchTagIds.includes(tag.id)}
-                            onChange={() => handleTagToggle(tag.id)}
-                            className="mr-2"
-                          />
-                          {tag.name}
-                        </label>
-                      ))}
-                    </div>
-                  </div>
                 </div>
                 {filteredProducts.length === 0 ? (
                   <p className="text-gray-500">
@@ -383,18 +332,6 @@ const ProductList = forwardRef<ProductListRef, ProductListProps>(
                             >
                               {product.category.name}
                             </span>
-                            {product.tags.map((tag) => (
-                              <span
-                                key={tag.id}
-                                className={`rounded-full px-1 py-0.5 text-[8px] sm:px-1.5 sm:py-0.5 sm:text-[10px] md:px-2 md:py-1 md:text-xs ${
-                                  !product.published
-                                    ? "bg-gray-200 text-gray-500"
-                                    : "bg-gray-100 text-gray-800"
-                                }`}
-                              >
-                                {tag.name}
-                              </span>
-                            ))}
                           </div>
 
                           {/* 価格 */}
@@ -451,7 +388,6 @@ const ProductList = forwardRef<ProductListRef, ProductListProps>(
           <ProductEditForm
             product={editingProduct}
             categories={categories}
-            tags={tags}
             onClose={() => setEditingProduct(null)}
             onUpdated={handleUpdated}
           />

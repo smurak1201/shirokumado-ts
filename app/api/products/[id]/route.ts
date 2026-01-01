@@ -26,7 +26,6 @@ export const GET = withErrorHandling(async (
         where: { id: productId },
         include: {
           category: true,
-          tags: true,
         },
       }),
     `GET /api/products/${id}`
@@ -93,25 +92,6 @@ export const PUT = withErrorHandling(async (
     }
   }
 
-  // タグの存在確認（指定されている場合）
-  if (body.tagIds !== undefined && Array.isArray(body.tagIds) && body.tagIds.length > 0) {
-    const tags = await safePrismaOperation(
-      () =>
-        prisma.tag.findMany({
-          where: {
-            id: {
-              in: body.tagIds,
-            },
-          },
-        }),
-      `PUT /api/products/${id} - tags check`
-    );
-
-    if (tags.length !== body.tagIds.length) {
-      throw new ValidationError('指定されたタグの一部が存在しません');
-    }
-  }
-
   // 公開日・終了日の処理
   const publishedAt = body.publishedAt !== undefined
     ? (body.publishedAt ? new Date(body.publishedAt) : null)
@@ -158,13 +138,6 @@ export const PUT = withErrorHandling(async (
   if (body.publishedAt !== undefined) updateData.publishedAt = publishedAt;
   if (body.endedAt !== undefined) updateData.endedAt = endedAt;
 
-  // タグの更新
-  if (body.tagIds !== undefined) {
-    updateData.tags = {
-      set: body.tagIds.map((id: number) => ({ id })),
-    };
-  }
-
   const product = await safePrismaOperation(
     () =>
       prisma.product.update({
@@ -172,7 +145,6 @@ export const PUT = withErrorHandling(async (
         data: updateData,
         include: {
           category: true,
-          tags: true,
         },
       }),
     `PUT /api/products/${id}`

@@ -9,11 +9,6 @@ interface Category {
   name: string;
 }
 
-interface Tag {
-  id: number;
-  name: string;
-}
-
 interface Product {
   id: number;
   name: string;
@@ -22,7 +17,6 @@ interface Product {
   priceS: number | null;
   priceL: number | null;
   category: Category;
-  tags: Tag[];
   published: boolean;
   publishedAt: string | null;
   endedAt: string | null;
@@ -30,13 +24,11 @@ interface Product {
 
 interface DashboardContentProps {
   categories: Category[];
-  tags: Tag[];
   initialProducts: Product[];
 }
 
 export default function DashboardContent({
   categories,
-  tags,
   initialProducts,
 }: DashboardContentProps) {
   const productListRef = useRef<{ refreshProducts: () => Promise<void> }>(null);
@@ -52,7 +44,6 @@ export default function DashboardContent({
     <>
       <DashboardFormWrapper
         categories={categories}
-        tags={tags}
         onProductCreated={handleProductCreated}
         isFormOpen={isFormOpen}
         onFormOpenChange={setIsFormOpen}
@@ -61,7 +52,6 @@ export default function DashboardContent({
         ref={productListRef}
         initialProducts={initialProducts}
         categories={categories}
-        tags={tags}
         onNewProductClick={() => setIsFormOpen(true)}
       />
     </>
