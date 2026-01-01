@@ -265,68 +265,6 @@ const ProductList = forwardRef<ProductListRef, ProductListProps>(
               ))}
             </div>
           </div>
-
-          {/* 公開/非公開フィルター */}
-          <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              公開情報
-            </label>
-            <div className="flex items-center gap-4">
-              <label className="flex cursor-pointer items-center">
-                <input
-                  type="radio"
-                  name="search-published"
-                  checked={searchPublished === null}
-                  onChange={() => setSearchPublished(null)}
-                  className="mr-2"
-                />
-                <span>すべて</span>
-              </label>
-              <label className="flex cursor-pointer items-center">
-                <input
-                  type="radio"
-                  name="search-published"
-                  checked={searchPublished === true}
-                  onChange={() => setSearchPublished(true)}
-                  className="mr-2"
-                />
-                <span>公開</span>
-              </label>
-              <label className="flex cursor-pointer items-center">
-                <input
-                  type="radio"
-                  name="search-published"
-                  checked={searchPublished === false}
-                  onChange={() => setSearchPublished(false)}
-                  className="mr-2"
-                />
-                <span>非公開</span>
-              </label>
-            </div>
-          </div>
-
-          {/* タグフィルター */}
-          <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              タグ
-            </label>
-            <div className="flex flex-wrap gap-2">
-              {tags.map((tag) => (
-                <label
-                  key={tag.id}
-                  className="flex cursor-pointer items-center rounded-full border border-gray-300 px-3 py-1 text-sm hover:bg-gray-50"
-                >
-                  <input
-                    type="checkbox"
-                    checked={searchTagIds.includes(tag.id)}
-                    onChange={() => handleTagToggle(tag.id)}
-                    className="mr-2"
-                  />
-                  {tag.name}
-                </label>
-              ))}
-            </div>
-          </div>
           {filteredProducts.length === 0 ? (
             <p className="text-gray-500">
               {products.length === 0
