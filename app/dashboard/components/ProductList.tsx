@@ -174,7 +174,7 @@ const ProductList = forwardRef<ProductListRef, ProductListProps>(
       <>
         <div
           className="rounded-lg bg-white p-6 shadow"
-          style={{ scrollbarGutter: "stable" }}
+          style={{ overflowY: "scroll", scrollbarGutter: "stable" }}
         >
           {/* タブ */}
           <div className="mb-6 border-b border-gray-200">
