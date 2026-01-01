@@ -9,7 +9,7 @@ async function getDashboardData() {
   const [categories, products] = await Promise.all([
     prisma.category.findMany({
       orderBy: {
-        name: "asc",
+        id: "asc",
       },
     }),
     prisma.product.findMany({

@@ -14,7 +14,7 @@ export const GET = withErrorHandling(async () => {
     () =>
       prisma.category.findMany({
         orderBy: {
-          name: 'asc',
+          id: 'asc',
         },
       }),
     'GET /api/categories'
