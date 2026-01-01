@@ -134,7 +134,7 @@ const ProductList = forwardRef<ProductListRef, ProductListProps>(
                   <div className="mt-2 flex flex-1 flex-col sm:mt-3 md:mt-4">
                     {/* 商品名 */}
                     <h3
-                      className={`mb-1 whitespace-pre-wrap text-center text-xs font-semibold leading-tight sm:mb-2 sm:text-sm md:text-lg ${
+                      className={`mb-2 whitespace-pre-wrap text-center text-sm font-semibold leading-tight md:text-lg ${
                         !product.published ? "text-gray-500" : ""
                       }`}
                     >
@@ -142,9 +142,9 @@ const ProductList = forwardRef<ProductListRef, ProductListProps>(
                     </h3>
 
                     {/* 公開状態・カテゴリ・タグ */}
-                    <div className="mb-1 flex flex-wrap gap-1 sm:mb-2 sm:gap-2">
+                    <div className="mb-2 flex flex-wrap gap-2">
                       <span
-                        className={`rounded-full px-1 py-0.5 text-[10px] font-medium sm:px-2 sm:py-1 sm:text-xs ${
+                        className={`rounded-full px-2 py-1 text-xs font-medium ${
                           product.published
                             ? "bg-green-100 text-green-800"
                             : "bg-gray-100 text-gray-600"
@@ -153,7 +153,7 @@ const ProductList = forwardRef<ProductListRef, ProductListProps>(
                         {product.published ? "公開" : "非公開"}
                       </span>
                       <span
-                        className={`rounded-full px-1 py-0.5 text-[10px] sm:px-2 sm:py-1 sm:text-xs ${
+                        className={`rounded-full px-2 py-1 text-xs ${
                           !product.published
                             ? "bg-gray-200 text-gray-500"
                             : "bg-blue-100 text-blue-800"
@@ -164,7 +164,7 @@ const ProductList = forwardRef<ProductListRef, ProductListProps>(
                       {product.tags.map((tag) => (
                         <span
                           key={tag.id}
-                          className={`rounded-full px-1 py-0.5 text-[10px] sm:px-2 sm:py-1 sm:text-xs ${
+                          className={`rounded-full px-2 py-1 text-xs ${
                             !product.published
                               ? "bg-gray-200 text-gray-500"
                               : "bg-gray-100 text-gray-800"
@@ -177,7 +177,7 @@ const ProductList = forwardRef<ProductListRef, ProductListProps>(
 
                     {/* 価格 */}
                     <div
-                      className={`mb-2 text-[10px] sm:mb-3 sm:text-xs md:mb-4 md:text-sm ${
+                      className={`mb-4 text-xs md:text-sm ${
                         !product.published ? "text-gray-400" : "text-gray-500"
                       }`}
                     >
@@ -185,7 +185,7 @@ const ProductList = forwardRef<ProductListRef, ProductListProps>(
                         <span>S: ¥{product.priceS.toLocaleString()}</span>
                       )}
                       {product.priceS && product.priceL && (
-                        <span className="mx-1 sm:mx-2">/</span>
+                        <span className="mx-2">/</span>
                       )}
                       {product.priceL && (
                         <span>L: ¥{product.priceL.toLocaleString()}</span>
@@ -193,16 +193,16 @@ const ProductList = forwardRef<ProductListRef, ProductListProps>(
                     </div>
 
                     {/* ボタン */}
-                    <div className="mt-auto flex gap-1 sm:gap-2">
+                    <div className="mt-auto flex gap-2">
                       <button
                         onClick={() => handleEdit(product)}
-                        className="flex-1 rounded-md bg-blue-600 px-1 py-1 text-[10px] font-medium text-white hover:bg-blue-700 sm:px-2 sm:py-1.5 sm:text-xs md:px-3 md:py-2 md:text-sm"
+                        className="flex-1 rounded-md bg-blue-600 px-2 py-1.5 text-xs font-medium text-white hover:bg-blue-700 md:px-3 md:py-2 md:text-sm"
                       >
                         編集
                       </button>
                       <button
                         onClick={() => handleDelete(product.id)}
-                        className="flex-1 rounded-md bg-red-600 px-1 py-1 text-[10px] font-medium text-white hover:bg-red-700 sm:px-2 sm:py-1.5 sm:text-xs md:px-3 md:py-2 md:text-sm"
+                        className="flex-1 rounded-md bg-red-600 px-2 py-1.5 text-xs font-medium text-white hover:bg-red-700 md:px-3 md:py-2 md:text-sm"
                       >
                         削除
                       </button>
