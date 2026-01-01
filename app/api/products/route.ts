@@ -3,6 +3,7 @@ import { safePrismaOperation } from '@/lib/prisma';
 import { prisma } from '@/lib/prisma';
 import { ValidationError } from '@/lib/errors';
 import { NextRequest, NextResponse } from 'next/server';
+import { calculatePublishedStatus } from '@/lib/product-utils';
 
 /**
  * 商品一覧を取得
@@ -79,6 +80,21 @@ export const POST = withErrorHandling(async (request: NextRequest) => {
     }
   }
 
+  // 公開日・終了日の処理
+  const publishedAt = body.publishedAt ? new Date(body.publishedAt) : null;
+  const endedAt = body.endedAt ? new Date(body.endedAt) : null;
+
+  // 公開情報の自動判定
+  // 公開日・終了日が設定されている場合は自動判定、そうでない場合は手動設定値を使用
+  let published: boolean;
+  if (publishedAt || endedAt) {
+    // 公開日・終了日が設定されている場合は自動判定
+    published = calculatePublishedStatus(publishedAt, endedAt);
+  } else {
+    // 公開日・終了日が設定されていない場合は手動設定値（デフォルトはtrue）
+    published = body.published !== undefined ? body.published : true;
+  }
+
   // 商品を作成
   const product = await safePrismaOperation(
     () =>
@@ -90,8 +106,9 @@ export const POST = withErrorHandling(async (request: NextRequest) => {
           priceS: body.priceS ? parseFloat(body.priceS) : null,
           priceL: body.priceL ? parseFloat(body.priceL) : null,
           categoryId: body.categoryId,
-          publishedAt: body.publishedAt ? new Date(body.publishedAt) : null,
-          endedAt: body.endedAt ? new Date(body.endedAt) : null,
+          published,
+          publishedAt,
+          endedAt,
           tags: body.tagIds
             ? {
               connect: body.tagIds.map((id: number) => ({ id })),

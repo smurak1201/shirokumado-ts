@@ -41,6 +41,7 @@ model Product {
   priceL      Decimal?  @map("price_l") @db.Decimal(10, 2) // Lサイズの料金
   categoryId  Int       @map("category_id") // カテゴリー（必須）
   category    Category  @relation(fields: [categoryId], references: [id])
+  published   Boolean   @default(true) // 公開情報（true: 公開、false: 非公開）
   publishedAt DateTime? @map("published_at") // 公開日
   endedAt     DateTime? @map("ended_at") // 終了日
   tags        Tag[] // タグ（多対多）

@@ -37,6 +37,7 @@ async function getDashboardData() {
       priceL: product.priceL ? Number(product.priceL) : null,
       publishedAt: product.publishedAt?.toISOString() || null,
       endedAt: product.endedAt?.toISOString() || null,
+      published: product.published,
     })),
   };
 }

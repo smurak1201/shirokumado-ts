@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { calculatePublishedStatus, hasDateRange } from "@/lib/product-utils";
 
 interface Category {
   id: number;
@@ -21,6 +22,7 @@ interface Product {
   priceL: number | null;
   category: Category;
   tags: Tag[];
+  published: boolean;
   publishedAt: string | null;
   endedAt: string | null;
 }
@@ -56,6 +58,7 @@ export default function ProductEditForm({
     priceL: product.priceL?.toString() || "",
     categoryId: product.category.id.toString(),
     tagIds: product.tags.map((tag) => tag.id),
+    published: product.published ?? true,
     publishedAt: product.publishedAt
       ? new Date(product.publishedAt).toISOString().slice(0, 16)
       : "",
@@ -150,6 +153,7 @@ export default function ProductEditForm({
           priceS: formData.priceS ? parseFloat(formData.priceS) : null,
           priceL: formData.priceL ? parseFloat(formData.priceL) : null,
           tagIds: formData.tagIds.length > 0 ? formData.tagIds : [],
+          published: formData.published,
           publishedAt: formData.publishedAt || null,
           endedAt: formData.endedAt || null,
         }),
@@ -190,6 +194,27 @@ export default function ProductEditForm({
         : [...prev.tagIds, tagId],
     }));
   };
+
+  // 公開日・終了日の変更時に公開情報を自動計算
+  useEffect(() => {
+    if (formData.publishedAt || formData.endedAt) {
+      const publishedAt = formData.publishedAt
+        ? new Date(formData.publishedAt)
+        : null;
+      const endedAt = formData.endedAt ? new Date(formData.endedAt) : null;
+      const calculatedPublished = calculatePublishedStatus(
+        publishedAt,
+        endedAt
+      );
+      setFormData((prev) => ({ ...prev, published: calculatedPublished }));
+    }
+  }, [formData.publishedAt, formData.endedAt]);
+
+  // 公開日・終了日が設定されているかどうか
+  const hasDateRangeValue = hasDateRange(
+    formData.publishedAt ? new Date(formData.publishedAt) : null,
+    formData.endedAt ? new Date(formData.endedAt) : null
+  );
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-white/80 backdrop-blur-sm">
@@ -372,6 +397,50 @@ export default function ProductEditForm({
                 </label>
               ))}
             </div>
+          </div>
+
+          {/* 公開情報 */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700">
+              公開情報
+            </label>
+            <div className="mt-2 flex items-center gap-4">
+              <label className="flex cursor-pointer items-center">
+                <input
+                  type="radio"
+                  name="edit-published"
+                  checked={formData.published === true}
+                  onChange={() =>
+                    setFormData((prev) => ({ ...prev, published: true }))
+                  }
+                  disabled={hasDateRangeValue}
+                  className="mr-2"
+                />
+                <span className={hasDateRangeValue ? "text-gray-400" : ""}>
+                  公開
+                </span>
+              </label>
+              <label className="flex cursor-pointer items-center">
+                <input
+                  type="radio"
+                  name="edit-published"
+                  checked={formData.published === false}
+                  onChange={() =>
+                    setFormData((prev) => ({ ...prev, published: false }))
+                  }
+                  disabled={hasDateRangeValue}
+                  className="mr-2"
+                />
+                <span className={hasDateRangeValue ? "text-gray-400" : ""}>
+                  非公開
+                </span>
+              </label>
+            </div>
+            {hasDateRangeValue && (
+              <p className="mt-1 text-xs text-gray-500">
+                公開日・終了日が設定されているため、公開情報は自動的に判定されます
+              </p>
+            )}
           </div>
 
           {/* 公開日・終了日 */}

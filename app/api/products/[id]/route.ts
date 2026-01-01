@@ -3,6 +3,7 @@ import { safePrismaOperation } from '@/lib/prisma';
 import { prisma } from '@/lib/prisma';
 import { ValidationError, NotFoundError } from '@/lib/errors';
 import { NextRequest } from 'next/server';
+import { calculatePublishedStatus } from '@/lib/product-utils';
 
 /**
  * 商品を取得
@@ -110,6 +111,25 @@ export const PUT = withErrorHandling(async (
     }
   }
 
+  // 公開日・終了日の処理
+  const publishedAt = body.publishedAt !== undefined
+    ? (body.publishedAt ? new Date(body.publishedAt) : null)
+    : existingProduct.publishedAt;
+  const endedAt = body.endedAt !== undefined
+    ? (body.endedAt ? new Date(body.endedAt) : null)
+    : existingProduct.endedAt;
+
+  // 公開情報の自動判定
+  // 公開日・終了日が設定されている場合は自動判定、そうでない場合は手動設定値を使用
+  let published: boolean;
+  if (publishedAt || endedAt) {
+    // 公開日・終了日が設定されている場合は自動判定
+    published = calculatePublishedStatus(publishedAt, endedAt);
+  } else {
+    // 公開日・終了日が設定されていない場合は手動設定値（変更がない場合は既存値）
+    published = body.published !== undefined ? body.published : existingProduct.published;
+  }
+
   // 商品を更新
   const updateData: any = {};
   if (body.name !== undefined) updateData.name = body.name.trim();
@@ -118,8 +138,9 @@ export const PUT = withErrorHandling(async (
   if (body.priceS !== undefined) updateData.priceS = body.priceS ? parseFloat(body.priceS) : null;
   if (body.priceL !== undefined) updateData.priceL = body.priceL ? parseFloat(body.priceL) : null;
   if (body.categoryId !== undefined) updateData.categoryId = body.categoryId;
-  if (body.publishedAt !== undefined) updateData.publishedAt = body.publishedAt ? new Date(body.publishedAt) : null;
-  if (body.endedAt !== undefined) updateData.endedAt = body.endedAt ? new Date(body.endedAt) : null;
+  updateData.published = published;
+  if (body.publishedAt !== undefined) updateData.publishedAt = publishedAt;
+  if (body.endedAt !== undefined) updateData.endedAt = endedAt;
 
   // タグの更新
   if (body.tagIds !== undefined) {

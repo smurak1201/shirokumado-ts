@@ -23,6 +23,7 @@ interface Product {
   priceL: number | null;
   category: Category;
   tags: Tag[];
+  published: boolean;
   publishedAt: string | null;
   endedAt: string | null;
 }
