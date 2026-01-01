@@ -184,7 +184,7 @@ const ProductList = forwardRef<ProductListRef, ProductListProps>(
                 placeholder="商品名で検索..."
                 value={searchName}
                 onChange={(e) => setSearchName(e.target.value)}
-                className="w-full max-w-md rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"
+                className="w-full max-w-[224px] rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"
               />
             </div>
 
@@ -200,7 +200,7 @@ const ProductList = forwardRef<ProductListRef, ProductListProps>(
                     e.target.value ? parseInt(e.target.value) : null
                   )
                 }
-                className="w-full max-w-md rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"
+                className="w-full max-w-[224px] rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"
               >
                 <option value="">すべてのカテゴリー</option>
                 {categories.map((category) => (
