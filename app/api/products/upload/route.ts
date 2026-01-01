@@ -5,6 +5,9 @@ import { NextRequest } from 'next/server';
 
 /**
  * 画像をアップロード
+ *
+ * 注意: Vercelの関数ペイロードサイズ制限（約4.5MB）に合わせて、
+ * ファイルサイズは4MB以下に制限しています。
  */
 export const POST = withErrorHandling(async (request: NextRequest) => {
   const formData = await request.formData();
@@ -19,10 +22,10 @@ export const POST = withErrorHandling(async (request: NextRequest) => {
     throw new ValidationError('画像ファイルのみアップロード可能です');
   }
 
-  // ファイルサイズの検証（5MB制限）
-  const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
+  // ファイルサイズの検証（4MB制限 - Vercelの関数ペイロードサイズ制限に合わせる）
+  const MAX_FILE_SIZE = 4 * 1024 * 1024; // 4MB
   if (file.size > MAX_FILE_SIZE) {
-    throw new ValidationError('ファイルサイズは5MB以下である必要があります');
+    throw new ValidationError('ファイルサイズは4MB以下である必要があります');
   }
 
   // ファイル名を生成（タイムスタンプ + 元のファイル名）
