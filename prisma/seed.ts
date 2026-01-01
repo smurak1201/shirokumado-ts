@@ -1,4 +1,13 @@
 import { PrismaClient } from '@prisma/client';
+import * as dotenv from 'dotenv';
+
+// 環境変数を読み込む（Prisma Clientの初期化前に実行）
+dotenv.config();
+
+// DATABASE_URLが設定されているか確認
+if (!process.env.DATABASE_URL) {
+  throw new Error('DATABASE_URL environment variable is not set');
+}
 
 const prisma = new PrismaClient();
 
