@@ -93,8 +93,9 @@ export async function compressImage(
 
                 const sizeMB = blob.size / (1024 * 1024);
                 // 目標サイズより大きい場合、品質を下げて再試行
-                if (sizeMB > maxSizeMB && q > 0.5) {
-                  resolveCompress(compressWithQuality(q - 0.1));
+                // 最小品質は0.3まで下げる（0.5では不十分な場合があるため）
+                if (sizeMB > maxSizeMB && q > 0.3) {
+                  resolveCompress(compressWithQuality(Math.max(q - 0.1, 0.3)));
                 } else {
                   const compressedFile = new File(
                     [blob],
@@ -138,6 +139,17 @@ export async function compressImage(
  * @returns 圧縮が必要な場合true
  */
 export function needsCompression(file: File, maxSizeMB: number = 3.5): boolean {
+  const sizeMB = file.size / (1024 * 1024);
+  return sizeMB > maxSizeMB;
+}
+
+/**
+ * 画像ファイルが大きすぎるかどうかを判定します（圧縮を強制する閾値）
+ * @param file 画像ファイル
+ * @param maxSizeMB 最大ファイルサイズ（MB）
+ * @returns 大きすぎる場合true
+ */
+export function isTooLarge(file: File, maxSizeMB: number = 4): boolean {
   const sizeMB = file.size / (1024 * 1024);
   return sizeMB > maxSizeMB;
 }

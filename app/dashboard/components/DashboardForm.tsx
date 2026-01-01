@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { calculatePublishedStatus, hasDateRange } from "@/lib/product-utils";
-import { compressImage, needsCompression } from "@/lib/image-compression";
+import { compressImage } from "@/lib/image-compression";
 
 interface Category {
   id: number;
@@ -64,23 +64,34 @@ export default function DashboardForm({
       return;
     }
 
-    // 大きな画像の場合は自動的に圧縮
+    // すべての画像を圧縮（ファイルサイズを確実に小さくするため）
     let processedFile = file;
-    if (needsCompression(file)) {
-      setCompressing(true);
-      try {
-        processedFile = await compressImage(file);
-        console.log(
-          `画像を圧縮しました: ${(file.size / 1024 / 1024).toFixed(2)}MB → ${(processedFile.size / 1024 / 1024).toFixed(2)}MB`
+    setCompressing(true);
+    try {
+      processedFile = await compressImage(file, {
+        maxSizeMB: 3.5, // 目標サイズを3.5MBに設定
+      });
+      const originalSizeMB = (file.size / 1024 / 1024).toFixed(2);
+      const compressedSizeMB = (processedFile.size / 1024 / 1024).toFixed(2);
+      console.log(
+        `画像を圧縮しました: ${originalSizeMB}MB → ${compressedSizeMB}MB`
+      );
+
+      // 圧縮後も4MBを超える場合は警告
+      if (processedFile.size > 4 * 1024 * 1024) {
+        alert(
+          `画像が大きすぎます（${compressedSizeMB}MB）。別の画像を選択するか、画像を小さくしてから再度お試しください。`
         );
-      } catch (error) {
-        console.error("画像の圧縮に失敗しました:", error);
-        alert("画像の圧縮に失敗しました。別の画像を選択してください。");
         setCompressing(false);
         return;
-      } finally {
-        setCompressing(false);
       }
+    } catch (error) {
+      console.error("画像の圧縮に失敗しました:", error);
+      alert("画像の圧縮に失敗しました。別の画像を選択してください。");
+      setCompressing(false);
+      return;
+    } finally {
+      setCompressing(false);
     }
 
     setFormData((prev) => ({ ...prev, imageFile: processedFile }));
