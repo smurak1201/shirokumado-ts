@@ -44,8 +44,12 @@ const ProductList = forwardRef<ProductListRef, ProductListProps>(
 
     const refreshProducts = async () => {
       try {
-        const response = await fetch("/api/products", {
-          cache: "no-store", // キャッシュを無効化
+        // キャッシュを完全に無効化するためにタイムスタンプを追加
+        const response = await fetch(`/api/products?t=${Date.now()}`, {
+          cache: "no-store",
+          headers: {
+            "Cache-Control": "no-cache",
+          },
         });
         const data = await response.json();
         setProducts(data.products || []);
@@ -90,8 +94,7 @@ const ProductList = forwardRef<ProductListRef, ProductListProps>(
 
     const handleUpdated = async () => {
       await refreshProducts();
-      // 編集フォームを閉じる（更新後に最新データが反映される）
-      setEditingProduct(null);
+      // 編集フォームはProductEditFormのonCloseで閉じられるため、ここでは閉じない
     };
 
     return (
