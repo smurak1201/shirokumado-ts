@@ -33,7 +33,13 @@ const createPrismaClient = (): PrismaClient => {
     throw new Error('DATABASE_URL or POSTGRES_URL environment variable is not set');
   }
 
-  const pool = new Pool({ connectionString });
+  // 接続文字列が文字列であることを確認
+  if (typeof connectionString !== 'string') {
+    throw new Error('DATABASE_URL must be a string');
+  }
+
+  // Poolのコンストラクタに接続文字列を設定オブジェクトとして渡す
+  const pool = new Pool({ connectionString: String(connectionString) });
   const adapter = new PrismaNeon(pool as any);
 
   return new PrismaClient({
