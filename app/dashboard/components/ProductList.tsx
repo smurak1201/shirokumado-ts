@@ -132,17 +132,19 @@ const ProductList = forwardRef<ProductListRef, ProductListProps>(
 
                   {/* 商品情報 */}
                   <div className="mt-2 flex flex-1 flex-col sm:mt-3 md:mt-4">
-                    {/* 商品名と公開状態 */}
-                    <div className="mb-1 flex items-start gap-1 sm:mb-2 sm:gap-2">
-                      <h3
-                        className={`flex-1 whitespace-pre-wrap text-xs font-semibold leading-tight sm:text-sm md:text-lg ${
-                          !product.published ? "text-gray-500" : ""
-                        }`}
-                      >
-                        {product.name}
-                      </h3>
+                    {/* 商品名 */}
+                    <h3
+                      className={`mb-1 whitespace-pre-wrap text-center text-xs font-semibold leading-tight sm:mb-2 sm:text-sm md:text-lg ${
+                        !product.published ? "text-gray-500" : ""
+                      }`}
+                    >
+                      {product.name}
+                    </h3>
+
+                    {/* 公開状態・カテゴリ・タグ */}
+                    <div className="mb-1 flex flex-wrap gap-1 sm:mb-2 sm:gap-2">
                       <span
-                        className={`shrink-0 rounded-full px-1 py-0.5 text-[10px] font-medium sm:px-2 sm:py-1 sm:text-xs ${
+                        className={`rounded-full px-1 py-0.5 text-[10px] font-medium sm:px-2 sm:py-1 sm:text-xs ${
                           product.published
                             ? "bg-green-100 text-green-800"
                             : "bg-gray-100 text-gray-600"
@@ -150,10 +152,6 @@ const ProductList = forwardRef<ProductListRef, ProductListProps>(
                       >
                         {product.published ? "公開" : "非公開"}
                       </span>
-                    </div>
-
-                    {/* カテゴリ・タグ */}
-                    <div className="mb-1 flex flex-wrap gap-1 sm:mb-2 sm:gap-2">
                       <span
                         className={`rounded-full px-1 py-0.5 text-[10px] sm:px-2 sm:py-1 sm:text-xs ${
                           !product.published
