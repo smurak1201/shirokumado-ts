@@ -145,7 +145,7 @@ const ProductList = forwardRef<ProductListRef, ProductListProps>(
                             </span>
                           </div>
                           <p
-                            className={`mt-1 text-sm ${
+                            className={`mt-1 whitespace-pre-wrap text-sm ${
                               !product.published ? "text-gray-400" : "text-gray-600"
                             }`}
                           >
