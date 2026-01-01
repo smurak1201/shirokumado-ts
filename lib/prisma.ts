@@ -1,5 +1,5 @@
 import { PrismaClient } from '@prisma/client';
-import { Pool, neonConfig } from '@neondatabase/serverless';
+import { neon, neonConfig } from '@neondatabase/serverless';
 import { PrismaNeon } from '@prisma/adapter-neon';
 import ws from 'ws';
 import { DatabaseError, logError } from './errors';
@@ -42,16 +42,16 @@ const createPrismaClient = (): PrismaClient => {
     throw new Error('DATABASE_URL must be a non-empty string');
   }
 
-  try {
-    // Poolのコンストラクタに接続文字列を設定オブジェクトとして渡す
-    // Vercelの本番環境では、接続文字列が正しく処理されるように明示的に設定
-    // connectionStringを確実に文字列として扱うため、新しい変数に代入
-    const poolConfig: { connectionString: string } = {
-      connectionString: connectionString,
-    };
+  // 接続文字列が正しい形式であることを確認
+  if (!connectionString.startsWith('postgresql://') && !connectionString.startsWith('postgres://')) {
+    throw new Error('DATABASE_URL must be a valid PostgreSQL connection string');
+  }
 
-    const pool = new Pool(poolConfig);
-    const adapter = new PrismaNeon(pool as any);
+  try {
+    // neon関数を使用してアダプターを作成
+    // これにより、Vercelの本番環境でも正しく動作します
+    const sql = neon(connectionString);
+    const adapter = new PrismaNeon(sql as any);
 
     return new PrismaClient({
       adapter,
