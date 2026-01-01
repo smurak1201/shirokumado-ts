@@ -13,4 +13,7 @@ export default defineConfig({
     // Prisma 7では、directUrlは環境変数から自動的に読み込まれます
     // DATABASE_URL_UNPOOLED または POSTGRES_URL_NON_POOLING を設定してください
   },
+  seed: {
+    script: "tsx prisma/seed.ts",
+  },
 });
