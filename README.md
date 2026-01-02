@@ -77,6 +77,7 @@ npm run dev
 - [技術スタック](./doc/tech-stack.md) - 使用している技術の詳細
 - [アーキテクチャ](./doc/architecture.md) - アーキテクチャと設計思想
 - [プロジェクト構造](./doc/project-structure.md) - ディレクトリ構造の説明
+- [画像の保存場所ガイド](./doc/image-storage-guide.md) - Blob Storage と public/ の使い分け
 - [開発ガイドライン](./doc/development-guide.md) - コーディング規約とベストプラクティス
 - [コーディング標準](./doc/coding-standards.md) - コード生成時のベストプラクティス
 - [Prisma & Blob セットアップガイド](./doc/setup-prisma-blob.md) - データベースとストレージの使用方法
