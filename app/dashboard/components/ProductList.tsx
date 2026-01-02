@@ -55,6 +55,27 @@ const ProductList = forwardRef<ProductListRef, ProductListProps>(
     const [editingProduct, setEditingProduct] = useState<Product | null>(null);
     const [activeTab, setActiveTab] = useState<"list" | "layout">("list");
 
+    // 初期カテゴリータブは、公開商品がある最初のカテゴリー、または最初のカテゴリー
+    const initialCategoryTab = useMemo(() => {
+      const published = products.filter((p) => p.published);
+      if (published.length > 0) {
+        const firstCategory = categories.find((c) =>
+          published.some((p) => p.category.id === c.id)
+        );
+        return firstCategory?.name || categories[0]?.name || "";
+      }
+      return categories[0]?.name || "";
+    }, [products, categories]);
+
+    const [activeCategoryTab, setActiveCategoryTab] = useState<string>(initialCategoryTab);
+
+    // カテゴリータブが変更されたら、activeCategoryTabも更新
+    useEffect(() => {
+      if (activeTab === "layout" && initialCategoryTab) {
+        setActiveCategoryTab(initialCategoryTab);
+      }
+    }, [activeTab, initialCategoryTab]);
+
     // 検索条件の状態
     const [searchName, setSearchName] = useState("");
     const [searchPublished, setSearchPublished] = useState<boolean | null>(
@@ -131,8 +152,8 @@ const ProductList = forwardRef<ProductListRef, ProductListProps>(
     const publishedProductsByCategory = useMemo(() => {
       const published = products.filter((p) => p.published);
 
-      // カテゴリーの順序を定義
-      const categoryOrder = ["限定メニュー", "通常メニュー", "サイドメニュー"];
+      // カテゴリーの順序はcategoriesプロップの順序（ID順）を使用
+      const categoryOrder = categories.map((c) => c.name);
 
       // カテゴリーごとにグループ化
       const grouped: Record<string, Product[]> = {};
@@ -157,14 +178,14 @@ const ProductList = forwardRef<ProductListRef, ProductListProps>(
         }
       });
 
-      // カテゴリーの順序に従って返す
+      // カテゴリーの順序に従って返す（商品があるカテゴリーのみ）
       return categoryOrder
         .map((categoryName) => ({
           name: categoryName,
           products: grouped[categoryName] || [],
         }))
         .filter((group) => group.products.length > 0);
-    }, [products]);
+    }, [products, categories]);
 
     // ドラッグ終了時の処理
     const handleDragEnd = async (event: DragEndEvent, categoryName: string) => {
@@ -502,30 +523,74 @@ const ProductList = forwardRef<ProductListRef, ProductListProps>(
             )}
 
             {activeTab === "layout" && (
-              <div className="space-y-8">
+              <div>
+                {/* カテゴリータブ */}
+                <div className="mb-6 border-b border-gray-200">
+                  <nav className="flex space-x-8">
+                    {categories.map((category) => {
+                      const categoryGroup = publishedProductsByCategory.find(
+                        (g) => g.name === category.name
+                      );
+                      const hasProducts = categoryGroup && categoryGroup.products.length > 0;
+
+                      return (
+                        <button
+                          key={category.id}
+                          onClick={() => setActiveCategoryTab(category.name)}
+                          disabled={!hasProducts}
+                          className={`relative whitespace-nowrap border-b-2 pb-4 px-1 text-sm font-medium transition-colors ${
+                            activeCategoryTab === category.name
+                              ? "border-blue-500 text-blue-600"
+                              : hasProducts
+                              ? "border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700"
+                              : "border-transparent text-gray-300 cursor-not-allowed"
+                          }`}
+                        >
+                          {category.name}
+                          {hasProducts && (
+                            <span className="ml-2 text-xs text-gray-400">
+                              ({categoryGroup!.products.length})
+                            </span>
+                          )}
+                        </button>
+                      );
+                    })}
+                  </nav>
+                </div>
+
+                {/* 選択されたカテゴリーの商品を表示 */}
                 {publishedProductsByCategory.length === 0 ? (
                   <p className="py-8 text-center text-gray-500">
                     公開されている商品がありません
                   </p>
                 ) : (
-                  publishedProductsByCategory.map((categoryGroup) => (
-                    <div key={categoryGroup.name} className="space-y-4">
-                      <h2 className="text-xl font-bold text-gray-800">
-                        {categoryGroup.name}
-                      </h2>
+                  (() => {
+                    const activeCategoryGroup = publishedProductsByCategory.find(
+                      (g) => g.name === activeCategoryTab
+                    );
+
+                    if (!activeCategoryGroup || activeCategoryGroup.products.length === 0) {
+                      return (
+                        <p className="py-8 text-center text-gray-500">
+                          {activeCategoryTab}に公開されている商品がありません
+                        </p>
+                      );
+                    }
+
+                    return (
                       <DndContext
                         sensors={sensors}
                         collisionDetection={closestCenter}
                         onDragEnd={(event) =>
-                          handleDragEnd(event, categoryGroup.name)
+                          handleDragEnd(event, activeCategoryTab)
                         }
                       >
                         <SortableContext
-                          items={categoryGroup.products.map((p) => p.id)}
+                          items={activeCategoryGroup.products.map((p) => p.id)}
                           strategy={rectSortingStrategy}
                         >
                           <div className="grid grid-cols-3 gap-1 sm:gap-2 md:gap-4">
-                            {categoryGroup.products.map((product) => (
+                            {activeCategoryGroup.products.map((product) => (
                               <SortableProductItem
                                 key={product.id}
                                 product={product}
@@ -534,8 +599,8 @@ const ProductList = forwardRef<ProductListRef, ProductListProps>(
                           </div>
                         </SortableContext>
                       </DndContext>
-                    </div>
-                  ))
+                    );
+                  })()
                 )}
               </div>
             )}
