@@ -1,89 +1,445 @@
 # 開発ガイドライン
 
-白熊堂プロジェクトの開発ガイドラインです。
+白熊堂プロジェクトの開発ガイドラインです。コードの書き方から開発プロセスまで、プロジェクトで使用するベストプラクティスをまとめています。
 
 ## 📋 目次
 
 - [コーディング規約](#コーディング規約)
+  - [Next.js App Router](#nextjs-app-router)
+  - [Prisma](#prisma)
+  - [TypeScript](#typescript)
+  - [エラーハンドリング](#エラーハンドリング)
+  - [API Routes](#api-routes)
+  - [コンポーネント設計](#コンポーネント設計)
 - [命名規則](#命名規則)
 - [ファイル構造](#ファイル構造)
 - [Git ワークフロー](#git-ワークフロー)
 - [コミットメッセージ](#コミットメッセージ)
 - [コードレビュー](#コードレビュー)
 - [テスト](#テスト)
-- [コード生成時のベストプラクティス](#コード生成時のベストプラクティス)
+- [パフォーマンス最適化](#パフォーマンス最適化)
+- [セキュリティ](#セキュリティ)
+- [コード生成時のチェックリスト](#コード生成時のチェックリスト)
 
 ## コーディング規約
 
-### TypeScript
+### Next.js App Router
 
-- **型安全性を重視**: `any`の使用は避け、適切な型定義を使用します
-- **厳格な型チェック**: `tsconfig.json`の設定に従います
-- **未使用変数の削除**: リンターエラーは必ず修正します
+#### Server Components を優先
+
+**✅ 推奨**: デフォルトで Server Components を使用します。
 
 ```typescript
-// ❌ 悪い例
-function getUser(id: any) {
-  return prisma.user.findUnique({ where: { id } });
+// ✅ 良い例: Server Component
+export default async function ProductPage({
+  params,
+}: {
+  params: { id: string };
+}) {
+  const product = await prisma.product.findUnique({
+    where: { id: params.id },
+  });
+
+  if (!product) {
+    notFound();
+  }
+
+  return <ProductDetails product={product} />;
+}
+```
+
+**❌ 避ける**: 不要な Client Components。
+
+```typescript
+// ❌ 悪い例: 不要なClient Component
+"use client";
+export default function ProductPage({ params }: { params: { id: string } }) {
+  const [product, setProduct] = useState(null);
+
+  useEffect(() => {
+    fetch(`/api/products/${params.id}`)
+      .then((res) => res.json())
+      .then(setProduct);
+  }, [params.id]);
+
+  return product ? <ProductDetails product={product} /> : <Loading />;
+}
+```
+
+#### データフェッチング
+
+**✅ 推奨**: Server Components で直接データフェッチ。
+
+```typescript
+// ✅ 良い例: Server Componentで直接フェッチ
+export default async function ProductsPage() {
+  const products = await prisma.product.findMany({
+    where: { published: true },
+    orderBy: { createdAt: "desc" },
+  });
+
+  return <ProductList products={products} />;
+}
+```
+
+**❌ 避ける**: クライアントサイドでの不要なフェッチ。
+
+```typescript
+// ❌ 悪い例: クライアントサイドでフェッチ
+"use client";
+export default function ProductsPage() {
+  const [products, setProducts] = useState([]);
+
+  useEffect(() => {
+    fetch("/api/products")
+      .then((res) => res.json())
+      .then(setProducts);
+  }, []);
+
+  return <ProductList products={products} />;
+}
+```
+
+#### ルーティング
+
+**✅ 推奨**: App Router の規約に従う。
+
+```
+app/
+├── page.tsx              # / (ホーム)
+├── about/
+│   └── page.tsx          # /about
+├── products/
+│   ├── page.tsx          # /products
+│   └── [id]/
+│       └── page.tsx      # /products/[id]
+└── (admin)/              # ルートグループ（URLに影響しない）
+    └── dashboard/
+        └── page.tsx      # /dashboard
+```
+
+### Prisma
+
+#### クエリの最適化
+
+**✅ 推奨**: 必要なフィールドのみ取得。
+
+```typescript
+// ✅ 良い例: selectで必要なフィールドのみ
+const users = await prisma.user.findMany({
+  select: {
+    id: true,
+    name: true,
+    email: true,
+  },
+});
+```
+
+**❌ 避ける**: すべてのフィールドを取得。
+
+```typescript
+// ❌ 悪い例: すべてのフィールドを取得
+const users = await prisma.user.findMany(); // 不要なデータも取得
+```
+
+#### N+1 問題の回避
+
+**✅ 推奨**: include で関連データを一度に取得。
+
+```typescript
+// ✅ 良い例: includeで関連データを取得
+const orders = await prisma.order.findMany({
+  include: {
+    items: {
+      include: {
+        product: true,
+      },
+    },
+  },
+});
+```
+
+**❌ 避ける**: ループ内でクエリを実行。
+
+```typescript
+// ❌ 悪い例: N+1問題
+const orders = await prisma.order.findMany();
+for (const order of orders) {
+  order.items = await prisma.orderItem.findMany({
+    where: { orderId: order.id },
+  });
+}
+```
+
+#### エラーハンドリング
+
+**✅ 推奨**: `safePrismaOperation` を使用。
+
+```typescript
+import { safePrismaOperation } from "@/lib/prisma";
+
+const user = await safePrismaOperation(
+  () => prisma.user.findUnique({ where: { id } }),
+  "getUser"
+);
+```
+
+**❌ 避ける**: 直接 try-catch で処理。
+
+```typescript
+// ❌ 悪い例: 直接try-catch
+try {
+  const user = await prisma.user.findUnique({ where: { id } });
+} catch (error) {
+  console.error(error); // 統一されていないエラーハンドリング
+}
+```
+
+#### トランザクション
+
+**✅ 推奨**: Prisma のトランザクションを使用。
+
+```typescript
+// ✅ 良い例: トランザクション
+await prisma.$transaction(async (tx) => {
+  const user = await tx.user.create({ data: userData });
+  await tx.order.create({ data: { userId: user.id, ...orderData } });
+});
+```
+
+### TypeScript
+
+#### 型安全性
+
+**✅ 推奨**: 明示的な型定義。
+
+```typescript
+// ✅ 良い例: 明示的な型
+interface UserProfileProps {
+  userId: number;
+  showEmail?: boolean;
 }
 
-// ✅ 良い例
-function getUser(id: number): Promise<User | null> {
+export function UserProfile({ userId, showEmail = false }: UserProfileProps) {
+  // ...
+}
+```
+
+**❌ 避ける**: `any` の使用。
+
+```typescript
+// ❌ 悪い例: anyの使用
+function getUser(id: any) {
   return prisma.user.findUnique({ where: { id } });
 }
 ```
 
-### React / Next.js
+#### 型推論の活用
 
-- **Server Componentsを優先**: デフォルトでServer Componentsを使用します
-- **Client Componentsは必要最小限**: `'use client'`は必要な場合のみ使用します
-- **エラーハンドリング**: 統一されたエラーハンドリングを使用します
+**✅ 推奨**: 適切な型推論を活用。
 
 ```typescript
-// ❌ 悪い例
-'use client';
-export default function Page() {
-  const [data, setData] = useState(null);
-  useEffect(() => {
-    fetch('/api/data').then(res => res.json()).then(setData);
-  }, []);
-  return <div>{data}</div>;
+// ✅ 良い例: 型推論を活用
+const users = await prisma.user.findMany(); // User[]型が推論される
+const user = await prisma.user.findUnique({ where: { id: 1 } }); // User | null型が推論される
+```
+
+#### 型ガード
+
+**✅ 推奨**: 型ガードを使用。
+
+```typescript
+// ✅ 良い例: 型ガード
+function isUser(value: unknown): value is User {
+  return (
+    typeof value === "object" &&
+    value !== null &&
+    "id" in value &&
+    "email" in value
+  );
 }
 
-// ✅ 良い例
-export default async function Page() {
-  const data = await fetchData();
-  return <div>{data}</div>;
+if (isUser(data)) {
+  // dataはUser型として扱える
+  console.log(data.email);
 }
 ```
 
 ### エラーハンドリング
 
-- **統一されたエラークラス**: `lib/errors.ts`のエラークラスを使用します
-- **API Routes**: `lib/api-helpers.ts`の`withErrorHandling`を使用します
+#### 統一されたエラークラス
+
+**✅ 推奨**: `lib/errors.ts` のエラークラスを使用。
 
 ```typescript
-// ❌ 悪い例
-export async function GET() {
-  try {
-    const data = await prisma.user.findMany();
-    return NextResponse.json({ data });
-  } catch (error) {
-    return NextResponse.json({ error: 'Failed' }, { status: 500 });
-  }
+import { ValidationError, NotFoundError, DatabaseError } from "@/lib/errors";
+
+// ✅ 良い例: 統一されたエラークラス
+if (!email) {
+  throw new ValidationError("Email is required");
 }
 
-// ✅ 良い例
-import { withErrorHandling, apiSuccess } from '@/lib/api-helpers';
-import { safePrismaOperation } from '@/lib/prisma';
+const user = await prisma.user.findUnique({ where: { id } });
+if (!user) {
+  throw new NotFoundError("User");
+}
+```
+
+**❌ 避ける**: 汎用的な Error。
+
+```typescript
+// ❌ 悪い例: 汎用的なError
+if (!email) {
+  throw new Error("Email is required"); // 統一されていない
+}
+```
+
+#### API Routes でのエラーハンドリング
+
+**✅ 推奨**: `withErrorHandling` を使用。
+
+```typescript
+import { withErrorHandling, apiSuccess } from "@/lib/api-helpers";
 
 export const GET = withErrorHandling(async () => {
-  const data = await safePrismaOperation(
-    () => prisma.user.findMany(),
-    'GET /api/users'
-  );
+  const data = await fetchData();
   return apiSuccess({ data });
 });
+```
+
+**❌ 避ける**: 手動でのエラーハンドリング。
+
+```typescript
+// ❌ 悪い例: 手動でのエラーハンドリング
+export async function GET() {
+  try {
+    const data = await fetchData();
+    return NextResponse.json({ data });
+  } catch (error) {
+    return NextResponse.json({ error: "Failed" }, { status: 500 });
+  }
+}
+```
+
+### API Routes
+
+#### レスポンス形式
+
+**✅ 推奨**: 統一されたレスポンス形式。
+
+```typescript
+// ✅ 良い例: 統一されたレスポンス
+import { apiSuccess, apiError } from "@/lib/api-helpers";
+
+export const GET = withErrorHandling(async () => {
+  const data = await fetchData();
+  return apiSuccess({ data }); // { data: ... }
+});
+
+export const POST = withErrorHandling(async (request: Request) => {
+  const body = await request.json();
+  if (!body.name) {
+    return apiError("Name is required", 400);
+  }
+  // ...
+});
+```
+
+#### リクエストバリデーション
+
+**✅ 推奨**: 入力検証を実装。
+
+```typescript
+// ✅ 良い例: バリデーション
+import { ValidationError } from "@/lib/errors";
+
+export const POST = withErrorHandling(async (request: Request) => {
+  const body = await request.json();
+
+  if (!body.email || !isValidEmail(body.email)) {
+    throw new ValidationError("Invalid email address");
+  }
+
+  // ...
+});
+```
+
+#### HTTP メソッド
+
+**✅ 推奨**: 適切な HTTP メソッドを使用。
+
+```typescript
+// ✅ 良い例: 適切なHTTPメソッド
+export const GET = withErrorHandling(async () => {
+  /* ... */
+});
+export const POST = withErrorHandling(async (request: Request) => {
+  /* ... */
+});
+export const PUT = withErrorHandling(async (request: Request) => {
+  /* ... */
+});
+export const DELETE = withErrorHandling(async () => {
+  /* ... */
+});
+```
+
+### コンポーネント設計
+
+#### Server Components 優先
+
+**✅ 推奨**: デフォルトで Server Component。
+
+```typescript
+// ✅ 良い例: Server Component
+export default async function ProductList() {
+  const products = await prisma.product.findMany();
+  return (
+    <div>
+      {products.map((product) => (
+        <ProductCard key={product.id} product={product} />
+      ))}
+    </div>
+  );
+}
+```
+
+#### Client Components の使用
+
+**✅ 推奨**: 必要な場合のみ Client Component。
+
+```typescript
+// ✅ 良い例: インタラクティブな場合のみ
+"use client";
+
+import { useState } from "react";
+
+export function SearchForm() {
+  const [query, setQuery] = useState("");
+
+  return (
+    <form>
+      <input value={query} onChange={(e) => setQuery(e.target.value)} />
+    </form>
+  );
+}
+```
+
+#### コンポーネントの分割
+
+**✅ 推奨**: 単一責任の原則。
+
+```typescript
+// ✅ 良い例: 小さなコンポーネントに分割
+export function ProductCard({ product }: { product: Product }) {
+  return (
+    <div>
+      <ProductImage product={product} />
+      <ProductInfo product={product} />
+      <ProductActions product={product} />
+    </div>
+  );
+}
 ```
 
 ## 命名規則
@@ -92,7 +448,7 @@ export const GET = withErrorHandling(async () => {
 
 - **コンポーネント**: PascalCase（例: `UserProfile.tsx`）
 - **ユーティリティ**: camelCase（例: `formatDate.ts`）
-- **API Routes**: `route.ts`（Next.js App Routerの規約）
+- **API Routes**: `route.ts`（Next.js App Router の規約）
 - **型定義**: PascalCase（例: `User.ts`）
 
 ### 変数・関数名
@@ -105,7 +461,7 @@ export const GET = withErrorHandling(async () => {
 ### コンポーネント
 
 - **コンポーネント名**: PascalCase（例: `UserProfile`, `ProductCard`）
-- **Props型**: `ComponentNameProps`（例: `UserProfileProps`）
+- **Props 型**: `ComponentNameProps`（例: `UserProfileProps`）
 
 ```typescript
 // ✅ 良い例
@@ -144,7 +500,8 @@ app/
 ```
 
 **コンポーネント設計の原則**:
-- **単一責任の原則**: 各コンポーネントは1つの責務を持つ
+
+- **単一責任の原則**: 各コンポーネントは 1 つの責務を持つ
 - **再利用性**: 汎用的なコンポーネントは分離
 - **型安全性**: 共通型定義を使用して一貫性を保つ
 - **カスタムフック**: 状態管理ロジックはフックに分離
@@ -163,6 +520,7 @@ lib/
 ```
 
 **機能別ディレクトリのユーティリティ**:
+
 ```
 app/dashboard/utils/
 └── productUtils.ts    # ダッシュボード専用の商品操作関数
@@ -192,7 +550,7 @@ docs/[ドキュメント内容]
 
 1. **タイトル**: 変更内容を明確に記述
 2. **説明**: 変更の背景、実装内容、テスト方法を記述
-3. **レビュー**: 最低1名の承認が必要
+3. **レビュー**: 最低 1 名の承認が必要
 4. **CI/CD**: すべてのチェックが成功する必要がある
 
 ## コミットメッセージ
@@ -250,8 +608,8 @@ Closes #123
 ### テストの種類
 
 - **ユニットテスト**: 個別の関数・コンポーネントのテスト
-- **統合テスト**: API Routesやデータベース操作のテスト
-- **E2Eテスト**: ユーザーフローのテスト
+- **統合テスト**: API Routes やデータベース操作のテスト
+- **E2E テスト**: ユーザーフローのテスト
 
 ### テストファイルの配置
 
@@ -268,71 +626,163 @@ __tests__/
 ### テストの書き方
 
 ```typescript
-import { describe, it, expect } from 'vitest';
-import { formatDate } from '@/lib/utils/format';
+import { describe, it, expect } from "vitest";
+import { formatDate } from "@/lib/utils/format";
 
-describe('formatDate', () => {
-  it('should format date correctly', () => {
-    const date = new Date('2024-01-01');
-    expect(formatDate(date)).toBe('2024年1月1日');
+describe("formatDate", () => {
+  it("should format date correctly", () => {
+    const date = new Date("2024-01-01");
+    expect(formatDate(date)).toBe("2024年1月1日");
   });
 });
 ```
 
-## パフォーマンス
+## パフォーマンス最適化
+
+### 画像最適化
+
+**✅ 推奨**: Next.js Image コンポーネントを使用。
+
+```typescript
+import Image from "next/image";
+
+// ✅ 良い例: Next.js Image
+<Image
+  src="/images/product.jpg"
+  alt="Product"
+  width={500}
+  height={300}
+  priority={false}
+  loading="lazy"
+/>;
+```
+
+**❌ 避ける**: 通常の img タグ。
+
+```typescript
+// ❌ 悪い例: 通常のimgタグ
+<img src="/images/product.jpg" alt="Product" />
+```
+
+### コード分割
+
+**✅ 推奨**: 動的インポートを使用。
+
+```typescript
+// ✅ 良い例: 動的インポート
+import dynamic from "next/dynamic";
+
+const HeavyComponent = dynamic(() => import("./HeavyComponent"), {
+  loading: () => <Loading />,
+  ssr: false,
+});
+```
+
+### データベースクエリの最適化
+
+**✅ 推奨**: インデックスの活用、必要なデータのみ取得。
+
+```typescript
+// ✅ 良い例: インデックスを活用したクエリ
+const products = await prisma.product.findMany({
+  where: {
+    category: "ice-cream",
+    published: true,
+  },
+  orderBy: { createdAt: "desc" },
+  take: 10, // ページネーション
+});
+```
 
 ### 最適化のポイント
 
-1. **画像最適化**: Next.js Imageコンポーネントを使用
+1. **画像最適化**: Next.js Image コンポーネントを使用
 2. **コード分割**: 動的インポートを使用
 3. **データフェッチ**: 適切なキャッシュ戦略を使用
-4. **データベース**: 必要なデータのみ取得（N+1問題の回避）
-
-```typescript
-// ✅ 良い例: 必要なフィールドのみ取得
-const users = await prisma.user.findMany({
-  select: {
-    id: true,
-    name: true,
-    email: true,
-  },
-});
-
-// ❌ 悪い例: すべてのフィールドを取得
-const users = await prisma.user.findMany();
-```
+4. **データベース**: 必要なデータのみ取得（N+1 問題の回避）
 
 ## セキュリティ
+
+### 環境変数
+
+**✅ 推奨**: 機密情報は環境変数で管理。
+
+```typescript
+// ✅ 良い例: 環境変数を使用
+const databaseUrl = process.env.DATABASE_URL;
+```
+
+**❌ 避ける**: ハードコード。
+
+```typescript
+// ❌ 悪い例: ハードコード
+const databaseUrl = "postgresql://user:password@localhost/db";
+```
+
+### 入力検証
+
+**✅ 推奨**: すべてのユーザー入力を検証。
+
+```typescript
+// ✅ 良い例: 入力検証
+import { z } from "zod"; // 必要に応じて
+
+const schema = z.object({
+  email: z.string().email(),
+  name: z.string().min(1).max(100),
+});
+
+const validatedData = schema.parse(requestBody);
+```
+
+### SQL インジェクション対策
+
+**✅ 推奨**: Prisma を使用（自動的に対策される）。
+
+```typescript
+// ✅ 良い例: Prismaを使用（安全）
+const user = await prisma.user.findUnique({
+  where: { email: userEmail }, // 自動的にエスケープされる
+});
+```
+
+**❌ 避ける**: 生の SQL（必要な場合を除く）。
+
+```typescript
+// ❌ 悪い例: 生のSQL（危険）
+const user = await prisma.$queryRaw`
+  SELECT * FROM users WHERE email = ${userEmail}
+`;
+```
 
 ### ベストプラクティス
 
 1. **環境変数**: 機密情報は環境変数で管理
 2. **入力検証**: すべてのユーザー入力を検証
-3. **SQLインジェクション**: Prismaを使用して回避
-4. **XSS対策**: Reactの自動エスケープを活用
-5. **CSRF対策**: Next.jsのCSRF保護を活用
+3. **SQL インジェクション**: Prisma を使用して回避
+4. **XSS 対策**: React の自動エスケープを活用
+5. **CSRF 対策**: Next.js の CSRF 保護を活用
 
-## コード生成時のベストプラクティス
+## コード生成時のチェックリスト
 
-AIアシスタントやコード生成ツールを使用する際は、[コーディング標準ドキュメント](./coding-standards.md)を参照してください。
+コードを生成する際は、以下の点を確認してください：
 
-このドキュメントには以下の内容が含まれています：
-
-- Next.js App Routerのベストプラクティス
-- Prismaのクエリ最適化
-- TypeScriptの型安全性
-- 統一されたエラーハンドリング
-- API Routesの実装パターン
-- コンポーネント設計のガイドライン
-- パフォーマンス最適化
-- セキュリティベストプラクティス
-
-コード生成時は、これらのベストプラクティスに従って一貫性のあるコードを生成してください。
+- [ ] Server Components を優先しているか
+- [ ] 適切なエラーハンドリングを実装しているか
+- [ ] 型安全性を確保しているか（`any` を使用していないか）
+- [ ] Prisma のクエリが最適化されているか（N+1 問題がないか）
+- [ ] 統一されたエラークラスを使用しているか
+- [ ] API Routes で `withErrorHandling` を使用しているか
+- [ ] 入力検証を実装しているか
+- [ ] パフォーマンスを考慮しているか
+- [ ] セキュリティベストプラクティスに従っているか
 
 ## 参考リンク
 
 - [Next.js Documentation](https://nextjs.org/docs)
+- [Next.js App Router Best Practices](https://nextjs.org/docs/app/building-your-application/routing)
 - [Prisma Best Practices](https://www.prisma.io/docs/guides/performance-and-optimization)
 - [TypeScript Handbook](https://www.typescriptlang.org/docs/handbook/intro.html)
+- [TypeScript Best Practices](https://www.typescriptlang.org/docs/handbook/declaration-files/do-s-and-don-ts.html)
 - [React Best Practices](https://react.dev/learn)
-- [コーディング標準とベストプラクティス](./coding-standards.md)
+- [React Server Components](https://react.dev/blog/2023/03/22/react-labs-what-we-have-been-working-on-march-2023#react-server-components)
