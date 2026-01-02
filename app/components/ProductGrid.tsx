@@ -59,7 +59,7 @@ export default function ProductGrid({ category, products }: ProductGridProps) {
         </div>
 
         {/* 商品グリッド（常に3列） */}
-        <div className="grid grid-cols-3 gap-2 md:gap-6 lg:gap-4">
+        <div className="grid grid-cols-3 gap-3 md:gap-8 lg:gap-6">
           {products.map((product) => (
             <ProductTile
               key={product.id}

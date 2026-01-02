@@ -105,7 +105,7 @@ export default async function Home() {
       </section>
 
       {/* メインコンテンツ */}
-      <main className="mx-auto max-w-6xl px-2 py-6 md:px-4 md:py-12 lg:px-6 lg:py-16 xl:py-20">
+      <main className="mx-auto max-w-6xl px-4 py-6 md:px-8 md:py-12 lg:px-12 lg:py-16 xl:py-20">
         {/* カテゴリーごとの商品セクション */}
         {categoriesWithProducts.map(({ category, products }) => (
           <ProductGrid
