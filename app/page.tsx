@@ -100,7 +100,7 @@ export default async function Home() {
           sizes="100vw"
         />
         {/* オーバーレイ（和のテイストのためのグラデーション） */}
-        <div className="absolute inset-0 bg-linear-to-b from-white/30 via-white/10 to-white/40" />
+        <div className="absolute inset-0 bg-linear-to-b from-white/20 via-white/8 to-white/25" />
       </section>
 
       {/* メインコンテンツ */}
