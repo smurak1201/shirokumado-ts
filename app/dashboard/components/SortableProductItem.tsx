@@ -87,8 +87,8 @@ export default function SortableProductItem({
         {/* 商品名 */}
         <div className="mb-1 flex h-[3em] items-center justify-center sm:mb-2 sm:h-[3em] md:h-[3.5em]">
           <h3 className="line-clamp-2 whitespace-pre-wrap text-center text-[10px] font-semibold leading-tight sm:text-xs md:text-lg">
-            {product.name}
-          </h3>
+          {product.name}
+        </h3>
         </div>
 
         {/* 価格 */}

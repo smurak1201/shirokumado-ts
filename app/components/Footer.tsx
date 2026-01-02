@@ -6,17 +6,20 @@ import Image from "next/image";
  */
 export default function Footer() {
   return (
-    <footer className="border-t border-gray-200 bg-white py-8 md:py-12">
+    <footer className="border-t border-gray-200 bg-white py-12 md:py-16">
       <div className="mx-auto max-w-6xl px-4 md:px-6 lg:px-12">
-        <div className="flex flex-col gap-6 md:flex-row md:items-start md:justify-between md:gap-8">
-          {/* ロゴ */}
-          <div className="flex flex-col gap-4">
+        {/* メインコンテンツ */}
+        <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4 lg:gap-12">
+          {/* ロゴセクション */}
+          <div className="flex flex-col gap-4 lg:col-span-1">
             <Image
               src="/logo.webp"
               alt="白熊堂"
               width={120}
               height={45}
-              className="h-auto w-auto max-h-16"
+              className="h-auto w-auto"
+              style={{ maxHeight: "4rem", maxWidth: "120px" }}
+              quality={100}
             />
             <a
               href="https://www.instagram.com/shirokumado2021/"
@@ -35,39 +38,53 @@ export default function Footer() {
             </a>
           </div>
 
-          {/* 店舗情報 */}
-          <div className="flex flex-col gap-4 text-sm text-gray-700 md:text-base">
-            <div className="space-y-1">
-              <p className="font-medium text-gray-900">住所</p>
+          {/* 住所 */}
+          <div className="space-y-2">
+            <h3 className="text-sm font-semibold uppercase tracking-wider text-gray-900">
+              住所
+            </h3>
+            <div className="space-y-1 text-sm leading-relaxed text-gray-600">
               <p>神奈川県川崎市川崎区小川町4-1</p>
               <p>ラチッタデッラ マッジョーレ1F</p>
             </div>
+          </div>
 
-            <div className="space-y-1">
-              <p className="font-medium text-gray-900">営業時間</p>
-              <p>11:00～21:00(L.O.20:00)</p>
+          {/* 営業情報 */}
+          <div className="space-y-2">
+            <h3 className="text-sm font-semibold uppercase tracking-wider text-gray-900">
+              営業情報
+            </h3>
+            <div className="space-y-3 text-sm leading-relaxed text-gray-600">
+              <div>
+                <p className="font-medium text-gray-700">営業時間</p>
+                <p className="font-medium">11:00～21:00(L.O.20:00)</p>
+              </div>
+              <div>
+                <p className="font-medium text-gray-700">定休日</p>
+                <p className="font-medium">通年営業 月1回不定休</p>
+              </div>
             </div>
+          </div>
 
-            <div className="space-y-1">
-              <p className="font-medium text-gray-900">電話番号</p>
+          {/* お問い合わせ */}
+          <div className="space-y-2">
+            <h3 className="text-sm font-semibold uppercase tracking-wider text-gray-900">
+              お問い合わせ
+            </h3>
+            <div className="space-y-1 text-sm leading-relaxed text-gray-600">
               <a
                 href="tel:070-9157-3772"
-                className="transition-colors hover:text-gray-900"
+                className="block transition-colors hover:text-gray-900"
               >
                 070-9157-3772
               </a>
-            </div>
-
-            <div className="space-y-1">
-              <p className="font-medium text-gray-900">定休日</p>
-              <p>通年営業 月1回不定休</p>
             </div>
           </div>
         </div>
 
         {/* コピーライト */}
-        <div className="mt-8 border-t border-gray-200 pt-6 text-center text-sm text-gray-500">
-          <p>© 2024 白熊堂</p>
+        <div className="mt-12 border-t border-gray-200 pt-8 text-center">
+          <p className="text-xs text-gray-500">© 2024 白熊堂</p>
         </div>
       </div>
     </footer>
