@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useImperativeHandle, forwardRef, useMemo, useEffect } from "react";
+import { useState, useImperativeHandle, forwardRef, useMemo, useEffect, useRef } from "react";
 import {
   DndContext,
   closestCenter,
@@ -19,6 +19,12 @@ import {
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import ProductEditForm from "./ProductEditForm";
+
+// localStorageのキー
+const STORAGE_KEYS = {
+  ACTIVE_TAB: "dashboard_active_tab",
+  ACTIVE_CATEGORY_TAB: "dashboard_active_category_tab",
+} as const;
 
 interface Category {
   id: number;
@@ -53,10 +59,39 @@ const ProductList = forwardRef<ProductListRef, ProductListProps>(
   ({ initialProducts, categories, onNewProductClick }, ref) => {
     const [products, setProducts] = useState<Product[]>(initialProducts);
     const [editingProduct, setEditingProduct] = useState<Product | null>(null);
-    const [activeTab, setActiveTab] = useState<"list" | "layout">("list");
+    
+    // localStorageからタブの状態を読み込む
+    const [activeTab, setActiveTab] = useState<"list" | "layout">(() => {
+      if (typeof window !== "undefined") {
+        const saved = localStorage.getItem(STORAGE_KEYS.ACTIVE_TAB);
+        if (saved === "list" || saved === "layout") {
+          return saved;
+        }
+      }
+      return "list";
+    });
+    
+    // タブが変更されたらlocalStorageに保存
+    useEffect(() => {
+      if (typeof window !== "undefined") {
+        localStorage.setItem(STORAGE_KEYS.ACTIVE_TAB, activeTab);
+      }
+    }, [activeTab]);
 
-    // 初期カテゴリータブは、公開商品がある最初のカテゴリー、または最初のカテゴリー
+    // 初期カテゴリータブは、localStorageから読み込むか、公開商品がある最初のカテゴリー
     const initialCategoryTab = useMemo(() => {
+      // localStorageから保存されたカテゴリータブを読み込む
+      if (typeof window !== "undefined") {
+        const saved = localStorage.getItem(STORAGE_KEYS.ACTIVE_CATEGORY_TAB);
+        if (saved) {
+          // 保存されたカテゴリーが存在するか確認
+          const categoryExists = categories.some((c) => c.name === saved);
+          if (categoryExists) {
+            return saved;
+          }
+        }
+      }
+      
       const published = products.filter((p) => p.published);
       // カテゴリーをID順でソート（小さい順）
       const sortedCategories = [...categories].sort((a, b) => a.id - b.id);
@@ -70,6 +105,13 @@ const ProductList = forwardRef<ProductListRef, ProductListProps>(
     }, [products, categories]);
 
     const [activeCategoryTab, setActiveCategoryTab] = useState<string>(initialCategoryTab);
+
+    // カテゴリータブが変更されたらlocalStorageに保存
+    useEffect(() => {
+      if (typeof window !== "undefined" && activeCategoryTab) {
+        localStorage.setItem(STORAGE_KEYS.ACTIVE_CATEGORY_TAB, activeCategoryTab);
+      }
+    }, [activeCategoryTab]);
 
     // カテゴリータブが変更されたら、activeCategoryTabも更新
     useEffect(() => {
@@ -528,40 +570,12 @@ const ProductList = forwardRef<ProductListRef, ProductListProps>(
             {activeTab === "layout" && (
               <div>
                 {/* カテゴリータブ */}
-                <div className="mb-6 border-b border-gray-200 overflow-x-auto -mx-6 px-6">
-                  <nav className="flex space-x-4 sm:space-x-8 min-w-max">
-                    {[...categories]
-                      .sort((a, b) => a.id - b.id)
-                      .map((category) => {
-                      const categoryGroup = publishedProductsByCategory.find(
-                        (g) => g.name === category.name
-                      );
-                      const hasProducts = categoryGroup && categoryGroup.products.length > 0;
-
-                      return (
-                        <button
-                          key={category.id}
-                          onClick={() => setActiveCategoryTab(category.name)}
-                          disabled={!hasProducts}
-                          className={`relative whitespace-nowrap border-b-2 pb-3 sm:pb-4 px-2 sm:px-1 text-xs sm:text-sm font-medium transition-colors flex-shrink-0 ${
-                            activeCategoryTab === category.name
-                              ? "border-blue-500 text-blue-600"
-                              : hasProducts
-                              ? "border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700"
-                              : "border-transparent text-gray-300 cursor-not-allowed"
-                          }`}
-                        >
-                          {category.name}
-                          {hasProducts && (
-                            <span className="ml-1 sm:ml-2 text-[10px] sm:text-xs text-gray-400">
-                              ({categoryGroup!.products.length})
-                            </span>
-                          )}
-                        </button>
-                      );
-                    })}
-                  </nav>
-                </div>
+                <CategoryTabs
+                  categories={categories}
+                  publishedProductsByCategory={publishedProductsByCategory}
+                  activeCategoryTab={activeCategoryTab}
+                  onCategoryTabChange={setActiveCategoryTab}
+                />
 
                 {/* 選択されたカテゴリーの商品を表示 */}
                 {publishedProductsByCategory.length === 0 ? (
@@ -626,6 +640,122 @@ const ProductList = forwardRef<ProductListRef, ProductListProps>(
 );
 
 ProductList.displayName = "ProductList";
+
+// カテゴリータブコンポーネント（スクロール可能な視覚的インジケーター付き）
+function CategoryTabs({
+  categories,
+  publishedProductsByCategory,
+  activeCategoryTab,
+  onCategoryTabChange,
+}: {
+  categories: Category[];
+  publishedProductsByCategory: Array<{ name: string; products: Product[] }>;
+  activeCategoryTab: string;
+  onCategoryTabChange: (name: string) => void;
+}) {
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const [showLeftGradient, setShowLeftGradient] = useState(false);
+  const [showRightGradient, setShowRightGradient] = useState(false);
+
+  // スクロール位置をチェックしてグラデーションの表示を更新
+  const checkScrollPosition = () => {
+    if (!scrollContainerRef.current) return;
+    const { scrollLeft, scrollWidth, clientWidth } = scrollContainerRef.current;
+    setShowLeftGradient(scrollLeft > 0);
+    setShowRightGradient(scrollLeft < scrollWidth - clientWidth - 1);
+  };
+
+  // スクロールイベントのハンドラー
+  useEffect(() => {
+    const container = scrollContainerRef.current;
+    if (!container) return;
+
+    // 初期チェック
+    checkScrollPosition();
+
+    // スクロール時にチェック
+    container.addEventListener("scroll", checkScrollPosition);
+    // リサイズ時にもチェック
+    window.addEventListener("resize", checkScrollPosition);
+
+    return () => {
+      container.removeEventListener("scroll", checkScrollPosition);
+      window.removeEventListener("resize", checkScrollPosition);
+    };
+  }, [categories, publishedProductsByCategory]);
+
+  // アクティブなタブが変更されたら、そのタブまでスクロール
+  useEffect(() => {
+    if (!scrollContainerRef.current) return;
+    const activeButton = scrollContainerRef.current.querySelector(
+      `button[data-category-name="${activeCategoryTab}"]`
+    ) as HTMLElement;
+    if (activeButton) {
+      activeButton.scrollIntoView({
+        behavior: "smooth",
+        block: "nearest",
+        inline: "center",
+      });
+    }
+  }, [activeCategoryTab]);
+
+  return (
+    <div className="mb-6 border-b border-gray-200 relative">
+      {/* 左側のグラデーション */}
+      {showLeftGradient && (
+        <div className="absolute left-0 top-0 bottom-0 w-8 bg-gradient-to-r from-white to-transparent pointer-events-none z-10" />
+      )}
+      {/* 右側のグラデーション */}
+      {showRightGradient && (
+        <div className="absolute right-0 top-0 bottom-0 w-8 bg-gradient-to-l from-white to-transparent pointer-events-none z-10" />
+      )}
+      {/* スクロール可能なタブコンテナ */}
+      <div
+        ref={scrollContainerRef}
+        className="overflow-x-auto -mx-6 px-6 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent"
+        style={{
+          scrollbarWidth: "thin",
+          scrollbarColor: "#d1d5db transparent",
+        }}
+      >
+        <nav className="flex space-x-4 sm:space-x-8 min-w-max">
+          {[...categories]
+            .sort((a, b) => a.id - b.id)
+            .map((category) => {
+              const categoryGroup = publishedProductsByCategory.find(
+                (g) => g.name === category.name
+              );
+              const hasProducts =
+                categoryGroup && categoryGroup.products.length > 0;
+
+              return (
+                <button
+                  key={category.id}
+                  data-category-name={category.name}
+                  onClick={() => onCategoryTabChange(category.name)}
+                  disabled={!hasProducts}
+                  className={`relative whitespace-nowrap border-b-2 pb-3 sm:pb-4 px-2 sm:px-1 text-xs sm:text-sm font-medium transition-colors flex-shrink-0 ${
+                    activeCategoryTab === category.name
+                      ? "border-blue-500 text-blue-600"
+                      : hasProducts
+                      ? "border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700"
+                      : "border-transparent text-gray-300 cursor-not-allowed"
+                  }`}
+                >
+                  {category.name}
+                  {hasProducts && (
+                    <span className="ml-1 sm:ml-2 text-[10px] sm:text-xs text-gray-400">
+                      ({categoryGroup!.products.length})
+                    </span>
+                  )}
+                </button>
+              );
+            })}
+        </nav>
+      </div>
+    </div>
+  );
+}
 
 // ソート可能な商品アイテムコンポーネント
 function SortableProductItem({ product }: { product: Product }) {
