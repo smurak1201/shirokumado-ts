@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 
 /**
  * フッターコンポーネント
@@ -10,15 +11,17 @@ export default function Footer() {
       <div className="mx-auto max-w-6xl px-2 sm:px-4 md:px-6 lg:px-12">
         {/* ロゴとInstagramアイコン（1列上） */}
         <div className="mb-6 flex items-center gap-2 sm:gap-3 md:gap-4">
-          <Image
-            src="/logo.webp"
-            alt="白熊堂"
-            width={120}
-            height={45}
-            className="h-auto w-auto"
-            style={{ maxHeight: "6rem", maxWidth: "180px" }}
-            quality={100}
-          />
+          <Link href="/" className="transition-opacity hover:opacity-80">
+            <Image
+              src="/logo.webp"
+              alt="白熊堂"
+              width={120}
+              height={45}
+              className="h-auto w-auto"
+              style={{ maxHeight: "6rem", maxWidth: "180px" }}
+              quality={100}
+            />
+          </Link>
           <a
             href="https://www.instagram.com/shirokumado2021/"
             target="_blank"

@@ -11,14 +11,16 @@ export default function Header() {
       <div className="mx-auto flex h-full max-w-6xl items-center justify-between px-4 md:px-6">
         {/* 左側: ロゴとInstagramアイコン */}
         <div className="relative flex items-center gap-3 overflow-visible">
-          <Image
-            src="/logo.webp"
-            alt="白熊堂"
-            width={120}
-            height={45}
-            priority
-            className="h-auto w-auto max-h-20 lg:max-h-20"
-          />
+          <Link href="/" className="transition-opacity hover:opacity-80">
+            <Image
+              src="/logo.webp"
+              alt="白熊堂"
+              width={120}
+              height={45}
+              priority
+              className="h-auto w-auto max-h-20 lg:max-h-20"
+            />
+          </Link>
           <a
             href="https://www.instagram.com/shirokumado2021/"
             target="_blank"
