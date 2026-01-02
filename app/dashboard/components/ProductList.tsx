@@ -663,35 +663,6 @@ function CategoryTabs({
   onCategoryTabChange: (name: string) => void;
 }) {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
-  const [showLeftGradient, setShowLeftGradient] = useState(false);
-  const [showRightGradient, setShowRightGradient] = useState(false);
-
-  // スクロール位置をチェックしてグラデーションの表示を更新
-  const checkScrollPosition = () => {
-    if (!scrollContainerRef.current) return;
-    const { scrollLeft, scrollWidth, clientWidth } = scrollContainerRef.current;
-    setShowLeftGradient(scrollLeft > 0);
-    setShowRightGradient(scrollLeft < scrollWidth - clientWidth - 1);
-  };
-
-  // スクロールイベントのハンドラー
-  useEffect(() => {
-    const container = scrollContainerRef.current;
-    if (!container) return;
-
-    // 初期チェック
-    checkScrollPosition();
-
-    // スクロール時にチェック
-    container.addEventListener("scroll", checkScrollPosition);
-    // リサイズ時にもチェック
-    window.addEventListener("resize", checkScrollPosition);
-
-    return () => {
-      container.removeEventListener("scroll", checkScrollPosition);
-      window.removeEventListener("resize", checkScrollPosition);
-    };
-  }, [categories, publishedProductsByCategory]);
 
   // アクティブなタブが変更されたら、そのタブまでスクロール
   useEffect(() => {
@@ -709,25 +680,17 @@ function CategoryTabs({
   }, [activeCategoryTab]);
 
   return (
-    <div className="mb-6 border-b border-gray-200 relative">
-      {/* 左側のグラデーション */}
-      {showLeftGradient && (
-        <div className="absolute left-0 top-0 bottom-0 w-8 bg-gradient-to-r from-white to-transparent pointer-events-none z-10" />
-      )}
-      {/* 右側のグラデーション */}
-      {showRightGradient && (
-        <div className="absolute right-0 top-0 bottom-0 w-8 bg-gradient-to-l from-white to-transparent pointer-events-none z-10" />
-      )}
-      {/* スクロール可能なタブコンテナ */}
+    <div className="mb-6">
+      {/* スクロール可能なタブコンテナ（枠付き） */}
       <div
         ref={scrollContainerRef}
-        className="overflow-x-auto -mx-6 px-6 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent"
+        className="overflow-x-auto -mx-6 px-6 border border-gray-300 rounded-lg bg-gray-50 scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-200"
         style={{
           scrollbarWidth: "thin",
-          scrollbarColor: "#d1d5db transparent",
+          scrollbarColor: "#9ca3af #e5e7eb",
         }}
       >
-        <nav className="flex space-x-4 sm:space-x-8 min-w-max">
+        <nav className="flex space-x-4 sm:space-x-8 min-w-max py-2">
           {[...categories]
             .sort((a, b) => a.id - b.id)
             .map((category) => {
@@ -743,17 +706,17 @@ function CategoryTabs({
                   data-category-name={category.name}
                   onClick={() => onCategoryTabChange(category.name)}
                   disabled={!hasProducts}
-                  className={`relative whitespace-nowrap border-b-2 pb-3 sm:pb-4 px-2 sm:px-1 text-xs sm:text-sm font-medium transition-colors flex-shrink-0 ${
+                  className={`relative whitespace-nowrap border-2 rounded-md px-3 sm:px-4 py-2 text-xs sm:text-sm font-medium transition-colors shrink-0 ${
                     activeCategoryTab === category.name
-                      ? "border-blue-500 text-blue-600"
+                      ? "border-blue-500 bg-blue-50 text-blue-600"
                       : hasProducts
-                      ? "border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700"
-                      : "border-transparent text-gray-300 cursor-not-allowed"
+                      ? "border-gray-300 bg-white text-gray-700 hover:border-gray-400 hover:bg-gray-50"
+                      : "border-gray-200 bg-gray-100 text-gray-400 cursor-not-allowed"
                   }`}
                 >
                   {category.name}
                   {hasProducts && (
-                    <span className="ml-1 sm:ml-2 text-[10px] sm:text-xs text-gray-400">
+                    <span className="ml-1 sm:ml-2 text-[10px] sm:text-xs text-gray-500">
                       ({categoryGroup!.products.length})
                     </span>
                   )}
