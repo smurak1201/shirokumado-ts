@@ -408,7 +408,7 @@ const ProductList = forwardRef<ProductListRef, ProductListProps>(
                         {/* 商品情報 */}
                         <div className="mt-1 flex flex-1 flex-col sm:mt-2 md:mt-4">
                           {/* 商品名 */}
-                          <div className={`mb-1 flex min-h-[2.5em] items-center justify-center sm:mb-2 sm:min-h-[2.5em] md:min-h-[3em]`}>
+                          <div className={`mb-1 flex h-[3em] items-center justify-center sm:mb-2 sm:h-[3em] md:h-[3.5em]`}>
                             <h3
                               className={`line-clamp-2 whitespace-pre-wrap text-center text-[10px] font-semibold leading-tight sm:text-xs md:text-lg ${
                                 !product.published ? "text-gray-500" : ""

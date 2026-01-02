@@ -38,7 +38,7 @@ export default function ProductTile({ product, onClick }: ProductTileProps) {
       )}
 
       {/* 商品名 */}
-      <div className="flex min-h-[3.25em] items-center justify-center p-5 md:min-h-[3.5em] md:p-6">
+      <div className="flex h-[4em] items-center justify-center p-5 md:h-[4.25em] md:p-6">
         <h3 className="line-clamp-2 whitespace-pre-wrap text-center text-lg font-medium leading-relaxed text-gray-800 md:text-xl">
           {product.name}
         </h3>

@@ -96,7 +96,7 @@ export default function ProductModal({
         {/* 商品情報 */}
         <div className="p-6 md:p-8">
           {/* 商品名 */}
-          <div className="mb-4 flex min-h-[3.25em] items-center justify-center md:min-h-[3.5em]">
+          <div className="mb-4 flex h-[4em] items-center justify-center md:h-[4.25em]">
             <h2 className="line-clamp-2 whitespace-pre-wrap text-center text-2xl font-medium leading-relaxed text-gray-800 md:text-3xl">
               {product.name}
             </h2>
