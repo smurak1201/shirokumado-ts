@@ -2,6 +2,7 @@ import { withErrorHandling, apiSuccess } from '@/lib/api-helpers';
 import { safePrismaOperation } from '@/lib/prisma';
 import { prisma } from '@/lib/prisma';
 import { ValidationError } from '@/lib/errors';
+import { apiConfig } from '@/lib/config';
 import { NextRequest, NextResponse } from 'next/server';
 import { calculatePublishedStatus } from '@/lib/product-utils';
 
@@ -26,8 +27,11 @@ export const GET = withErrorHandling(async () => {
   );
 
   const response = NextResponse.json({ products }, { status: 200 });
-  // キャッシュヘッダーを設定（60秒）
-  response.headers.set('Cache-Control', 'public, s-maxage=60, stale-while-revalidate=120');
+  // キャッシュヘッダーを設定（設定ファイルから読み込み）
+  response.headers.set(
+    'Cache-Control',
+    `public, s-maxage=${apiConfig.productsCacheMaxAge}, stale-while-revalidate=${apiConfig.productsStaleWhileRevalidate}`
+  );
   return response;
 });
 

@@ -1,5 +1,6 @@
 import { put, list, head, del } from '@vercel/blob';
 import { BlobStorageError, logError } from './errors';
+import { blobConfig } from './config';
 
 /**
  * Vercel Blob Storage ユーティリティ
@@ -69,7 +70,7 @@ export async function uploadImage(
   return uploadFile(filename, imageBuffer, {
     contentType,
     access: 'public',
-    cacheControlMaxAge: 31536000, // 1年
+    cacheControlMaxAge: blobConfig.cacheControlMaxAge,
   });
 }
 

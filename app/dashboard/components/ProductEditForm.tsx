@@ -86,8 +86,9 @@ export default function ProductEditForm({
     let processedFile = file;
     setCompressing(true);
     try {
+      const { imageConfig } = await import('@/lib/config');
       processedFile = await compressImage(file, {
-        maxSizeMB: 3.5, // 目標サイズを3.5MBに設定
+        maxSizeMB: imageConfig.compressionTargetSizeMB,
       });
       const originalSizeMB = (file.size / 1024 / 1024).toFixed(2);
       const compressedSizeMB = (processedFile.size / 1024 / 1024).toFixed(2);
@@ -95,8 +96,8 @@ export default function ProductEditForm({
         `画像を圧縮しました: ${originalSizeMB}MB → ${compressedSizeMB}MB`
       );
 
-      // 圧縮後も4MBを超える場合は警告
-      if (processedFile.size > 4 * 1024 * 1024) {
+      // 圧縮後も最大サイズを超える場合は警告
+      if (processedFile.size > imageConfig.maxFileSize) {
         alert(
           `画像が大きすぎます（${compressedSizeMB}MB）。別の画像を選択するか、画像を小さくしてから再度お試しください。`
         );
