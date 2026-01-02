@@ -18,7 +18,7 @@ export default function Footer() {
               width={120}
               height={45}
               className="h-auto w-auto"
-              style={{ maxHeight: "5rem", maxWidth: "180px" }}
+              style={{ maxHeight: "6rem", maxWidth: "180px" }}
               quality={100}
             />
             <a
