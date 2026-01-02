@@ -1,47 +1,40 @@
 "use client";
 
-import { useState } from "react";
 import ProductTile from "./ProductTile";
 import ProductModal from "./ProductModal";
-
-type Product = {
-  id: number;
-  name: string;
-  description: string;
-  imageUrl: string | null;
-  priceS: number | null;
-  priceL: number | null;
-};
-
-type Category = {
-  id: number;
-  name: string;
-};
-
-type ProductGridProps = {
-  category: Category;
-  products: Product[];
-};
+import type { Category, Product } from "../types";
+import { useProductModal } from "../hooks/useProductModal";
 
 /**
- * カテゴリーごとの商品グリッドコンポーネント（3列表示）
+ * ProductGrid の Props
+ */
+interface ProductGridProps {
+  category: Category; // カテゴリー情報
+  products: Product[]; // 商品一覧
+}
+
+/**
+ * カテゴリーごとの商品グリッドコンポーネント
+ *
+ * カテゴリーごとに商品を3列のグリッドで表示します。
+ * 商品タイルをクリックすると、商品詳細を表示するモーダルが開きます。
+ *
+ * Client Component として実装されており、以下の機能を提供します：
+ * - 商品タイルの表示（3列グリッド）
+ * - 商品クリック時のモーダル表示（`useProductModal`フックで管理）
+ * - モーダルの開閉状態管理（`useProductModal`フックで管理）
+ *
+ * @param category - カテゴリー情報
+ * @param products - 表示する商品一覧
  */
 export default function ProductGrid({ category, products }: ProductGridProps) {
-  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-
-  const handleProductClick = (product: Product) => {
-    setSelectedProduct(product);
-    setIsModalOpen(true);
-  };
-
-  const handleCloseModal = () => {
-    setIsModalOpen(false);
-    // モーダルが閉じた後に選択をクリア（アニメーション完了を待つ）
-    setTimeout(() => {
-      setSelectedProduct(null);
-    }, 300);
-  };
+  // モーダルの状態管理（カスタムフックで実装）
+  const {
+    selectedProduct,
+    isModalOpen,
+    handleProductClick,
+    handleCloseModal,
+  } = useProductModal();
 
   // 商品がない場合は何も表示しない
   if (products.length === 0) {
@@ -63,7 +56,11 @@ export default function ProductGrid({ category, products }: ProductGridProps) {
           {products.map((product) => (
             <ProductTile
               key={product.id}
-              product={product}
+              product={{
+                id: product.id,
+                name: product.name,
+                imageUrl: product.imageUrl,
+              }}
               onClick={() => handleProductClick(product)}
             />
           ))}

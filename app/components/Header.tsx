@@ -3,7 +3,12 @@ import Image from "next/image";
 
 /**
  * ヘッダーコンポーネント
- * 左上に店名とInstagramアイコン、右上にナビゲーションリンクを表示
+ *
+ * 全ページ共通のヘッダーを表示します。
+ * - 左上: ロゴ画像（トップページへのリンク）とInstagramアイコン
+ * - 右上: ナビゲーションリンク（よくある質問）
+ *
+ * Server Component として実装されており、静的なコンテンツを表示します。
  */
 export default function Header() {
   return (

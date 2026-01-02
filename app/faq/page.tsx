@@ -3,8 +3,22 @@ import Footer from "../components/Footer";
 
 /**
  * FAQページのメインコンポーネント
+ *
+ * よくある質問と回答を一覧表示します。
+ *
+ * Server Component として実装されており、静的なコンテンツを表示します。
+ * 質問と回答のデータはコンポーネント内で定義されています。
+ *
+ * レイアウト構成：
+ * - ヘッダー: ロゴ、Instagramリンク、ナビゲーション
+ * - メインコンテンツ: FAQ一覧（質問と回答）
+ * - フッター: 店舗情報、地図、連絡先
  */
 export default function FAQPage() {
+  /**
+   * FAQデータ
+   * 質問と回答のペアを配列で定義
+   */
   const faqs = [
     {
       question: "かき氷の販売は夏だけですか？",

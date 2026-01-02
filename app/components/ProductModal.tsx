@@ -1,49 +1,44 @@
 "use client";
 
-import { useEffect } from "react";
+import Image from "next/image";
+import type { Product } from "../types";
+import { useModal } from "../hooks/useModal";
+import { formatPrice } from "../utils/format";
+import CloseIcon from "./icons/CloseIcon";
 
-type Product = {
-  id: number;
-  name: string;
-  description: string;
-  imageUrl: string | null;
-  priceS: number | null;
-  priceL: number | null;
-};
-
-type ProductModalProps = {
-  product: Product | null;
-  isOpen: boolean;
-  onClose: () => void;
-};
+/**
+ * ProductModal の Props
+ */
+interface ProductModalProps {
+  product: Product | null; // 表示する商品情報（nullの場合は非表示）
+  isOpen: boolean; // モーダルの開閉状態
+  onClose: () => void; // モーダルを閉じるコールバック関数
+}
 
 /**
  * 商品詳細を表示するモーダルウィンドウコンポーネント
+ *
+ * 商品の詳細情報（画像、名前、説明、価格）をモーダルウィンドウで表示します。
+ *
+ * Client Component として実装されており、以下の機能を提供します：
+ * - 商品画像の拡大表示（Next.js Imageを使用）
+ * - 商品名、説明、価格の表示
+ * - ESCキーでモーダルを閉じる（`useModal`フックで実装）
+ * - 背景クリックでモーダルを閉じる
+ * - モーダル表示時の背景スクロール無効化（`useModal`フックで実装）
+ * - フェードイン・フェードアウトアニメーション
+ *
+ * @param product - 表示する商品情報
+ * @param isOpen - モーダルの開閉状態
+ * @param onClose - モーダルを閉じるコールバック関数
  */
 export default function ProductModal({
   product,
   isOpen,
   onClose,
 }: ProductModalProps) {
-  // ESCキーでモーダルを閉じる
-  useEffect(() => {
-    const handleEscape = (e: KeyboardEvent) => {
-      if (e.key === "Escape") {
-        onClose();
-      }
-    };
-
-    if (isOpen) {
-      document.addEventListener("keydown", handleEscape);
-      // モーダルが開いている時は背景のスクロールを無効化
-      document.body.style.overflow = "hidden";
-    }
-
-    return () => {
-      document.removeEventListener("keydown", handleEscape);
-      document.body.style.overflow = "unset";
-    };
-  }, [isOpen, onClose]);
+  // ESCキー処理と背景スクロール無効化を管理
+  useModal(isOpen, onClose);
 
   if (!isOpen || !product) {
     return null;
@@ -64,29 +59,19 @@ export default function ProductModal({
           className="absolute right-4 top-4 z-10 rounded-full bg-white/90 p-2 text-gray-600 transition-colors hover:bg-white hover:text-gray-800"
           aria-label="閉じる"
         >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="h-6 w-6"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M6 18L18 6M6 6l12 12"
-            />
-          </svg>
+          <CloseIcon />
         </button>
 
         {/* 商品画像 */}
         {product.imageUrl ? (
           <div className="relative aspect-square w-full overflow-hidden bg-gray-50">
-            <img
+            <Image
               src={product.imageUrl}
               alt={product.name}
-              className="h-full w-full object-cover"
+              fill
+              className="object-cover"
+              sizes="(max-width: 768px) 100vw, (max-width: 1024px) 90vw, 800px"
+              priority
             />
           </div>
         ) : (
@@ -114,7 +99,7 @@ export default function ProductModal({
             <div className="flex items-baseline gap-3 border-t border-gray-200 pt-6">
               {product.priceS && (
                 <span className="text-2xl font-medium tracking-wide text-gray-800 md:text-3xl">
-                  S: ¥{Number(product.priceS).toLocaleString()}
+                  S: {formatPrice(product.priceS)}
                 </span>
               )}
               {product.priceS && product.priceL && (
@@ -122,7 +107,7 @@ export default function ProductModal({
               )}
               {product.priceL && (
                 <span className="text-2xl font-medium tracking-wide text-gray-800 md:text-3xl">
-                  L: ¥{Number(product.priceL).toLocaleString()}
+                  L: {formatPrice(product.priceL)}
                 </span>
               )}
             </div>

@@ -14,7 +14,14 @@ export const dynamic = "force-dynamic";
 /**
  * 公開商品をカテゴリーごとに取得する関数
  *
- * @returns カテゴリーごとにグループ化された公開商品
+ * データベースからカテゴリーと商品を取得し、公開商品のみをフィルタリングして
+ * カテゴリーごとにグループ化します。
+ *
+ * 公開状態の判定ロジック：
+ * - 公開日・終了日が設定されている場合: `calculatePublishedStatus()`で自動判定
+ * - 公開日・終了日が設定されていない場合: `published`フィールドの値を使用
+ *
+ * @returns カテゴリーごとにグループ化された公開商品（商品がないカテゴリーは除外）
  */
 async function getPublishedProductsByCategory() {
   // カテゴリーと商品を並列で取得（パフォーマンス向上）
@@ -28,7 +35,7 @@ async function getPublishedProductsByCategory() {
     // 商品をカテゴリー情報を含めて取得
     prisma.product.findMany({
       include: {
-        category: true,
+        category: true, // カテゴリー情報も一緒に取得（N+1問題を回避）
       },
       orderBy: {
         displayOrder: {
@@ -82,8 +89,18 @@ async function getPublishedProductsByCategory() {
  * ホームページのメインコンポーネント
  *
  * カテゴリーごとに公開されている商品を表示します。
+ *
+ * Server Component として実装されており、サーバーサイドでデータを取得します。
+ * データベースから最新の公開商品を取得し、カテゴリーごとにグループ化して表示します。
+ *
+ * レイアウト構成：
+ * - ヘッダー: ロゴ、Instagramリンク、ナビゲーション
+ * - ヒーローバナー: メイン画像
+ * - メインコンテンツ: カテゴリーごとの商品グリッド
+ * - フッター: 店舗情報、地図、連絡先
  */
 export default async function Home() {
+  // カテゴリーごとにグループ化された公開商品を取得
   const categoriesWithProducts = await getPublishedProductsByCategory();
 
   return (
