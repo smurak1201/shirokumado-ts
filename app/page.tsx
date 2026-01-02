@@ -63,16 +63,18 @@ async function getPublishedProductsByCategory() {
     grouped[categoryName].push(product);
   });
 
-  // カテゴリーの順序に従って返す（Decimal型をNumber型に変換）
-  return categoryOrder.map((categoryName) => ({
-    category: categories.find((c) => c.name === categoryName)!,
-    products: (grouped[categoryName] || []).map((product) => ({
-      ...product,
-      // Decimal型をNumber型に変換（PrismaのDecimal型は文字列として扱われるため）
-      priceS: product.priceS ? Number(product.priceS) : null,
-      priceL: product.priceL ? Number(product.priceL) : null,
-    })),
-  }));
+  // カテゴリーの順序に従って返す（Decimal型をNumber型に変換、商品があるカテゴリーのみ）
+  return categoryOrder
+    .map((categoryName) => ({
+      category: categories.find((c) => c.name === categoryName)!,
+      products: (grouped[categoryName] || []).map((product) => ({
+        ...product,
+        // Decimal型をNumber型に変換（PrismaのDecimal型は文字列として扱われるため）
+        priceS: product.priceS ? Number(product.priceS) : null,
+        priceL: product.priceL ? Number(product.priceL) : null,
+      })),
+    }))
+    .filter(({ products }) => products.length > 0); // 商品があるカテゴリーのみを返す
 }
 
 /**
