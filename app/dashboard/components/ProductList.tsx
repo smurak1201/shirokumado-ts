@@ -709,19 +709,19 @@ function CategoryTabs({
   }, [activeCategoryTab]);
 
   return (
-    <div className="mb-6 border-b border-gray-200 relative">
+    <div className="mb-6 border-b border-gray-200 relative -mx-6 px-6">
       {/* 左側のグラデーション */}
       {showLeftGradient && (
-        <div className="absolute left-0 top-0 bottom-0 w-8 bg-linear-to-r from-white to-transparent pointer-events-none z-10" />
+        <div className="absolute left-6 top-0 bottom-0 w-8 bg-linear-to-r from-white to-transparent pointer-events-none z-10" />
       )}
       {/* 右側のグラデーション */}
       {showRightGradient && (
-        <div className="absolute right-0 top-0 bottom-0 w-8 bg-linear-to-l from-white to-transparent pointer-events-none z-10" />
+        <div className="absolute right-6 top-0 bottom-0 w-8 bg-linear-to-l from-white to-transparent pointer-events-none z-10" />
       )}
       {/* スクロール可能なタブコンテナ */}
       <div
         ref={scrollContainerRef}
-        className="overflow-x-auto -mx-6 px-6 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
+        className="overflow-x-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
         style={{
           scrollbarWidth: "none",
           msOverflowStyle: "none",
