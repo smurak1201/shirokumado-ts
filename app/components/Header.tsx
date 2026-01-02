@@ -17,10 +17,10 @@ export default function Header() {
             width={120}
             height={45}
             priority
-            className="h-8 md:h-10"
+            className="h-auto w-auto"
           />
           <a
-            href="https://www.instagram.com"
+            href="https://www.instagram.com/shirokumado2021/"
             target="_blank"
             rel="noopener noreferrer"
             className="flex items-center justify-center transition-opacity hover:opacity-80"
