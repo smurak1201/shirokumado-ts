@@ -722,7 +722,7 @@ function CategoryTabs({
         <p>カテゴリーごとに公開している商品の配置を変更できます</p>
         <p>非公開のものは表示されません</p>
       </div>
-      
+
       <div className="border-b border-gray-200 relative -mx-6 px-6">
         {/* 左側のグラデーション */}
         {showLeftGradient && (
@@ -741,35 +741,35 @@ function CategoryTabs({
             msOverflowStyle: "none",
           }}
         >
-        <nav className="flex space-x-4 sm:space-x-8 min-w-max">
-          {[...categories]
-            .sort((a, b) => a.id - b.id)
-            .map((category) => {
-              const categoryGroup = publishedProductsByCategory.find(
-                (g) => g.name === category.name
-              );
-              const productCount = categoryGroup
-                ? categoryGroup.products.length
-                : 0;
+          <nav className="flex space-x-4 sm:space-x-8 min-w-max">
+            {[...categories]
+              .sort((a, b) => a.id - b.id)
+              .map((category) => {
+                const categoryGroup = publishedProductsByCategory.find(
+                  (g) => g.name === category.name
+                );
+                const productCount = categoryGroup
+                  ? categoryGroup.products.length
+                  : 0;
 
-              return (
-                <button
-                  key={category.id}
-                  data-category-name={category.name}
-                  onClick={() => onCategoryTabChange(category.name)}
-                  className={`relative whitespace-nowrap border-b-2 pb-3 sm:pb-4 px-2 sm:px-1 text-xs sm:text-sm font-medium transition-colors shrink-0 ${
-                    activeCategoryTab === category.name
-                      ? "border-blue-500 text-blue-600"
-                      : "border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700"
-                  }`}
-                >
-                  {category.name}
-                  <span className="ml-1 sm:ml-2 text-[10px] sm:text-xs text-gray-400">
-                    ({productCount})
-                  </span>
-                </button>
-              );
-            })}
+                return (
+                  <button
+                    key={category.id}
+                    data-category-name={category.name}
+                    onClick={() => onCategoryTabChange(category.name)}
+                    className={`relative whitespace-nowrap border-b-2 pb-3 sm:pb-4 px-2 sm:px-1 text-xs sm:text-sm font-medium transition-colors shrink-0 ${
+                      activeCategoryTab === category.name
+                        ? "border-blue-500 text-blue-600"
+                        : "border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700"
+                    }`}
+                  >
+                    {category.name}
+                    <span className="ml-1 sm:ml-2 text-[10px] sm:text-xs text-gray-400">
+                      ({productCount})
+                    </span>
+                  </button>
+                );
+              })}
           </nav>
         </div>
       </div>
