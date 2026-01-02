@@ -2,6 +2,7 @@ import Image from "next/image";
 import { prisma } from "@/lib/prisma";
 import { calculatePublishedStatus } from "@/lib/product-utils";
 import ProductGrid from "./components/ProductGrid";
+import Header from "./components/Header";
 
 /**
  * 動的レンダリングを強制
@@ -85,8 +86,11 @@ export default async function Home() {
 
   return (
     <div className="min-h-screen bg-white">
-      {/* ヒーローセクション */}
-      <section className="relative h-[70vh] min-h-[500px] w-full overflow-hidden">
+      {/* ヘッダー */}
+      <Header />
+
+      {/* ヒーローバナー */}
+      <section className="relative h-[30vh] min-h-[200px] w-full overflow-hidden md:h-[40vh] md:min-h-[300px]">
         <Image
           src="/hero.webp"
           alt="白熊堂"
@@ -97,22 +101,6 @@ export default async function Home() {
         />
         {/* オーバーレイ（和のテイストのためのグラデーション） */}
         <div className="absolute inset-0 bg-linear-to-b from-white/30 via-white/10 to-white/40" />
-        {/* ロゴとタイトル */}
-        <div className="absolute inset-0 flex flex-col items-center justify-center px-4">
-          <div className="mb-6 animate-fade-in">
-            <Image
-              src="/logo.webp"
-              alt="白熊堂"
-              width={320}
-              height={120}
-              priority
-              className="drop-shadow-2xl"
-            />
-          </div>
-          <p className="text-center text-xl font-light tracking-wider text-gray-800 md:text-2xl">
-            本格かき氷のお店
-          </p>
-        </div>
       </section>
 
       {/* メインコンテンツ */}
