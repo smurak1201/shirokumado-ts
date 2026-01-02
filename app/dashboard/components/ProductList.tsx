@@ -1,6 +1,13 @@
 "use client";
 
-import { useState, useImperativeHandle, forwardRef, useMemo, useEffect, useRef } from "react";
+import {
+  useState,
+  useImperativeHandle,
+  forwardRef,
+  useMemo,
+  useEffect,
+  useRef,
+} from "react";
 import {
   DndContext,
   closestCenter,
@@ -59,7 +66,7 @@ const ProductList = forwardRef<ProductListRef, ProductListProps>(
   ({ initialProducts, categories, onNewProductClick }, ref) => {
     const [products, setProducts] = useState<Product[]>(initialProducts);
     const [editingProduct, setEditingProduct] = useState<Product | null>(null);
-    
+
     // localStorageからタブの状態を読み込む
     const [activeTab, setActiveTab] = useState<"list" | "layout">(() => {
       if (typeof window !== "undefined") {
@@ -70,7 +77,7 @@ const ProductList = forwardRef<ProductListRef, ProductListProps>(
       }
       return "list";
     });
-    
+
     // タブが変更されたらlocalStorageに保存
     useEffect(() => {
       if (typeof window !== "undefined") {
@@ -91,7 +98,7 @@ const ProductList = forwardRef<ProductListRef, ProductListProps>(
           }
         }
       }
-      
+
       const published = products.filter((p) => p.published);
       // カテゴリーをID順でソート（小さい順）
       const sortedCategories = [...categories].sort((a, b) => a.id - b.id);
@@ -104,12 +111,16 @@ const ProductList = forwardRef<ProductListRef, ProductListProps>(
       return sortedCategories[0]?.name || "";
     }, [products, categories]);
 
-    const [activeCategoryTab, setActiveCategoryTab] = useState<string>(initialCategoryTab);
+    const [activeCategoryTab, setActiveCategoryTab] =
+      useState<string>(initialCategoryTab);
 
     // カテゴリータブが変更されたらlocalStorageに保存
     useEffect(() => {
       if (typeof window !== "undefined" && activeCategoryTab) {
-        localStorage.setItem(STORAGE_KEYS.ACTIVE_CATEGORY_TAB, activeCategoryTab);
+        localStorage.setItem(
+          STORAGE_KEYS.ACTIVE_CATEGORY_TAB,
+          activeCategoryTab
+        );
       }
     }, [activeCategoryTab]);
 
@@ -254,11 +265,7 @@ const ProductList = forwardRef<ProductListRef, ProductListProps>(
 
       if (oldIndex === -1 || newIndex === -1) return;
 
-      const newProducts = arrayMove(
-        categoryGroup.products,
-        oldIndex,
-        newIndex
-      );
+      const newProducts = arrayMove(categoryGroup.products, oldIndex, newIndex);
 
       // 順序を更新
       const productOrders = newProducts.map((product, index) => ({
@@ -285,9 +292,7 @@ const ProductList = forwardRef<ProductListRef, ProductListProps>(
       } catch (error) {
         console.error("順序更新エラー:", error);
         alert(
-          error instanceof Error
-            ? error.message
-            : "順序の更新に失敗しました"
+          error instanceof Error ? error.message : "順序の更新に失敗しました"
         );
       }
     };
@@ -584,11 +589,15 @@ const ProductList = forwardRef<ProductListRef, ProductListProps>(
                   </p>
                 ) : (
                   (() => {
-                    const activeCategoryGroup = publishedProductsByCategory.find(
-                      (g) => g.name === activeCategoryTab
-                    );
+                    const activeCategoryGroup =
+                      publishedProductsByCategory.find(
+                        (g) => g.name === activeCategoryTab
+                      );
 
-                    if (!activeCategoryGroup || activeCategoryGroup.products.length === 0) {
+                    if (
+                      !activeCategoryGroup ||
+                      activeCategoryGroup.products.length === 0
+                    ) {
                       return (
                         <p className="py-8 text-center text-gray-500">
                           {activeCategoryTab}に公開されている商品がありません
@@ -805,15 +814,11 @@ function SortableProductItem({ product }: { product: Product }) {
 
         {/* 価格 */}
         <div className="mb-1 text-[8px] sm:mb-2 sm:text-[10px] md:mb-4 md:text-sm text-gray-500">
-          {product.priceS && (
-            <span>S: ¥{product.priceS.toLocaleString()}</span>
-          )}
+          {product.priceS && <span>S: ¥{product.priceS.toLocaleString()}</span>}
           {product.priceS && product.priceL && (
             <span className="mx-0.5 sm:mx-1 md:mx-2">/</span>
           )}
-          {product.priceL && (
-            <span>L: ¥{product.priceL.toLocaleString()}</span>
-          )}
+          {product.priceL && <span>L: ¥{product.priceL.toLocaleString()}</span>}
         </div>
       </div>
     </div>
