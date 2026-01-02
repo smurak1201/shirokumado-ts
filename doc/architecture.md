@@ -60,6 +60,23 @@ lib/
 
 ### コンポーネントの階層構造
 
+#### フロントエンド（公開ページ）
+
+```
+HomePage (Server Component)
+  ├── Header (Server Component)
+  ├── HeroBanner (Server Component)
+  └── ProductGrid (Client Component)
+      ├── ProductTile
+      └── ProductModal
+
+FAQPage (Server Component)
+  ├── Header (Server Component)
+  └── FAQContent (Server Component)
+```
+
+#### ダッシュボード
+
 ```
 DashboardPage (Server Component)
   └── DashboardContent (Client Component)
@@ -131,7 +148,20 @@ const { reorderProducts } = useProductReorder(setProducts, refreshProducts);
 
 ## データフロー
 
-### Server Component → Client Component
+### フロントエンド（公開ページ）
+
+```
+HomePage (Server Component)
+  ↓ Prismaクエリ（データベースから直接取得）
+  ↓ 公開商品のフィルタリング
+  ↓ propsで渡す
+ProductGrid (Client Component)
+  ↓ 状態管理（モーダル表示）
+  ↓ イベントハンドリング
+ProductModal (Client Component)
+```
+
+### ダッシュボード
 
 ```
 DashboardPage (Server Component)

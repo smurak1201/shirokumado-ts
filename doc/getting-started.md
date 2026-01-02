@@ -210,7 +210,23 @@ app/dashboard/
 
 #### `app/page.tsx` - ホームページ
 
-トップページのコンポーネントです。Server Component として実装されています。
+トップページのコンポーネントです。Server Component として実装されています。カテゴリーごとに公開されている商品を表示します。
+
+#### `app/faq/page.tsx` - FAQ ページ
+
+よくある質問ページです。Server Component として実装されています。
+
+#### `app/components/` - フロントエンド共通コンポーネント
+
+フロントエンドで使用する共通コンポーネントを配置します。
+
+**主要なコンポーネント**:
+
+- **`Header.tsx`**: ヘッダーコンポーネント（ロゴ、Instagram リンク、ナビゲーション）
+- **`Footer.tsx`**: フッターコンポーネント（店舗情報、地図、連絡先）
+- **`ProductGrid.tsx`**: カテゴリーごとの商品グリッド表示（Client Component）
+- **`ProductTile.tsx`**: 商品タイルコンポーネント（個別商品の表示）
+- **`ProductModal.tsx`**: 商品詳細モーダルコンポーネント
 
 #### `app/layout.tsx` - ルートレイアウト
 

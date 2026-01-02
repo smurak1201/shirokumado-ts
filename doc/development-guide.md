@@ -125,14 +125,19 @@ export function UserProfile({ userId, showEmail = false }: UserProfileProps) {
 
 ```
 app/
+├── components/        # フロントエンド共通コンポーネント
+│   ├── Header.tsx     # ヘッダー
+│   ├── Footer.tsx     # フッター
+│   ├── ProductGrid.tsx # 商品グリッド
+│   ├── ProductTile.tsx # 商品タイル
+│   └── ProductModal.tsx # 商品モーダル
 ├── dashboard/         # ダッシュボード機能
 │   ├── components/    # ダッシュボード専用コンポーネント
 │   ├── hooks/         # カスタムフック
 │   ├── utils/         # ユーティリティ関数
 │   └── types.ts       # 共通型定義
-├── (routes)/          # ルートグループ
-│   ├── page.tsx
-│   └── layout.tsx
+├── faq/               # FAQページ
+│   └── page.tsx
 └── api/               # API Routes
     └── [resource]/
         └── route.ts

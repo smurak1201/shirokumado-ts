@@ -24,8 +24,10 @@
   - Tailwind CSSの処理
 
 ### フォント
-- **Geist Sans** / **Geist Mono** (Next.js Google Fonts)
+- **Noto Sans JP** (Google Fonts)
+  - 日本語対応のフォント
   - デフォルトフォントとして使用
+  - `app/layout.tsx`で設定
 
 ## バックエンド
 
@@ -93,21 +95,33 @@
 ```
 shirokumado-ts/
 ├── app/              # Next.js App Router
-│   ├── layout.tsx   # ルートレイアウト
-│   ├── page.tsx     # ホームページ
-│   └── globals.css  # グローバルスタイル
+│   ├── api/         # API Routes
+│   ├── components/  # フロントエンド共通コンポーネント
+│   ├── dashboard/  # 商品管理ダッシュボード
+│   ├── faq/        # FAQページ
+│   ├── layout.tsx  # ルートレイアウト
+│   ├── page.tsx    # ホームページ
+│   └── globals.css # グローバルスタイル
 ├── lib/              # ユーティリティ・ライブラリ
 │   ├── prisma.ts    # Prisma Clientインスタンス
 │   ├── blob.ts      # Blobストレージユーティリティ
 │   ├── env.ts       # 環境変数管理
 │   ├── errors.ts    # 統一されたエラーハンドリング
-│   └── api-helpers.ts # API Routes用ヘルパー
+│   ├── api-helpers.ts # API Routes用ヘルパー
+│   ├── config.ts    # アプリケーション設定
+│   ├── image-compression.ts # 画像圧縮
+│   └── product-utils.ts # 商品関連ユーティリティ
 ├── prisma/           # Prisma設定
 │   ├── schema.prisma # データベーススキーマ定義
 │   └── migrations/  # マイグレーションファイル
 ├── public/          # 静的ファイル
+│   ├── logo.webp    # ロゴ画像
+│   ├── hero.webp    # ヒーロー画像
+│   └── logo-instagram.svg # Instagramアイコン
 ├── doc/             # ドキュメント
 │   ├── tech-stack.md           # 技術スタック
+│   ├── frontend-guide.md       # フロントエンドガイド
+│   ├── dashboard-guide.md       # ダッシュボードガイド
 │   └── setup-prisma-blob.md    # Prisma & Blob セットアップガイド
 ├── package.json     # 依存関係
 ├── tsconfig.json    # TypeScript設定
@@ -115,12 +129,28 @@ shirokumado-ts/
 └── eslint.config.mjs # ESLint設定
 ```
 
+## フロントエンド実装
+
+### ページ構成
+- **ホームページ** (`app/page.tsx`): カテゴリーごとの商品表示
+- **FAQページ** (`app/faq/page.tsx`): よくある質問ページ
+- **ダッシュボード** (`app/dashboard/page.tsx`): 商品管理画面
+
+### 共通コンポーネント
+- **Header**: ヘッダー（ロゴ、Instagramリンク、ナビゲーション）
+- **Footer**: フッター（店舗情報、地図、連絡先）
+- **ProductGrid**: カテゴリーごとの商品グリッド表示
+- **ProductTile**: 商品タイルコンポーネント
+- **ProductModal**: 商品詳細モーダル
+
+### 画像最適化
+- **Next.js Image**: 自動的な画像最適化とWebP変換
+- **クライアントサイド圧縮**: `lib/image-compression.ts`で実装
+
 ## 今後の追加予定
 
 ### その他
-- フォームバリデーションライブラリ
 - 認証システム（必要に応じて）
-- 画像最適化ライブラリ
 - テストフレームワーク（Jest、Vitest等）
 
 ## 開発コマンド

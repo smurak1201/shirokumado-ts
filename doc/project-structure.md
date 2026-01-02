@@ -34,6 +34,14 @@ shirokumado-ts/
 │   │   │   └── useProductReorder.ts
 │   │   └── utils/        # ユーティリティ関数
 │   │       └── productUtils.ts
+│   ├── components/       # フロントエンド共通コンポーネント
+│   │   ├── Header.tsx    # ヘッダーコンポーネント
+│   │   ├── Footer.tsx    # フッターコンポーネント
+│   │   ├── ProductGrid.tsx # 商品グリッドコンポーネント
+│   │   ├── ProductTile.tsx # 商品タイルコンポーネント
+│   │   └── ProductModal.tsx # 商品詳細モーダルコンポーネント
+│   ├── faq/              # FAQページ
+│   │   └── page.tsx      # よくある質問ページ
 │   ├── globals.css       # グローバルスタイル
 │   ├── layout.tsx        # ルートレイアウト
 │   └── page.tsx          # ホームページ
@@ -53,7 +61,10 @@ shirokumado-ts/
 │   └── migrations/       # マイグレーションファイル
 │
 ├── public/                 # 静的ファイル
-│   └── favicon.ico       # ファビコン
+│   ├── favicon.ico       # ファビコン
+│   ├── logo.webp         # ロゴ画像
+│   ├── logo-instagram.svg # Instagramアイコン
+│   └── hero.webp         # ヒーロー画像
 │
 ├── doc/                    # ドキュメント
 │   ├── tech-stack.md     # 技術スタック
@@ -94,6 +105,33 @@ app/api/
 │       └── route.ts       # GET /api/products/[id], PUT /api/products/[id]
 └── upload/
     └── route.ts          # POST /api/upload
+```
+
+#### `app/components/` - フロントエンド共通コンポーネント
+
+フロントエンドで使用する共通コンポーネントを配置します。
+
+```
+app/components/
+├── Header.tsx            # ヘッダー（ロゴ、Instagramリンク、ナビゲーション）
+├── Footer.tsx            # フッター（店舗情報、地図、連絡先）
+├── ProductGrid.tsx       # カテゴリーごとの商品グリッド表示（Client Component）
+├── ProductTile.tsx       # 商品タイルコンポーネント
+└── ProductModal.tsx      # 商品詳細モーダルコンポーネント
+```
+
+**設計の特徴**:
+- **再利用性**: 複数のページで使用される共通コンポーネント
+- **Server/Client分離**: Server ComponentとClient Componentを適切に使い分け
+- **レスポンシブデザイン**: モバイルからデスクトップまで対応
+
+#### `app/faq/` - FAQページ
+
+よくある質問ページの実装です。
+
+```
+app/faq/
+└── page.tsx              # FAQページ（Server Component）
 ```
 
 #### `app/dashboard/` - ダッシュボード
