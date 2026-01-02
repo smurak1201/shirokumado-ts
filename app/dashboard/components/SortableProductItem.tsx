@@ -85,9 +85,11 @@ export default function SortableProductItem({
       {/* 商品情報 */}
       <div className="mt-1 flex flex-1 flex-col sm:mt-2 md:mt-4">
         {/* 商品名 */}
-        <h3 className="mb-1 whitespace-pre-wrap text-center text-[10px] font-semibold leading-tight sm:mb-2 sm:text-xs md:text-lg">
-          {product.name}
-        </h3>
+        <div className="mb-1 flex min-h-[2.5em] items-center justify-center sm:mb-2 sm:min-h-[2.5em] md:min-h-[3em]">
+          <h3 className="line-clamp-2 whitespace-pre-wrap text-center text-[10px] font-semibold leading-tight sm:text-xs md:text-lg">
+            {product.name}
+          </h3>
+        </div>
 
         {/* 価格 */}
         <div className="mb-1 text-[8px] sm:mb-2 sm:text-[10px] md:mb-4 md:text-sm text-gray-500">

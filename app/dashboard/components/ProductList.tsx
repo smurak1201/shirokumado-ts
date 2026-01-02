@@ -408,13 +408,15 @@ const ProductList = forwardRef<ProductListRef, ProductListProps>(
                         {/* 商品情報 */}
                         <div className="mt-1 flex flex-1 flex-col sm:mt-2 md:mt-4">
                           {/* 商品名 */}
-                          <h3
-                            className={`mb-1 whitespace-pre-wrap text-center text-[10px] font-semibold leading-tight sm:mb-2 sm:text-xs md:text-lg ${
-                              !product.published ? "text-gray-500" : ""
-                            }`}
-                          >
-                            {product.name}
-                          </h3>
+                          <div className={`mb-1 flex min-h-[2.5em] items-center justify-center sm:mb-2 sm:min-h-[2.5em] md:min-h-[3em]`}>
+                            <h3
+                              className={`line-clamp-2 whitespace-pre-wrap text-center text-[10px] font-semibold leading-tight sm:text-xs md:text-lg ${
+                                !product.published ? "text-gray-500" : ""
+                              }`}
+                            >
+                              {product.name}
+                            </h3>
+                          </div>
 
                           {/* 公開状態・カテゴリ・タグ */}
                           <div className="mb-1 flex flex-wrap gap-0.5 sm:mb-2 sm:gap-1 md:gap-2">
