@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { prisma } from "@/lib/prisma";
 import { calculatePublishedStatus } from "@/lib/product-utils";
+import ProductGrid from "./components/ProductGrid";
 
 /**
  * 動的レンダリングを強制
@@ -61,10 +62,15 @@ async function getPublishedProductsByCategory() {
     grouped[categoryName].push(product);
   });
 
-  // カテゴリーの順序に従って返す
+  // カテゴリーの順序に従って返す（Decimal型をNumber型に変換）
   return categoryOrder.map((categoryName) => ({
     category: categories.find((c) => c.name === categoryName)!,
-    products: grouped[categoryName] || [],
+    products: (grouped[categoryName] || []).map((product) => ({
+      ...product,
+      // Decimal型をNumber型に変換（PrismaのDecimal型は文字列として扱われるため）
+      priceS: product.priceS ? Number(product.priceS) : null,
+      priceL: product.priceL ? Number(product.priceL) : null,
+    })),
   }));
 }
 
@@ -112,81 +118,13 @@ export default async function Home() {
       {/* メインコンテンツ */}
       <main className="mx-auto max-w-6xl px-4 py-12 md:px-6 md:py-16 lg:py-20">
         {/* カテゴリーごとの商品セクション */}
-        {categoriesWithProducts.map(({ category, products }) => {
-          // 商品がないカテゴリーは表示しない
-          if (products.length === 0) return null;
-
-          return (
-            <section key={category.id} className="mb-16 md:mb-20">
-              {/* カテゴリータイトル */}
-              <div className="mb-10 border-b border-gray-200 pb-5">
-                <h2 className="text-3xl font-light tracking-widest text-gray-800 md:text-4xl">
-                  {category.name}
-                </h2>
-              </div>
-
-              {/* 商品グリッド */}
-              <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
-                {products.map((product) => (
-                  <div
-                    key={product.id}
-                    className="group overflow-hidden rounded-lg border border-gray-100 bg-white shadow-sm transition-all duration-300 hover:border-gray-200 hover:shadow-lg"
-                  >
-                    {/* 商品画像 */}
-                    {product.imageUrl ? (
-                      <div className="relative aspect-square w-full overflow-hidden bg-gray-50">
-                        <img
-                          src={product.imageUrl}
-                          alt={product.name}
-                          className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
-                          loading="lazy"
-                        />
-                        {/* ホバー時のオーバーレイ */}
-                        <div className="absolute inset-0 bg-white/0 transition-colors duration-300 group-hover:bg-white/5" />
-                      </div>
-                    ) : (
-                      <div className="aspect-square w-full bg-gradient-to-br from-gray-50 to-gray-100" />
-                    )}
-
-                    {/* 商品情報 */}
-                    <div className="p-5 md:p-6">
-                      {/* 商品名 */}
-                      <h3 className="mb-3 text-lg font-medium leading-relaxed text-gray-800 md:text-xl">
-                        {product.name}
-                      </h3>
-
-                      {/* 商品説明 */}
-                      {product.description && (
-                        <p className="mb-5 line-clamp-2 text-sm leading-relaxed text-gray-600">
-                          {product.description}
-                        </p>
-                      )}
-
-                      {/* 価格 */}
-                      {(product.priceS || product.priceL) && (
-                        <div className="flex items-baseline gap-2 border-t border-gray-100 pt-4 text-gray-800">
-                          {product.priceS && (
-                            <span className="text-lg font-medium tracking-wide">
-                              S: ¥{Number(product.priceS).toLocaleString()}
-                            </span>
-                          )}
-                          {product.priceS && product.priceL && (
-                            <span className="text-gray-300">/</span>
-                          )}
-                          {product.priceL && (
-                            <span className="text-lg font-medium tracking-wide">
-                              L: ¥{Number(product.priceL).toLocaleString()}
-                            </span>
-                          )}
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </section>
-          );
-        })}
+        {categoriesWithProducts.map(({ category, products }) => (
+          <ProductGrid
+            key={category.id}
+            category={category}
+            products={products}
+          />
+        ))}
 
         {/* 商品がない場合のメッセージ */}
         {categoriesWithProducts.every(
