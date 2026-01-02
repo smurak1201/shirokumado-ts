@@ -80,7 +80,6 @@ async function getPublishedProductsByCategory() {
 /**
  * ホームページのメインコンポーネント
  *
- * 白基調の和のテイストでクールなデザインのページを表示します。
  * カテゴリーごとに公開されている商品を表示します。
  */
 export default async function Home() {
@@ -101,7 +100,7 @@ export default async function Home() {
           className="object-cover"
           sizes="100vw"
         />
-        {/* オーバーレイ（和のテイストのためのグラデーション） */}
+        {/* オーバーレイ */}
         <div className="absolute inset-0 bg-linear-to-b from-white/20 via-white/8 to-white/25" />
       </section>
 
