@@ -6,7 +6,6 @@ import {
   forwardRef,
   useMemo,
   useEffect,
-  useRef,
 } from "react";
 import {
   DndContext,
@@ -18,39 +17,17 @@ import {
   DragEndEvent,
 } from "@dnd-kit/core";
 import {
-  arrayMove,
   SortableContext,
   sortableKeyboardCoordinates,
-  useSortable,
   rectSortingStrategy,
 } from "@dnd-kit/sortable";
-import { CSS } from "@dnd-kit/utilities";
 import ProductEditForm from "./ProductEditForm";
-
-// localStorageのキー
-const STORAGE_KEYS = {
-  ACTIVE_TAB: "dashboard_active_tab",
-  ACTIVE_CATEGORY_TAB: "dashboard_active_category_tab",
-} as const;
-
-interface Category {
-  id: number;
-  name: string;
-}
-
-interface Product {
-  id: number;
-  name: string;
-  description: string;
-  imageUrl: string | null;
-  priceS: number | null;
-  priceL: number | null;
-  category: Category;
-  published: boolean;
-  publishedAt: string | null;
-  endedAt: string | null;
-  displayOrder: number | null;
-}
+import CategoryTabs from "./CategoryTabs";
+import SortableProductItem from "./SortableProductItem";
+import { useTabState, useCategoryTabState } from "../hooks/useTabState";
+import { useProductReorder } from "../hooks/useProductReorder";
+import { groupProductsByCategory, filterProducts } from "../utils/productUtils";
+import type { Category, Product } from "../types";
 
 interface ProductListProps {
   initialProducts: Product[];
@@ -67,69 +44,17 @@ const ProductList = forwardRef<ProductListRef, ProductListProps>(
     const [products, setProducts] = useState<Product[]>(initialProducts);
     const [editingProduct, setEditingProduct] = useState<Product | null>(null);
 
-    // localStorageからタブの状態を読み込む
-    const [activeTab, setActiveTab] = useState<"list" | "layout">(() => {
-      if (typeof window !== "undefined") {
-        const saved = localStorage.getItem(STORAGE_KEYS.ACTIVE_TAB);
-        if (saved === "list" || saved === "layout") {
-          return saved;
-        }
-      }
-      return "list";
-    });
-
-    // タブが変更されたらlocalStorageに保存
-    useEffect(() => {
-      if (typeof window !== "undefined") {
-        localStorage.setItem(STORAGE_KEYS.ACTIVE_TAB, activeTab);
-      }
-    }, [activeTab]);
-
-    // 初期カテゴリータブは、localStorageから読み込むか、公開商品がある最初のカテゴリー
-    const initialCategoryTab = useMemo(() => {
-      // localStorageから保存されたカテゴリータブを読み込む
-      if (typeof window !== "undefined") {
-        const saved = localStorage.getItem(STORAGE_KEYS.ACTIVE_CATEGORY_TAB);
-        if (saved) {
-          // 保存されたカテゴリーが存在するか確認
-          const categoryExists = categories.some((c) => c.name === saved);
-          if (categoryExists) {
-            return saved;
-          }
-        }
-      }
-
-      const published = products.filter((p) => p.published);
-      // カテゴリーをID順でソート（小さい順）
-      const sortedCategories = [...categories].sort((a, b) => a.id - b.id);
-      if (published.length > 0) {
-        const firstCategory = sortedCategories.find((c) =>
-          published.some((p) => p.category.id === c.id)
-        );
-        return firstCategory?.name || sortedCategories[0]?.name || "";
-      }
-      return sortedCategories[0]?.name || "";
-    }, [products, categories]);
-
-    const [activeCategoryTab, setActiveCategoryTab] =
-      useState<string>(initialCategoryTab);
-
-    // カテゴリータブが変更されたらlocalStorageに保存
-    useEffect(() => {
-      if (typeof window !== "undefined" && activeCategoryTab) {
-        localStorage.setItem(
-          STORAGE_KEYS.ACTIVE_CATEGORY_TAB,
-          activeCategoryTab
-        );
-      }
-    }, [activeCategoryTab]);
+    // タブ状態管理
+    const { activeTab, setActiveTab } = useTabState();
+    const { activeCategoryTab, setActiveCategoryTab, initialCategoryTab } =
+      useCategoryTabState(products, categories);
 
     // カテゴリータブが変更されたら、activeCategoryTabも更新
     useEffect(() => {
       if (activeTab === "layout" && initialCategoryTab) {
         setActiveCategoryTab(initialCategoryTab);
       }
-    }, [activeTab, initialCategoryTab]);
+    }, [activeTab, initialCategoryTab, setActiveCategoryTab]);
 
     // 検索条件の状態
     const [searchName, setSearchName] = useState("");
@@ -204,42 +129,13 @@ const ProductList = forwardRef<ProductListRef, ProductListProps>(
     );
 
     // 配置変更タブ用: 公開商品をカテゴリーごとにグループ化
-    const publishedProductsByCategory = useMemo(() => {
-      const published = products.filter((p) => p.published);
+    const publishedProductsByCategory = useMemo(
+      () => groupProductsByCategory(products, categories),
+      [products, categories]
+    );
 
-      // カテゴリーをID順でソート（小さい順）
-      const sortedCategories = [...categories].sort((a, b) => a.id - b.id);
-      const categoryOrder = sortedCategories.map((c) => c.name);
-
-      // カテゴリーごとにグループ化
-      const grouped: Record<string, Product[]> = {};
-      published.forEach((product) => {
-        const categoryName = product.category.name;
-        if (!grouped[categoryName]) {
-          grouped[categoryName] = [];
-        }
-        grouped[categoryName].push(product);
-      });
-
-      // 各カテゴリー内でdisplayOrderでソート（nullは最後）
-      Object.keys(grouped).forEach((categoryName) => {
-        const products = grouped[categoryName];
-        if (products) {
-          products.sort((a, b) => {
-            if (a.displayOrder === null && b.displayOrder === null) return 0;
-            if (a.displayOrder === null) return 1;
-            if (b.displayOrder === null) return -1;
-            return a.displayOrder - b.displayOrder;
-          });
-        }
-      });
-
-      // カテゴリーの順序に従って返す（商品がないカテゴリーも含める）
-      return categoryOrder.map((categoryName) => ({
-        name: categoryName,
-        products: grouped[categoryName] || [],
-      }));
-    }, [products, categories]);
+    // 商品順序変更フック
+    const { reorderProducts } = useProductReorder(setProducts, refreshProducts);
 
     // ドラッグ終了時の処理
     const handleDragEnd = async (event: DragEndEvent, categoryName: string) => {
@@ -263,91 +159,21 @@ const ProductList = forwardRef<ProductListRef, ProductListProps>(
 
       if (oldIndex === -1 || newIndex === -1) return;
 
-      const newProducts = arrayMove(categoryGroup.products, oldIndex, newIndex);
-
-      // 楽観的UI更新: API呼び出し前にローカル状態を更新
-      const productOrders = newProducts.map((product, index) => ({
-        id: product.id,
-        displayOrder: index + 1,
-      }));
-
-      // ローカルのproducts状態を即座に更新
-      setProducts((prevProducts) => {
-        return prevProducts.map((product) => {
-          const order = productOrders.find((o) => o.id === product.id);
-          if (order) {
-            return { ...product, displayOrder: order.displayOrder };
-          }
-          return product;
-        });
-      });
-
       try {
-        const response = await fetch("/api/products/reorder", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ productOrders }),
-        });
-
-        if (!response.ok) {
-          const error = await response.json();
-          throw new Error(error.error || "順序の更新に失敗しました");
-        }
-
-        // 成功した場合は、サーバーから最新の状態を取得して同期
-        await refreshProducts();
+        await reorderProducts(categoryGroup, oldIndex, newIndex);
       } catch (error) {
-        console.error("順序更新エラー:", error);
-        // エラーが発生した場合は、元の状態に戻すために再取得
-        await refreshProducts();
         alert(
           error instanceof Error ? error.message : "順序の更新に失敗しました"
         );
       }
     };
 
-    // カタカナをひらがなに変換する関数
-    const toHiragana = (str: string): string => {
-      return str.replace(/[\u30A1-\u30F6]/g, (match) => {
-        return String.fromCharCode(match.charCodeAt(0) - 0x60);
-      });
-    };
-
-    // 検索用の正規化関数（ひらがな・カタカナを統一し、大文字小文字も統一）
-    const normalizeForSearch = (str: string): string => {
-      return toHiragana(str.toLowerCase());
-    };
-
     // 検索条件に基づいて商品をフィルタリング
-    const filteredProducts = useMemo(() => {
-      return products.filter((product) => {
-        // 商品名で検索（ひらがな・カタカナ、大文字小文字を区別しない）
-        if (searchName) {
-          const normalizedProductName = normalizeForSearch(product.name);
-          const normalizedSearchName = normalizeForSearch(searchName);
-          if (!normalizedProductName.includes(normalizedSearchName)) {
-            return false;
-          }
-        }
-
-        // 公開/非公開でフィルタリング
-        if (searchPublished !== null && product.published !== searchPublished) {
-          return false;
-        }
-
-        // カテゴリーでフィルタリング
-        if (
-          searchCategoryId !== null &&
-          product.category.id !== searchCategoryId
-        ) {
-          return false;
-        }
-
-        return true;
-      });
-    }, [products, searchName, searchPublished, searchCategoryId]);
+    const filteredProducts = useMemo(
+      () =>
+        filterProducts(products, searchName, searchPublished, searchCategoryId),
+      [products, searchName, searchPublished, searchCategoryId]
+    );
 
     return (
       <>
@@ -656,184 +482,5 @@ const ProductList = forwardRef<ProductListRef, ProductListProps>(
 );
 
 ProductList.displayName = "ProductList";
-
-// カテゴリータブコンポーネント（スクロール可能な視覚的インジケーター付き）
-function CategoryTabs({
-  categories,
-  publishedProductsByCategory,
-  activeCategoryTab,
-  onCategoryTabChange,
-}: {
-  categories: Category[];
-  publishedProductsByCategory: Array<{ name: string; products: Product[] }>;
-  activeCategoryTab: string;
-  onCategoryTabChange: (name: string) => void;
-}) {
-  const scrollContainerRef = useRef<HTMLDivElement>(null);
-  const [showLeftGradient, setShowLeftGradient] = useState(false);
-  const [showRightGradient, setShowRightGradient] = useState(false);
-
-  // スクロール位置をチェックしてグラデーションの表示を更新
-  const checkScrollPosition = () => {
-    if (!scrollContainerRef.current) return;
-    const { scrollLeft, scrollWidth, clientWidth } = scrollContainerRef.current;
-    setShowLeftGradient(scrollLeft > 0);
-    setShowRightGradient(scrollLeft < scrollWidth - clientWidth - 1);
-  };
-
-  // スクロールイベントのハンドラー
-  useEffect(() => {
-    const container = scrollContainerRef.current;
-    if (!container) return;
-
-    // 初期チェック
-    checkScrollPosition();
-
-    // スクロール時にチェック
-    container.addEventListener("scroll", checkScrollPosition);
-    // リサイズ時にもチェック
-    window.addEventListener("resize", checkScrollPosition);
-
-    return () => {
-      container.removeEventListener("scroll", checkScrollPosition);
-      window.removeEventListener("resize", checkScrollPosition);
-    };
-  }, [categories, publishedProductsByCategory]);
-
-  // アクティブなタブが変更されたら、そのタブまでスクロール
-  useEffect(() => {
-    if (!scrollContainerRef.current) return;
-    const activeButton = scrollContainerRef.current.querySelector(
-      `button[data-category-name="${activeCategoryTab}"]`
-    ) as HTMLElement;
-    if (activeButton) {
-      activeButton.scrollIntoView({
-        behavior: "smooth",
-        block: "nearest",
-        inline: "center",
-      });
-    }
-  }, [activeCategoryTab]);
-
-  return (
-    <div className="mb-6">
-      {/* 説明メッセージ */}
-      <div className="mb-4 text-sm text-gray-600">
-        <p>カテゴリーごとに公開している商品の配置を変更できます</p>
-        <p>非公開の商品は表示されません</p>
-      </div>
-
-      <div className="border-b border-gray-200 relative -mx-6 px-6">
-        {/* 左側のグラデーション */}
-        {showLeftGradient && (
-          <div className="absolute left-6 top-0 bottom-0 w-8 bg-linear-to-r from-white to-transparent pointer-events-none z-10" />
-        )}
-        {/* 右側のグラデーション */}
-        {showRightGradient && (
-          <div className="absolute right-6 top-0 bottom-0 w-8 bg-linear-to-l from-white to-transparent pointer-events-none z-10" />
-        )}
-        {/* スクロール可能なタブコンテナ */}
-        <div
-          ref={scrollContainerRef}
-          className="overflow-x-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
-          style={{
-            scrollbarWidth: "none",
-            msOverflowStyle: "none",
-          }}
-        >
-          <nav className="flex space-x-4 sm:space-x-8 min-w-max">
-            {[...categories]
-              .sort((a, b) => a.id - b.id)
-              .map((category) => {
-                const categoryGroup = publishedProductsByCategory.find(
-                  (g) => g.name === category.name
-                );
-                const productCount = categoryGroup
-                  ? categoryGroup.products.length
-                  : 0;
-
-                return (
-                  <button
-                    key={category.id}
-                    data-category-name={category.name}
-                    onClick={() => onCategoryTabChange(category.name)}
-                    className={`relative whitespace-nowrap border-b-2 pb-3 sm:pb-4 px-2 sm:px-1 text-xs sm:text-sm font-medium transition-colors shrink-0 ${
-                      activeCategoryTab === category.name
-                        ? "border-blue-500 text-blue-600"
-                        : "border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700"
-                    }`}
-                  >
-                    {category.name}
-                    <span className="ml-1 sm:ml-2 text-[10px] sm:text-xs text-gray-400">
-                      ({productCount})
-                    </span>
-                  </button>
-                );
-              })}
-          </nav>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-// ソート可能な商品アイテムコンポーネント
-function SortableProductItem({ product }: { product: Product }) {
-  const {
-    attributes,
-    listeners,
-    setNodeRef,
-    transform,
-    transition,
-    isDragging,
-  } = useSortable({ id: product.id });
-
-  const style = {
-    transform: CSS.Transform.toString(transform),
-    transition,
-    opacity: isDragging ? 0.5 : 1,
-  };
-
-  return (
-    <div
-      ref={setNodeRef}
-      style={style}
-      className={`flex flex-col rounded-lg border border-gray-200 p-1 sm:p-2 md:p-4 bg-white cursor-move ${
-        isDragging ? "shadow-lg" : ""
-      }`}
-      {...attributes}
-      {...listeners}
-    >
-      {/* 商品画像 */}
-      {product.imageUrl ? (
-        <img
-          src={product.imageUrl}
-          alt={product.name}
-          className="h-20 w-full rounded object-cover sm:h-32 md:h-48"
-          loading="lazy"
-        />
-      ) : (
-        <div className="h-20 w-full rounded bg-gray-200 sm:h-32 md:h-48" />
-      )}
-
-      {/* 商品情報 */}
-      <div className="mt-1 flex flex-1 flex-col sm:mt-2 md:mt-4">
-        {/* 商品名 */}
-        <h3 className="mb-1 whitespace-pre-wrap text-center text-[10px] font-semibold leading-tight sm:mb-2 sm:text-xs md:text-lg">
-          {product.name}
-        </h3>
-
-        {/* 価格 */}
-        <div className="mb-1 text-[8px] sm:mb-2 sm:text-[10px] md:mb-4 md:text-sm text-gray-500">
-          {product.priceS && <span>S: ¥{product.priceS.toLocaleString()}</span>}
-          {product.priceS && product.priceL && (
-            <span className="mx-0.5 sm:mx-1 md:mx-2">/</span>
-          )}
-          {product.priceL && <span>L: ¥{product.priceL.toLocaleString()}</span>}
-        </div>
-      </div>
-    </div>
-  );
-}
 
 export default ProductList;

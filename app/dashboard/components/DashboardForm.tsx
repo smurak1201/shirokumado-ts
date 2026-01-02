@@ -3,11 +3,7 @@
 import { useState, useEffect } from "react";
 import { calculatePublishedStatus, hasDateRange, formatPrice, parsePrice, isNumericKey } from "@/lib/product-utils";
 import { compressImage } from "@/lib/image-compression";
-
-interface Category {
-  id: number;
-  name: string;
-}
+import type { Category } from "../types";
 
 interface DashboardFormProps {
   categories: Category[];

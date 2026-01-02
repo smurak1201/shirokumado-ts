@@ -3,25 +3,7 @@
 import { useRef, useState } from "react";
 import DashboardFormWrapper from "./DashboardFormWrapper";
 import ProductList from "./ProductList";
-
-interface Category {
-  id: number;
-  name: string;
-}
-
-interface Product {
-  id: number;
-  name: string;
-  description: string;
-  imageUrl: string | null;
-  priceS: number | null;
-  priceL: number | null;
-  category: Category;
-  published: boolean;
-  publishedAt: string | null;
-  endedAt: string | null;
-  displayOrder: number | null;
-}
+import type { Category, Product } from "../types";
 
 interface DashboardContentProps {
   categories: Category[];

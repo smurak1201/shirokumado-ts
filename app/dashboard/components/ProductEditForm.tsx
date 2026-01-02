@@ -9,25 +9,7 @@ import {
   isNumericKey,
 } from "@/lib/product-utils";
 import { compressImage } from "@/lib/image-compression";
-
-interface Category {
-  id: number;
-  name: string;
-}
-
-interface Product {
-  id: number;
-  name: string;
-  description: string;
-  imageUrl: string | null;
-  priceS: number | null;
-  priceL: number | null;
-  category: Category;
-  published: boolean;
-  publishedAt: string | null;
-  endedAt: string | null;
-  displayOrder: number | null;
-}
+import type { Category, Product } from "../types";
 
 interface ProductEditFormProps {
   product: Product;

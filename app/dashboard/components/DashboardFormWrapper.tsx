@@ -2,11 +2,7 @@
 
 import { useState } from "react";
 import DashboardForm from "./DashboardForm";
-
-interface Category {
-  id: number;
-  name: string;
-}
+import type { Category } from "../types";
 
 interface DashboardFormWrapperProps {
   categories: Category[];
