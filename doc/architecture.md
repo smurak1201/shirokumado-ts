@@ -24,6 +24,27 @@
 
 ## ディレクトリ構造の設計思想
 
+### フロントエンド (`app/`)
+
+フロントエンドは、以下のように構造化されています：
+
+```
+app/
+├── types.ts           # 共通型定義
+├── hooks/            # カスタムフック
+├── utils/            # ユーティリティ関数
+└── components/       # UIコンポーネント
+    └── icons/       # アイコンコンポーネント
+```
+
+**設計思想**:
+
+- **`types.ts`**: フロントエンドで使用する型を一元管理（重複を防止）
+- **`hooks/`**: 状態管理や副作用をカスタムフックに分離（再利用可能）
+- **`utils/`**: 純粋関数として実装可能なビジネスロジック（テストしやすい）
+- **`components/`**: UI コンポーネントのみを配置（見た目とレイアウト）
+- **`components/icons/`**: アイコンコンポーネントを分離（再利用性）
+
 ### 機能別ディレクトリ (`app/dashboard/`)
 
 ダッシュボード機能は、以下のように構造化されています：
@@ -67,8 +88,12 @@ HomePage (Server Component)
   ├── Header (Server Component)
   ├── HeroBanner (Server Component)
   └── ProductGrid (Client Component)
+      ├── useProductModal (カスタムフック)
       ├── ProductTile
       └── ProductModal
+          ├── useModal (カスタムフック)
+          ├── CloseIcon
+          └── formatPrice (ユーティリティ関数)
 
 FAQPage (Server Component)
   ├── Header (Server Component)
@@ -122,14 +147,16 @@ DashboardPage (Server Component)
 
 ### カスタムフックの活用
 
-#### `useTabState`
+#### ダッシュボード用フック
+
+##### `useTabState`
 
 ```typescript
 // タブ状態をlocalStorageと同期
 const { activeTab, setActiveTab } = useTabState();
 ```
 
-#### `useCategoryTabState`
+##### `useCategoryTabState`
 
 ```typescript
 // カテゴリータブの状態管理
@@ -139,11 +166,28 @@ const { activeCategoryTab, setActiveCategoryTab } = useCategoryTabState(
 );
 ```
 
-#### `useProductReorder`
+##### `useProductReorder`
 
 ```typescript
 // 商品順序変更の楽観的UI更新
 const { reorderProducts } = useProductReorder(setProducts, refreshProducts);
+```
+
+#### フロントエンド用フック
+
+##### `useModal`
+
+```typescript
+// モーダルの開閉状態とESCキー処理を管理
+useModal(isOpen, onClose);
+```
+
+##### `useProductModal`
+
+```typescript
+// 商品モーダルの状態管理
+const { selectedProduct, isModalOpen, handleProductClick, handleCloseModal } =
+  useProductModal();
 ```
 
 ## データフロー

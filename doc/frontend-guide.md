@@ -5,15 +5,19 @@
 ## 📋 目次
 
 - [概要](#概要)
+- [ディレクトリ構造](#ディレクトリ構造)
 - [ページ構成](#ページ構成)
 - [コンポーネント構成](#コンポーネント構成)
+- [型定義](#型定義)
+- [カスタムフック](#カスタムフック)
+- [ユーティリティ関数](#ユーティリティ関数)
 - [レイアウトとスタイリング](#レイアウトとスタイリング)
 - [データフロー](#データフロー)
 - [レスポンシブデザイン](#レスポンシブデザイン)
 
 ## 概要
 
-フロントエンドは、Next.js App Router を使用した Server Components ベースの実装です。公開商品の表示、FAQページ、共通レイアウトコンポーネントで構成されています。
+フロントエンドは、Next.js App Router を使用した Server Components ベースの実装です。公開商品の表示、FAQ ページ、共通レイアウトコンポーネントで構成されています。
 
 ### 技術スタック
 
@@ -60,12 +64,12 @@ async function getPublishedProductsByCategory() {
 
 **レイアウト**:
 
-1. **ヘッダー**: ロゴ、Instagramリンク、ナビゲーション
+1. **ヘッダー**: ロゴ、Instagram リンク、ナビゲーション
 2. **ヒーローバナー**: メイン画像（`/hero.webp`）
 3. **メインコンテンツ**: カテゴリーごとの商品グリッド
 4. **フッター**: 店舗情報、地図、連絡先
 
-### FAQページ (`app/faq/page.tsx`)
+### FAQ ページ (`app/faq/page.tsx`)
 
 よくある質問ページです。静的なコンテンツを表示します。
 
@@ -83,7 +87,110 @@ const faqs = [
 ];
 ```
 
+## ディレクトリ構造
+
+フロントエンドは以下のように構造化されています：
+
+```
+app/
+├── types.ts                    # 共通型定義
+├── hooks/                      # カスタムフック
+│   ├── useModal.ts            # モーダル管理フック
+│   └── useProductModal.ts    # 商品モーダル管理フック
+├── utils/                      # ユーティリティ関数
+│   └── format.ts              # フォーマット関数
+├── components/                 # UIコンポーネント
+│   ├── icons/                 # アイコンコンポーネント
+│   │   └── CloseIcon.tsx     # 閉じるアイコン
+│   ├── Header.tsx             # ヘッダー
+│   ├── Footer.tsx             # フッター
+│   ├── ProductGrid.tsx        # 商品グリッド
+│   ├── ProductTile.tsx        # 商品タイル
+│   └── ProductModal.tsx       # 商品モーダル
+├── page.tsx                    # ホームページ
+└── faq/
+    └── page.tsx               # FAQページ
+```
+
+**設計思想**:
+
+- **`types.ts`**: フロントエンドで使用する型を一元管理（重複を防止）
+- **`hooks/`**: 状態管理や副作用をカスタムフックに分離（再利用可能）
+- **`utils/`**: 純粋関数として実装可能なビジネスロジック（テストしやすい）
+- **`components/`**: UI コンポーネントのみを配置（見た目とレイアウト）
+- **`components/icons/`**: アイコンコンポーネントを分離（再利用性）
+
 ## コンポーネント構成
+
+### 共通型定義 (`app/types.ts`)
+
+フロントエンドで使用する型定義を一元管理します。
+
+**主要な型**:
+
+- **`Category`**: カテゴリー情報
+- **`Product`**: 商品情報（詳細表示用）
+- **`ProductTile`**: 商品情報（タイル表示用、最小限の情報）
+
+**利点**:
+
+- 型定義の重複を防止
+- 一貫性の確保
+- 変更時の影響範囲が明確
+
+### カスタムフック (`app/hooks/`)
+
+#### useModal (`hooks/useModal.ts`)
+
+モーダルの開閉状態と ESC キー処理を管理するカスタムフックです。
+
+**機能**:
+
+- ESC キーでモーダルを閉じる
+- モーダル表示時の背景スクロール無効化
+
+**使用例**:
+
+```typescript
+import { useModal } from "../hooks/useModal";
+
+useModal(isOpen, onClose);
+```
+
+#### useProductModal (`hooks/useProductModal.ts`)
+
+商品モーダルの状態管理を行うカスタムフックです。
+
+**機能**:
+
+- 選択された商品の管理
+- モーダルの開閉状態管理
+- 商品クリック時のハンドリング
+- モーダル閉じる時のアニメーション考慮
+
+**使用例**:
+
+```typescript
+const { selectedProduct, isModalOpen, handleProductClick, handleCloseModal } =
+  useProductModal();
+```
+
+### ユーティリティ関数 (`app/utils/`)
+
+#### formatPrice (`utils/format.ts`)
+
+価格をフォーマットして表示用の文字列を返す関数です。
+
+**機能**:
+
+- 数値を 3 桁区切りの文字列に変換
+- 円記号を付与
+
+**使用例**:
+
+```typescript
+formatPrice(1000); // "¥1,000"
+```
 
 ### 共通コンポーネント (`app/components/`)
 
@@ -94,7 +201,7 @@ const faqs = [
 **機能**:
 
 - ロゴ画像（トップページへのリンク）
-- Instagramアイコン（外部リンク）
+- Instagram アイコン（外部リンク）
 - ナビゲーションリンク（よくある質問）
 
 **特徴**:
@@ -132,14 +239,14 @@ const faqs = [
 **機能**:
 
 - ロゴ画像（トップページへのリンク）
-- Instagramアイコン
+- Instagram アイコン
 - 店舗情報（住所、営業時間、定休日、電話番号）
-- Googleマップ埋め込み
+- Google マップ埋め込み
 
 **レイアウト**:
 
-- ロゴとInstagramアイコン（1行目、横並び）
-- 店舗情報（2行目、4列グリッド）
+- ロゴと Instagram アイコン（1 行目、横並び）
+- 店舗情報（2 行目、4 列グリッド）
   - 住所
   - 営業情報（営業時間、定休日）
   - お問い合わせ（電話番号）
@@ -147,9 +254,9 @@ const faqs = [
 
 **特徴**:
 
-- 常に4列のグリッドレイアウト（モバイルでも）
+- 常に 4 列のグリッドレイアウト（モバイルでも）
 - レスポンシブなフォントサイズとスペーシング
-- Googleマップの埋め込み
+- Google マップの埋め込み
 
 #### ProductGrid (`ProductGrid.tsx`)
 
@@ -158,23 +265,25 @@ const faqs = [
 **機能**:
 
 - カテゴリータイトルの表示
-- 商品タイルの3列グリッド表示
-- 商品クリック時のモーダル表示
+- 商品タイルの 3 列グリッド表示
+- 商品クリック時のモーダル表示（`useProductModal`フックで管理）
 
 **特徴**:
 
 - Client Component（`'use client'`）
 - 商品がない場合は非表示
-- モーダル状態管理
+- モーダル状態管理をカスタムフックに分離
 
 **実装例**:
 
 ```typescript
 "use client";
 
+import { useProductModal } from "../hooks/useProductModal";
+
 export default function ProductGrid({ category, products }) {
-  const [selectedProduct, setSelectedProduct] = useState(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const { selectedProduct, isModalOpen, handleProductClick, handleCloseModal } =
+    useProductModal();
 
   return (
     <>
@@ -184,7 +293,11 @@ export default function ProductGrid({ category, products }) {
           {products.map((product) => (
             <ProductTile
               key={product.id}
-              product={product}
+              product={{
+                id: product.id,
+                name: product.name,
+                imageUrl: product.imageUrl,
+              }}
               onClick={() => handleProductClick(product)}
             />
           ))}
@@ -206,16 +319,17 @@ export default function ProductGrid({ category, products }) {
 
 **機能**:
 
-- 商品画像の表示
-- 商品名の表示（2行固定）
-- 価格の表示（Sサイズ、Lサイズ）
+- 商品画像の表示（Next.js Image を使用）
+- 商品名の表示（2 行固定）
 - クリック時のモーダル表示
 
 **特徴**:
 
-- 画像のアスペクト比を維持
-- 商品名は2行で固定表示（`line-clamp-2`）
-- ホバーエフェクト
+- Next.js Image コンポーネントを使用（画像最適化）
+- 画像のアスペクト比を維持（1:1）
+- 商品名は 2 行で固定表示（`line-clamp-2`）
+- ホバーエフェクト（画像の拡大、影の追加）
+- アクセシビリティ対応（aria-label）
 
 #### ProductModal (`ProductModal.tsx`)
 
@@ -223,15 +337,32 @@ export default function ProductGrid({ category, products }) {
 
 **機能**:
 
-- 商品画像の拡大表示
+- 商品画像の拡大表示（Next.js Image を使用）
 - 商品名、説明、価格の詳細表示
 - モーダルの開閉アニメーション
 
 **特徴**:
 
+- Next.js Image コンポーネントを使用（画像最適化）
 - 背景クリックで閉じる
-- ESCキーで閉じる
+- ESC キーで閉じる（`useModal`フックで実装）
+- モーダル表示時の背景スクロール無効化（`useModal`フックで実装）
 - フェードイン・フェードアウトアニメーション
+- 価格フォーマット（`formatPrice`ユーティリティを使用）
+
+#### CloseIcon (`components/icons/CloseIcon.tsx`)
+
+閉じるアイコンコンポーネントです。
+
+**機能**:
+
+- X アイコンの表示
+- モーダルやダイアログの閉じるボタンで使用
+
+**特徴**:
+
+- 再利用可能なアイコンコンポーネント
+- アクセシビリティ対応（`aria-hidden`）
 
 ## レイアウトとスタイリング
 
@@ -249,19 +380,19 @@ export default function ProductGrid({ category, products }) {
 
 **ブレークポイント**:
 
-- `sm`: 640px以上
-- `md`: 768px以上
-- `lg`: 1024px以上
-- `xl`: 1280px以上
+- `sm`: 640px 以上
+- `md`: 768px 以上
+- `lg`: 1024px 以上
+- `xl`: 1280px 以上
 
 **実装例**:
 
 ```typescript
 // モバイル: 小さいサイズ、デスクトップ: 大きいサイズ
-className="text-sm md:text-base lg:text-lg"
+className = "text-sm md:text-base lg:text-lg";
 
 // モバイル: 1列、デスクトップ: 3列
-className="grid grid-cols-1 md:grid-cols-3"
+className = "grid grid-cols-1 md:grid-cols-3";
 ```
 
 ### 共通スタイル
@@ -279,11 +410,30 @@ className="grid grid-cols-1 md:grid-cols-3"
 ```
 app/page.tsx (Server Component)
   ↓ データ取得（Prisma）
+  ↓ 公開商品のフィルタリング
   ↓ propsで渡す
 ProductGrid (Client Component)
-  ↓ 状態管理（useState）
-  ↓ イベントハンドリング
+  ↓ カスタムフック（useProductModal）
+  ↓ 状態管理とイベントハンドリング
 ProductModal (Client Component)
+  ↓ カスタムフック（useModal）
+  ↓ ESCキー処理とスクロール無効化
+```
+
+### 状態管理の流れ
+
+```
+ProductGrid
+  ↓ useProductModal()
+  ├── selectedProduct (選択された商品)
+  ├── isModalOpen (モーダルの開閉状態)
+  ├── handleProductClick (商品クリック時の処理)
+  └── handleCloseModal (モーダル閉じる時の処理)
+  ↓
+ProductModal
+  ↓ useModal(isOpen, onClose)
+  ├── ESCキー処理
+  └── 背景スクロール無効化
 ```
 
 ### 公開状態の判定
@@ -312,14 +462,14 @@ const publishedProducts = products.filter((product) => {
 
 ### フッター
 
-- **グリッドレイアウト**: 常に4列（モバイルでも）
+- **グリッドレイアウト**: 常に 4 列（モバイルでも）
 - **フォントサイズ**: モバイル `text-[10px]` → デスクトップ `text-sm`
 - **スペーシング**: モバイル `gap-2` → デスクトップ `gap-4`
 - **地図の高さ**: モバイル `h-32` → デスクトップ `h-48`
 
 ### 商品グリッド
 
-- **列数**: 常に3列（モバイルでも）
+- **列数**: 常に 3 列（モバイルでも）
 - **ギャップ**: モバイル `gap-3` → デスクトップ `gap-6`
 - **カテゴリータイトル**: モバイル `text-lg` → デスクトップ `text-2xl`
 
@@ -339,7 +489,7 @@ const publishedProducts = products.filter((product) => {
 - 自動的な画像最適化
 - 遅延読み込み（`loading="lazy"`）
 - レスポンシブ画像（`sizes`属性）
-- WebP形式への自動変換
+- WebP 形式への自動変換
 
 **実装例**:
 
@@ -360,11 +510,11 @@ const publishedProducts = products.filter((product) => {
 
 - デフォルトで Server Components を使用
 - データベースへの直接アクセス
-- クライアントサイドのJavaScriptを最小化
+- クライアントサイドの JavaScript を最小化
 
 ### 画像最適化
 
-- WebP形式の使用
+- WebP 形式の使用
 - 適切なサイズ指定
 - 優先読み込みの設定
 
@@ -375,19 +525,19 @@ const publishedProducts = products.filter((product) => {
 
 ## アクセシビリティ
 
-### セマンティックHTML
+### セマンティック HTML
 
-- 適切なHTMLタグの使用（`<header>`, `<nav>`, `<main>`, `<footer>`）
+- 適切な HTML タグの使用（`<header>`, `<nav>`, `<main>`, `<footer>`）
 - 見出しの階層構造
 
-### ARIA属性
+### ARIA 属性
 
-- `aria-label`の設定（Instagramリンクなど）
-- 適切なalt属性
+- `aria-label`の設定（Instagram リンクなど）
+- 適切な alt 属性
 
 ### キーボード操作
 
-- モーダルのESCキー対応
+- モーダルの ESC キー対応
 - フォーカス管理
 
 ## 参考リンク
