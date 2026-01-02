@@ -716,24 +716,31 @@ function CategoryTabs({
   }, [activeCategoryTab]);
 
   return (
-    <div className="mb-6 border-b border-gray-200 relative -mx-6 px-6">
-      {/* 左側のグラデーション */}
-      {showLeftGradient && (
-        <div className="absolute left-6 top-0 bottom-0 w-8 bg-linear-to-r from-white to-transparent pointer-events-none z-10" />
-      )}
-      {/* 右側のグラデーション */}
-      {showRightGradient && (
-        <div className="absolute right-6 top-0 bottom-0 w-8 bg-linear-to-l from-white to-transparent pointer-events-none z-10" />
-      )}
-      {/* スクロール可能なタブコンテナ */}
-      <div
-        ref={scrollContainerRef}
-        className="overflow-x-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
-        style={{
-          scrollbarWidth: "none",
-          msOverflowStyle: "none",
-        }}
-      >
+    <div className="mb-6">
+      {/* 説明メッセージ */}
+      <div className="mb-4 text-sm text-gray-600">
+        <p>カテゴリーごとに公開している商品の配置を変更できます</p>
+        <p>非公開のものは表示されません</p>
+      </div>
+      
+      <div className="border-b border-gray-200 relative -mx-6 px-6">
+        {/* 左側のグラデーション */}
+        {showLeftGradient && (
+          <div className="absolute left-6 top-0 bottom-0 w-8 bg-linear-to-r from-white to-transparent pointer-events-none z-10" />
+        )}
+        {/* 右側のグラデーション */}
+        {showRightGradient && (
+          <div className="absolute right-6 top-0 bottom-0 w-8 bg-linear-to-l from-white to-transparent pointer-events-none z-10" />
+        )}
+        {/* スクロール可能なタブコンテナ */}
+        <div
+          ref={scrollContainerRef}
+          className="overflow-x-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
+          style={{
+            scrollbarWidth: "none",
+            msOverflowStyle: "none",
+          }}
+        >
         <nav className="flex space-x-4 sm:space-x-8 min-w-max">
           {[...categories]
             .sort((a, b) => a.id - b.id)
@@ -763,7 +770,8 @@ function CategoryTabs({
                 </button>
               );
             })}
-        </nav>
+          </nav>
+        </div>
       </div>
     </div>
   );
