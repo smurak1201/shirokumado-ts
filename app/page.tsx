@@ -114,17 +114,6 @@ export default async function Home() {
             products={products}
           />
         ))}
-
-        {/* 商品がない場合のメッセージ */}
-        {categoriesWithProducts.every(
-          ({ products }) => products.length === 0
-        ) && (
-          <div className="py-20 text-center">
-            <p className="text-lg text-gray-500">
-              現在公開されている商品はありません
-            </p>
-          </div>
-        )}
       </main>
 
       {/* フッター */}
