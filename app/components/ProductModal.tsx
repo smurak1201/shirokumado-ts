@@ -90,7 +90,7 @@ export default function ProductModal({
             />
           </div>
         ) : (
-          <div className="aspect-square w-full bg-gradient-to-br from-gray-50 to-gray-100" />
+          <div className="aspect-square w-full bg-linear-to-br from-gray-50 to-gray-100" />
         )}
 
         {/* 商品情報 */}
