@@ -31,6 +31,7 @@ async function getDashboardData() {
       publishedAt: product.publishedAt?.toISOString() || null,
       endedAt: product.endedAt?.toISOString() || null,
       published: product.published,
+      displayOrder: product.displayOrder,
     })),
   };
 }
@@ -43,10 +44,7 @@ export default async function DashboardPage() {
       <div className="mx-auto max-w-4xl px-4">
         <h1 className="mb-8 text-3xl font-bold">商品管理ダッシュボード</h1>
 
-        <DashboardContent
-          categories={categories}
-          initialProducts={products}
-        />
+        <DashboardContent categories={categories} initialProducts={products} />
       </div>
     </div>
   );

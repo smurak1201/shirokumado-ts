@@ -33,6 +33,7 @@ model Product {
   published   Boolean   @default(true) // 公開情報（true: 公開、false: 非公開）
   publishedAt DateTime? @map("published_at") // 公開日
   endedAt     DateTime? @map("ended_at") // 終了日
+  displayOrder Int?     @map("display_order") // 表示順序（カテゴリー内での順序）
   createdAt   DateTime  @default(now()) @map("created_at")
   updatedAt   DateTime  @updatedAt @map("updated_at")
 

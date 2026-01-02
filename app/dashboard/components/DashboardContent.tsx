@@ -20,6 +20,7 @@ interface Product {
   published: boolean;
   publishedAt: string | null;
   endedAt: string | null;
+  displayOrder: number | null;
 }
 
 interface DashboardContentProps {

@@ -1,7 +1,13 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { calculatePublishedStatus, hasDateRange, formatPrice, parsePrice, isNumericKey } from "@/lib/product-utils";
+import {
+  calculatePublishedStatus,
+  hasDateRange,
+  formatPrice,
+  parsePrice,
+  isNumericKey,
+} from "@/lib/product-utils";
 import { compressImage } from "@/lib/image-compression";
 
 interface Category {
@@ -20,6 +26,7 @@ interface Product {
   published: boolean;
   publishedAt: string | null;
   endedAt: string | null;
+  displayOrder: number | null;
 }
 
 interface ProductEditFormProps {
@@ -314,9 +321,7 @@ export default function ProductEditForm({
               className="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:rounded-md file:border-0 file:bg-blue-50 file:px-4 file:py-2 file:text-sm file:font-semibold file:text-blue-700 hover:file:bg-blue-100"
             />
             {compressing && (
-              <p className="mt-2 text-sm text-gray-500">
-                画像を圧縮中...
-              </p>
+              <p className="mt-2 text-sm text-gray-500">画像を圧縮中...</p>
             )}
             {(uploading || submitting) && (
               <p className="mt-2 text-sm text-gray-500">
