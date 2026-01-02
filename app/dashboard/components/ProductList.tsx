@@ -234,13 +234,11 @@ const ProductList = forwardRef<ProductListRef, ProductListProps>(
         }
       });
 
-      // カテゴリーの順序に従って返す（商品があるカテゴリーのみ）
-      return categoryOrder
-        .map((categoryName) => ({
-          name: categoryName,
-          products: grouped[categoryName] || [],
-        }))
-        .filter((group) => group.products.length > 0);
+      // カテゴリーの順序に従って返す（商品がないカテゴリーも含める）
+      return categoryOrder.map((categoryName) => ({
+        name: categoryName,
+        products: grouped[categoryName] || [],
+      }));
     }, [products, categories]);
 
     // ドラッグ終了時の処理
@@ -730,8 +728,9 @@ function CategoryTabs({
               const categoryGroup = publishedProductsByCategory.find(
                 (g) => g.name === category.name
               );
-              const hasProducts =
-                categoryGroup && categoryGroup.products.length > 0;
+              const productCount = categoryGroup
+                ? categoryGroup.products.length
+                : 0;
 
               return (
                 <button
@@ -745,11 +744,9 @@ function CategoryTabs({
                   }`}
                 >
                   {category.name}
-                  {hasProducts && (
-                    <span className="ml-1 sm:ml-2 text-[10px] sm:text-xs text-gray-400">
-                      ({categoryGroup!.products.length})
-                    </span>
-                  )}
+                  <span className="ml-1 sm:ml-2 text-[10px] sm:text-xs text-gray-400">
+                    ({productCount})
+                  </span>
                 </button>
               );
             })}
