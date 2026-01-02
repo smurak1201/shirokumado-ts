@@ -39,12 +39,6 @@ export default function Header() {
         {/* 右側: ナビゲーションリンク */}
         <nav className="flex items-center gap-4 md:gap-6">
           <Link
-            href="/posts"
-            className="text-sm text-gray-700 transition-colors hover:text-gray-900 md:text-base"
-          >
-            投稿一覧
-          </Link>
-          <Link
             href="/faq"
             className="text-sm text-gray-700 transition-colors hover:text-gray-900 md:text-base"
           >
