@@ -583,53 +583,49 @@ const ProductList = forwardRef<ProductListRef, ProductListProps>(
                 />
 
                 {/* 選択されたカテゴリーの商品を表示 */}
-                {publishedProductsByCategory.length === 0 ? (
-                  <p className="py-8 text-center text-gray-500">
-                    公開されている商品がありません
-                  </p>
-                ) : (
-                  (() => {
-                    const activeCategoryGroup =
-                      publishedProductsByCategory.find(
-                        (g) => g.name === activeCategoryTab
-                      );
+                {(() => {
+                  // 選択されたカテゴリーの商品を取得
+                  const activeCategoryGroup = publishedProductsByCategory.find(
+                    (g) => g.name === activeCategoryTab
+                  );
 
-                    if (
-                      !activeCategoryGroup ||
-                      activeCategoryGroup.products.length === 0
-                    ) {
-                      return (
-                        <p className="py-8 text-center text-gray-500">
-                          {activeCategoryTab}に公開されている商品がありません
-                        </p>
-                      );
-                    }
-
+                  // カテゴリーが存在しない、または商品がない場合
+                  if (
+                    !activeCategoryGroup ||
+                    activeCategoryGroup.products.length === 0
+                  ) {
                     return (
-                      <DndContext
-                        sensors={sensors}
-                        collisionDetection={closestCenter}
-                        onDragEnd={(event) =>
-                          handleDragEnd(event, activeCategoryTab)
-                        }
-                      >
-                        <SortableContext
-                          items={activeCategoryGroup.products.map((p) => p.id)}
-                          strategy={rectSortingStrategy}
-                        >
-                          <div className="grid grid-cols-3 gap-1 sm:gap-2 md:gap-4">
-                            {activeCategoryGroup.products.map((product) => (
-                              <SortableProductItem
-                                key={product.id}
-                                product={product}
-                              />
-                            ))}
-                          </div>
-                        </SortableContext>
-                      </DndContext>
+                      <p className="py-8 text-center text-gray-500">
+                        {activeCategoryTab}に登録商品がありません
+                      </p>
                     );
-                  })()
-                )}
+                  }
+
+                  // 商品がある場合
+                  return (
+                    <DndContext
+                      sensors={sensors}
+                      collisionDetection={closestCenter}
+                      onDragEnd={(event) =>
+                        handleDragEnd(event, activeCategoryTab)
+                      }
+                    >
+                      <SortableContext
+                        items={activeCategoryGroup.products.map((p) => p.id)}
+                        strategy={rectSortingStrategy}
+                      >
+                        <div className="grid grid-cols-3 gap-1 sm:gap-2 md:gap-4">
+                          {activeCategoryGroup.products.map((product) => (
+                            <SortableProductItem
+                              key={product.id}
+                              product={product}
+                            />
+                          ))}
+                        </div>
+                      </SortableContext>
+                    </DndContext>
+                  );
+                })()}
               </div>
             )}
           </div>
