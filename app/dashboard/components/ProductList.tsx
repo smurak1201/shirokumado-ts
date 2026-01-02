@@ -528,8 +528,8 @@ const ProductList = forwardRef<ProductListRef, ProductListProps>(
             {activeTab === "layout" && (
               <div>
                 {/* カテゴリータブ */}
-                <div className="mb-6 border-b border-gray-200">
-                  <nav className="flex space-x-8">
+                <div className="mb-6 border-b border-gray-200 overflow-x-auto -mx-6 px-6">
+                  <nav className="flex space-x-4 sm:space-x-8 min-w-max">
                     {[...categories]
                       .sort((a, b) => a.id - b.id)
                       .map((category) => {
@@ -543,7 +543,7 @@ const ProductList = forwardRef<ProductListRef, ProductListProps>(
                           key={category.id}
                           onClick={() => setActiveCategoryTab(category.name)}
                           disabled={!hasProducts}
-                          className={`relative whitespace-nowrap border-b-2 pb-4 px-1 text-sm font-medium transition-colors ${
+                          className={`relative whitespace-nowrap border-b-2 pb-3 sm:pb-4 px-2 sm:px-1 text-xs sm:text-sm font-medium transition-colors flex-shrink-0 ${
                             activeCategoryTab === category.name
                               ? "border-blue-500 text-blue-600"
                               : hasProducts
@@ -553,7 +553,7 @@ const ProductList = forwardRef<ProductListRef, ProductListProps>(
                         >
                           {category.name}
                           {hasProducts && (
-                            <span className="ml-2 text-xs text-gray-400">
+                            <span className="ml-1 sm:ml-2 text-[10px] sm:text-xs text-gray-400">
                               ({categoryGroup!.products.length})
                             </span>
                           )}
