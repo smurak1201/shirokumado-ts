@@ -596,7 +596,7 @@ const ProductList = forwardRef<ProductListRef, ProductListProps>(
                   ) {
                     return (
                       <p className="py-8 text-center text-gray-500">
-                        {activeCategoryTab}に登録商品がありません
+                        {activeCategoryTab}に公開されている商品がありません
                       </p>
                     );
                   }
