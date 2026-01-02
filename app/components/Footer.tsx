@@ -6,19 +6,19 @@ import Image from "next/image";
  */
 export default function Footer() {
   return (
-    <footer className="border-t border-gray-200 bg-white py-12 md:py-16">
-      <div className="mx-auto max-w-6xl px-4 md:px-6 lg:px-12">
+    <footer className="border-t border-gray-200 bg-white py-8 md:py-12 lg:py-16">
+      <div className="mx-auto max-w-6xl px-2 sm:px-4 md:px-6 lg:px-12">
         {/* メインコンテンツ */}
-        <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4 lg:gap-12">
+        <div className="grid grid-cols-4 gap-2 sm:gap-4 md:gap-6 lg:gap-12">
           {/* ロゴセクション */}
-          <div className="flex flex-col gap-4 lg:col-span-1">
+          <div className="col-span-1 flex flex-col gap-2 sm:gap-3 md:gap-4">
             <Image
               src="/logo.webp"
               alt="白熊堂"
               width={120}
               height={45}
               className="h-auto w-auto"
-              style={{ maxHeight: "4rem", maxWidth: "120px" }}
+              style={{ maxHeight: "2rem", maxWidth: "60px" }}
               quality={100}
             />
             <a
@@ -33,28 +33,46 @@ export default function Footer() {
                 alt="Instagram"
                 width={24}
                 height={24}
-                className="h-6 w-6 text-gray-900 md:h-7 md:w-7"
+                className="h-4 w-4 text-gray-900 sm:h-5 sm:w-5 md:h-6 md:w-6 lg:h-7 lg:w-7"
               />
             </a>
           </div>
 
-          {/* 住所 */}
-          <div className="space-y-2">
-            <h3 className="text-sm font-semibold uppercase tracking-wider text-gray-900">
-              住所
-            </h3>
-            <div className="space-y-1 text-sm leading-relaxed text-gray-600">
-              <p>神奈川県川崎市川崎区小川町4-1</p>
-              <p>ラチッタデッラ マッジョーレ1F</p>
+          {/* 住所とお問い合わせ（縦並び） */}
+          <div className="col-span-1 space-y-2 sm:space-y-3 md:space-y-4 lg:space-y-6">
+            {/* 住所 */}
+            <div className="space-y-1 sm:space-y-1.5 md:space-y-2">
+              <h3 className="text-[10px] font-semibold uppercase tracking-wider text-gray-900 sm:text-xs md:text-sm">
+                住所
+              </h3>
+              <div className="space-y-0.5 text-[10px] leading-relaxed text-gray-600 sm:space-y-1 sm:text-xs md:text-sm">
+                <p>神奈川県川崎市川崎区小川町4-1</p>
+                <p>ラチッタデッラ マッジョーレ1F</p>
+              </div>
+            </div>
+
+            {/* お問い合わせ */}
+            <div className="space-y-1 sm:space-y-1.5 md:space-y-2">
+              <h3 className="text-[10px] font-semibold uppercase tracking-wider text-gray-900 sm:text-xs md:text-sm">
+                お問い合わせ
+              </h3>
+              <div className="space-y-0.5 text-[10px] leading-relaxed text-gray-600 sm:space-y-1 sm:text-xs md:text-sm">
+                <a
+                  href="tel:070-9157-3772"
+                  className="block transition-colors hover:text-gray-900"
+                >
+                  070-9157-3772
+                </a>
+              </div>
             </div>
           </div>
 
           {/* 営業情報 */}
-          <div className="space-y-2">
-            <h3 className="text-sm font-semibold uppercase tracking-wider text-gray-900">
+          <div className="col-span-1 space-y-1 sm:space-y-1.5 md:space-y-2">
+            <h3 className="text-[10px] font-semibold uppercase tracking-wider text-gray-900 sm:text-xs md:text-sm">
               営業情報
             </h3>
-            <div className="space-y-3 text-sm leading-relaxed text-gray-600">
+            <div className="space-y-1.5 text-[10px] leading-relaxed text-gray-600 sm:space-y-2 sm:text-xs md:space-y-3 md:text-sm">
               <div>
                 <p className="font-medium text-gray-700">営業時間</p>
                 <p className="font-medium">11:00～21:00(L.O.20:00)</p>
@@ -66,18 +84,19 @@ export default function Footer() {
             </div>
           </div>
 
-          {/* お問い合わせ */}
-          <div className="space-y-2">
-            <h3 className="text-sm font-semibold uppercase tracking-wider text-gray-900">
-              お問い合わせ
-            </h3>
-            <div className="space-y-1 text-sm leading-relaxed text-gray-600">
-              <a
-                href="tel:070-9157-3772"
-                className="block transition-colors hover:text-gray-900"
-              >
-                070-9157-3772
-              </a>
+          {/* Googleマップ */}
+          <div className="col-span-1">
+            <div className="h-32 w-full overflow-hidden rounded-lg border border-gray-200 sm:h-36 md:h-40 lg:h-48">
+              <iframe
+                src="https://www.google.com/maps?q=かき氷 白熊堂&output=embed"
+                width="100%"
+                height="100%"
+                style={{ border: 0 }}
+                allowFullScreen
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+                className="h-full w-full"
+              />
             </div>
           </div>
         </div>
