@@ -96,7 +96,7 @@ export default async function Home() {
           sizes="100vw"
         />
         {/* オーバーレイ（和のテイストのためのグラデーション） */}
-        <div className="absolute inset-0 bg-gradient-to-b from-white/30 via-white/10 to-white/40" />
+        <div className="absolute inset-0 bg-linear-to-b from-white/30 via-white/10 to-white/40" />
         {/* ロゴとタイトル */}
         <div className="absolute inset-0 flex flex-col items-center justify-center px-4">
           <div className="mb-6 animate-fade-in">
