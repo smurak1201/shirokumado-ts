@@ -742,13 +742,10 @@ function CategoryTabs({
                   key={category.id}
                   data-category-name={category.name}
                   onClick={() => onCategoryTabChange(category.name)}
-                  disabled={!hasProducts}
                   className={`relative whitespace-nowrap border-b-2 pb-3 sm:pb-4 px-2 sm:px-1 text-xs sm:text-sm font-medium transition-colors shrink-0 ${
                     activeCategoryTab === category.name
                       ? "border-blue-500 text-blue-600"
-                      : hasProducts
-                      ? "border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700"
-                      : "border-transparent text-gray-300 cursor-not-allowed"
+                      : "border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700"
                   }`}
                 >
                   {category.name}
