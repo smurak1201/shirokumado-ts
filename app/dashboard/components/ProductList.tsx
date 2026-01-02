@@ -58,13 +58,15 @@ const ProductList = forwardRef<ProductListRef, ProductListProps>(
     // 初期カテゴリータブは、公開商品がある最初のカテゴリー、または最初のカテゴリー
     const initialCategoryTab = useMemo(() => {
       const published = products.filter((p) => p.published);
+      // カテゴリーをID順でソート（小さい順）
+      const sortedCategories = [...categories].sort((a, b) => a.id - b.id);
       if (published.length > 0) {
-        const firstCategory = categories.find((c) =>
+        const firstCategory = sortedCategories.find((c) =>
           published.some((p) => p.category.id === c.id)
         );
-        return firstCategory?.name || categories[0]?.name || "";
+        return firstCategory?.name || sortedCategories[0]?.name || "";
       }
-      return categories[0]?.name || "";
+      return sortedCategories[0]?.name || "";
     }, [products, categories]);
 
     const [activeCategoryTab, setActiveCategoryTab] = useState<string>(initialCategoryTab);
@@ -152,8 +154,9 @@ const ProductList = forwardRef<ProductListRef, ProductListProps>(
     const publishedProductsByCategory = useMemo(() => {
       const published = products.filter((p) => p.published);
 
-      // カテゴリーの順序はcategoriesプロップの順序（ID順）を使用
-      const categoryOrder = categories.map((c) => c.name);
+      // カテゴリーをID順でソート（小さい順）
+      const sortedCategories = [...categories].sort((a, b) => a.id - b.id);
+      const categoryOrder = sortedCategories.map((c) => c.name);
 
       // カテゴリーごとにグループ化
       const grouped: Record<string, Product[]> = {};
@@ -527,7 +530,9 @@ const ProductList = forwardRef<ProductListRef, ProductListProps>(
                 {/* カテゴリータブ */}
                 <div className="mb-6 border-b border-gray-200">
                   <nav className="flex space-x-8">
-                    {categories.map((category) => {
+                    {[...categories]
+                      .sort((a, b) => a.id - b.id)
+                      .map((category) => {
                       const categoryGroup = publishedProductsByCategory.find(
                         (g) => g.name === category.name
                       );
