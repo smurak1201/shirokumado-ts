@@ -720,7 +720,7 @@ function CategoryTabs({
       {/* 説明メッセージ */}
       <div className="mb-4 text-sm text-gray-600">
         <p>カテゴリーごとに公開している商品の配置を変更できます</p>
-        <p>非公開のものは表示されません</p>
+        <p>非公開の商品は表示されません</p>
       </div>
 
       <div className="border-b border-gray-200 relative -mx-6 px-6">
