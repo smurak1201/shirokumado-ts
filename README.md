@@ -14,11 +14,11 @@
 
 ## 📋 前提条件
 
-- Node.js 24以上（LTS推奨）
-- npm 11以上 または yarn
+- Node.js 24 以上（LTS 推奨）
+- npm 11 以上 または yarn
 - Git
 
-> **WSL上のUbuntuを使用している場合**: [WSLでのNode.jsセットアップガイド](./doc/nodejs-setup-wsl.md)を参照してください。
+> **WSL 上の Ubuntu を使用している場合**: [WSL での Node.js セットアップガイド](./doc/nodejs-setup-wsl.md)を参照してください。
 
 ## 🛠️ セットアップ
 
@@ -73,6 +73,7 @@ npm run dev
 
 ## 📚 ドキュメント
 
+- [はじめに - コードの読み方ガイド](./doc/getting-started.md) - **まずここから**: どのファイルから読み始めるか、ディレクトリの役割
 - [技術スタック](./doc/tech-stack.md) - 使用している技術の詳細
 - [アーキテクチャ](./doc/architecture.md) - アーキテクチャと設計思想
 - [プロジェクト構造](./doc/project-structure.md) - ディレクトリ構造の説明
@@ -130,9 +131,9 @@ shirokumado-ts/
 
 ## 🚢 デプロイ
 
-このプロジェクトはVercelにデプロイされています。
+このプロジェクトは Vercel にデプロイされています。
 
-- **本番環境**: [本番URL]
+- **本番環境**: [本番 URL]
 - **プレビュー環境**: プルリクエストごとに自動生成
 
 詳細は [デプロイメントガイド](./doc/deployment.md) を参照してください。

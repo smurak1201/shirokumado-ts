@@ -29,73 +29,117 @@ import { useProductReorder } from "../hooks/useProductReorder";
 import { groupProductsByCategory, filterProducts } from "../utils/productUtils";
 import type { Category, Product } from "../types";
 
+/**
+ * ProductList の Props
+ */
 interface ProductListProps {
-  initialProducts: Product[];
-  categories: Category[];
-  onNewProductClick?: () => void;
+  initialProducts: Product[]; // 初期商品一覧
+  categories: Category[]; // カテゴリー一覧
+  onNewProductClick?: () => void; // 新規商品登録ボタンクリック時のコールバック
 }
 
+/**
+ * ProductList の参照インターフェース
+ * 親コンポーネントから商品一覧を更新するためのメソッドを公開します
+ */
 export interface ProductListRef {
-  refreshProducts: () => Promise<void>;
+  refreshProducts: () => Promise<void>; // 商品一覧を更新するメソッド
 }
 
+/**
+ * 商品一覧と配置変更機能を提供するコンポーネント
+ *
+ * 主な機能:
+ * - 商品一覧の表示（検索・フィルタリング対応）
+ * - 商品の編集・削除
+ * - 配置変更タブでのドラッグ&ドロップによる順序変更
+ *
+ * forwardRef を使用して、親コンポーネントから refreshProducts メソッドを呼び出せるようにしています
+ */
 const ProductList = forwardRef<ProductListRef, ProductListProps>(
   ({ initialProducts, categories, onNewProductClick }, ref) => {
+    // 商品一覧の状態管理
+    // initialProducts を初期値として使用し、商品の追加・更新・削除時に更新されます
     const [products, setProducts] = useState<Product[]>(initialProducts);
+
+    // 編集中の商品を管理（null の場合は編集フォームを表示しない）
     const [editingProduct, setEditingProduct] = useState<Product | null>(null);
 
-    // タブ状態管理
+    // タブ状態管理（localStorage と同期）
+    // "list": 商品一覧タブ, "layout": 配置変更タブ
     const { activeTab, setActiveTab } = useTabState();
+
+    // カテゴリータブの状態管理（localStorage と同期）
+    // 配置変更タブで表示するカテゴリーを管理
     const { activeCategoryTab, setActiveCategoryTab, initialCategoryTab } =
       useCategoryTabState(products, categories);
 
-    // カテゴリータブが変更されたら、activeCategoryTabも更新
+    // 配置変更タブに切り替えたときに、初期カテゴリータブを設定
     useEffect(() => {
       if (activeTab === "layout" && initialCategoryTab) {
         setActiveCategoryTab(initialCategoryTab);
       }
     }, [activeTab, initialCategoryTab, setActiveCategoryTab]);
 
-    // 検索条件の状態
-    const [searchName, setSearchName] = useState("");
+    // 検索条件の状態管理
+    const [searchName, setSearchName] = useState(""); // 商品名での検索
     const [searchPublished, setSearchPublished] = useState<boolean | null>(
       null
     ); // null: すべて, true: 公開のみ, false: 非公開のみ
     const [searchCategoryId, setSearchCategoryId] = useState<number | null>(
       null
-    );
+    ); // カテゴリーIDでのフィルタリング
 
+    /**
+     * 商品一覧をサーバーから取得して更新する
+     * 商品の追加・更新・削除後に呼び出されます
+     */
     const refreshProducts = async () => {
       try {
-        // キャッシュを完全に無効化するためにタイムスタンプを追加
+        // キャッシュを完全に無効化するためにタイムスタンプをクエリパラメータに追加
+        // これにより、常に最新のデータを取得できます
         const response = await fetch(`/api/products?t=${Date.now()}`, {
-          cache: "no-store",
+          cache: "no-store", // Next.js のキャッシュを無効化
           headers: {
-            "Cache-Control": "no-cache",
+            "Cache-Control": "no-cache", // ブラウザのキャッシュを無効化
           },
         });
         const data = await response.json();
+        // 取得した商品一覧で状態を更新
         setProducts(data.products || []);
       } catch (error) {
         console.error("商品一覧の更新に失敗しました:", error);
       }
     };
 
-    // 親コンポーネントからrefreshProductsを呼べるようにする
+    /**
+     * 親コンポーネントから refreshProducts メソッドを呼び出せるようにする
+     * useImperativeHandle と forwardRef を組み合わせて実装しています
+     */
     useImperativeHandle(ref, () => ({
       refreshProducts,
     }));
 
+    /**
+     * 商品編集を開始する
+     * 編集フォームに商品情報を渡して表示します
+     */
     const handleEdit = (product: Product) => {
       setEditingProduct(product);
     };
 
+    /**
+     * 商品を削除する
+     * 確認ダイアログを表示してから削除を実行します
+     */
     const handleDelete = async (productId: number) => {
+      // 削除前に確認ダイアログを表示
       if (!confirm("本当にこの商品を削除しますか？")) {
         return;
       }
 
       try {
+        // DELETE リクエストを送信
         const response = await fetch(`/api/products/${productId}`, {
           method: "DELETE",
         });
@@ -106,6 +150,7 @@ const ProductList = forwardRef<ProductListRef, ProductListProps>(
         }
 
         alert("商品を削除しました");
+        // 削除後に商品一覧を更新
         await refreshProducts();
       } catch (error) {
         console.error("削除エラー:", error);
@@ -115,29 +160,45 @@ const ProductList = forwardRef<ProductListRef, ProductListProps>(
       }
     };
 
+    /**
+     * 商品更新後のコールバック関数
+     * 商品一覧を更新します（編集フォームは ProductEditForm の onClose で閉じられます）
+     */
     const handleUpdated = async () => {
       await refreshProducts();
-      // 編集フォームはProductEditFormのonCloseで閉じられるため、ここでは閉じない
     };
 
-    // ドラッグ&ドロップ用のセンサー
+    /**
+     * ドラッグ&ドロップ用のセンサーを設定
+     * PointerSensor: マウス・タッチ操作を検知
+     * KeyboardSensor: キーボード操作を検知（アクセシビリティ対応）
+     */
     const sensors = useSensors(
-      useSensor(PointerSensor),
+      useSensor(PointerSensor), // マウス・タッチ操作
       useSensor(KeyboardSensor, {
-        coordinateGetter: sortableKeyboardCoordinates,
+        coordinateGetter: sortableKeyboardCoordinates, // キーボード操作の座標計算
       })
     );
 
-    // 配置変更タブ用: 公開商品をカテゴリーごとにグループ化
+    /**
+     * 配置変更タブ用: 公開商品をカテゴリーごとにグループ化
+     * useMemo を使用して、products や categories が変更されたときのみ再計算します
+     */
     const publishedProductsByCategory = useMemo(
       () => groupProductsByCategory(products, categories),
       [products, categories]
     );
 
-    // 商品順序変更フック
+    /**
+     * 商品順序変更のカスタムフック
+     * 楽観的UI更新を実装しています（API呼び出し前にUIを更新）
+     */
     const { reorderProducts } = useProductReorder(setProducts, refreshProducts);
 
-    // ドラッグ終了時の処理
+    /**
+     * ドラッグ&ドロップが終了したときの処理
+     * 商品の順序を変更してサーバーに保存します
+     */
     const handleDragEnd = async (event: DragEndEvent, categoryName: string) => {
       const { active, over } = event;
 
@@ -168,11 +229,21 @@ const ProductList = forwardRef<ProductListRef, ProductListProps>(
       }
     };
 
-    // 検索条件に基づいて商品をフィルタリング
+    /**
+     * 検索条件に基づいて商品をフィルタリング
+     *
+     * useMemo を使用して、検索条件や商品一覧が変更されたときのみ再計算します。
+     * これにより、不要な再計算を防ぎ、パフォーマンスを向上させます。
+     *
+     * フィルタリング条件:
+     * - 商品名: 部分一致（ひらがな・カタカナ、大文字小文字を区別しない）
+     * - 公開状態: 公開/非公開/すべて
+     * - カテゴリー: 指定されたカテゴリーID
+     */
     const filteredProducts = useMemo(
       () =>
         filterProducts(products, searchName, searchPublished, searchCategoryId),
-      [products, searchName, searchPublished, searchCategoryId]
+      [products, searchName, searchPublished, searchCategoryId] // 依存配列
     );
 
     return (

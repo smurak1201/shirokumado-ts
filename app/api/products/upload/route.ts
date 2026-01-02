@@ -1,7 +1,7 @@
 import { withErrorHandling, apiSuccess } from '@/lib/api-helpers';
 import { uploadImage } from '@/lib/blob';
 import { ValidationError } from '@/lib/errors';
-import { imageConfig, blobConfig } from '@/lib/config';
+import { config } from '@/lib/config';
 import { NextRequest } from 'next/server';
 
 /**
@@ -24,16 +24,20 @@ export const POST = withErrorHandling(async (request: NextRequest) => {
   }
 
   // ファイルサイズの検証（設定ファイルから読み込み）
-  if (file.size > imageConfig.maxFileSize) {
+  const MAX_FILE_SIZE = config.imageConfig.MAX_FILE_SIZE_BYTES;
+  if (file.size > MAX_FILE_SIZE) {
     throw new ValidationError(
-      `ファイルサイズは${imageConfig.maxFileSizeMB}MB以下である必要があります`
+      `ファイルサイズは${config.imageConfig.MAX_FILE_SIZE_MB}MB以下である必要があります`
     );
   }
 
   // ファイル名を生成（タイムスタンプ + 元のファイル名）
+  // タイムスタンプを付けることで、同じファイル名でも上書きされないようにします
   const timestamp = Date.now();
+  // ファイル名から特殊文字を除去（セキュリティ対策）
   const sanitizedName = file.name.replace(/[^a-zA-Z0-9.-]/g, '_');
-  const filename = `${blobConfig.productsFolder}/${timestamp}_${sanitizedName}`;
+  // config からフォルダ名を取得
+  const filename = `${config.blobConfig.PRODUCT_IMAGE_FOLDER}/${timestamp}_${sanitizedName}`;
 
   // 画像をアップロード
   const buffer = Buffer.from(await file.arrayBuffer());

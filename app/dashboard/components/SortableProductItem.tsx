@@ -4,13 +4,40 @@ import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import type { Product } from "../types";
 
+/**
+ * SortableProductItem の Props
+ */
 interface SortableProductItemProps {
+  /** 表示する商品 */
   product: Product;
 }
 
+/**
+ * ドラッグ&ドロップ可能な商品アイテムコンポーネント
+ *
+ * 配置変更タブで使用される、ドラッグ&ドロップで順序を変更できる商品カードです。
+ * @dnd-kit ライブラリを使用して実装されています。
+ *
+ * 機能:
+ * - マウス・タッチ・キーボードでのドラッグ操作に対応
+ * - ドラッグ中の視覚的フィードバック（透明度とシャドウ）
+ * - スムーズなアニメーション
+ *
+ * @param props - SortableProductItemProps
+ */
 export default function SortableProductItem({
   product,
 }: SortableProductItemProps) {
+  /**
+   * @dnd-kit の useSortable フックを使用してドラッグ&ドロップ機能を実装
+   *
+   * - attributes: アクセシビリティ属性（ARIA属性など）
+   * - listeners: ドラッグを開始するためのイベントハンドラー
+   * - setNodeRef: DOM要素への参照を設定する関数
+   * - transform: ドラッグ中の位置変換情報
+   * - transition: アニメーションのトランジション情報
+   * - isDragging: 現在ドラッグ中かどうかのフラグ
+   */
   const {
     attributes,
     listeners,
@@ -20,6 +47,13 @@ export default function SortableProductItem({
     isDragging,
   } = useSortable({ id: product.id });
 
+  /**
+   * ドラッグ中のスタイルを計算
+   *
+   * - transform: ドラッグ中の位置を CSS transform 形式に変換
+   * - transition: スムーズなアニメーションのためのトランジション
+   * - opacity: ドラッグ中は半透明（0.5）にして視覚的フィードバックを提供
+   */
   const style = {
     transform: CSS.Transform.toString(transform),
     transition,

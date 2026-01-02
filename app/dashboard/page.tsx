@@ -1,33 +1,48 @@
 import { prisma } from "@/lib/prisma";
 import DashboardContent from "./components/DashboardContent";
 
-// 動的レンダリングを強制（データベース接続が必要なため）
+/**
+ * 動的レンダリングを強制
+ * データベースから最新のデータを取得する必要があるため、
+ * このページは常にサーバー側でレンダリングされます
+ */
 export const dynamic = "force-dynamic";
 
-// データをサーバーサイドで取得（Server Component）
+/**
+ * ダッシュボードに必要なデータをサーバーサイドで取得
+ * Server Component なので、データベースに直接アクセスできます
+ *
+ * @returns カテゴリー一覧と商品一覧を含むオブジェクト
+ */
 async function getDashboardData() {
+  // カテゴリーと商品を並列で取得（パフォーマンス向上）
   const [categories, products] = await Promise.all([
+    // カテゴリーをID順で取得
     prisma.category.findMany({
       orderBy: {
         id: "asc",
       },
     }),
+    // 商品をカテゴリー情報を含めて取得（N+1問題を回避）
     prisma.product.findMany({
       include: {
-        category: true,
+        category: true, // 関連するカテゴリー情報も一緒に取得
       },
       orderBy: {
-        createdAt: "desc",
+        createdAt: "desc", // 作成日時の降順でソート
       },
     }),
   ]);
 
   return {
     categories,
+    // 商品データをクライアント側で使いやすい形式に変換
     products: products.map((product) => ({
       ...product,
+      // Decimal型をNumber型に変換（PrismaのDecimal型は文字列として扱われるため）
       priceS: product.priceS ? Number(product.priceS) : null,
       priceL: product.priceL ? Number(product.priceL) : null,
+      // Date型をISO文字列に変換（JSONシリアライズのため）
       publishedAt: product.publishedAt?.toISOString() || null,
       endedAt: product.endedAt?.toISOString() || null,
       published: product.published,
@@ -36,6 +51,10 @@ async function getDashboardData() {
   };
 }
 
+/**
+ * ダッシュボードページのメインコンポーネント
+ * Server Component として実装されており、データフェッチをサーバー側で実行します
+ */
 export default async function DashboardPage() {
   const { categories, products } = await getDashboardData();
 

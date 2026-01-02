@@ -56,9 +56,10 @@ export default function DashboardForm({
     let processedFile = file;
     setCompressing(true);
     try {
-      const { imageConfig } = await import('@/lib/config');
+      // 動的インポートで config を読み込む（コード分割のため）
+      const { config } = await import('@/lib/config');
       processedFile = await compressImage(file, {
-        maxSizeMB: imageConfig.compressionTargetSizeMB,
+        maxSizeMB: config.imageConfig.COMPRESSION_TARGET_SIZE_MB,
       });
       const originalSizeMB = (file.size / 1024 / 1024).toFixed(2);
       const compressedSizeMB = (processedFile.size / 1024 / 1024).toFixed(2);
@@ -67,7 +68,7 @@ export default function DashboardForm({
       );
 
       // 圧縮後も最大サイズを超える場合は警告
-      if (processedFile.size > imageConfig.maxFileSize) {
+      if (processedFile.size > config.imageConfig.MAX_FILE_SIZE_BYTES) {
         alert(
           `画像が大きすぎます（${compressedSizeMB}MB）。別の画像を選択するか、画像を小さくしてから再度お試しください。`
         );

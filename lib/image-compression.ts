@@ -6,7 +6,7 @@
  * WebP形式で圧縮することで、JPEGよりも約25-35%小さなファイルサイズを実現します。
  */
 
-import { imageConfig } from './config';
+import { config } from './config';
 
 interface CompressionOptions {
   maxWidth?: number;
@@ -38,10 +38,10 @@ export async function compressImage(
   options: CompressionOptions = {}
 ): Promise<File> {
   const {
-    maxWidth = imageConfig.maxWidth,
-    maxHeight = imageConfig.maxHeight,
-    quality = imageConfig.compressionQuality,
-    maxSizeMB = imageConfig.compressionTargetSizeMB,
+    maxWidth = config.imageConfig.MAX_IMAGE_WIDTH,
+    maxHeight = config.imageConfig.MAX_IMAGE_HEIGHT,
+    quality = config.imageConfig.COMPRESSION_QUALITY,
+    maxSizeMB = config.imageConfig.COMPRESSION_TARGET_SIZE_MB,
     format = 'webp', // デフォルトでWebP形式を使用
   } = options;
 
@@ -95,16 +95,13 @@ export async function compressImage(
 
                 const sizeMB = blob.size / (1024 * 1024);
                 // 目標サイズより大きい場合、品質を下げて再試行
-                if (
-                  sizeMB > maxSizeMB &&
-                  q > imageConfig.minCompressionQuality
-                ) {
+                // 最小品質は 0.5 に設定（それ以下だと画質が著しく低下するため）
+                const MIN_QUALITY = 0.5;
+                const QUALITY_STEP = 0.1; // 品質を下げる際のステップ
+                if (sizeMB > maxSizeMB && q > MIN_QUALITY) {
                   resolveCompress(
                     compressWithQuality(
-                      Math.max(
-                        q - imageConfig.compressionQualityStep,
-                        imageConfig.minCompressionQuality
-                      )
+                      Math.max(q - QUALITY_STEP, MIN_QUALITY)
                     )
                   );
                 } else {
@@ -149,23 +146,36 @@ export async function compressImage(
  * @param maxSizeMB 最大ファイルサイズ（MB）
  * @returns 圧縮が必要な場合true
  */
+/**
+ * 画像ファイルが圧縮が必要かどうかを判定する関数
+ *
+ * ファイルサイズが目標サイズを超えている場合、圧縮が必要と判断します。
+ *
+ * @param file - 判定対象の画像ファイル
+ * @param maxSizeMB - 最大ファイルサイズ（MB、デフォルト: config.imageConfig.COMPRESSION_TARGET_SIZE_MB）
+ * @returns 圧縮が必要な場合 true
+ */
 export function needsCompression(
   file: File,
-  maxSizeMB: number = imageConfig.compressionTargetSizeMB
+  maxSizeMB: number = config.imageConfig.COMPRESSION_TARGET_SIZE_MB
 ): boolean {
   const sizeMB = file.size / (1024 * 1024);
   return sizeMB > maxSizeMB;
 }
 
 /**
- * 画像ファイルが大きすぎるかどうかを判定します（圧縮を強制する閾値）
- * @param file 画像ファイル
- * @param maxSizeMB 最大ファイルサイズ（MB）
- * @returns 大きすぎる場合true
+ * 画像ファイルが大きすぎるかどうかを判定する関数（圧縮を強制する閾値）
+ *
+ * ファイルサイズが最大許容サイズを超えている場合、大きすぎると判断します。
+ * この関数は、圧縮後でもサイズ制限を超える可能性があるファイルを検出するために使用します。
+ *
+ * @param file - 判定対象の画像ファイル
+ * @param maxSizeMB - 最大ファイルサイズ（MB、デフォルト: config.imageConfig.MAX_FILE_SIZE_MB）
+ * @returns 大きすぎる場合 true
  */
 export function isTooLarge(
   file: File,
-  maxSizeMB: number = imageConfig.maxFileSizeMB
+  maxSizeMB: number = config.imageConfig.MAX_FILE_SIZE_MB
 ): boolean {
   const sizeMB = file.size / (1024 * 1024);
   return sizeMB > maxSizeMB;
