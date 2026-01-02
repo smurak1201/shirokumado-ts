@@ -17,8 +17,7 @@ export default function Header() {
             width={120}
             height={45}
             priority
-            className="h-auto w-auto"
-            style={{ maxHeight: "5rem" }}
+            className="h-auto w-auto max-h-20 lg:max-h-20"
           />
           <a
             href="https://www.instagram.com/shirokumado2021/"
