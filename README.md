@@ -74,10 +74,11 @@ npm run dev
 ## 📚 ドキュメント
 
 - [技術スタック](./doc/tech-stack.md) - 使用している技術の詳細
-- [Prisma & Blob セットアップガイド](./doc/setup-prisma-blob.md) - データベースとストレージの使用方法
+- [アーキテクチャ](./doc/architecture.md) - アーキテクチャと設計思想
+- [プロジェクト構造](./doc/project-structure.md) - ディレクトリ構造の説明
 - [開発ガイドライン](./doc/development-guide.md) - コーディング規約とベストプラクティス
 - [コーディング標準](./doc/coding-standards.md) - コード生成時のベストプラクティス
-- [プロジェクト構造](./doc/project-structure.md) - ディレクトリ構造の説明
+- [Prisma & Blob セットアップガイド](./doc/setup-prisma-blob.md) - データベースとストレージの使用方法
 - [デプロイメントガイド](./doc/deployment.md) - デプロイ手順
 
 ## 🧑‍💻 開発コマンド

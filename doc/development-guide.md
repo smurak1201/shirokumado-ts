@@ -125,9 +125,11 @@ export function UserProfile({ userId, showEmail = false }: UserProfileProps) {
 
 ```
 app/
-├── components/          # 再利用可能なコンポーネント
-│   ├── ui/            # UIコンポーネント（ボタン、入力など）
-│   └── features/      # 機能別コンポーネント
+├── dashboard/         # ダッシュボード機能
+│   ├── components/    # ダッシュボード専用コンポーネント
+│   ├── hooks/         # カスタムフック
+│   ├── utils/         # ユーティリティ関数
+│   └── types.ts       # 共通型定義
 ├── (routes)/          # ルートグループ
 │   ├── page.tsx
 │   └── layout.tsx
@@ -135,6 +137,12 @@ app/
     └── [resource]/
         └── route.ts
 ```
+
+**コンポーネント設計の原則**:
+- **単一責任の原則**: 各コンポーネントは1つの責務を持つ
+- **再利用性**: 汎用的なコンポーネントは分離
+- **型安全性**: 共通型定義を使用して一貫性を保つ
+- **カスタムフック**: 状態管理ロジックはフックに分離
 
 ### ユーティリティ
 
@@ -144,9 +152,15 @@ lib/
 ├── blob.ts            # Blob Storage
 ├── errors.ts          # エラーハンドリング
 ├── api-helpers.ts     # API Routesヘルパー
-└── utils/             # 汎用ユーティリティ
-    ├── format.ts
-    └── validation.ts
+├── config.ts          # アプリケーション設定
+├── image-compression.ts # 画像圧縮
+└── product-utils.ts   # 商品関連ユーティリティ
+```
+
+**機能別ディレクトリのユーティリティ**:
+```
+app/dashboard/utils/
+└── productUtils.ts    # ダッシュボード専用の商品操作関数
 ```
 
 ## Git ワークフロー

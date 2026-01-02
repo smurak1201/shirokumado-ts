@@ -8,12 +8,32 @@
 shirokumado-ts/
 ├── app/                    # Next.js App Router
 │   ├── api/               # API Routes
-│   │   └── [resource]/
-│   │       └── route.ts  # APIエンドポイント
-│   ├── (routes)/          # ルートグループ
-│   │   ├── page.tsx      # ページコンポーネント
-│   │   ├── layout.tsx    # レイアウトコンポーネント
-│   │   └── loading.tsx   # ローディングUI
+│   │   ├── products/     # 商品API
+│   │   │   ├── route.ts  # GET, POST /api/products
+│   │   │   ├── upload/   # 画像アップロード
+│   │   │   │   └── route.ts
+│   │   │   ├── reorder/  # 商品順序変更
+│   │   │   │   └── route.ts
+│   │   │   └── [id]/     # 個別商品操作
+│   │   │       └── route.ts
+│   │   └── categories/   # カテゴリーAPI
+│   │       └── route.ts
+│   ├── dashboard/         # ダッシュボード
+│   │   ├── page.tsx      # ダッシュボードページ（Server Component）
+│   │   ├── types.ts       # 共通型定義
+│   │   ├── components/    # ダッシュボードコンポーネント
+│   │   │   ├── DashboardContent.tsx
+│   │   │   ├── DashboardForm.tsx
+│   │   │   ├── DashboardFormWrapper.tsx
+│   │   │   ├── ProductList.tsx
+│   │   │   ├── ProductEditForm.tsx
+│   │   │   ├── CategoryTabs.tsx
+│   │   │   └── SortableProductItem.tsx
+│   │   ├── hooks/        # カスタムフック
+│   │   │   ├── useTabState.ts
+│   │   │   └── useProductReorder.ts
+│   │   └── utils/        # ユーティリティ関数
+│   │       └── productUtils.ts
 │   ├── globals.css       # グローバルスタイル
 │   ├── layout.tsx        # ルートレイアウト
 │   └── page.tsx          # ホームページ
@@ -24,25 +44,25 @@ shirokumado-ts/
 │   ├── env.ts            # 環境変数管理
 │   ├── errors.ts         # 統一されたエラーハンドリング
 │   ├── api-helpers.ts     # API Routes用ヘルパー
-│   └── utils/            # 汎用ユーティリティ
-│       ├── format.ts     # フォーマット関数
-│       └── validation.ts # バリデーション関数
+│   ├── config.ts         # アプリケーション設定
+│   ├── image-compression.ts # 画像圧縮ユーティリティ
+│   └── product-utils.ts  # 商品関連ユーティリティ
 │
 ├── prisma/                 # Prisma設定
 │   ├── schema.prisma     # データベーススキーマ定義
-│   ├── migrations/       # マイグレーションファイル
-│   └── seed.ts           # シードデータ（オプション）
+│   └── migrations/       # マイグレーションファイル
 │
 ├── public/                 # 静的ファイル
-│   ├── images/           # 画像ファイル
 │   └── favicon.ico       # ファビコン
 │
 ├── doc/                    # ドキュメント
 │   ├── tech-stack.md     # 技術スタック
 │   ├── setup-prisma-blob.md # Prisma & Blob セットアップ
 │   ├── development-guide.md # 開発ガイドライン
+│   ├── coding-standards.md # コーディング標準
 │   ├── project-structure.md # プロジェクト構造（このファイル）
-│   └── deployment.md     # デプロイメントガイド
+│   ├── deployment.md     # デプロイメントガイド
+│   └── nodejs-setup-wsl.md # WSLでのNode.jsセットアップ
 │
 ├── .env                    # 環境変数（.gitignoreに含まれる）
 ├── .gitignore            # Git除外設定
@@ -76,23 +96,34 @@ app/api/
     └── route.ts          # POST /api/upload
 ```
 
-#### `app/(routes)/` - ページルート
+#### `app/dashboard/` - ダッシュボード
 
-ページコンポーネントを定義します。
+商品管理ダッシュボードの実装です。
 
 ```
-app/
-├── page.tsx              # / (ホームページ)
-├── about/
-│   └── page.tsx          # /about
-├── products/
-│   ├── page.tsx          # /products (一覧)
-│   └── [id]/
-│       └── page.tsx      # /products/[id] (詳細)
-└── (admin)/              # ルートグループ（URLに影響しない）
-    └── dashboard/
-        └── page.tsx      # /dashboard
+app/dashboard/
+├── page.tsx              # ダッシュボードページ（Server Component）
+├── types.ts              # 共通型定義（Category, Product）
+├── components/           # コンポーネント
+│   ├── DashboardContent.tsx      # メインコンテナ
+│   ├── DashboardForm.tsx         # 新規商品登録フォーム
+│   ├── DashboardFormWrapper.tsx  # フォームラッパー
+│   ├── ProductList.tsx           # 商品一覧・配置変更
+│   ├── ProductEditForm.tsx       # 商品編集フォーム
+│   ├── CategoryTabs.tsx          # カテゴリータブ
+│   └── SortableProductItem.tsx  # ドラッグ&ドロップ可能な商品アイテム
+├── hooks/                # カスタムフック
+│   ├── useTabState.ts            # タブ状態管理（localStorage連携）
+│   └── useProductReorder.ts      # 商品順序変更ロジック
+└── utils/                # ユーティリティ関数
+    └── productUtils.ts           # 商品のグループ化・フィルタリング
 ```
+
+**設計の特徴**:
+- **型安全性**: `types.ts`で共通型を定義し、全コンポーネントで使用
+- **コンポーネント分割**: 大きなコンポーネントを小さな単位に分割
+- **カスタムフック**: 状態管理ロジックを再利用可能なフックに分離
+- **ユーティリティ関数**: ビジネスロジックを純粋関数として実装
 
 ### `lib/` - ユーティリティ・ライブラリ
 
@@ -147,16 +178,20 @@ export const GET = withErrorHandling(async () => {
 });
 ```
 
-#### `lib/utils/` - 汎用ユーティリティ
-
-フォーマット、バリデーションなどの汎用関数を定義します。
+#### `lib/` - その他のユーティリティ
 
 ```
-lib/utils/
-├── format.ts      # 日付、金額などのフォーマット
-├── validation.ts  # バリデーション関数
-└── constants.ts   # 定数定義
+lib/
+├── config.ts              # アプリケーション設定（画像サイズ、キャッシュなど）
+├── image-compression.ts   # クライアントサイド画像圧縮
+└── product-utils.ts       # 商品関連ユーティリティ（公開状態計算など）
 ```
+
+**設定の一元管理** (`lib/config.ts`):
+- 画像アップロード設定（最大サイズ、圧縮品質など）
+- Blob Storage設定（フォルダ名、キャッシュ期間など）
+- API設定（キャッシュ期間など）
+- 表示設定（グリッド列数など）
 
 ### `prisma/` - Prisma設定
 
