@@ -50,16 +50,16 @@ export default function ProductGrid({ category, products }: ProductGridProps) {
 
   return (
     <>
-      <section className="mb-16 md:mb-20">
+      <section className="mb-8 md:mb-16 lg:mb-20">
         {/* カテゴリータイトル */}
-        <div className="mb-10 border-b border-gray-200 pb-5">
-          <h2 className="text-3xl font-light tracking-widest text-gray-800 md:text-4xl">
+        <div className="mb-4 border-b border-gray-200 pb-2 md:mb-10 md:pb-5">
+          <h2 className="text-lg font-light tracking-widest text-gray-800 md:text-3xl lg:text-4xl">
             {category.name}
           </h2>
         </div>
 
-        {/* 商品グリッド（3列） */}
-        <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
+        {/* 商品グリッド（常に3列） */}
+        <div className="grid grid-cols-3 gap-2 md:gap-6 lg:gap-8">
           {products.map((product) => (
             <ProductTile
               key={product.id}
