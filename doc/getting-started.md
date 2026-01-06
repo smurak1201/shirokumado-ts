@@ -404,6 +404,13 @@ export default function ProductList() {
 
 ## 📖 参考ドキュメント
 
+### プロジェクト内のドキュメント
+
+- **[App Router ガイド](./app-router-guide.md)** - Next.js App Router の詳細な使用方法。Server Components、Client Components、API Routes などの説明と、このアプリでの実際の使用箇所を説明します。
+- **[Prisma ガイド](./prisma-guide.md)** - Prisma の詳細な使用方法。各関数の説明と、このアプリでの実際の使用箇所を説明します。
+
+### 外部ドキュメント
+
 - [Next.js App Router](https://nextjs.org/docs/app)
 - [React Server Components](https://react.dev/blog/2023/03/22/react-labs-what-we-have-been-working-on-march-2023#react-server-components)
 - [Prisma Documentation](https://www.prisma.io/docs)
