@@ -1,34 +1,222 @@
-# Prisma ガイド
+# Prisma 7 ガイド
 
 ## 概要
 
-Prisma は、モダンなアプリケーション開発のための次世代 ORM（Object-Relational Mapping）です。型安全なデータベースアクセスと、直感的な API を提供します。
+Prisma 7 は、モダンなアプリケーション開発のための次世代 ORM（Object-Relational Mapping）です。型安全なデータベースアクセスと、直感的な API を提供します。
 
-このアプリケーションでは、Prisma を使用して PostgreSQL（Vercel Neon）に接続し、商品情報やカテゴリー情報などのデータを管理しています。
+このアプリケーションでは、**Prisma 7.2.0** を使用して PostgreSQL（Vercel Neon）に接続し、商品情報やカテゴリー情報などのデータを管理しています。
 
-## Prisma Client の初期化
+**Prisma 7 の主な特徴**:
 
-Prisma Client は `lib/prisma.ts` でシングルトンインスタンスとして管理されています。
+- **アダプターシステム**: データベースプロバイダーごとに専用のアダプターを使用（`@prisma/adapter-neon` など）
+- **設定ファイルの分離**: `prisma.config.ts` で設定を管理
+- **パフォーマンスの向上**: クエリ実行速度の改善とバンドルサイズの縮小
+- **型安全性の強化**: より厳密な型チェックとエラーハンドリング
+- **PostgreSQL の拡張機能**: `orderBy` での `nulls` オプションなど
+
+## Prisma 7 の設定
+
+### prisma.config.ts
+
+**説明**: Prisma 7 では、設定を `prisma.config.ts` ファイルで管理します。これにより、スキーマファイルと設定を分離し、より柔軟な設定が可能になります。
+
+**このアプリでの使用箇所**:
+
+- `prisma.config.ts`: Prisma の設定ファイル
+
+**設定ファイルの構成**:
 
 ```typescript
-// lib/prisma.ts
-import { PrismaClient } from "@prisma/client";
-import { neon } from "@neondatabase/serverless";
-import { PrismaNeon } from "@prisma/adapter-neon";
+// prisma.config.ts
+import "dotenv/config";
+import { defineConfig } from "prisma/config";
 
-export const prisma = globalForPrisma.prisma ?? createPrismaClient();
+export default defineConfig({
+  schema: "prisma/schema.prisma",
+  migrations: {
+    path: "prisma/migrations",
+    seed: "tsx prisma/seed.ts",
+  },
+  datasource: {
+    url: process.env["DATABASE_URL"],
+    // Prisma 7では、directUrlは環境変数から自動的に読み込まれます
+    // DATABASE_URL_UNPOOLED または POSTGRES_URL_NON_POOLING を設定してください
+  },
+});
 ```
+
+**Prisma 7 での変更点**:
+
+- 設定ファイルが `prisma.config.ts` に分離された
+- `defineConfig` 関数を使用して設定を定義
+- マイグレーションの設定（パス、シード）を設定ファイルで管理
+
+## データベースへの接続
+
+### Prisma 7 でのデータベース接続の概要
+
+**説明**: Prisma 7 では、データベースプロバイダーごとに専用のアダプターを使用してデータベースに接続します。これにより、各データベースの特性に最適化された接続管理が可能になります。
+
+**Prisma 7 での一般的な接続方法**:
+
+1. **アダプターの選択**: 使用するデータベースに応じて適切なアダプターを選択
+
+   - PostgreSQL: `@prisma/adapter-postgres` または `@prisma/adapter-neon`（Neon の場合）
+   - MySQL: `@prisma/adapter-mysql`
+   - SQLite: `@prisma/adapter-sqlite`
+
+2. **Prisma Client の初期化**: アダプターを指定して Prisma Client を作成
+
+```typescript
+// Prisma 7 での一般的な接続方法
+import { PrismaClient } from "@prisma/client";
+import { Adapter } from "@prisma/adapter-xxx"; // データベースに応じたアダプター
+
+const adapter = new Adapter(connectionString);
+
+const prisma = new PrismaClient({
+  adapter, // アダプターを指定
+});
+```
+
+**Prisma 7 での変更点**:
+
+- **アダプターシステム**: Prisma 6 までは接続文字列を直接指定していましたが、Prisma 7 ではアダプターを使用
+- **接続管理**: アダプターが接続プール、WebSocket、トランザクションなどを管理
+- **パフォーマンス**: サーバーレス環境でのパフォーマンスが向上
+- **型安全性**: アダプターにより、より厳密な型チェックが可能
+
+### このアプリでの PostgreSQL（Neon）への接続
+
+このアプリケーションでは、**PostgreSQL（Vercel Neon）** に接続するために `@prisma/adapter-neon` を使用しています。
 
 **このアプリでの使用箇所**:
 
 - `lib/prisma.ts`: Prisma Client の初期化とエクスポート
 - すべての Server Components と API Routes で `import { prisma } from '@/lib/prisma'` として使用
 
+**実際の実装コード**:
+
+```28:70:lib/prisma.ts
+const createPrismaClient = (): PrismaClient => {
+  // Prisma 7では、Neonに接続するためにアダプターを使用します
+  const rawConnectionString = process.env.DATABASE_URL || process.env.POSTGRES_URL;
+
+  if (!rawConnectionString) {
+    throw new Error('DATABASE_URL or POSTGRES_URL environment variable is not set');
+  }
+
+  // 接続文字列を確実に文字列に変換
+  // process.envの値は常にstring | undefinedなので、String()で変換
+  const connectionString = String(rawConnectionString).trim();
+
+  // 接続文字列が空でないことを確認
+  if (!connectionString || connectionString.length === 0) {
+    throw new Error('DATABASE_URL must be a non-empty string');
+  }
+
+  // 接続文字列が正しい形式であることを確認
+  if (!connectionString.startsWith('postgresql://') && !connectionString.startsWith('postgres://')) {
+    throw new Error('DATABASE_URL must be a valid PostgreSQL connection string');
+  }
+
+  try {
+    // neon関数を使用してアダプターを作成
+    // これにより、Vercelの本番環境でも正しく動作します
+    const sql = neon(connectionString);
+    const adapter = new PrismaNeon(sql as any);
+
+    return new PrismaClient({
+      adapter,
+      log:
+        process.env.NODE_ENV === 'development'
+          ? ['query', 'error', 'warn']
+          : ['error'],
+    });
+  } catch (error) {
+    console.error('Failed to create Prisma Client:', error);
+    console.error('Connection string type:', typeof connectionString);
+    console.error('Connection string length:', connectionString.length);
+    console.error('Connection string preview:', connectionString.substring(0, 20) + '...');
+    throw error;
+  }
+};
+```
+
+**実装の詳細説明**:
+
+1. **環境変数からの接続文字列取得**:
+
+   - `DATABASE_URL` または `POSTGRES_URL` から接続文字列を取得
+   - PostgreSQL の接続文字列形式（`postgresql://` または `postgres://` で始まる）を検証
+
+2. **Neon アダプターの作成**:
+
+   - `@neondatabase/serverless` の `neon` 関数を使用して SQL クライアントを作成
+   - `PrismaNeon` アダプターに SQL クライアントを渡してアダプターを作成
+
+3. **WebSocket の設定**（Node.js 環境用）:
+
+```19:22:lib/prisma.ts
+// WebSocketの設定（Node.js環境用）
+if (typeof globalThis !== 'undefined' && !globalThis.WebSocket) {
+  neonConfig.webSocketConstructor = ws;
+}
+```
+
+**説明**: Node.js 環境では WebSocket が標準で提供されていないため、`ws` パッケージを使用して WebSocket を設定します。これにより、サーバーレス環境（Vercel）でも正しく動作します。
+
+4. **Prisma Client の作成**:
+
+   - 作成したアダプターを `PrismaClient` のコンストラクタに渡す
+   - 開発環境ではクエリログを有効化（`['query', 'error', 'warn']`）
+   - 本番環境ではエラーログのみ（`['error']`）
+
+5. **シングルトンインスタンスの管理**:
+
+```72:77:lib/prisma.ts
+export const prisma =
+  globalForPrisma.prisma ?? createPrismaClient();
+
+if (process.env.NODE_ENV !== 'production') {
+  globalForPrisma.prisma = prisma;
+}
+```
+
+**説明**: Next.js App Router でのベストプラクティスとして、開発環境ではホットリロード時に新しいインスタンスが作成されないように、グローバル変数に保存します。
+
+**PostgreSQL（Neon）接続の特徴**:
+
+- **サーバーレス対応**: Neon はサーバーレスアーキテクチャの PostgreSQL サービス
+- **WebSocket 接続**: サーバーレス環境での効率的な接続管理
+- **接続プール**: アダプターが自動的に接続プールを管理
+- **パフォーマンス**: エッジネットワーク経由で高速なデータベースアクセス
+
+**環境変数の設定**:
+
+```env
+# データベース接続（Neon）
+DATABASE_URL=postgresql://user:password@host/database
+DATABASE_URL_UNPOOLED=postgresql://user:password@host/database
+POSTGRES_URL=postgresql://user:password@host/database
+POSTGRES_URL_NON_POOLING=postgresql://user:password@host/database
+```
+
+**説明**:
+
+- `DATABASE_URL`: プールされた接続（通常のクエリ用）
+- `DATABASE_URL_UNPOOLED` または `POSTGRES_URL_NON_POOLING`: プールされていない接続（マイグレーション用）
+- Prisma 7 では、これらの環境変数から自動的に適切な接続を使用します
+
 ## ORM としての機能
 
 ### データベーススキーマ定義
 
 **説明**: Prisma では、`prisma/schema.prisma` ファイルでデータベーススキーマを定義します。このファイルは、データベースのテーブル構造、フィールド、リレーション、制約などを宣言的に記述します。
+
+**Prisma 7 でのスキーマ定義**:
+
+Prisma 7 では、スキーマファイルの基本的な構造は Prisma 6 と同じですが、設定の一部が `prisma.config.ts` に分離されました。
 
 **このアプリでの使用箇所**:
 
@@ -45,8 +233,10 @@ generator client {
 }
 
 // Datasource: データベース接続設定
+// Prisma 7では、接続情報はprisma.config.tsで管理されますが、
+// スキーマファイルではプロバイダーの種類を指定します
 datasource db {
-  provider = "postgresql"
+  provider = "postgresql"  // PostgreSQLデータベースを使用
 }
 
 // カテゴリーテーブル
@@ -103,8 +293,31 @@ model Product {
 - `@updatedAt`: 更新時に自動的に現在時刻を更新
 - `@unique`: ユニーク制約
 - `@map("column_name")`: データベースのカラム名をマッピング
-- `@db.Text`: データベースの型を指定（長いテキスト）
-- `@db.Decimal(10, 2)`: データベースの型を指定（10 桁、小数点以下 2 桁）
+
+**PostgreSQL 固有の型指定**:
+
+このアプリでは、PostgreSQL の特性を活用するために以下の型指定を使用しています：
+
+- `@db.Text`: PostgreSQL の `TEXT` 型（長いテキスト用）
+- `@db.Decimal(10, 2)`: PostgreSQL の `DECIMAL(10, 2)` 型（10 桁、小数点以下 2 桁）
+
+**このアプリでの使用例**:
+
+```prisma
+// prisma/schema.prisma
+
+model Product {
+  description String    @db.Text  // PostgreSQLのTEXT型を使用
+  priceS      Decimal?  @map("price_s") @db.Decimal(10, 2)  // DECIMAL型を使用
+  priceL      Decimal?  @map("price_l") @db.Decimal(10, 2)  // DECIMAL型を使用
+  // ...
+}
+```
+
+**説明**:
+
+- `@db.Text`: 商品説明などの長いテキストを保存するために使用
+- `@db.Decimal(10, 2)`: 価格などの数値を正確に保存するために使用（浮動小数点数の誤差を避けるため）
 
 **このアプリでの使用例**:
 
@@ -183,11 +396,26 @@ const categories = await prisma.category.findMany({
 
 ### マイグレーション
 
-**説明**: Prisma のマイグレーション機能は、データベーススキーマの変更をバージョン管理し、安全にデータベースを更新します。スキーマファイルを変更した後、マイグレーションを作成・適用することで、データベースの構造を更新できます。
+**説明**: Prisma 7 のマイグレーション機能は、データベーススキーマの変更をバージョン管理し、安全にデータベースを更新します。スキーマファイルを変更した後、マイグレーションを作成・適用することで、データベースの構造を更新できます。
 
 **このアプリでの使用箇所**:
 
 - `prisma/migrations/`: マイグレーションファイルの保存場所
+- `prisma.config.ts`: マイグレーションの設定（パス、シードファイル）
+
+**Prisma 7 でのマイグレーション**:
+
+Prisma 7 では、`prisma.config.ts` でマイグレーションの設定を管理します：
+
+```typescript
+// prisma.config.ts
+export default defineConfig({
+  migrations: {
+    path: "prisma/migrations",
+    seed: "tsx prisma/seed.ts",
+  },
+});
+```
 
 **マイグレーションの作成と適用**:
 
@@ -198,6 +426,11 @@ npm run db:migrate
 # 本番環境でマイグレーションを適用
 npm run db:migrate:deploy
 ```
+
+**Prisma 7 での変更点**:
+
+- マイグレーションの設定が `prisma.config.ts` で管理される
+- シードファイルのパスを設定ファイルで指定可能
 
 **このアプリでのマイグレーション例**:
 
@@ -887,10 +1120,14 @@ const products = await prisma.product.findMany({
 - `"asc"`: 昇順（小さい順）
 - `"desc"`: 降順（大きい順）
 
-**null 値の扱い**（PostgreSQL のみ）:
+**null 値の扱い**（Prisma 7 + PostgreSQL）:
 
 - `"first"`: null 値を最初に配置
 - `"last"`: null 値を最後に配置（このアプリで使用）
+
+**Prisma 7 での新機能**:
+
+Prisma 7 では、PostgreSQL の `NULLS FIRST` / `NULLS LAST` 構文をサポートしています。これにより、`null` 値の扱いを明示的に制御できます。
 
 **このアプリでの使用例**:
 
@@ -1245,14 +1482,49 @@ npm run db:migrate:deploy # 本番環境でマイグレーションを適用
 npm run db:push           # スキーマを直接プッシュ（開発環境のみ）
 ```
 
+## Prisma 7 のベストプラクティス
+
+### アダプターの使用
+
+**説明**: Prisma 7 では、データベースプロバイダーごとに専用のアダプターを使用します。これにより、サーバーレス環境でのパフォーマンスが向上し、接続管理が最適化されます。
+
+**このアプリでの実装**:
+
+- `@prisma/adapter-neon`: Neon（PostgreSQL）用のアダプター
+- WebSocket の設定により、Node.js 環境でも正しく動作
+
+### 設定ファイルの管理
+
+**説明**: Prisma 7 では、`prisma.config.ts` で設定を管理します。これにより、スキーマファイルと設定を分離し、より柔軟な設定が可能になります。
+
+**このアプリでの実装**:
+
+- `prisma.config.ts`: スキーマパス、マイグレーションパス、シードファイルを設定
+- 環境変数から自動的に接続情報を読み込み
+
+### パフォーマンスの最適化
+
+**説明**: Prisma 7 では、以下の最適化が行われています：
+
+- **バンドルサイズの縮小**: 不要なコードの削除により、バンドルサイズが削減
+- **クエリ実行速度の向上**: クエリエンジンの改善により、実行速度が向上
+- **接続プールの最適化**: アダプターによる接続プールの管理が改善
+
 ## まとめ
 
-このアプリケーションでは、Prisma を使用して以下の操作を行っています：
+このアプリケーションでは、**Prisma 7.2.0** を使用して以下の操作を行っています：
 
 1. **データの取得**: `findMany`, `findUnique` を使用して商品やカテゴリーを取得
 2. **データの作成**: `create` を使用して新規商品を作成
 3. **データの更新**: `update` を使用して商品情報を更新
 4. **データの削除**: `delete` を使用して商品を削除
 5. **トランザクション**: `$transaction` を使用して複数の操作を原子性を保証して実行
+
+**Prisma 7 の特徴を活用**:
+
+- **アダプターシステム**: `@prisma/adapter-neon` を使用して Neon に接続
+- **設定ファイル**: `prisma.config.ts` で設定を管理
+- **PostgreSQL 拡張機能**: `orderBy` での `nulls` オプションを使用
+- **パフォーマンス**: アダプターによる接続管理の最適化
 
 すべての操作は `safePrismaOperation` でラップされ、統一されたエラーハンドリングが行われています。また、`include` オプションを使用して N+1 問題を回避し、パフォーマンスを最適化しています。
