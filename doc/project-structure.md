@@ -382,6 +382,7 @@ public/
 - **`doc/nextjs-guide.md`**: Next.js の詳細な使用方法
 - **`doc/app-router-guide.md`**: Next.js App Router の詳細な使用方法
 - **`doc/react-guide.md`**: React の詳細な使用方法
+- **`doc/typescript-guide.md`**: TypeScript の詳細な使用方法
 - **`doc/prisma-guide.md`**: Prisma の詳細な使用方法
 - **`doc/setup-prisma-blob.md`**: Prisma と Blob のセットアップガイド
 - **`doc/deployment.md`**: デプロイメントガイド

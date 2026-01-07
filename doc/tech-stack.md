@@ -343,6 +343,7 @@ shirokumado-ts/
 │   ├── nextjs-guide.md         # Next.js ガイド
 │   ├── app-router-guide.md     # App Router ガイド
 │   ├── react-guide.md          # React ガイド
+│   ├── typescript-guide.md     # TypeScript ガイド
 │   ├── prisma-guide.md         # Prisma ガイド
 │   ├── setup-prisma-blob.md    # Prisma & Blob セットアップガイド
 │   └── deployment.md           # デプロイメントガイド

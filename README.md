@@ -101,6 +101,7 @@ npm run dev
 - **[Next.js ガイド](./doc/nextjs-guide.md)** - Next.js の詳細な使用方法。画像最適化、フォント最適化、メタデータ、ビルドとデプロイなどの説明と、このアプリでの実際の使用箇所を説明します。
 - **[App Router ガイド](./doc/app-router-guide.md)** - Next.js App Router の詳細な使用方法。Server Components、Client Components、API Routes などの説明と、このアプリでの実際の使用箇所を説明します。
 - **[React ガイド](./doc/react-guide.md)** - React の詳細な使用方法。Hooks、カスタムフック、コンポーネント設計などの説明と、このアプリでの実際の使用箇所を説明します。
+- **[TypeScript ガイド](./doc/typescript-guide.md)** - TypeScript の詳細な使用方法。型定義、型安全性、Prisma との統合などの説明と、このアプリでの実際の使用箇所を説明します。
 - **[Prisma ガイド](./doc/prisma-guide.md)** - Prisma の詳細な使用方法。各関数の説明と、このアプリでの実際の使用箇所を説明します。
 - **[デプロイメントガイド](./doc/deployment.md)** - デプロイ手順。Vercel へのデプロイ方法を説明します。
 
