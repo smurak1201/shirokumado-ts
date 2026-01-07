@@ -340,9 +340,10 @@ shirokumado-ts/
 │   ├── frontend-guide.md       # フロントエンドガイド
 │   ├── dashboard-guide.md      # ダッシュボードガイド
 │   ├── development-guide.md    # 開発ガイドライン
-│   ├── prisma-guide.md         # Prisma ガイド
-│   ├── app-router-guide.md    # App Router ガイド
+│   ├── nextjs-guide.md         # Next.js ガイド
+│   ├── app-router-guide.md     # App Router ガイド
 │   ├── react-guide.md          # React ガイド
+│   ├── prisma-guide.md         # Prisma ガイド
 │   ├── setup-prisma-blob.md    # Prisma & Blob セットアップガイド
 │   └── deployment.md           # デプロイメントガイド
 ├── package.json     # 依存関係
