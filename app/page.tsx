@@ -74,7 +74,7 @@ async function getPublishedProductsByCategory() {
   // カテゴリーの順序に従って返す（Decimal型をNumber型に変換、商品があるカテゴリーのみ）
   return categoryOrder
     .map((categoryName) => ({
-      category: categories.find((c) => c.name === categoryName)!,
+    category: categories.find((c) => c.name === categoryName)!,
       products: (grouped[categoryName] || []).map((product) => ({
         ...product,
         // Decimal型をNumber型に変換（PrismaのDecimal型は文字列として扱われるため）

@@ -75,13 +75,18 @@ shirokumado-ts/
 │   └── hero.webp         # ヒーロー画像
 │
 ├── doc/                    # ドキュメント
-│   ├── tech-stack.md     # 技術スタック
-│   ├── setup-prisma-blob.md # Prisma & Blob セットアップ
-│   ├── development-guide.md # 開発ガイドライン
-│   ├── coding-standards.md # コーディング標準
+│   ├── getting-started.md  # コードリーディングガイド
+│   ├── architecture.md     # アーキテクチャと設計思想
 │   ├── project-structure.md # プロジェクト構造（このファイル）
-│   ├── deployment.md     # デプロイメントガイド
-│   └── nodejs-setup-wsl.md # WSLでのNode.jsセットアップ
+│   ├── tech-stack.md       # 技術スタック
+│   ├── frontend-guide.md   # フロントエンドガイド
+│   ├── dashboard-guide.md  # ダッシュボードガイド
+│   ├── development-guide.md # 開発ガイドライン
+│   ├── prisma-guide.md     # Prisma ガイド
+│   ├── app-router-guide.md # App Router ガイド
+│   ├── react-guide.md      # React ガイド
+│   ├── setup-prisma-blob.md # Prisma & Blob セットアップ
+│   └── deployment.md       # デプロイメントガイド
 │
 ├── .env                    # 環境変数（.gitignoreに含まれる）
 ├── .gitignore            # Git除外設定
@@ -367,10 +372,17 @@ public/
 ### ドキュメント
 
 - **`README.md`**: プロジェクトの概要とセットアップ手順
-- **`doc/tech-stack.md`**: 技術スタックの詳細
-- **`doc/setup-prisma-blob.md`**: Prisma と Blob のセットアップガイド
-- **`doc/development-guide.md`**: 開発ガイドライン
+- **`doc/getting-started.md`**: コードリーディングガイド
+- **`doc/architecture.md`**: アーキテクチャと設計思想
 - **`doc/project-structure.md`**: プロジェクト構造（このファイル）
+- **`doc/tech-stack.md`**: 技術スタックの詳細
+- **`doc/frontend-guide.md`**: フロントエンドガイド
+- **`doc/dashboard-guide.md`**: ダッシュボードガイド
+- **`doc/development-guide.md`**: 開発ガイドライン
+- **`doc/prisma-guide.md`**: Prisma の詳細な使用方法
+- **`doc/app-router-guide.md`**: Next.js App Router の詳細な使用方法
+- **`doc/react-guide.md`**: React の詳細な使用方法
+- **`doc/setup-prisma-blob.md`**: Prisma と Blob のセットアップガイド
 - **`doc/deployment.md`**: デプロイメントガイド
 
 ## 🎯 ベストプラクティス

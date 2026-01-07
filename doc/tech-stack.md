@@ -333,10 +333,18 @@ shirokumado-ts/
 │   ├── hero.webp    # ヒーロー画像
 │   └── logo-instagram.svg # Instagramアイコン
 ├── doc/             # ドキュメント
+│   ├── getting-started.md      # コードリーディングガイド
+│   ├── architecture.md         # アーキテクチャと設計思想
+│   ├── project-structure.md    # プロジェクト構造
 │   ├── tech-stack.md           # 技術スタック
 │   ├── frontend-guide.md       # フロントエンドガイド
-│   ├── dashboard-guide.md       # ダッシュボードガイド
-│   └── setup-prisma-blob.md    # Prisma & Blob セットアップガイド
+│   ├── dashboard-guide.md      # ダッシュボードガイド
+│   ├── development-guide.md    # 開発ガイドライン
+│   ├── prisma-guide.md         # Prisma ガイド
+│   ├── app-router-guide.md    # App Router ガイド
+│   ├── react-guide.md          # React ガイド
+│   ├── setup-prisma-blob.md    # Prisma & Blob セットアップガイド
+│   └── deployment.md           # デプロイメントガイド
 ├── package.json     # 依存関係
 ├── tsconfig.json    # TypeScript設定
 ├── next.config.ts   # Next.js設定

@@ -50,10 +50,6 @@ Next.js の設定を確認します。
 
 アプリケーション全体の設定値が集約されています。画像サイズ、キャッシュ期間、表示設定など、すべての設定がここにあります。
 
-#### `lib/types.ts` (存在する場合)
-
-共通の型定義を確認します。
-
 #### `lib/errors.ts`
 
 エラーハンドリングの統一された方法を理解します。
@@ -315,9 +311,12 @@ Prisma の設定とスキーマを管理します。
 - **`getting-started.md`**: コードリーディングガイド（このファイル）
 - **`architecture.md`**: アーキテクチャと設計思想
 - **`project-structure.md`**: プロジェクト構造の詳細
-- **`development-guide.md`**: 開発ガイドライン
-- **`coding-standards.md`**: コーディング標準とベストプラクティス
+- **`development-guide.md`**: 開発ガイドライン（コーディング標準とベストプラクティスを含む）
 - **`tech-stack.md`**: 技術スタックの詳細
+- **`frontend-guide.md`**: フロントエンドガイド
+- **`dashboard-guide.md`**: ダッシュボードガイド
+- **`prisma-guide.md`**: Prisma ガイド
+- **`app-router-guide.md`**: App Router ガイド
 - **`setup-prisma-blob.md`**: Prisma & Blob セットアップガイド
 - **`deployment.md`**: デプロイメントガイド
 
@@ -408,6 +407,7 @@ export default function ProductList() {
 
 - **[App Router ガイド](./app-router-guide.md)** - Next.js App Router の詳細な使用方法。Server Components、Client Components、API Routes などの説明と、このアプリでの実際の使用箇所を説明します。
 - **[Prisma ガイド](./prisma-guide.md)** - Prisma の詳細な使用方法。各関数の説明と、このアプリでの実際の使用箇所を説明します。
+- **[React ガイド](./react-guide.md)** - React の詳細な使用方法。Hooks、カスタムフック、コンポーネント設計などの説明と、このアプリでの実際の使用箇所を説明します。
 
 ### 外部ドキュメント
 
