@@ -88,8 +88,8 @@ npm run dev
 
 ### 機能別ガイド
 
-- **[フロントエンドガイド](./doc/frontend-guide.md)** - フロントエンド実装の詳細。ページ構成、コンポーネント、データフローなどを説明します。
-- **[ダッシュボードガイド](./doc/dashboard-guide.md)** - ダッシュボード機能の詳細。商品管理機能の実装を説明します。
+- **[フロントエンドガイド](./doc/guides/frontend-guide.md)** - フロントエンド実装の詳細。ページ構成、コンポーネント、データフローなどを説明します。
+- **[ダッシュボードガイド](./doc/guides/dashboard-guide.md)** - ダッシュボード機能の詳細。商品管理機能の実装を説明します。
 
 ### 開発ガイド
 
@@ -98,11 +98,11 @@ npm run dev
 ### セットアップとデプロイ
 
 - **[Prisma & Blob セットアップガイド](./doc/setup-prisma-blob.md)** - データベースとストレージのセットアップ方法。開発環境の構築手順を説明します。
-- **[Next.js ガイド](./doc/nextjs-guide.md)** - Next.js の詳細な使用方法。画像最適化、フォント最適化、メタデータ、ビルドとデプロイなどの説明と、このアプリでの実際の使用箇所を説明します。
-- **[App Router ガイド](./doc/app-router-guide.md)** - Next.js App Router の詳細な使用方法。Server Components、Client Components、API Routes などの説明と、このアプリでの実際の使用箇所を説明します。
-- **[React ガイド](./doc/react-guide.md)** - React の詳細な使用方法。Hooks、カスタムフック、コンポーネント設計などの説明と、このアプリでの実際の使用箇所を説明します。
-- **[TypeScript ガイド](./doc/typescript-guide.md)** - TypeScript の詳細な使用方法。型定義、型安全性、Prisma との統合などの説明と、このアプリでの実際の使用箇所を説明します。
-- **[Prisma ガイド](./doc/prisma-guide.md)** - Prisma の詳細な使用方法。各関数の説明と、このアプリでの実際の使用箇所を説明します。
+- **[Next.js ガイド](./doc/guides/nextjs-guide.md)** - Next.js の詳細な使用方法。画像最適化、フォント最適化、メタデータ、ビルドとデプロイなどの説明と、このアプリでの実際の使用箇所を説明します。
+- **[App Router ガイド](./doc/guides/app-router-guide.md)** - Next.js App Router の詳細な使用方法。Server Components、Client Components、API Routes などの説明と、このアプリでの実際の使用箇所を説明します。
+- **[React ガイド](./doc/guides/react-guide.md)** - React の詳細な使用方法。Hooks、カスタムフック、コンポーネント設計などの説明と、このアプリでの実際の使用箇所を説明します。
+- **[TypeScript ガイド](./doc/guides/typescript-guide.md)** - TypeScript の詳細な使用方法。型定義、型安全性、Prisma との統合などの説明と、このアプリでの実際の使用箇所を説明します。
+- **[Prisma ガイド](./doc/guides/prisma-guide.md)** - Prisma の詳細な使用方法。各関数の説明と、このアプリでの実際の使用箇所を説明します。
 - **[デプロイメントガイド](./doc/deployment.md)** - デプロイ手順。Vercel へのデプロイ方法を説明します。
 
 ## 🧑‍💻 開発コマンド

@@ -79,14 +79,17 @@ shirokumado-ts/
 │   ├── architecture.md     # アーキテクチャと設計思想
 │   ├── project-structure.md # プロジェクト構造（このファイル）
 │   ├── tech-stack.md       # 技術スタック
-│   ├── frontend-guide.md   # フロントエンドガイド
-│   ├── dashboard-guide.md  # ダッシュボードガイド
 │   ├── development-guide.md # 開発ガイドライン
-│   ├── prisma-guide.md     # Prisma ガイド
-│   ├── app-router-guide.md # App Router ガイド
-│   ├── react-guide.md      # React ガイド
 │   ├── setup-prisma-blob.md # Prisma & Blob セットアップ
-│   └── deployment.md       # デプロイメントガイド
+│   ├── deployment.md       # デプロイメントガイド
+│   └── guides/            # ガイド系ドキュメント
+│       ├── frontend-guide.md   # フロントエンドガイド
+│       ├── dashboard-guide.md  # ダッシュボードガイド
+│       ├── nextjs-guide.md     # Next.js ガイド
+│       ├── app-router-guide.md # App Router ガイド
+│       ├── react-guide.md      # React ガイド
+│       ├── typescript-guide.md # TypeScript ガイド
+│       └── prisma-guide.md     # Prisma ガイド
 │
 ├── .env                    # 環境変数（.gitignoreに含まれる）
 ├── .gitignore            # Git除外設定
@@ -376,14 +379,14 @@ public/
 - **`doc/architecture.md`**: アーキテクチャと設計思想
 - **`doc/project-structure.md`**: プロジェクト構造（このファイル）
 - **`doc/tech-stack.md`**: 技術スタックの詳細
-- **`doc/frontend-guide.md`**: フロントエンドガイド
-- **`doc/dashboard-guide.md`**: ダッシュボードガイド
+- **`doc/guides/frontend-guide.md`**: フロントエンドガイド
+- **`doc/guides/dashboard-guide.md`**: ダッシュボードガイド
 - **`doc/development-guide.md`**: 開発ガイドライン
-- **`doc/nextjs-guide.md`**: Next.js の詳細な使用方法
-- **`doc/app-router-guide.md`**: Next.js App Router の詳細な使用方法
-- **`doc/react-guide.md`**: React の詳細な使用方法
-- **`doc/typescript-guide.md`**: TypeScript の詳細な使用方法
-- **`doc/prisma-guide.md`**: Prisma の詳細な使用方法
+- **`doc/guides/nextjs-guide.md`**: Next.js の詳細な使用方法
+- **`doc/guides/app-router-guide.md`**: Next.js App Router の詳細な使用方法
+- **`doc/guides/react-guide.md`**: React の詳細な使用方法
+- **`doc/guides/typescript-guide.md`**: TypeScript の詳細な使用方法
+- **`doc/guides/prisma-guide.md`**: Prisma の詳細な使用方法
 - **`doc/setup-prisma-blob.md`**: Prisma と Blob のセットアップガイド
 - **`doc/deployment.md`**: デプロイメントガイド
 

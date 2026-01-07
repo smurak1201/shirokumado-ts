@@ -313,7 +313,7 @@ npm run build
 - **エッジネットワーク**: グローバル CDN により、世界中で高速な配信を実現
 - **サーバーレス関数**: API Routes を自動的にサーバーレス関数としてデプロイ
 
-**詳細は [デプロイメントガイド](./deployment.md) を参照してください。**
+**詳細は [デプロイメントガイド](../deployment.md) を参照してください。**
 
 ## パフォーマンス最適化
 
@@ -396,5 +396,5 @@ Server Components により、クライアントサイドの JavaScript を最�
 
 - **[App Router ガイド](./app-router-guide.md)**: App Router の詳細な使用方法（Server Components、Client Components、API Routes、データフェッチングなど）
 - **[React ガイド](./react-guide.md)**: React の詳細な使用方法
-- **[デプロイメントガイド](./deployment.md)**: デプロイ手順
+- **[デプロイメントガイド](../deployment.md)**: デプロイ手順
 - **[Next.js 公式ドキュメント](https://nextjs.org/docs)**: Next.js の包括的なドキュメント

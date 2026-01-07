@@ -337,16 +337,17 @@ shirokumado-ts/
 │   ├── architecture.md         # アーキテクチャと設計思想
 │   ├── project-structure.md    # プロジェクト構造
 │   ├── tech-stack.md           # 技術スタック
-│   ├── frontend-guide.md       # フロントエンドガイド
-│   ├── dashboard-guide.md      # ダッシュボードガイド
 │   ├── development-guide.md    # 開発ガイドライン
-│   ├── nextjs-guide.md         # Next.js ガイド
-│   ├── app-router-guide.md     # App Router ガイド
-│   ├── react-guide.md          # React ガイド
-│   ├── typescript-guide.md     # TypeScript ガイド
-│   ├── prisma-guide.md         # Prisma ガイド
 │   ├── setup-prisma-blob.md    # Prisma & Blob セットアップガイド
-│   └── deployment.md           # デプロイメントガイド
+│   ├── deployment.md           # デプロイメントガイド
+│   └── guides/                 # ガイド系ドキュメント
+│       ├── frontend-guide.md       # フロントエンドガイド
+│       ├── dashboard-guide.md      # ダッシュボードガイド
+│       ├── nextjs-guide.md         # Next.js ガイド
+│       ├── app-router-guide.md     # App Router ガイド
+│       ├── react-guide.md          # React ガイド
+│       ├── typescript-guide.md     # TypeScript ガイド
+│       └── prisma-guide.md         # Prisma ガイド
 ├── package.json     # 依存関係
 ├── tsconfig.json    # TypeScript設定
 ├── next.config.ts   # Next.js設定

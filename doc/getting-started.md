@@ -313,10 +313,10 @@ Prisma の設定とスキーマを管理します。
 - **`project-structure.md`**: プロジェクト構造の詳細
 - **`development-guide.md`**: 開発ガイドライン（コーディング標準とベストプラクティスを含む）
 - **`tech-stack.md`**: 技術スタックの詳細
-- **`frontend-guide.md`**: フロントエンドガイド
-- **`dashboard-guide.md`**: ダッシュボードガイド
-- **`prisma-guide.md`**: Prisma ガイド
-- **`app-router-guide.md`**: App Router ガイド
+- **`guides/frontend-guide.md`**: フロントエンドガイド
+- **`guides/dashboard-guide.md`**: ダッシュボードガイド
+- **`guides/prisma-guide.md`**: Prisma ガイド
+- **`guides/app-router-guide.md`**: App Router ガイド
 - **`setup-prisma-blob.md`**: Prisma & Blob セットアップガイド
 - **`deployment.md`**: デプロイメントガイド
 
@@ -405,11 +405,11 @@ export default function ProductList() {
 
 ### プロジェクト内のドキュメント
 
-- **[Next.js ガイド](./nextjs-guide.md)** - Next.js の詳細な使用方法。画像最適化、フォント最適化、メタデータ、ビルドとデプロイなどの説明と、このアプリでの実際の使用箇所を説明します。
-- **[App Router ガイド](./app-router-guide.md)** - Next.js App Router の詳細な使用方法。Server Components、Client Components、API Routes などの説明と、このアプリでの実際の使用箇所を説明します。
-- **[React ガイド](./react-guide.md)** - React の詳細な使用方法。Hooks、カスタムフック、コンポーネント設計などの説明と、このアプリでの実際の使用箇所を説明します。
-- **[TypeScript ガイド](./typescript-guide.md)** - TypeScript の詳細な使用方法。型定義、型安全性、Prisma との統合などの説明と、このアプリでの実際の使用箇所を説明します。
-- **[Prisma ガイド](./prisma-guide.md)** - Prisma の詳細な使用方法。各関数の説明と、このアプリでの実際の使用箇所を説明します。
+- **[Next.js ガイド](./guides/nextjs-guide.md)** - Next.js の詳細な使用方法。画像最適化、フォント最適化、メタデータ、ビルドとデプロイなどの説明と、このアプリでの実際の使用箇所を説明します。
+- **[App Router ガイド](./guides/app-router-guide.md)** - Next.js App Router の詳細な使用方法。Server Components、Client Components、API Routes などの説明と、このアプリでの実際の使用箇所を説明します。
+- **[React ガイド](./guides/react-guide.md)** - React の詳細な使用方法。Hooks、カスタムフック、コンポーネント設計などの説明と、このアプリでの実際の使用箇所を説明します。
+- **[TypeScript ガイド](./guides/typescript-guide.md)** - TypeScript の詳細な使用方法。型定義、型安全性、Prisma との統合などの説明と、このアプリでの実際の使用箇所を説明します。
+- **[Prisma ガイド](./guides/prisma-guide.md)** - Prisma の詳細な使用方法。各関数の説明と、このアプリでの実際の使用箇所を説明します。
 
 ### 外部ドキュメント
 
