@@ -1,5 +1,32 @@
 # Next.js App Router ガイド
 
+## 📋 目次
+
+- [概要](#概要)
+- [App Router とは](#app-router-とは)
+- [App Router のディレクトリ構造](#app-router-のディレクトリ構造)
+- [Server Components と Client Components](#server-components-と-client-components)
+  - [Server Components](#server-components)
+  - [Client Components](#client-components)
+- [データフェッチング](#データフェッチング)
+  - [Server Components でのデータフェッチング](#server-components-でのデータフェッチング)
+  - [動的レンダリングの設定](#動的レンダリングの設定)
+- [動的ルーティング](#動的ルーティング)
+- [API Routes](#api-routes)
+  - [商品一覧の取得と作成](#1-appapiproductsroutets---商品一覧の取得と作成)
+  - [個別商品の操作](#2-appapiproductsidroutets---個別商品の操作)
+- [画像最適化](#画像最適化)
+- [レイアウトとテンプレート](#レイアウトとテンプレート)
+  - [ルートレイアウト](#ルートレイアウト)
+  - [メタデータ](#メタデータ)
+  - [フォント最適化](#フォント最適化)
+- [このアプリでの App Router の使用例まとめ](#このアプリでの-app-router-の使用例まとめ)
+  - [ページ構成](#ページ構成)
+  - [API Routes 構成](#api-routes-構成)
+  - [ベストプラクティス](#ベストプラクティス)
+- [まとめ](#まとめ)
+- [関連ドキュメント](#関連ドキュメント)
+
 ## 概要
 
 Next.js App Router は、Next.js 13 以降で導入された新しいルーティングシステムです。ファイルベースのルーティングと、React Server Components を活用したサーバーサイドレンダリングを提供します。

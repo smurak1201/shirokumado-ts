@@ -1,5 +1,42 @@
 # Prisma 7 ガイド
 
+## 📋 目次
+
+- [概要](#概要)
+- [Prisma 7 の設定](#prisma-7-の設定)
+  - [prisma.config.ts](#prismaconfigts)
+- [データベースへの接続](#データベースへの接続)
+  - [Prisma 7 でのデータベース接続の概要](#prisma-7-でのデータベース接続の概要)
+  - [このアプリでの PostgreSQL（Neon）への接続](#このアプリでの-postgresqlneonへの接続)
+- [ORM としての機能](#orm-としての機能)
+  - [データベーススキーマ定義](#データベーススキーマ定義)
+  - [リレーション（関連）](#リレーション関連)
+  - [マイグレーション](#マイグレーション)
+  - [型生成](#型生成)
+  - [Prisma Studio](#prisma-studio)
+- [Prisma 関数の説明と使用例](#prisma-関数の説明と使用例)
+  - [findMany](#findmany)
+  - [findUnique](#findunique)
+  - [create](#create)
+  - [update](#update)
+  - [delete](#delete)
+  - [$transaction](#transaction)
+- [クエリオプション](#クエリオプション)
+  - [where](#where)
+  - [orderBy](#orderby)
+  - [include](#include)
+  - [N+1 問題の詳細解説](#n1-問題の詳細解説)
+  - [select（このアプリでは未使用）](#selectこのアプリでは未使用)
+  - [take と skip（このアプリでは未使用）](#take-と-skipこのアプリでは未使用)
+- [エラーハンドリング](#エラーハンドリング)
+- [型安全性](#型安全性)
+- [マイグレーション](#マイグレーション-1)
+- [Prisma 7 のベストプラクティス](#prisma-7-のベストプラクティス)
+  - [アダプターの使用](#アダプターの使用)
+  - [設定ファイルの管理](#設定ファイルの管理)
+  - [パフォーマンスの最適化](#パフォーマンスの最適化)
+- [まとめ](#まとめ)
+
 ## 概要
 
 Prisma 7 は、モダンなアプリケーション開発のための次世代 ORM（Object-Relational Mapping）です。型安全なデータベースアクセスと、直感的な API を提供します。
