@@ -10,6 +10,7 @@
   - [Client Components](#client-components)
 - [データフェッチング](#データフェッチング)
   - [Server Components でのデータフェッチング](#server-components-でのデータフェッチング)
+  - [Client Components でのデータフェッチング（fetch API）](#client-components-でのデータフェッチングfetch-api)
   - [動的レンダリングの設定](#動的レンダリングの設定)
 - [動的ルーティング](#動的ルーティング)
 - [API Routes](#api-routes)
@@ -363,6 +364,219 @@ async function getDashboardData() {
 ```
 
 **説明**: ダッシュボードページでも、サーバーサイドでデータを取得し、クライアント側で使いやすい形式に変換しています。
+
+### Client Components でのデータフェッチング（fetch API）
+
+**説明**: Client Components では、ユーザーの操作（商品の追加・更新・削除など）に応じて動的にデータを取得する必要があります。この場合、`fetch` API を使用して API Routes を呼び出します。
+
+**なぜ Server Components で直接データベースにアクセスしないのか**:
+
+- Server Components は初期レンダリング時にのみ実行される
+- ユーザーの操作（ボタンクリック、フォーム送信など）に応じて動的にデータを取得する必要がある
+- Client Components では `useState`、`useEffect` などの Hooks を使用して状態管理を行う
+
+**このアプリでの使用箇所**:
+
+1. **`app/dashboard/components/DashboardContent.tsx`** - 商品一覧の更新
+
+```40:56:app/dashboard/components/DashboardContent.tsx
+  const refreshProducts = async () => {
+    try {
+      // キャッシュを完全に無効化するためにタイムスタンプをクエリパラメータに追加
+      // これにより、常に最新のデータを取得できます
+      const response = await fetch(`/api/products?t=${Date.now()}`, {
+        cache: "no-store", // Next.js のキャッシュを無効化
+        headers: {
+          "Cache-Control": "no-cache", // ブラウザのキャッシュを無効化
+        },
+      });
+      const data = await response.json();
+      // 取得した商品一覧で状態を更新
+      setProducts(data.products || []);
+    } catch (error) {
+      console.error("商品一覧の更新に失敗しました:", error);
+    }
+  };
+```
+
+**説明**: 商品の追加・更新・削除後に、最新の商品一覧を取得するために `fetch` を使用しています。キャッシュを無効化するために、タイムスタンプをクエリパラメータに追加し、`cache: "no-store"` と `Cache-Control: "no-cache"` ヘッダーを設定しています。
+
+2. **`app/dashboard/components/ProductList.tsx`** - 商品の削除
+
+```95:120:app/dashboard/components/ProductList.tsx
+  const handleDelete = async (productId: number) => {
+    // 削除前に確認ダイアログを表示
+    if (!confirm("本当にこの商品を削除しますか？")) {
+      return;
+    }
+
+    try {
+      // DELETE リクエストを送信
+      const response = await fetch(`/api/products/${productId}`, {
+        method: "DELETE",
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error || "削除に失敗しました");
+      }
+
+      alert("商品を削除しました");
+      // 削除後に商品一覧を更新
+      await refreshProducts();
+    } catch (error) {
+      console.error("削除エラー:", error);
+      alert(
+        error instanceof Error ? error.message : "商品の削除に失敗しました"
+      );
+    }
+  };
+```
+
+**説明**: 商品を削除するために `fetch` を使用して DELETE リクエストを送信しています。エラーハンドリングも実装されています。
+
+3. **`app/dashboard/hooks/useProductReorder.ts`** - 商品順序の変更
+
+```79:94:app/dashboard/hooks/useProductReorder.ts
+    try {
+      // API を呼び出して商品の順序をサーバーに保存
+      const response = await fetch("/api/products/reorder", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ productOrders }),
+      });
+
+      // レスポンスがエラーの場合は例外を投げる
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error || "順序の更新に失敗しました");
+      }
+```
+
+**説明**: ドラッグ&ドロップで商品の順序を変更した後、サーバーに保存するために `fetch` を使用しています。楽観的 UI 更新を実装しており、API 呼び出し前に UI を更新しています。
+
+4. **`app/dashboard/components/DashboardForm.tsx`** - 商品の作成と画像アップロード
+
+**画像アップロード（FormData を使用）**:
+
+```107:134:app/dashboard/components/DashboardForm.tsx
+          const uploadFormData = new FormData();
+          uploadFormData.append("file", formData.imageFile);
+
+          const uploadResponse = await fetch("/api/products/upload", {
+            method: "POST",
+            body: uploadFormData,
+          });
+
+          if (!uploadResponse.ok) {
+            let errorMessage = "画像のアップロードに失敗しました";
+            try {
+              const contentType = uploadResponse.headers.get("content-type");
+              if (contentType && contentType.includes("application/json")) {
+                const error = await uploadResponse.json();
+                errorMessage = error.error || errorMessage;
+              } else {
+                const text = await uploadResponse.text();
+                errorMessage = text || errorMessage;
+              }
+            } catch (parseError) {
+              // JSONパースエラーの場合はデフォルトメッセージを使用
+              errorMessage = `画像のアップロードに失敗しました (${uploadResponse.status})`;
+            }
+            throw new Error(errorMessage);
+          }
+
+          const uploadData = await uploadResponse.json();
+          imageUrl = uploadData.url;
+```
+
+**商品作成（JSON データを送信）**:
+
+```150:172:app/dashboard/components/DashboardForm.tsx
+      // 商品を登録
+      const response = await fetch("/api/products", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name: formData.name,
+          description: formData.description,
+          imageUrl,
+          categoryId: parseInt(formData.categoryId),
+          priceS: formData.priceS ? parseFloat(formData.priceS) : null,
+          priceL: formData.priceL ? parseFloat(formData.priceL) : null,
+          published: formData.published,
+          publishedAt: formData.publishedAt || null,
+          endedAt: formData.endedAt || null,
+        }),
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error || "登録に失敗しました");
+      }
+```
+
+**説明**: 商品作成フォームでは、まず画像をアップロードしてから商品データを送信します。`FormData` を使用したファイルアップロードと、JSON データの送信の両方のパターンが実装されています。
+
+**fetch の使用パターン**:
+
+1. **GET リクエスト**: データの取得
+
+   - キャッシュを無効化する場合は、タイムスタンプをクエリパラメータに追加
+   - `cache: "no-store"` オプションを使用
+
+2. **POST/PUT リクエスト（JSON データ）**: データの作成・更新
+
+   - `Content-Type: application/json` ヘッダーを設定
+   - `body` に `JSON.stringify()` で変換した JSON 文字列を渡す
+
+3. **POST リクエスト（FormData）**: ファイルアップロード
+
+   - `FormData` オブジェクトを作成し、`append()` でファイルを追加
+   - `body` に `FormData` を直接渡す（`Content-Type` ヘッダーは設定しない）
+
+4. **DELETE リクエスト**: データの削除
+   - `method: "DELETE"` を指定
+
+**エラーハンドリング**:
+
+```typescript
+try {
+  const response = await fetch("/api/products", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data),
+  });
+
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.error || "リクエストに失敗しました");
+  }
+
+  const result = await response.json();
+  // 成功時の処理
+} catch (error) {
+  console.error("エラー:", error);
+  // エラー時の処理（ユーザーへの通知など）
+}
+```
+
+**キャッシュの制御**:
+
+- **常に最新データを取得**: `cache: "no-store"` とタイムスタンプを使用
+- **Next.js のキャッシュを無効化**: `cache: "no-store"` オプション
+- **ブラウザのキャッシュを無効化**: `Cache-Control: "no-cache"` ヘッダー
+
+**Server Components と Client Components の使い分け**:
+
+- **Server Components**: 初期データの取得（Prisma で直接データベースにアクセス）
+- **Client Components**: ユーザーの操作に応じた動的なデータ取得（fetch API で API Routes を呼び出し）
 
 ### 動的レンダリングの設定
 
@@ -836,10 +1050,15 @@ const notoSansJP = Noto_Sans_JP({
 
 1. **Server Components を優先**: データフェッチングや静的なコンテンツは Server Components で実装
 2. **Client Components は必要最小限**: インタラクティブな機能が必要な場合のみ Client Components を使用
-3. **並列データフェッチング**: `Promise.all` を使用して複数のデータを並列で取得
-4. **動的レンダリングの適切な使用**: 最新のデータが必要な場合は `export const dynamic = "force-dynamic"` を設定
-5. **画像最適化**: `Image` コンポーネントを使用して画像を最適化
-6. **エラーハンドリング**: API Routes では `withErrorHandling` を使用して統一されたエラーハンドリングを実装
+3. **データフェッチングの使い分け**:
+   - **Server Components**: 初期データの取得は Prisma で直接データベースにアクセス
+   - **Client Components**: ユーザーの操作に応じた動的なデータ取得は `fetch` API で API Routes を呼び出し
+4. **並列データフェッチング**: `Promise.all` を使用して複数のデータを並列で取得
+5. **動的レンダリングの適切な使用**: 最新のデータが必要な場合は `export const dynamic = "force-dynamic"` を設定
+6. **キャッシュの制御**: Client Components で最新データを取得する場合は、タイムスタンプと `cache: "no-store"` を使用
+7. **画像最適化**: `Image` コンポーネントを使用して画像を最適化
+8. **エラーハンドリング**: API Routes では `withErrorHandling` を使用して統一されたエラーハンドリングを実装
+9. **ファイルアップロード**: `FormData` を使用してファイルをアップロードする際は、`Content-Type` ヘッダーを設定しない
 
 ## まとめ
 
