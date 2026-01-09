@@ -10,7 +10,7 @@
 - [コンポーネント構成](#コンポーネント構成)
 - [データフロー](#データフロー)
 - [状態管理](#状態管理)
-- [API連携](#api連携)
+- [API 連携](#api連携)
 - [開発ガイド](#開発ガイド)
 
 ## 概要
@@ -83,7 +83,7 @@ app/dashboard/
 - 新規商品の登録
 - 画像アップロード
 - カテゴリー選択
-- 価格設定（Sサイズ、Lサイズ）
+- 価格設定（S サイズ、L サイズ）
 - 公開設定（手動/自動）
 
 ### 3. 商品編集
@@ -100,7 +100,7 @@ app/dashboard/
 ### 5. 商品順序変更
 
 - ドラッグ&ドロップによる順序変更
-- 楽観的UI更新
+- 楽観的 UI 更新
 - カテゴリーごとの順序管理
 
 ## コンポーネント構成
@@ -112,7 +112,7 @@ app/dashboard/
 **主な処理**:
 
 - カテゴリーと商品データの取得
-- データの形式変換（Decimal型 → Number型、Date型 → ISO文字列）
+- データの形式変換（Decimal 型 → Number 型、Date 型 → ISO 文字列）
 - Client Component へのデータ受け渡し
 
 **実装例**:
@@ -138,17 +138,36 @@ export default async function DashboardPage() {
 
 **主な機能**:
 
-- 商品リストの状態管理
+- 商品リストの状態管理（状態のリフトアップ）
 - フォームの表示/非表示制御
-- 商品の追加・更新・削除処理
+- 商品一覧の更新処理
 
 **状態管理**:
 
+React のベストプラクティスに従い、共有状態（商品一覧）を親コンポーネントで管理しています。
+
 ```typescript
+// 商品一覧の状態を親コンポーネントで管理（状態のリフトアップ）
 const [products, setProducts] = useState<Product[]>(initialProducts);
+
+// 商品登録フォームの開閉状態を管理
 const [isFormOpen, setIsFormOpen] = useState(false);
-const [editingProduct, setEditingProduct] = useState<Product | null>(null);
+
+// 商品一覧をサーバーから取得して更新する関数
+const refreshProducts = async () => {
+  const response = await fetch(`/api/products?t=${Date.now()}`, {
+    cache: "no-store",
+  });
+  const data = await response.json();
+  setProducts(data.products || []);
+};
 ```
+
+**設計の特徴**:
+
+- `forwardRef`や`useImperativeHandle`を使わず、props でデータとコールバックを渡す
+- データフローが明確になり、コンポーネント間の結合が緩くなる
+- 子コンポーネント（`ProductList`）に`products`、`setProducts`、`refreshProducts`を props で渡す
 
 ### DashboardForm (`components/DashboardForm.tsx`)
 
@@ -167,8 +186,8 @@ const [editingProduct, setEditingProduct] = useState<Product | null>(null);
 - 説明
 - カテゴリー
 - 画像
-- Sサイズ価格
-- Lサイズ価格
+- S サイズ価格
+- L サイズ価格
 - 公開設定（手動/自動）
 - 公開日（自動設定の場合）
 - 終了日（自動設定の場合）
@@ -185,15 +204,29 @@ const [editingProduct, setEditingProduct] = useState<Product | null>(null);
 - ドラッグ&ドロップによる順序変更
 - 商品の編集・削除
 
+**Props**:
+
+```typescript
+interface ProductListProps {
+  products: Product[]; // 商品一覧（親コンポーネントから受け取る）
+  setProducts: React.Dispatch<React.SetStateAction<Product[]>>; // 状態更新関数
+  refreshProducts: () => Promise<void>; // 商品一覧を更新する関数
+  categories: Category[]; // カテゴリー一覧
+  onNewProductClick?: () => void; // 新規商品登録ボタンクリック時のコールバック
+}
+```
+
 **実装の特徴**:
 
+- React のベストプラクティスに従い、状態を親コンポーネントから受け取る
+- `forwardRef`や`useImperativeHandle`を使わない設計
 - `@dnd-kit`を使用したドラッグ&ドロップ
-- 楽観的UI更新
-- タブ状態のlocalStorage連携
+- 楽観的 UI 更新
+- タブ状態の localStorage 連携
 
 ### CategoryTabs (`components/CategoryTabs.tsx`)
 
-カテゴリータブのUIコンポーネントです。
+カテゴリータブの UI コンポーネントです。
 
 **主な機能**:
 
@@ -239,9 +272,18 @@ API Route
 Database
   ↓ レスポンス
 DashboardContent
-  ↓ 状態更新（setProducts）
+  ↓ refreshProducts() を呼び出し
+  ↓ fetch('/api/products') で最新データを取得
+  ↓ setProducts() で状態更新
+  ↓ propsで ProductList に渡す
   ↓ UI更新
 ```
+
+**設計のポイント**:
+
+- 商品追加後は、親コンポーネント（`DashboardContent`）の`refreshProducts`を呼び出す
+- 状態は親コンポーネントで管理され、props で子コンポーネントに渡される
+- データフローが明確で、React のベストプラクティスに沿った実装
 
 ### 商品順序変更フロー
 
@@ -260,15 +302,34 @@ Database
 
 ## 状態管理
 
+### 状態のリフトアップ
+
+React のベストプラクティスに従い、共有状態は親コンポーネントで管理します。
+
+**状態管理の階層**:
+
+1. **`DashboardContent`**（親コンポーネント）:
+
+   - `products`: 商品リスト（共有状態）
+   - `isFormOpen`: フォームの表示/非表示
+   - `refreshProducts`: 商品一覧を更新する関数
+
+2. **`ProductList`**（子コンポーネント）:
+   - `editingProduct`: 編集中の商品（ローカル状態）
+   - `searchName`: 検索条件（ローカル状態）
+   - `searchPublished`: 公開状態フィルター（ローカル状態）
+   - `searchCategoryId`: カテゴリーフィルター（ローカル状態）
+
+**設計の利点**:
+
+- データフローが明確（親から子へ props で流れる）
+- コンポーネント間の結合が緩くなる
+- `forwardRef`や`useImperativeHandle`を使わない宣言的な実装
+- テストしやすく、再利用性が高い
+
 ### useState
 
 基本的な状態管理は React の `useState` を使用します。
-
-**主な状態**:
-
-- `products`: 商品リスト
-- `isFormOpen`: フォームの表示/非表示
-- `editingProduct`: 編集中の商品
 
 ### カスタムフック
 
@@ -293,8 +354,8 @@ const { activeTab, setActiveTab } = useTabState();
 
 **機能**:
 
-- 楽観的UI更新
-- API呼び出し
+- 楽観的 UI 更新
+- API 呼び出し
 - エラーハンドリング
 
 **使用例**:
@@ -303,12 +364,12 @@ const { activeTab, setActiveTab } = useTabState();
 const { reorderProducts } = useProductReorder(setProducts, refreshProducts);
 ```
 
-## API連携
+## API 連携
 
 ### 商品一覧取得
 
 ```typescript
-GET /api/products
+GET / api / products;
 ```
 
 ### 商品作成
@@ -343,7 +404,7 @@ Content-Type: application/json
 ### 商品削除
 
 ```typescript
-DELETE /api/products/[id]
+DELETE / api / products / [id];
 ```
 
 ### 商品順序変更
@@ -374,7 +435,7 @@ file: [画像ファイル]
 1. **型定義の追加**: `app/dashboard/types.ts`に追加
 2. **コンポーネントの作成**: `app/dashboard/components/`に追加
 3. **カスタムフックの作成**: `app/dashboard/hooks/`に追加（必要に応じて）
-4. **API Routeの作成**: `app/api/`に追加（必要に応じて）
+4. **API Route の作成**: `app/api/`に追加（必要に応じて）
 
 ### バリデーション
 
@@ -387,7 +448,7 @@ file: [画像ファイル]
 
 **サーバーサイド**:
 
-- API Routeでの入力検証
+- API Route での入力検証
 - データベース制約の確認
 
 ### エラーハンドリング
@@ -396,7 +457,7 @@ file: [画像ファイル]
 
 - **API Routes**: `lib/api-helpers.ts`の`withErrorHandling`を使用
 - **エラークラス**: `lib/errors.ts`で定義
-- **クライアントサイド**: try-catchでエラーをキャッチし、ユーザーに通知
+- **クライアントサイド**: try-catch でエラーをキャッチし、ユーザーに通知
 
 ### テスト
 
@@ -404,30 +465,30 @@ file: [画像ファイル]
 
 - **ユニットテスト**: ユーティリティ関数、カスタムフック
 - **統合テスト**: API Routes
-- **E2Eテスト**: 主要なユーザーフロー
+- **E2E テスト**: 主要なユーザーフロー
 
 ## パフォーマンス最適化
 
-### 楽観的UI更新
+### 楽観的 UI 更新
 
-商品順序変更時は、楽観的UI更新を実装しています：
+商品順序変更時は、楽観的 UI 更新を実装しています：
 
 1. ユーザーがドラッグ&ドロップ
 2. ローカル状態を即座に更新
-3. API呼び出し（バックグラウンド）
+3. API 呼び出し（バックグラウンド）
 4. 成功: サーバーから最新データを取得
 5. 失敗: エラー表示 + 元の状態に戻す
 
 ### データフェッチング
 
 - Server Component でデータを取得
-- 必要なデータのみを取得（Prismaの`select`を使用）
+- 必要なデータのみを取得（Prisma の`select`を使用）
 - 並列データ取得（`Promise.all`を使用）
 
 ### 画像最適化
 
 - クライアントサイドでの画像圧縮
-- WebP形式への変換
+- WebP 形式への変換
 - 適切なサイズ制限
 
 ## セキュリティ
@@ -436,7 +497,7 @@ file: [画像ファイル]
 
 - すべての入力を検証
 - ファイルタイプとサイズの検証
-- SQLインジェクション対策（Prismaが自動的に処理）
+- SQL インジェクション対策（Prisma が自動的に処理）
 
 ### 認証・認可
 

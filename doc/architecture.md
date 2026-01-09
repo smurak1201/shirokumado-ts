@@ -209,13 +209,22 @@ ProductModal (Client Component)
 
 ```
 DashboardPage (Server Component)
-  ↓ データフェッチ
+  ↓ Prismaクエリ（データベースから直接取得）
   ↓ propsで渡す
 DashboardContent (Client Component)
-  ↓ 状態管理
+  ↓ 状態のリフトアップ（products, refreshProducts）
+  ↓ propsで渡す
+ProductList (Client Component)
+  ↓ 状態管理（検索条件、編集中の商品など）
   ↓ イベントハンドリング
 子コンポーネント
 ```
+
+**状態管理の設計**:
+
+- React のベストプラクティスに従い、共有状態（商品一覧）は親コンポーネント（`DashboardContent`）で管理
+- データフローが明確になり、コンポーネント間の結合が緩くなる
+- `forwardRef`や`useImperativeHandle`を使わず、props でデータとコールバックを渡す
 
 ### API 呼び出しの流れ
 

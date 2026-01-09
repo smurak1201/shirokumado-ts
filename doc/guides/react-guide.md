@@ -207,15 +207,25 @@ useEffect(() => {
 
 1. **`app/hooks/useModal.ts`** - ESC キー処理と背景スクロール無効化
 
-```13:35:app/hooks/useModal.ts
+```12:48:app/hooks/useModal.ts
 export function useModal(isOpen: boolean, onClose: () => void) {
+  // onCloseの最新の参照を保持するref
+  // これにより、onCloseが変更されてもuseEffectを再実行せずに最新の関数を呼び出せる
+  const onCloseRef = useRef(onClose);
+
+  // onCloseが変更されたらrefを更新
+  useEffect(() => {
+    onCloseRef.current = onClose;
+  }, [onClose]);
+
   useEffect(() => {
     /**
      * ESCキーでモーダルを閉じる処理
      */
     const handleEscape = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
-        onClose();
+        // refから最新のonCloseを呼び出す
+        onCloseRef.current();
       }
     };
 
@@ -231,11 +241,11 @@ export function useModal(isOpen: boolean, onClose: () => void) {
       document.removeEventListener("keydown", handleEscape);
       document.body.style.overflow = "unset";
     };
-  }, [isOpen, onClose]);
+  }, [isOpen]); // onCloseを依存配列から削除（refで最新の値を保持しているため）
 }
 ```
 
-**説明**: モーダルが開いている時に ESC キーのイベントリスナーを追加し、背景のスクロールを無効化します。クリーンアップ関数で、イベントリスナーを削除し、スクロールを有効化します。
+**説明**: モーダルが開いている時に ESC キーのイベントリスナーを追加し、背景のスクロールを無効化します。`useRef`を使用して`onClose`の最新の参照を保持することで、`onClose`が変更されても`useEffect`を再実行せずに済みます。クリーンアップ関数で、イベントリスナーを削除し、スクロールを有効化します。
 
 2. **`app/dashboard/hooks/useTabState.ts`** - localStorage への保存
 
@@ -323,26 +333,24 @@ const ref = useRef(initialValue);
 
 **このアプリでの使用箇所**:
 
-1. **`app/dashboard/components/DashboardContent.tsx`** - ProductList コンポーネントへの参照
+1. **`app/dashboard/components/CategoryTabs.tsx`** - DOM 要素への参照
 
-```26:28:app/dashboard/components/DashboardContent.tsx
-  // ProductListコンポーネントのメソッドを呼び出すための参照
-  // forwardRef と useImperativeHandle を使用して実装されています
-  const productListRef = useRef<{ refreshProducts: () => Promise<void> }>(null);
+```39:41:app/dashboard/components/CategoryTabs.tsx
+  // スクロール可能なコンテナへの参照
+  // useRef を使用して DOM 要素に直接アクセスします
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
 ```
 
-**説明**: `ProductList` コンポーネントの `refreshProducts` メソッドを呼び出すための参照を保持しています。`forwardRef` と `useImperativeHandle` を使用して実装されています。
+**説明**: スクロール可能なタブコンテナの DOM 要素への参照を保持しています。スクロール位置のチェックや自動スクロールに使用されます。
 
-```37:42:app/dashboard/components/DashboardContent.tsx
-  const handleProductCreated = async () => {
-    // ProductListコンポーネントのrefreshProductsメソッドを呼び出して商品一覧を更新
-    await productListRef.current?.refreshProducts();
-    // フォームを閉じる
-    setIsFormOpen(false);
-  };
+2. **`app/hooks/useProductModal.ts`** - タイマー ID の保持
+
+```19:20:app/hooks/useProductModal.ts
+  // setTimeoutのIDを保持するためのref（クリーンアップ用）
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 ```
 
-**説明**: 商品作成後に、`productListRef.current` を通じて `ProductList` コンポーネントの `refreshProducts` メソッドを呼び出しています。
+**説明**: `setTimeout`の ID を保持するために使用しています。コンポーネントのアンマウント時にタイマーをクリーンアップするために必要です。これにより、メモリリークを防ぎます。
 
 **useRef の特徴**:
 
@@ -365,15 +373,25 @@ const ref = useRef(initialValue);
 
 **実装コード**:
 
-```12:36:app/hooks/useModal.ts
+```12:48:app/hooks/useModal.ts
 export function useModal(isOpen: boolean, onClose: () => void) {
+  // onCloseの最新の参照を保持するref
+  // これにより、onCloseが変更されてもuseEffectを再実行せずに最新の関数を呼び出せる
+  const onCloseRef = useRef(onClose);
+
+  // onCloseが変更されたらrefを更新
+  useEffect(() => {
+    onCloseRef.current = onClose;
+  }, [onClose]);
+
   useEffect(() => {
     /**
      * ESCキーでモーダルを閉じる処理
      */
     const handleEscape = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
-        onClose();
+        // refから最新のonCloseを呼び出す
+        onCloseRef.current();
       }
     };
 
@@ -389,7 +407,7 @@ export function useModal(isOpen: boolean, onClose: () => void) {
       document.removeEventListener("keydown", handleEscape);
       document.body.style.overflow = "unset";
     };
-  }, [isOpen, onClose]);
+  }, [isOpen]); // onCloseを依存配列から削除（refで最新の値を保持しているため）
 }
 ```
 
@@ -405,6 +423,7 @@ export function useModal(isOpen: boolean, onClose: () => void) {
 - ESC キーでモーダルを閉じる
 - モーダル表示時の背景スクロール無効化
 - クリーンアップ処理によるメモリリークの防止
+- `useRef`を使用して`onClose`の最新の参照を保持し、不要な再実行を防止
 
 ### useProductModal
 
@@ -417,12 +436,14 @@ export function useModal(isOpen: boolean, onClose: () => void) {
 
 **実装コード**:
 
-```12:47:app/hooks/useProductModal.ts
+```12:65:app/hooks/useProductModal.ts
 export function useProductModal() {
   // 選択された商品を管理（モーダル表示用）
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   // モーダルの開閉状態を管理
   const [isModalOpen, setIsModalOpen] = useState(false);
+  // setTimeoutのIDを保持するためのref（クリーンアップ用）
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   /**
    * 商品タイルクリック時のハンドラー
@@ -441,11 +462,25 @@ export function useProductModal() {
    */
   const handleCloseModal = () => {
     setIsModalOpen(false);
+    // 既存のタイマーをクリア（複数回呼ばれた場合に備える）
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+    }
     // モーダルが閉じた後に選択をクリア（アニメーション完了を待つ）
-    setTimeout(() => {
+    timeoutRef.current = setTimeout(() => {
       setSelectedProduct(null);
+      timeoutRef.current = null;
     }, 300);
   };
+
+  // コンポーネントのアンマウント時にタイマーをクリーンアップ
+  useEffect(() => {
+    return () => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+    };
+  }, []);
 
   return {
     selectedProduct,
@@ -469,6 +504,10 @@ export function useProductModal() {
 ```
 
 **機能**:
+
+- 商品タイルクリック時にモーダルを開く
+- モーダル閉じる時にアニメーション完了を待ってから選択をクリア
+- `setTimeout`のクリーンアップ処理によりメモリリークを防止
 
 - 選択された商品の管理
 - モーダルの開閉状態管理
@@ -1061,28 +1100,56 @@ export default function ProductTile({ product, onClick }: ProductTileProps) {
 
 **原則**: `useEffect` のクリーンアップ関数で、イベントリスナーやタイマーを適切に削除
 
-**例**: `useModal` で ESC キーのイベントリスナーを削除
+**例**:
 
-### 5. 型安全性
+- `useModal` で ESC キーのイベントリスナーを削除
+- `useProductModal` で `setTimeout` のタイマーをクリーンアップ
+- `CategoryTabs` でスクロールイベントリスナーを削除
+
+### 5. 状態のリフトアップ
+
+**原則**: 共有状態は親コンポーネントで管理し、props で子コンポーネントに渡す
+
+**例**: `DashboardContent` で商品一覧の状態を管理し、`ProductList` に props で渡す
+
+**利点**:
+
+- データフローが明確になる
+- `forwardRef`や`useImperativeHandle`を使わない宣言的な実装
+- コンポーネント間の結合が緩くなる
+
+### 6. 型安全性
 
 **原則**: TypeScript を使用して、コンポーネントの props と状態に型を付ける
 
-**例**: `ProductGridProps`、`ProductModalProps` などの型定義
+**例**: `ProductGridProps`、`ProductModalProps`、`ProductListProps` などの型定義
 
-### 6. アクセシビリティ
+### 7. アクセシビリティ
 
 **原則**: `aria-label` などの属性を使用して、アクセシビリティを向上
 
 **例**: `ProductTile` で `aria-label` を設定
+
+### 8. useCallback と useMemo の適切な使用
+
+**原則**: パフォーマンス最適化が必要な場合のみ使用する
+
+**例**:
+
+- `CategoryTabs` で `checkScrollPosition` を `useCallback` でメモ化
+- `ProductList` で `filteredProducts` を `useMemo` でメモ化
+- `useCategoryTabState` で `initialCategoryTab` を `useMemo` でメモ化
 
 ## まとめ
 
 このアプリケーションでは、**React 19.2.3** を使用して以下の機能を実装しています：
 
 1. **コンポーネントベースの設計**: UI を独立したコンポーネントに分割し、再利用性と保守性を向上
-2. **Hooks の活用**: `useState`、`useEffect`、`useMemo`、`useRef` を使用して状態管理と副作用を処理
+2. **Hooks の活用**: `useState`、`useEffect`、`useMemo`、`useRef`、`useCallback` を使用して状態管理と副作用を処理
 3. **カスタムフック**: 状態管理ロジックをカスタムフックに分離し、再利用性を向上
-4. **Next.js との統合**: Server Components と Client Components を適切に使い分け、パフォーマンスを最適化
-5. **楽観的 UI 更新**: API 呼び出し前に UI を更新し、ユーザーに即座にフィードバックを提供
+4. **状態のリフトアップ**: 共有状態を親コンポーネントで管理し、props で子コンポーネントに渡す（React のベストプラクティスに準拠）
+5. **Next.js との統合**: Server Components と Client Components を適切に使い分け、パフォーマンスを最適化
+6. **楽観的 UI 更新**: API 呼び出し前に UI を更新し、ユーザーに即座にフィードバックを提供
+7. **メモリリーク対策**: `useEffect` のクリーンアップ関数で、イベントリスナーやタイマーを適切に削除
 
-すべてのコンポーネントは TypeScript で型安全に実装され、アクセシビリティにも配慮されています。また、カスタムフックを使用してロジックを分離し、コンポーネントの再利用性と保守性を向上させています。
+すべてのコンポーネントは TypeScript で型安全に実装され、アクセシビリティにも配慮されています。また、カスタムフックを使用してロジックを分離し、コンポーネントの再利用性と保守性を向上させています。`forwardRef`や`useImperativeHandle`を使わず、React の推奨パターンに沿った実装となっています。
