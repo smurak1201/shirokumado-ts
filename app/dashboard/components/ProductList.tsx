@@ -12,6 +12,7 @@ import {
   closestCenter,
   KeyboardSensor,
   PointerSensor,
+  TouchSensor,
   useSensor,
   useSensors,
   DragEndEvent,
@@ -170,11 +171,24 @@ const ProductList = forwardRef<ProductListRef, ProductListProps>(
 
     /**
      * ドラッグ&ドロップ用のセンサーを設定
-     * PointerSensor: マウス・タッチ操作を検知
+     * PointerSensor: マウス操作を検知
+     * TouchSensor: タッチ操作を検知（スマホ対応）
      * KeyboardSensor: キーボード操作を検知（アクセシビリティ対応）
+     *
+     * activationConstraint: タッチデバイスでのドラッグ開始の制約を設定
+     * - distance: 5px以上移動したらドラッグ開始（誤タッチを防ぐ）
      */
     const sensors = useSensors(
-      useSensor(PointerSensor), // マウス・タッチ操作
+      useSensor(PointerSensor, {
+        activationConstraint: {
+          distance: 5, // 5px以上移動したらドラッグ開始
+        },
+      }),
+      useSensor(TouchSensor, {
+        activationConstraint: {
+          distance: 5, // 5px以上移動したらドラッグ開始
+        },
+      }),
       useSensor(KeyboardSensor, {
         coordinateGetter: sortableKeyboardCoordinates, // キーボード操作の座標計算
       })
@@ -408,14 +422,16 @@ const ProductList = forwardRef<ProductListRef, ProductListProps>(
                         {/* 商品情報 */}
                         <div className="mt-1 flex flex-1 flex-col sm:mt-2 md:mt-4">
                           {/* 商品名 */}
-                          <div className={`mb-1 flex h-[3em] items-center justify-center sm:mb-2 sm:h-[3em] md:h-[3.5em]`}>
-                          <h3
-                              className={`line-clamp-2 whitespace-pre-wrap text-center text-[10px] font-semibold leading-tight sm:text-xs md:text-lg ${
-                              !product.published ? "text-gray-500" : ""
-                            }`}
+                          <div
+                            className={`mb-1 flex h-[3em] items-center justify-center sm:mb-2 sm:h-[3em] md:h-[3.5em]`}
                           >
-                            {product.name}
-                          </h3>
+                            <h3
+                              className={`line-clamp-2 whitespace-pre-wrap text-center text-[10px] font-semibold leading-tight sm:text-xs md:text-lg ${
+                                !product.published ? "text-gray-500" : ""
+                              }`}
+                            >
+                              {product.name}
+                            </h3>
                           </div>
 
                           {/* 公開状態・カテゴリ・タグ */}
