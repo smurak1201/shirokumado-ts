@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import type { Category, Product } from "../types";
 
 /**
@@ -50,8 +50,10 @@ export default function CategoryTabs({
    *
    * スクロール可能な方向にグラデーションを表示することで、
    * ユーザーにスクロール可能であることを視覚的に伝えます。
+   *
+   * useCallbackを使用して関数をメモ化し、依存配列の問題を解決します。
    */
-  const checkScrollPosition = () => {
+  const checkScrollPosition = useCallback(() => {
     if (!scrollContainerRef.current) return;
     const { scrollLeft, scrollWidth, clientWidth } = scrollContainerRef.current;
     // 左側にスクロールできる場合（scrollLeft > 0）は左側のグラデーションを表示
@@ -59,13 +61,16 @@ export default function CategoryTabs({
     // 右側にスクロールできる場合（scrollLeft < scrollWidth - clientWidth - 1）は右側のグラデーションを表示
     // -1 は丸め誤差を考慮したマージン
     setShowRightGradient(scrollLeft < scrollWidth - clientWidth - 1);
-  };
+  }, []);
 
   /**
    * スクロールイベントとリサイズイベントのリスナーを設定
    *
    * スクロールやウィンドウサイズの変更時にグラデーションの表示を更新します。
    * クリーンアップ関数でイベントリスナーを削除してメモリリークを防ぎます。
+   *
+   * Reactのベストプラクティスに従い、checkScrollPositionをuseCallbackでメモ化し、
+   * 依存配列に含めることで、ESLintの警告を解消しています。
    */
   useEffect(() => {
     const container = scrollContainerRef.current;
@@ -85,7 +90,7 @@ export default function CategoryTabs({
       container.removeEventListener("scroll", checkScrollPosition);
       window.removeEventListener("resize", checkScrollPosition);
     };
-  }, [categories, publishedProductsByCategory]); // カテゴリーや商品が変更されたときも再設定
+  }, [categories, publishedProductsByCategory, checkScrollPosition]); // checkScrollPositionを依存配列に追加
 
   /**
    * アクティブなタブが変更されたときに、そのタブまで自動スクロール
