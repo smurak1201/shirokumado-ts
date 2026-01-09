@@ -347,6 +347,7 @@ export default function ProductGrid({ category, products }) {
 - 背景クリックで閉じる
 - ESC キーで閉じる（`useModal`フックで実装）
 - モーダル表示時の背景スクロール無効化（`useModal`フックで実装）
+- スクロールしても右上に固定表示される閉じるボタン（`sticky`を使用）
 - フェードイン・フェードアウトアニメーション
 - 価格フォーマット（`formatPrice`ユーティリティを使用）
 
