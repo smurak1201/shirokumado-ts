@@ -53,14 +53,16 @@ export default function ProductModal({
         className="relative max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-lg bg-white shadow-2xl"
         onClick={(e) => e.stopPropagation()}
       >
-        {/* 閉じるボタン */}
-        <button
-          onClick={onClose}
-          className="absolute right-4 top-4 z-10 rounded-full bg-white/90 p-2 text-gray-600 transition-colors hover:bg-white hover:text-gray-800"
-          aria-label="閉じる"
-        >
-          <CloseIcon />
-        </button>
+        {/* 閉じるボタン - スクロールしても右上に固定表示 */}
+        <div className="sticky top-0 right-0 z-10 flex justify-end p-4">
+          <button
+            onClick={onClose}
+            className="rounded-full bg-white/90 p-2 text-gray-600 transition-colors hover:bg-white hover:text-gray-800 shadow-md"
+            aria-label="閉じる"
+          >
+            <CloseIcon />
+          </button>
+        </div>
 
         {/* 商品画像 */}
         {product.imageUrl ? (
