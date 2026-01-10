@@ -1,6 +1,6 @@
 # Prisma 7 ガイド
 
-## 📋 目次
+## 目次
 
 - [概要](#概要)
 - [Prisma 7 の設定](#prisma-7-の設定)
@@ -1408,6 +1408,8 @@ for (const product of products) {
 
 **説明**: 取得するフィールドを指定します。必要なフィールドのみを取得することで、パフォーマンスを向上させることができます。
 
+**このアプリでの使用箇所**: 現在は使用されていません。
+
 **基本的な使い方**:
 
 ```typescript
@@ -1417,20 +1419,60 @@ const products = await prisma.product.findMany({
     id: true,
     name: true,
     priceS: true,
+    imageUrl: true,
+    // リレーションも取得可能
+    category: {
+      select: {
+        name: true,
+      },
+    },
   },
 });
 ```
-
-**このアプリでの使用箇所**: 現在は使用されていません。
 
 **使用する場合のメリット**:
 
 - 必要なデータのみを取得できるため、ネットワーク転送量を削減
 - パフォーマンスの向上（特に大量のデータを扱う場合）
+- 機密情報を含むフィールドを意図的に除外できる
+
+**使用例**:
+
+```typescript
+// 商品一覧表示用（最小限の情報のみ）
+const productTiles = await prisma.product.findMany({
+  select: {
+    id: true,
+    name: true,
+    imageUrl: true,
+    category: {
+      select: {
+        name: true,
+      },
+    },
+  },
+});
+
+// 商品詳細表示用（すべての情報）
+const productDetails = await prisma.product.findUnique({
+  where: { id: productId },
+  include: {
+    category: true,
+  },
+});
+```
+
+**このアプリで使用しない理由**:
+
+- 商品情報は比較的少ないデータ量のため、すべてのフィールドを取得してもパフォーマンスへの影響が小さい
+- `include`を使用してカテゴリー情報も一緒に取得する方が、コードがシンプルで保守しやすい
+- 商品データの構造が比較的シンプルで、不要なフィールドが少ない
 
 ### take と skip（このアプリでは未使用）
 
 **説明**: ページネーションを実装するために使用します。`take` は取得件数を、`skip` はスキップする件数を指定します。
+
+**このアプリでの使用箇所**: 現在は使用されていません。
 
 **基本的な使い方**:
 
@@ -1438,21 +1480,60 @@ const products = await prisma.product.findMany({
 // 最初の10件を取得
 const products = await prisma.product.findMany({
   take: 10,
+  orderBy: { createdAt: "desc" },
 });
 
 // 11件目から20件目を取得（ページネーション）
+const page = 2;
+const pageSize = 10;
 const products = await prisma.product.findMany({
-  skip: 10,
-  take: 10,
+  skip: (page - 1) * pageSize,
+  take: pageSize,
+  orderBy: { createdAt: "desc" },
+  include: {
+    category: true,
+  },
 });
 ```
-
-**このアプリでの使用箇所**: 現在は使用されていません。
 
 **使用する場合のメリット**:
 
 - 大量のデータを分割して取得できる
 - ページネーション機能の実装が容易
+- メモリ使用量を削減できる
+- 初期表示を高速化できる
+
+**使用例**:
+
+```typescript
+// ページネーション付きの商品一覧取得
+async function getProducts(page: number = 1, pageSize: number = 20) {
+  const [products, total] = await Promise.all([
+    prisma.product.findMany({
+      skip: (page - 1) * pageSize,
+      take: pageSize,
+      orderBy: { createdAt: "desc" },
+      include: {
+        category: true,
+      },
+    }),
+    prisma.product.count(), // 総件数を取得
+  ]);
+
+  return {
+    products,
+    totalPages: Math.ceil(total / pageSize),
+    currentPage: page,
+  };
+}
+```
+
+**このアプリで使用しない理由**:
+
+- 商品数が比較的少ないため、ページネーションが不要
+- すべての商品を一度に取得してもパフォーマンスへの影響が小さい
+- ユーザーがすべての商品を一度に確認できる方が使いやすい
+- カテゴリーごとの表示で、各カテゴリーの商品数はさらに少ない
 
 ## エラーハンドリング
 

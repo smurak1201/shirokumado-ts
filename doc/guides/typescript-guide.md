@@ -1,6 +1,6 @@
 # TypeScript ガイド
 
-## 📋 目次
+## 目次
 
 - [概要](#概要)
 - [TypeScript とは](#typescript-とは)
@@ -577,8 +577,11 @@ export interface Product {
 
 - ユニオン型やインターセクション型を定義する場合
 - 型エイリアスを定義する場合
+- プリミティブ型やユニオン型を組み合わせる場合
 
-**使用例**（このアプリでは未使用）:
+**このアプリでの使用箇所**: 現在は使用されていません。
+
+**使用例**:
 
 ```typescript
 // ユニオン型の例
@@ -586,7 +589,22 @@ type Status = "pending" | "completed" | "failed";
 
 // 型エイリアスの例
 type ProductId = number;
+
+// インターセクション型の例
+type AdminUser = User & {
+  permissions: string[];
+};
+
+// ユーティリティ型の例
+type PartialProduct = Partial<Product>;
+type ReadonlyProduct = Readonly<Product>;
 ```
+
+**このアプリで使用しない理由**:
+
+- オブジェクトの型定義はすべて`interface`を使用しており、一貫性を保っている
+- ユニオン型や型エイリアスが必要な場面が少ない
+- `interface`の方が拡張性が高く、将来の変更に対応しやすい
 
 ### 型の分離
 

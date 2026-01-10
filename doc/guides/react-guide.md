@@ -1,6 +1,6 @@
 # React ガイド
 
-## 📋 目次
+## 目次
 
 - [概要](#概要)
 - [React とは](#react-とは)
@@ -357,6 +357,118 @@ const ref = useRef(initialValue);
 - **再レンダリングを引き起こさない**: `ref.current` を変更しても、コンポーネントは再レンダリングされない
 - **DOM 要素への参照**: DOM 要素への直接アクセスが可能
 - **値の保持**: コンポーネントのライフサイクル全体を通じて、値を保持
+
+### 未使用の React Hooks
+
+このアプリでは、以下の React Hooks は使用されていませんが、知っておくと便利な機能です：
+
+**useContext** - コンテキストの値にアクセス
+
+複数のコンポーネント間で状態を共有するために使用します。Props のバケツリレーを避けることができます。
+
+**使用例**:
+
+```typescript
+// コンテキストの作成
+const ThemeContext = createContext("light");
+
+// プロバイダーで値を提供
+function App() {
+  return (
+    <ThemeContext.Provider value="dark">
+      <Component />
+    </ThemeContext.Provider>
+  );
+}
+
+// コンポーネントで値を使用
+function Component() {
+  const theme = useContext(ThemeContext);
+  return <div className={theme}>テーマ: {theme}</div>;
+}
+```
+
+**このアプリで使用しない理由**:
+
+- 状態管理は親コンポーネントから props で渡す方が、データフローが明確で理解しやすい
+- 状態の共有が必要な範囲が限定的で、props で十分に対応できる
+
+**useReducer** - 複雑な状態管理
+
+`useState`の代替として、複雑な状態ロジックを管理するために使用します。複数の状態を 1 つのオブジェクトで管理し、アクションに基づいて状態を更新します。
+
+**使用例**:
+
+```typescript
+function reducer(state: State, action: Action) {
+  switch (action.type) {
+    case "increment":
+      return { count: state.count + 1 };
+    case "decrement":
+      return { count: state.count - 1 };
+    default:
+      return state;
+  }
+}
+
+function Counter() {
+  const [state, dispatch] = useReducer(reducer, { count: 0 });
+  return (
+    <div>
+      <p>カウント: {state.count}</p>
+      <button onClick={() => dispatch({ type: "increment" })}>+</button>
+      <button onClick={() => dispatch({ type: "decrement" })}>-</button>
+    </div>
+  );
+}
+```
+
+**このアプリで使用しない理由**:
+
+- 状態管理が比較的シンプルで、`useState`で十分に対応できる
+- 複数の状態を個別に管理する方が、コードが読みやすい
+
+**useImperativeHandle と forwardRef** - 親コンポーネントからの参照制御
+
+親コンポーネントから子コンポーネントのメソッドや値を直接参照できるようにします。
+
+**使用例**:
+
+```typescript
+// 子コンポーネント
+const ChildComponent = forwardRef((props, ref) => {
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  useImperativeHandle(ref, () => ({
+    focus: () => {
+      inputRef.current?.focus();
+    },
+    getValue: () => {
+      return inputRef.current?.value;
+    },
+  }));
+
+  return <input ref={inputRef} />;
+});
+
+// 親コンポーネント
+function ParentComponent() {
+  const childRef = useRef<{ focus: () => void; getValue: () => string }>(null);
+
+  return (
+    <div>
+      <ChildComponent ref={childRef} />
+      <button onClick={() => childRef.current?.focus()}>フォーカス</button>
+    </div>
+  );
+}
+```
+
+**このアプリで使用しない理由**:
+
+- React のベストプラクティスに従い、props とコールバック関数で親子間の通信を行っている
+- データフローが明確で、コンポーネント間の結合が緩くなる
+- 宣言的な実装により、コードが理解しやすくなる
 
 ## カスタムフック
 

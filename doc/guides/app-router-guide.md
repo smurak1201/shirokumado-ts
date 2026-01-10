@@ -1,6 +1,6 @@
 # Next.js App Router ガイド
 
-## 📋 目次
+## 目次
 
 - [概要](#概要)
 - [App Router とは](#app-router-とは)
@@ -14,6 +14,7 @@
   - [動的レンダリングの設定](#動的レンダリングの設定)
 - [動的ルーティング](#動的ルーティング)
 - [API Routes](#api-routes)
+  - [Server Actions（このアプリでは未使用）](#server-actionsこのアプリでは未使用)
 - [画像最適化](#画像最適化)
 - [レイアウトとテンプレート](#レイアウトとテンプレート)
   - [ルートレイアウト](#ルートレイアウト)
@@ -81,12 +82,116 @@ app/
 
 **ルーティングの規則**:
 
-- `page.tsx`: ページコンポーネント（ルートとして機能）
-- `layout.tsx`: レイアウトコンポーネント（ネストされたレイアウト）
-- `route.ts`: API エンドポイント（API Routes）
-- `loading.tsx`: ローディング UI
-- `error.tsx`: エラー UI
-- `not-found.tsx`: 404 ページ
+- `page.tsx`: ページコンポーネント（ルートとして機能） - **このアプリで使用中**
+- `layout.tsx`: レイアウトコンポーネント（ネストされたレイアウト） - **このアプリで使用中**
+- `route.ts`: API エンドポイント（API Routes） - **このアプリで使用中**
+- `loading.tsx`: ローディング UI - **このアプリでは未使用**
+- `error.tsx`: エラー UI - **このアプリでは未使用**
+- `not-found.tsx`: 404 ページ - **このアプリでは未使用**
+- `template.tsx`: テンプレートコンポーネント - **このアプリでは未使用**
+
+**未使用ファイルの説明**:
+
+このアプリでは、以下のファイルは使用されていませんが、知っておくと便利な機能です：
+
+**`loading.tsx`** - ローディング UI
+
+ページやセグメントの読み込み中に表示される UI を定義します。データフェッチ中にローディングスピナーなどを表示できます。
+
+**使用例**:
+
+```typescript
+// app/products/loading.tsx
+export default function Loading() {
+  return (
+    <div className="flex items-center justify-center p-8">
+      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
+      <span className="ml-2">読み込み中...</span>
+    </div>
+  );
+}
+```
+
+**`error.tsx`** - エラーバウンダリー
+
+エラーバウンダリーとして機能し、エラー発生時に表示される UI を定義します。Client Component として実装する必要があります。
+
+**使用例**:
+
+```typescript
+// app/products/error.tsx
+"use client";
+
+export default function Error({
+  error,
+  reset,
+}: {
+  error: Error & { digest?: string };
+  reset: () => void;
+}) {
+  return (
+    <div className="flex flex-col items-center justify-center p-8">
+      <h2 className="text-xl font-bold mb-4">エラーが発生しました</h2>
+      <p className="text-gray-600 mb-4">{error.message}</p>
+      <button
+        onClick={reset}
+        className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+      >
+        再試行
+      </button>
+    </div>
+  );
+}
+```
+
+**`not-found.tsx`** - 404 ページ
+
+404 ページをカスタマイズします。`notFound()`関数を呼び出した時や、存在しないルートにアクセスした時に表示されます。
+
+**使用例**:
+
+```typescript
+// app/products/not-found.tsx
+import Link from "next/link";
+
+export default function NotFound() {
+  return (
+    <div className="flex flex-col items-center justify-center p-8">
+      <h2 className="text-2xl font-bold mb-4">商品が見つかりません</h2>
+      <p className="text-gray-600 mb-4">
+        お探しの商品は存在しないか、削除された可能性があります。
+      </p>
+      <Link href="/" className="text-blue-500 hover:underline">
+        ホームに戻る
+      </Link>
+    </div>
+  );
+}
+```
+
+**`template.tsx`** - テンプレートコンポーネント
+
+`layout.tsx`と似ていますが、ナビゲーション時に毎回新しいインスタンスが作成されます。アニメーションや状態のリセットが必要な場合に使用します。
+
+**使用例**:
+
+```typescript
+// app/products/template.tsx
+export default function Template({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="animate-fade-in transition-opacity duration-300">
+      {children}
+    </div>
+  );
+}
+```
+
+**このアプリで使用しない理由**:
+
+- エラーハンドリングは API Routes で統一して実装している
+- ローディング状態は各コンポーネント内で管理している
+- 404 ページは Next.js のデフォルトを使用している
+- テンプレート機能は現在の要件では不要
 
 ## Server Components と Client Components
 
@@ -909,6 +1014,70 @@ export const PUT = withErrorHandling(async (
 - データベースに直接アクセス可能
 - 統一されたエラーハンドリング（`withErrorHandling` を使用）
 - 型安全なリクエスト・レスポンス処理
+
+### Server Actions（このアプリでは未使用）
+
+**説明**: Server Actions は、Client Component から直接サーバー側の関数を呼び出すことができる機能です。`'use server'`ディレクティブを使用してサーバー側の関数を定義し、フォーム送信やボタンクリックなどから直接呼び出せます。
+
+**このアプリでの使用箇所**: 現在は使用されていません。
+
+**使用例**:
+
+```typescript
+// app/actions.ts
+"use server";
+
+import { prisma } from "@/lib/prisma";
+
+export async function createProduct(formData: FormData) {
+  const name = formData.get("name") as string;
+  const description = formData.get("description") as string;
+
+  const product = await prisma.product.create({
+    data: {
+      name,
+      description,
+      // ...
+    },
+  });
+
+  return product;
+}
+
+// app/components/ProductForm.tsx
+("use client");
+
+import { createProduct } from "@/app/actions";
+
+export default function ProductForm() {
+  async function handleSubmit(formData: FormData) {
+    const product = await createProduct(formData);
+    console.log("商品を作成しました:", product);
+  }
+
+  return (
+    <form action={handleSubmit}>
+      <input name="name" />
+      <textarea name="description" />
+      <button type="submit">作成</button>
+    </form>
+  );
+}
+```
+
+**Server Actions のメリット**:
+
+- API Routes を書く必要がなく、よりシンプルなコードになる
+- 型安全性が高い（TypeScript と統合されている）
+- フォーム送信が簡単（`action`プロップに直接関数を渡せる）
+- プログレッシブエンハンスメントに対応（JavaScript が無効でも動作）
+
+**このアプリで使用しない理由**:
+
+- API Routes を使用することで、RESTful な API 設計を維持している
+- エラーハンドリングを統一するために`withErrorHandling`を使用している
+- 既存のコードベースとの一貫性を保つため
+- API Routes の方が、外部からのアクセスやテストが容易
 
 ## 画像最適化
 
