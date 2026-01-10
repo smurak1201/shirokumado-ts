@@ -227,17 +227,7 @@ const name = "World";
 <div>計算結果: {1 + 2}</div>
 ```
 
-**このアプリでの例**:
-
-```tsx
-// app/components/ProductTile.tsx
-<h3 className="line-clamp-2 text-center">{product.name}</h3>
-```
-
-```tsx
-// app/components/ProductGrid.tsx
-<h2 className="text-center text-lg font-light">{category.name}</h2>
-```
+**詳細**: JavaScript 式の埋め込みの詳細な説明、制限事項、レンダリング可能な値については、[基本的な構文 - JavaScript 式の埋め込み](#javascript-式の埋め込み)セクションを参照してください。
 
 ### 5. コメントの書き方
 
@@ -386,6 +376,8 @@ JSX では、JavaScript の予約語と衝突する属性名は別名を使用�
 </div>
 ```
 
+**注意**: 個別の間違いと対処法については、[よくある間違いと対処法](#よくある間違いと対処法)セクションを参照してください。
+
 ## 基本的な構文
 
 ### 要素の記述
@@ -413,11 +405,7 @@ JSX では、HTML と同様に要素を記述できます。
 
 ### 属性（Props）
 
-JSX では、HTML の属性と同様に props を指定できます。ただし、いくつかの違いがあります：
-
-1. **`class` ではなく `className`**: JavaScript の予約語である `class` の代わりに `className` を使用
-2. **`for` ではなく `htmlFor`**: 同様に `for` の代わりに `htmlFor` を使用
-3. **キャメルケース**: 属性名はキャメルケースで記述（例: `onClick`, `onChange`）
+JSX では、HTML の属性と同様に props を指定できます。HTML との違いについては、[JSX と HTML の違い](#jsx-と-html-の違い)セクションを参照してください。
 
 ```jsx
 // className を使用
@@ -631,18 +619,9 @@ if (!isOpen) {
 if (!isOpen || !product) {
   return null;
 }
-
-// app/components/ProductTile.tsx
-{
-  product.imageUrl ? (
-    <div className="relative aspect-square w-full">
-      <Image src={product.imageUrl} alt={product.name} fill />
-    </div>
-  ) : (
-    <div className="aspect-square w-full bg-gray-100" />
-  );
-}
 ```
+
+**詳細な使用例**: このアプリでの条件付きレンダリングの実装例（三項演算子、論理 AND 演算子など）については、[このアプリでの JSX の使用例 - 条件付きレンダリング](#条件付きレンダリング-1)セクションを参照してください。
 
 ### リストのレンダリング
 
@@ -664,20 +643,12 @@ const items = ["Apple", "Banana", "Orange"];
 
 ```tsx
 // app/components/ProductGrid.tsx
-<div className="grid grid-cols-3 gap-3">
-  {products.map((product) => (
-    <ProductTile
-      key={product.id}
-      product={{
-        id: product.id,
-        name: product.name,
-        imageUrl: product.imageUrl,
-      }}
-      onClick={() => handleTileClick(product)}
-    />
-  ))}
-</div>
+{
+  products.map((product) => <ProductTile key={product.id} product={product} />);
+}
 ```
+
+**詳細な使用例**: このアプリでのリストのレンダリングの実装例（`key` の使用方法、空配列の扱いなど）については、[このアプリでの JSX の使用例 - リストのレンダリング](#リストのレンダリング-1)セクションを参照してください。
 
 **空配列のレンダリング**:
 
@@ -1076,6 +1047,8 @@ return (
 }
 ```
 
+**詳細**: `key` prop の重要性、必要な理由、ベストプラクティスの詳細については、[基本的な構文 - リストのレンダリング - key prop の重要性](#リストのレンダリング)セクションを参照してください。
+
 ### 4. アクセシビリティの考慮
 
 **推奨**: 適切なセマンティック HTML と aria 属性を使用。
@@ -1151,6 +1124,8 @@ function ProductTile({ product, onClick }: ProductTileProps) {
 <div>Hello, {name}!</div>  {/* name の値が表示される */}
 ```
 
+**詳細**: JavaScript 式の埋め込みの詳細な説明、制限事項、レンダリング可能な値については、[基本的な構文 - JavaScript 式の埋め込み](#javascript-式の埋め込み)セクションを参照してください。
+
 ### 4. 条件付きレンダリングでの `false` の扱い
 
 **注意**: `false` はレンダリングされませんが、`0` はレンダリングされます。
@@ -1180,6 +1155,8 @@ function ProductTile({ product, onClick }: ProductTileProps) {
   /* count が 0 の場合、何も表示されない */
 }
 ```
+
+**詳細**: レンダリング可能な値（`null`, `undefined`, `true`, `false`, `0` など）の詳細については、[基本的な構文 - JavaScript 式の埋め込み - レンダリング可能な値](#javascript-式の埋め込み)セクションを参照してください。
 
 ### 5. null と undefined の扱い
 
@@ -1214,9 +1191,13 @@ if (products.length === 0) {
 }
 ```
 
+**詳細**: `null` と `undefined` を含むレンダリング可能な値の詳細については、[基本的な構文 - JavaScript 式の埋め込み - レンダリング可能な値](#javascript-式の埋め込み)セクションを参照してください。
+
 ### 6. オブジェクトや関数の直接レンダリング
 
 **間違い**: オブジェクトや関数を直接レンダリングしようとするとエラーになります。
+
+詳細については、[JavaScript 式の埋め込み - JSX 式の制限](#javascript-式の埋め込み)セクションを参照してください。
 
 ```tsx
 // 間違い: オブジェクトを直接レンダリング
