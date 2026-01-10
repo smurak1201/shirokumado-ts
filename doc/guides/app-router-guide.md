@@ -1263,4 +1263,5 @@ Next.js App Router を使用することで、以下のメリットが得られ�
 
 - **[Next.js ガイド](./nextjs-guide.md)**: Next.js 全体の説明（画像最適化、フォント最適化、メタデータ、ビルドとデプロイなど）
 - **[React ガイド](./react-guide.md)**: React の詳細な使用方法
+- **[JSX ガイド](./jsx-guide.md)**: JSX の構文と使用方法
 - **[Next.js 公式ドキュメント - App Router](https://nextjs.org/docs/app)**: App Router の包括的なドキュメント

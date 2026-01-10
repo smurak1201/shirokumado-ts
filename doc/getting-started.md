@@ -432,6 +432,7 @@ export default function ProductList() {
 - **[Next.js ガイド](./guides/nextjs-guide.md)** - Next.js の詳細な使用方法。画像最適化、フォント最適化、メタデータ、ビルドとデプロイなどの説明と、このアプリでの実際の使用箇所を説明します。
 - **[App Router ガイド](./guides/app-router-guide.md)** - Next.js App Router の詳細な使用方法。Server Components、Client Components、API Routes などの説明と、このアプリでの実際の使用箇所を説明します。
 - **[React ガイド](./guides/react-guide.md)** - React の詳細な使用方法。Hooks、カスタムフック、コンポーネント設計などの説明と、このアプリでの実際の使用箇所を説明します。
+- **[JSX ガイド](./guides/jsx-guide.md)** - JSX の構文と使用方法。HTML との違い、基本的な構文、ベストプラクティスなどの説明と、このアプリでの実際の使用例を説明します。
 - **[TypeScript ガイド](./guides/typescript-guide.md)** - TypeScript の詳細な使用方法。型定義、型安全性、Prisma との統合などの説明と、このアプリでの実際の使用箇所を説明します。
 - **[Prisma ガイド](./guides/prisma-guide.md)** - Prisma の詳細な使用方法。各関数の説明と、このアプリでの実際の使用箇所を説明します。
 

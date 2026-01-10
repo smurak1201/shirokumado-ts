@@ -469,5 +469,6 @@ Server Components により、クライアントサイドの JavaScript を最�
 
 - **[App Router ガイド](./app-router-guide.md)**: App Router の詳細な使用方法（Server Components、Client Components、API Routes、データフェッチングなど）
 - **[React ガイド](./react-guide.md)**: React の詳細な使用方法
+- **[JSX ガイド](./jsx-guide.md)**: JSX の構文と使用方法
 - **[デプロイメントガイド](../deployment.md)**: デプロイ手順
 - **[Next.js 公式ドキュメント](https://nextjs.org/docs)**: Next.js の包括的なドキュメント

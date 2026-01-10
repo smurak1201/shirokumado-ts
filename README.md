@@ -83,14 +83,18 @@ npm install
 
 ```env
 # データベース接続（Neon）
+# DATABASE_URL または POSTGRES_URL のどちらかが必要です
 DATABASE_URL=postgresql://...
+# 以下の環境変数はオプションです（Neon の接続プール設定など）
 DATABASE_URL_UNPOOLED=postgresql://...
 POSTGRES_URL=postgresql://...
 POSTGRES_URL_NON_POOLING=postgresql://...
 
-# Blob Storage
+# Blob Storage（必須）
 BLOB_READ_WRITE_TOKEN=vercel_blob_rw_...
 ```
+
+詳細は [Prisma & Blob セットアップガイド](./doc/setup-prisma-blob.md) を参照してください。
 
 ### 4. データベースのセットアップ
 
@@ -142,6 +146,7 @@ npm run dev
 - **[Next.js ガイド](./doc/guides/nextjs-guide.md)** - Next.js の詳細な使用方法。画像最適化、フォント最適化、メタデータ、ビルドとデプロイなどの説明と、このアプリでの実際の使用箇所を説明します。
 - **[App Router ガイド](./doc/guides/app-router-guide.md)** - Next.js App Router の詳細な使用方法。Server Components、Client Components、API Routes などの説明と、このアプリでの実際の使用箇所を説明します。
 - **[React ガイド](./doc/guides/react-guide.md)** - React の詳細な使用方法。Hooks、カスタムフック、コンポーネント設計などの説明と、このアプリでの実際の使用箇所を説明します。
+- **[JSX ガイド](./doc/guides/jsx-guide.md)** - JSX の構文と使用方法。HTML との違い、基本的な構文、ベストプラクティスなどの説明と、このアプリでの実際の使用例を説明します。
 - **[TypeScript ガイド](./doc/guides/typescript-guide.md)** - TypeScript の詳細な使用方法。型定義、型安全性、Prisma との統合などの説明と、このアプリでの実際の使用箇所を説明します。
 - **[Prisma ガイド](./doc/guides/prisma-guide.md)** - Prisma の詳細な使用方法。各関数の説明と、このアプリでの実際の使用箇所を説明します。
 
@@ -171,6 +176,7 @@ npm run db:push        # スキーマをデータベースにプッシュ
 npm run db:migrate     # マイグレーションを作成・適用
 npm run db:migrate:deploy  # 本番環境でマイグレーションを適用
 npm run db:studio      # Prisma Studioを起動
+npm run db:seed        # シードデータを投入
 ```
 
 ## プロジェクト構造

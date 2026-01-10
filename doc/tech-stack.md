@@ -91,7 +91,7 @@
   - カスタムフックで状態管理ロジックを分離
   - コンポーネントの再利用性を重視した設計
 
-  **詳細な使用方法については、[React ガイド](./guides/react-guide.md) を参照してください。**
+  **詳細な使用方法については、[React ガイド](./guides/react-guide.md) と [JSX ガイド](./guides/jsx-guide.md) を参照してください。**
 
 - **React DOM** `19.2.3`
 
@@ -382,6 +382,7 @@ shirokumado-ts/
 │       ├── nextjs-guide.md         # Next.js ガイド
 │       ├── app-router-guide.md     # App Router ガイド
 │       ├── react-guide.md          # React ガイド
+│       ├── jsx-guide.md            # JSX ガイド
 │       ├── typescript-guide.md     # TypeScript ガイド
 │       └── prisma-guide.md         # Prisma ガイド
 ├── package.json     # 依存関係

@@ -635,6 +635,10 @@ const { config } = await import("@/lib/config");
 
 ## 参考リンク
 
+- **[React ガイド](./react-guide.md)**: React の包括的なガイド
+- **[JSX ガイド](./jsx-guide.md)**: JSX の構文と使用方法
+- **[Next.js ガイド](./nextjs-guide.md)**: Next.js の詳細な使用方法
+- **[App Router ガイド](./app-router-guide.md)**: App Router の詳細な使用方法
 - [Next.js App Router](https://nextjs.org/docs/app)
 - [React Server Components](https://react.dev/blog/2023/03/22/react-labs-what-we-have-been-working-on-march-2023#react-server-components)
 - [Tailwind CSS](https://tailwindcss.com/docs)

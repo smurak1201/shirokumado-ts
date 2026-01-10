@@ -833,6 +833,11 @@ const user = await prisma.$queryRaw`
 
 ## 参考リンク
 
+- **[React ガイド](./guides/react-guide.md)**: React の包括的なガイド
+- **[JSX ガイド](./guides/jsx-guide.md)**: JSX の構文とベストプラクティス
+- **[TypeScript ガイド](./guides/typescript-guide.md)**: TypeScript の使用方法
+- **[Next.js ガイド](./guides/nextjs-guide.md)**: Next.js の使用方法
+- **[App Router ガイド](./guides/app-router-guide.md)**: App Router の使用方法
 - [Next.js Documentation](https://nextjs.org/docs)
 - [Next.js App Router Best Practices](https://nextjs.org/docs/app/building-your-application/routing)
 - [Prisma Best Practices](https://www.prisma.io/docs/guides/performance-and-optimization)

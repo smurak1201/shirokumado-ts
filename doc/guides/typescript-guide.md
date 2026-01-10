@@ -137,7 +137,7 @@ TypeScript の設定を管理するファイルです。コンパイラオプシ
    - `target: "ES2017"`: コンパイル後の JavaScript のバージョン
    - `lib`: 使用する型定義ライブラリ（DOM、ESNext など）
    - `module: "esnext"`: モジュールシステム（ES Modules）
-   - `jsx: "react-jsx"`: React JSX の変換方法
+   - `jsx: "react-jsx"`: React JSX の変換方法（詳細は [JSX ガイド](./jsx-guide.md) を参照）
 
 2. **型チェックの厳格さ**:
 
@@ -743,5 +743,6 @@ type ReadonlyProduct = Readonly<Product>;
 
 - **[Prisma ガイド](./prisma-guide.md)**: Prisma との型統合の詳細
 - **[React ガイド](./react-guide.md)**: React での TypeScript の使用方法
+- **[JSX ガイド](./jsx-guide.md)**: TypeScript での JSX の使用方法
 - **[Next.js ガイド](./nextjs-guide.md)**: Next.js での TypeScript の使用方法
 - **[TypeScript 公式ドキュメント](https://www.typescriptlang.org/docs/)**: TypeScript の包括的なドキュメント

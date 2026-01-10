@@ -4,10 +4,12 @@
 
 - [概要](#概要)
 - [JSX とは](#jsx-とは)
+- [JSX と HTML の違い](#jsx-と-html-の違い)
 - [基本的な構文](#基本的な構文)
   - [要素の記述](#要素の記述)
   - [属性（Props）](#属性props)
   - [子要素](#子要素)
+  - [children prop（子要素を受け取る）](#children-prop子要素を受け取る)
   - [JavaScript 式の埋め込み](#javascript-式の埋め込み)
   - [条件付きレンダリング](#条件付きレンダリング)
   - [リストのレンダリング](#リストのレンダリング)
@@ -29,6 +31,8 @@ JSX（JavaScript XML）は、React で UI を記述するための構文拡張�
 
 このアプリケーションでは、JSX を使用してすべての React コンポーネントを実装しています。
 
+**関連ドキュメント**: React の概念（Hooks、状態管理、パフォーマンス最適化など）について詳しく知りたい場合は、[React ガイド](./react-guide.md)を参照してください。このガイドでは、JSX の構文と書き方に焦点を当てています。
+
 **JSX の主な特徴**:
 
 - **HTML に似た構文**: HTML に慣れ親しんだ開発者にとって理解しやすい
@@ -43,21 +47,324 @@ JSX は、JavaScript の構文拡張で、React 要素を記述するために�
 **JSX の変換例**:
 
 ```jsx
-// JSX
+// 開発者が書くコード（JSX構文）
 const element = <h1>Hello, World!</h1>;
 
-// 変換後（React 19の新しいJSX変換）
+// 自動変換後（React 19の新しいJSX変換）
+// 注意: この変換はTypeScriptコンパイラが自動的に行います
+// 開発者が直接このコードを書く必要はありません
 import { jsx } from "react/jsx-runtime";
 const element = jsx("h1", { children: "Hello, World!" });
 ```
 
-このアプリでは、TypeScript の設定（`tsconfig.json`）で `jsx: "react-jsx"` を指定しており、React 19 の新しい JSX 変換を使用しています。
+**重要なポイント**:
+
+- **開発者は JSX 構文（`<h1>`, `<div>`など）を直接書きます**
+- **`jsx`関数を直接呼び出す必要はありません**（TypeScript コンパイラが自動変換）
+- このアプリでは、TypeScript の設定（`tsconfig.json`）で `jsx: "react-jsx"` を指定しており、React 19 の新しい JSX 変換を使用しています
+
+**このアプリでの実際の使用例**:
+
+```tsx
+// app/components/ProductGrid.tsx
+// 開発者が書くコード（JSX構文）
+return (
+  <>
+    <section className="mb-8 md:mb-16 lg:mb-12">
+      <h2 className="text-center text-lg font-light">
+        {category.name}
+      </h2>
+      <div className="grid grid-cols-3 gap-3">
+        {products.map((product) => (
+          <ProductTile key={product.id} product={product} onClick={...} />
+        ))}
+      </div>
+    </section>
+  </>
+);
+```
+
+上記のコードは、TypeScript コンパイラによって自動的に`jsx`関数呼び出しに変換されますが、開発者は JSX 構文のままコードを書きます。
 
 **新しい JSX 変換の利点**:
 
 - **自動インポート不要**: `import React from "react"` が不要
 - **パフォーマンス向上**: 最適化されたランタイムを使用
 - **バンドルサイズの削減**: 不要な React インポートを削減
+
+## JSX と HTML の違い
+
+JSX は HTML に似ていますが、いくつかの重要な違いがあります。HTML から JSX に移行する際に注意すべきポイントをまとめます。
+
+### 1. 属性名の違い
+
+#### `class` → `className`
+
+HTML では `class` を使用しますが、JSX では JavaScript の予約語である `class` の代わりに `className` を使用します。
+
+```html
+<!-- HTML -->
+<div class="container">Content</div>
+```
+
+```jsx
+// JSX
+<div className="container">Content</div>
+```
+
+**このアプリでの例**:
+
+```tsx
+// app/components/ProductTile.tsx
+<button
+  className="group w-full overflow-hidden rounded-lg border border-gray-100 bg-white shadow-sm"
+  aria-label={`${product.name}の詳細を見る`}
+>
+```
+
+#### `for` → `htmlFor`
+
+HTML では `for` を使用しますが、JSX では `htmlFor` を使用します。
+
+```html
+<!-- HTML -->
+<label for="email">Email</label>
+<input type="email" id="email" />
+```
+
+```jsx
+// JSX
+<label htmlFor="email">Email</label>
+<input type="email" id="email" />
+```
+
+### 2. イベントハンドラーの違い
+
+HTML では小文字の属性名（`onclick`）を使用し、文字列で JavaScript コードを記述しますが、JSX ではキャメルケース（`onClick`）を使用し、関数を直接渡します。
+
+```html
+<!-- HTML -->
+<button onclick="handleClick()">Click me</button>
+```
+
+```jsx
+// JSX
+<button onClick={handleClick}>Click me</button>
+```
+
+**このアプリでの例**:
+
+```tsx
+// app/components/ProductTile.tsx
+<button
+  onClick={onClick}
+  className="group w-full overflow-hidden rounded-lg"
+>
+```
+
+```tsx
+// app/components/ProductModal.tsx
+<button
+  onClick={onClose}
+  className="rounded-full bg-white/90 p-2"
+  aria-label="閉じる"
+>
+```
+
+### 3. 自己閉じタグの必須性
+
+JSX では、子要素を持たない要素は必ず自己閉じタグ（`/>`）で閉じる必要があります。
+
+```html
+<!-- HTML（どちらも有効） -->
+<img src="image.jpg" alt="Image" />
+<img src="image.jpg" alt="Image" />
+<br />
+<br />
+```
+
+```jsx
+// JSX（自己閉じタグが必須）
+<img src="image.jpg" alt="Image" />
+<br />
+```
+
+**このアプリでの例**:
+
+```tsx
+// app/components/ProductTile.tsx
+<Image
+  src={product.imageUrl}
+  alt={product.name}
+  fill
+  className="object-cover transition-transform duration-500 group-hover:scale-110"
+/>
+```
+
+### 4. JavaScript 式の埋め込み
+
+HTML では静的なテキストのみを記述できますが、JSX では `{}` を使用して JavaScript 式を埋め込むことができます。
+
+```html
+<!-- HTML（静的なテキストのみ） -->
+<div>Hello, World!</div>
+```
+
+```jsx
+// JSX（JavaScript 式を埋め込める）
+const name = "World";
+<div>Hello, {name}!</div>
+<div>計算結果: {1 + 2}</div>
+```
+
+**このアプリでの例**:
+
+```tsx
+// app/components/ProductTile.tsx
+<h3 className="line-clamp-2 text-center">{product.name}</h3>
+```
+
+```tsx
+// app/components/ProductGrid.tsx
+<h2 className="text-center text-lg font-light">{category.name}</h2>
+```
+
+### 5. コメントの書き方
+
+HTML では `<!-- -->` を使用しますが、JSX では `{/* */}` を使用します。
+
+```html
+<!-- HTML -->
+<div>
+  <!-- これはコメントです -->
+  Content
+</div>
+```
+
+```jsx
+// JSX
+<div>
+  {/* これはコメントです */}
+  Content
+</div>
+```
+
+**このアプリでの例**:
+
+```tsx
+// app/components/ProductTile.tsx
+<button onClick={onClick}>
+  {/* 商品画像 */}
+  {product.imageUrl ? (
+    <div className="relative aspect-square w-full">
+      <Image src={product.imageUrl} alt={product.name} fill />
+    </div>
+  ) : (
+    <div className="aspect-square w-full bg-gray-50" />
+  )}
+
+  {/* 商品名 */}
+  <div className="flex h-[3em] items-center justify-center">
+    <h3>{product.name}</h3>
+  </div>
+</button>
+```
+
+### 6. ブール値の属性
+
+HTML ではブール値の属性を省略できますが、JSX では明示的に `true` または `false` を指定する必要があります。
+
+```html
+<!-- HTML -->
+<input type="checkbox" checked disabled />
+```
+
+```jsx
+// JSX
+<input type="checkbox" checked={true} disabled={true} />
+// または、true の場合は省略可能
+<input type="checkbox" checked disabled />
+```
+
+### 7. スタイル属性
+
+HTML では文字列でスタイルを指定しますが、JSX ではオブジェクト形式で指定できます（ただし、このアプリでは Tailwind CSS を使用しているため、直接的なスタイル属性の使用は限定的です）。
+
+```html
+<!-- HTML -->
+<div style="color: red; font-size: 16px;">Text</div>
+```
+
+```jsx
+// JSX（オブジェクト形式）
+<div style={{ color: "red", fontSize: "16px" }}>Text</div>
+```
+
+**注意**: このアプリでは Tailwind CSS を使用しているため、`style` 属性の代わりに `className` を使用します。
+
+### 8. 属性値の型
+
+HTML では属性値は常に文字列ですが、JSX では数値、ブール値、オブジェクト、配列など、任意の JavaScript の値を渡すことができます。
+
+```html
+<!-- HTML（すべて文字列） -->
+<div data-count="5" data-active="true">Content</div>
+```
+
+```jsx
+// JSX（型を保持）
+<div data-count={5} data-active={true}>
+  Content
+</div>
+```
+
+### 9. 予約語との衝突回避
+
+JSX では、JavaScript の予約語と衝突する属性名は別名を使用します。
+
+| HTML       | JSX         | 理由                           |
+| ---------- | ----------- | ------------------------------ |
+| `class`    | `className` | `class` は JavaScript の予約語 |
+| `for`      | `htmlFor`   | `for` は JavaScript の予約語   |
+| `tabindex` | `tabIndex`  | キャメルケース化               |
+
+### まとめ表
+
+| 項目               | HTML            | JSX                        |
+| ------------------ | --------------- | -------------------------- |
+| クラス属性         | `class`         | `className`                |
+| ラベル属性         | `for`           | `htmlFor`                  |
+| イベントハンドラー | `onclick="..."` | `onClick={...}`            |
+| 自己閉じタグ       | 任意            | 必須（`/>`）               |
+| JavaScript 式      | 不可            | `{}` で埋め込み可能        |
+| コメント           | `<!-- -->`      | `{/* */}`                  |
+| ブール値属性       | 省略可能        | 明示的に指定               |
+| スタイル           | 文字列          | オブジェクト形式（`{{}}`） |
+| 属性値の型         | 常に文字列      | JavaScript の任意の型      |
+
+### JSX と HTML の違いのまとめ
+
+上記の違いを踏まえて、HTML から JSX に変換する際の例を示します。
+
+**間違い: HTML の書き方をそのまま使用**
+
+```jsx
+// 間違い
+<div class="container" onclick="handleClick()">
+  <!-- コメント -->
+  <img src="image.jpg" alt="Image">
+</div>
+```
+
+**正しい: JSX の書き方に変換**
+
+```jsx
+// 正しい
+<div className="container" onClick={handleClick}>
+  {/* コメント */}
+  <img src="image.jpg" alt="Image" />
+</div>
+```
 
 ## 基本的な構文
 
@@ -136,6 +443,69 @@ JSX では、要素の中に他の要素やテキストを配置できます。
 </div>
 ```
 
+### children prop（子要素を受け取る）
+
+コンポーネントは、`children` prop を使用して子要素を受け取ることができます。これにより、コンポーネントをラッパーとして使用できます。
+
+```jsx
+// コンポーネント定義
+function Container({ children }) {
+  return <div className="container">{children}</div>;
+}
+
+// 使用例
+<Container>
+  <h1>Title</h1>
+  <p>Description</p>
+</Container>;
+```
+
+**このアプリでの例**:
+
+```tsx
+// app/layout.tsx
+export default function RootLayout({
+  children,
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
+  return (
+    <html lang="ja">
+      <body className={`${notoSansJP.variable} antialiased`}>
+        {children}
+        <Analytics />
+      </body>
+    </html>
+  );
+}
+```
+
+```tsx
+// app/components/ErrorBoundary.tsx
+interface ErrorBoundaryProps {
+  children: ReactNode; // エラーバウンダリーで囲む子コンポーネント
+  fallback?: ReactNode; // エラー発生時に表示するフォールバックUI（オプション）
+}
+
+export default class ErrorBoundary extends Component<
+  ErrorBoundaryProps,
+  ErrorBoundaryState
+> {
+  render() {
+    if (this.state.hasError) {
+      return this.props.fallback || <DefaultErrorUI />;
+    }
+    return this.props.children; // 子要素をそのまま返す
+  }
+}
+```
+
+**重要なポイント**:
+
+- `children` は特別な prop で、コンポーネントの開始タグと終了タグの間の内容が自動的に渡されます
+- `children` の型は `ReactNode` で、文字列、数値、要素、配列、`null`、`undefined` など、様々な型を受け取れます
+- `children` は必須ではありません。コンポーネントが子要素を持たない場合、`children` は `undefined` になります
+
 ### JavaScript 式の埋め込み
 
 JSX では、`{}` を使用して JavaScript の式を埋め込むことができます。
@@ -155,9 +525,60 @@ const element = <h1>1 + 1 = {1 + 1}</h1>;
 <h2 className="text-center text-lg font-light">{category.name}</h2>
 ```
 
+**JSX 式の制限**:
+
+JSX では、以下のような値は直接レンダリングできません：
+
+```jsx
+// 間違い: オブジェクトを直接レンダリングできない
+const user = { name: "John", age: 30 };
+<div>{user}</div> // エラー: Objects are not valid as a React child
+
+// 正しい: オブジェクトのプロパティをレンダリング
+<div>{user.name}</div>
+
+// 正しい: JSON.stringify を使用
+<div>{JSON.stringify(user)}</div>
+
+// 間違い: 関数を直接レンダリングできない
+const handleClick = () => console.log("clicked");
+<div>{handleClick}</div> // エラー: Functions are not valid as a React child
+
+// 正しい: 関数を呼び出す（ただし、これは推奨されない）
+<div>{handleClick()}</div>
+
+// 正しい: イベントハンドラーとして使用
+<button onClick={handleClick}>Click me</button>
+```
+
+**レンダリング可能な値**:
+
+- 文字列
+- 数値
+- ブール値（`true`/`false` は何も表示しないが、エラーにはならない）
+- `null`（何も表示しない）
+- `undefined`（何も表示しない）
+- React 要素
+- React 要素の配列
+- フラグメント
+
+```jsx
+// すべて有効
+<div>{null}</div>           {/* 何も表示しない */}
+<div>{undefined}</div>       {/* 何も表示しない */}
+<div>{true}</div>            {/* 何も表示しない */}
+<div>{false}</div>           {/* 何も表示しない */}
+<div>{0}</div>               {/* 0 が表示される */}
+<div>{""}</div>              {/* 何も表示しない */}
+<div>{"Hello"}</div>         {/* Hello が表示される */}
+<div>{123}</div>             {/* 123 が表示される */}
+```
+
 ### 条件付きレンダリング
 
 JSX では、条件に応じて要素を表示/非表示できます。
+
+**注意**: このセクションでは JSX 構文での条件付きレンダリングに焦点を当てています。React での実装パターンについては、[React ガイド](./react-guide.md)も参照してください。
 
 **方法 1: 三項演算子**
 
@@ -207,6 +628,8 @@ if (!isOpen || !product) {
 
 JSX では、配列をマップしてリストをレンダリングできます。各要素には `key` プロップが必要です。
 
+**注意**: このセクションでは JSX 構文でのリストのレンダリングに焦点を当てています。React での実装パターンについては、[React ガイド](./react-guide.md)も参照してください。
+
 ```jsx
 const items = ["Apple", "Banana", "Orange"];
 
@@ -235,6 +658,66 @@ const items = ["Apple", "Banana", "Orange"];
   ))}
 </div>
 ```
+
+**空配列のレンダリング**:
+
+空配列は何も表示しませんが、エラーにはなりません。
+
+```jsx
+const emptyProducts = [];
+
+// 何も表示されない（エラーにはならない）
+<div>
+  {emptyProducts.map((product) => (
+    <ProductTile key={product.id} product={product} />
+  ))}
+</div>;
+
+// 空配列の場合にメッセージを表示する
+{
+  emptyProducts.length === 0 ? (
+    <p>商品がありません</p>
+  ) : (
+    emptyProducts.map((product) => (
+      <ProductTile key={product.id} product={product} />
+    ))
+  );
+}
+```
+
+**key prop の重要性**:
+
+`key` prop は、React が要素を識別し、効率的に更新するために使用されます。
+
+```jsx
+// 良い例: 一意で安定した ID を使用
+{
+  products.map((product) => <ProductTile key={product.id} product={product} />);
+}
+
+// 注意: インデックスは、リストの順序が変更されない場合のみ使用可能
+{
+  products.map((product, index) => (
+    <ProductTile key={index} product={product} />
+  ));
+}
+
+// 悪い例: 順序が変更される可能性がある場合にインデックスを使用
+// ドラッグ&ドロップで順序を変更できる場合など
+```
+
+**key が必要な理由**:
+
+1. **効率的な更新**: React は `key` を使用して、どの要素が変更されたかを判断します
+2. **状態の保持**: コンポーネントの状態が正しく保持されます
+3. **パフォーマンス**: 不要な再レンダリングを防ぎます
+
+**key のベストプラクティス**:
+
+- 一意で安定した ID を使用する（データベースの ID、UUID など）
+- 配列のインデックスは、リストの順序が変更されない場合のみ使用する
+- `key` は配列の要素にのみ必要で、通常の要素には不要
+- `key` は props としてコンポーネントに渡されない（`props.key` でアクセスできない）
 
 ## このアプリでの JSX の使用例
 
@@ -394,6 +877,8 @@ export default function ProductGrid({ category, products }: ProductGridProps) {
 - `key` は React が要素を識別し、効率的に更新するために使用される
 
 ### イベントハンドラー
+
+**関連**: React でのイベントハンドリングの実装パターンについては、[React ガイド - イベントハンドリング](./react-guide.md#イベントハンドリング)を参照してください。
 
 ```tsx
 // app/components/ProductTile.tsx
@@ -676,7 +1161,60 @@ function ProductTile({ product, onClick }: ProductTileProps) {
 }
 ```
 
-### 5. 配列のレンダリングでの key の欠如
+### 5. null と undefined の扱い
+
+JSX では、`null` と `undefined` は何も表示しませんが、エラーにはなりません。
+
+```tsx
+// すべて有効で、何も表示されない
+<div>{null}</div>
+<div>{undefined}</div>
+<div>{null && <div>Content</div>}</div>
+
+// コンポーネントから null を返すことで、何も表示しない
+function ConditionalComponent({ isVisible }: { isVisible: boolean }) {
+  if (!isVisible) {
+    return null; // 何も表示しない
+  }
+  return <div>Content</div>;
+}
+```
+
+**このアプリでの例**:
+
+```tsx
+// app/components/ProductModal.tsx
+if (!isOpen || !product) {
+  return null; // モーダルを表示しない
+}
+
+// app/components/ProductGrid.tsx
+if (products.length === 0) {
+  return null; // 商品がない場合は何も表示しない
+}
+```
+
+### 6. オブジェクトや関数の直接レンダリング
+
+**間違い**: オブジェクトや関数を直接レンダリングしようとするとエラーになります。
+
+```tsx
+// 間違い: オブジェクトを直接レンダリング
+const user = { name: "John", age: 30 };
+<div>{user}</div> // エラー: Objects are not valid as a React child
+
+// 正しい: オブジェクトのプロパティをレンダリング
+<div>{user.name}</div>
+
+// 間違い: 関数を直接レンダリング
+const handleClick = () => console.log("clicked");
+<div>{handleClick}</div> // エラー: Functions are not valid as a React child
+
+// 正しい: イベントハンドラーとして使用
+<button onClick={handleClick}>Click me</button>
+```
+
+### 7. 配列のレンダリングでの key の欠如
 
 **間違い**:
 

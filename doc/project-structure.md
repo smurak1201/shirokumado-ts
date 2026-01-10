@@ -105,6 +105,7 @@ shirokumado-ts/
 │       ├── nextjs-guide.md     # Next.js ガイド
 │       ├── app-router-guide.md # App Router ガイド
 │       ├── react-guide.md      # React ガイド
+│       ├── jsx-guide.md        # JSX ガイド
 │       ├── typescript-guide.md # TypeScript ガイド
 │       └── prisma-guide.md     # Prisma ガイド
 │
@@ -408,6 +409,7 @@ public/
 - **`doc/guides/nextjs-guide.md`**: Next.js の詳細な使用方法
 - **`doc/guides/app-router-guide.md`**: Next.js App Router の詳細な使用方法
 - **`doc/guides/react-guide.md`**: React の詳細な使用方法
+- **`doc/guides/jsx-guide.md`**: JSX の構文と使用方法
 - **`doc/guides/typescript-guide.md`**: TypeScript の詳細な使用方法
 - **`doc/guides/prisma-guide.md`**: Prisma の詳細な使用方法
 - **`doc/setup-prisma-blob.md`**: Prisma と Blob のセットアップガイド
