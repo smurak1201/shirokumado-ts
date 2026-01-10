@@ -371,6 +371,16 @@ export interface Product {
 
 **説明**: `product` は `Product` 型または `null` の可能性があるため、ユニオン型を使用しています。
 
+3. **文字列リテラル型のユニオン型**: `"list" | "layout"`
+
+```16:16:app/dashboard/hooks/useTabState.ts
+type TabType = "list" | "layout";
+```
+
+**説明**: `TabType` は、`"list"` または `"layout"` という特定の文字列リテラルのみを許可する型です。文字列リテラル型を使用することで、`string` 型よりも厳密な型チェックが可能になり、誤った文字列（例: `"lists"`）を代入できないようになります。
+
+**詳細は [interface vs type](#interface-vs-type) セクションを参照してください。**
+
 ## Prisma との統合
 
 Prisma は、データベーススキーマから TypeScript の型定義を自動生成します。これにより、データベース操作が型安全になります。
@@ -579,9 +589,38 @@ export interface Product {
 - 型エイリアスを定義する場合
 - プリミティブ型やユニオン型を組み合わせる場合
 
-**このアプリでの使用箇所**: 現在は使用されていません。
+**このアプリでの使用箇所**:
+
+1. **文字列リテラル型のユニオン型**: `app/dashboard/hooks/useTabState.ts`
+
+```16:16:app/dashboard/hooks/useTabState.ts
+type TabType = "list" | "layout";
+```
+
+**説明**: ダッシュボードのタブ状態を管理するために、文字列リテラル型のユニオン型を使用しています。これにより、`"list"` または `"layout"` のみを許可し、型安全性を確保しています。
 
 **使用例**:
+
+```30:30:app/dashboard/hooks/useTabState.ts
+  const [activeTab, setActiveTab] = useState<TabType>(() => {
+```
+
+```227:227:app/dashboard/components/ProductList.tsx
+              onClick={() => setActiveTab("list")}
+```
+
+**文字列リテラル型のユニオン型のメリット**:
+
+- **型安全性**: 許可された文字列のみを受け付けるため、タイプミスを防げる
+- **可読性**: 使用可能な値を型定義から明確に把握できる
+- **IDE サポート**: 自動補完で使用可能な値を提案してくれる
+
+**type と interface の使い分け**:
+
+- **`interface`**: オブジェクトの型定義に使用（`Product`、`Category` など）
+- **`type`**: ユニオン型、文字列リテラル型、型エイリアスなど、オブジェクト以外の型定義に使用（`TabType` など）
+
+**その他の使用例**:
 
 ```typescript
 // ユニオン型の例
@@ -599,12 +638,6 @@ type AdminUser = User & {
 type PartialProduct = Partial<Product>;
 type ReadonlyProduct = Readonly<Product>;
 ```
-
-**このアプリで使用しない理由**:
-
-- オブジェクトの型定義はすべて`interface`を使用しており、一貫性を保っている
-- ユニオン型や型エイリアスが必要な場面が少ない
-- `interface`の方が拡張性が高く、将来の変更に対応しやすい
 
 ### 型の分離
 
@@ -668,8 +701,12 @@ type ReadonlyProduct = Readonly<Product>;
    - `ProductTile`: 商品情報（タイル表示用）
 
 2. **ダッシュボードの型定義** (`app/dashboard/types.ts`)
+
    - `Category`: カテゴリー情報（カテゴリーオブジェクトを含む）
    - `Product`: 商品情報（公開状態、日付情報を含む）
+
+3. **型エイリアス** (`app/dashboard/hooks/useTabState.ts`)
+   - `TabType`: 文字列リテラル型のユニオン型（`"list" | "layout"`）
 
 ### 型安全性の実装
 
@@ -695,9 +732,10 @@ type ReadonlyProduct = Readonly<Product>;
 
 1. **型定義の一元管理**: `app/types.ts` と `app/dashboard/types.ts` で型定義を集約
 2. **型安全性**: すべてのコンポーネント、関数、API Routes に型を適用
-3. **Prisma との統合**: データベーススキーマから自動的に型を生成
-4. **厳格な型チェック**: `tsconfig.json` で厳格な型チェックを有効化
-5. **エラーハンドリング**: 統一されたエラークラスを使用し、型安全なエラーハンドリングを実現
+3. **型エイリアス**: 文字列リテラル型のユニオン型など、`type` キーワードを使用した型定義
+4. **Prisma との統合**: データベーススキーマから自動的に型を生成
+5. **厳格な型チェック**: `tsconfig.json` で厳格な型チェックを有効化
+6. **エラーハンドリング**: 統一されたエラークラスを使用し、型安全なエラーハンドリングを実現
 
 すべてのコードは型安全に実装され、コンパイル時に型エラーを検出できます。これにより、実行時エラーを事前に防止し、コードの品質を向上させています。
 
