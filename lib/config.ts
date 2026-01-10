@@ -74,10 +74,22 @@ export const config = {
     PRODUCT_LIST_CACHE_SECONDS: 60,
 
     /**
+     * 商品一覧 API の stale-while-revalidate 期間（秒）
+     * キャッシュが古くなっても、再検証中は古いデータを返します
+     */
+    PRODUCT_LIST_STALE_WHILE_REVALIDATE_SECONDS: 120, // 2分
+
+    /**
      * カテゴリー一覧 API のキャッシュ期間（秒）
      * カテゴリーは商品より変更頻度が低いため、5分間キャッシュします
      */
     CATEGORY_LIST_CACHE_SECONDS: 300, // 5分
+
+    /**
+     * カテゴリー一覧 API の stale-while-revalidate 期間（秒）
+     * キャッシュが古くなっても、再検証中は古いデータを返します
+     */
+    CATEGORY_LIST_STALE_WHILE_REVALIDATE_SECONDS: 600, // 10分
   },
 
   /**
@@ -91,42 +103,3 @@ export const config = {
     GRID_COLUMNS: 3,
   },
 };
-
-/**
- * Blobストレージ関連の設定
- */
-export const blobConfig = {
-  // 商品画像の保存フォルダ名
-  productsFolder: 'products',
-
-  // キャッシュ制御の最大年齢（秒）
-  cacheControlMaxAge: 31536000, // 1年
-} as const;
-
-/**
- * API関連の設定
- */
-export const apiConfig = {
-  // 商品一覧APIのキャッシュ時間（秒）
-  productsCacheMaxAge: 60,
-
-  // 商品一覧APIのstale-while-revalidate時間（秒）
-  productsStaleWhileRevalidate: 120,
-
-  // カテゴリー一覧APIのキャッシュ時間（秒）
-  categoriesCacheMaxAge: 300,
-
-  // カテゴリー一覧APIのstale-while-revalidate時間（秒）
-  categoriesStaleWhileRevalidate: 600,
-} as const;
-
-/**
- * 表示関連の設定
- */
-export const displayConfig = {
-  // 商品一覧のグリッド列数
-  productGridColumns: 3,
-
-  // 配置変更タブのグリッド列数
-  layoutGridColumns: 3,
-} as const;

@@ -1,7 +1,7 @@
 import { withErrorHandling } from '@/lib/api-helpers';
 import { safePrismaOperation } from '@/lib/prisma';
 import { prisma } from '@/lib/prisma';
-import { apiConfig } from '@/lib/config';
+import { config } from '@/lib/config';
 import { NextResponse } from 'next/server';
 
 /**
@@ -25,7 +25,7 @@ export const GET = withErrorHandling(async () => {
   // キャッシュヘッダーを設定（設定ファイルから読み込み）
   response.headers.set(
     'Cache-Control',
-    `public, s-maxage=${apiConfig.categoriesCacheMaxAge}, stale-while-revalidate=${apiConfig.categoriesStaleWhileRevalidate}`
+    `public, s-maxage=${config.apiConfig.CATEGORY_LIST_CACHE_SECONDS}, stale-while-revalidate=${config.apiConfig.CATEGORY_LIST_STALE_WHILE_REVALIDATE_SECONDS}`
   );
   return response;
 });
