@@ -822,7 +822,7 @@ export const GET = withErrorHandling(async () => {
   // stale-while-revalidate: キャッシュが古くなっても、再検証中は古いデータを返す
   response.headers.set(
     'Cache-Control',
-    `public, s-maxage=${config.apiConfig.PRODUCT_LIST_CACHE_SECONDS}, stale-while-revalidate=${config.apiConfig.PRODUCT_LIST_CACHE_SECONDS * 2}`
+    `public, s-maxage=${config.apiConfig.PRODUCT_LIST_CACHE_SECONDS}, stale-while-revalidate=${config.apiConfig.PRODUCT_LIST_STALE_WHILE_REVALIDATE_SECONDS}`
   );
   return response;
 });
