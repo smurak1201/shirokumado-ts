@@ -1469,6 +1469,7 @@ export default memo(ProductTile);
 
 ## 参考リンク
 
+- **[JSX ガイド](./jsx-guide.md)**: JSX の構文と使用方法
 - **[Next.js ガイド](./nextjs-guide.md)**: Next.js での React の使用方法
 - **[TypeScript ガイド](./typescript-guide.md)**: TypeScript での React の使用方法
 - **[App Router ガイド](./app-router-guide.md)**: Server Components と Client Components の使い分け
