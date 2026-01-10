@@ -25,7 +25,7 @@
   - [API Routes 構成](#api-routes-構成)
   - [ベストプラクティス](#ベストプラクティス)
 - [まとめ](#まとめ)
-- [関連ドキュメント](#関連ドキュメント)
+- [参考リンク](#参考リンク)
 
 ## 概要
 
@@ -349,7 +349,14 @@ export default async function DashboardPage() {
 **Server Components と Client Components の使い分け**:
 
 - **Server Components**: データフェッチング、静的なコンテンツ表示
+  - Prisma を使用してデータベースに直接アクセス
+  - React Hooks（`useState`、`useEffect` など）は使用しない
+  - イベントハンドラー（`onClick`、`onChange` など）は使用しない
 - **Client Components**: インタラクティブな機能、状態管理、ブラウザ API の使用
+  - `fetch` API を使用して API Routes にアクセス
+  - React Hooks（`useState`、`useEffect`、`useRef` など）を使用
+  - イベントハンドラー（`onClick`、`onChange` など）を使用
+  - Prisma は使用しない（データベースに直接アクセスしない）
 
 ## データフェッチング
 
@@ -479,6 +486,17 @@ async function getDashboardData() {
 - Server Components は初期レンダリング時にのみ実行される
 - ユーザーの操作（ボタンクリック、フォーム送信など）に応じて動的にデータを取得する必要がある
 - Client Components では `useState`、`useEffect` などの Hooks を使用して状態管理を行う
+
+**フロントエンドとバックエンドの使い分け**:
+
+- **Client Components（フロントエンド）**: `fetch` API を使用して API Routes にアクセス
+  - Prisma は使用しない（データベースに直接アクセスしない）
+  - React Hooks（`useState`、`useEffect`、`useRef` など）を使用
+  - ブラウザ API（`localStorage`、`window`、`URL.createObjectURL` など）を使用可能
+- **API Routes（バックエンド）**: Prisma を使用してデータベースに直接アクセス
+  - `fetch` API は使用しない（外部 API を呼び出す場合を除く）
+  - React Hooks は使用しない（サーバーサイドで実行されるため）
+  - ブラウザ API は使用しない（サーバーサイドで実行されるため）
 
 **このアプリでの使用箇所**:
 
@@ -1241,7 +1259,7 @@ Next.js App Router を使用することで、以下のメリットが得られ�
 
 このアプリケーションでは、App Router の機能を最大限に活用し、パフォーマンスと開発効率を両立した実装を行っています。
 
-**関連ドキュメント**:
+## 参考リンク
 
 - **[Next.js ガイド](./nextjs-guide.md)**: Next.js 全体の説明（画像最適化、フォント最適化、メタデータ、ビルドとデプロイなど）
 - **[React ガイド](./react-guide.md)**: React の詳細な使用方法

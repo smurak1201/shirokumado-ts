@@ -28,7 +28,7 @@
   - [最適化機能](#最適化機能)
 - [Next.js のベストプラクティス](#nextjs-のベストプラクティス)
 - [まとめ](#まとめ)
-- [関連ドキュメント](#関連ドキュメント)
+- [参考リンク](#参考リンク)
 
 ## 概要
 
@@ -465,7 +465,7 @@ Server Components により、クライアントサイドの JavaScript を最�
 
 すべての機能は TypeScript で型安全に実装され、Next.js のベストプラクティスに従っています。また、Vercel にデプロイされ、グローバル CDN により高速な配信を実現しています。
 
-**関連ドキュメント**:
+## 参考リンク
 
 - **[App Router ガイド](./app-router-guide.md)**: App Router の詳細な使用方法（Server Components、Client Components、API Routes、データフェッチングなど）
 - **[React ガイド](./react-guide.md)**: React の詳細な使用方法

@@ -2,45 +2,67 @@
 
 白熊堂のかき氷屋のホームページプロジェクトです。
 
-## 📋 目次
+## 目次
 
-- [技術スタック](#-技術スタック)
-- [前提条件](#-前提条件)
-- [セットアップ](#-セットアップ)
+- [技術スタック](#技術スタック)
+- [前提条件](#前提条件)
+- [セットアップ](#セットアップ)
   - [リポジトリのクローン](#1-リポジトリのクローン)
   - [依存関係のインストール](#2-依存関係のインストール)
   - [環境変数の設定](#3-環境変数の設定)
   - [データベースのセットアップ](#4-データベースのセットアップ)
   - [開発サーバーの起動](#5-開発サーバーの起動)
-- [ドキュメント](#-ドキュメント)
+- [ドキュメント](#ドキュメント)
   - [入門ガイド](#入門ガイド)
   - [アーキテクチャと設計](#アーキテクチャと設計)
   - [技術スタック](#技術スタック-1)
   - [機能別ガイド](#機能別ガイド)
   - [開発ガイド](#開発ガイド)
+  - [技術ガイド](#技術ガイド)
   - [セットアップとデプロイ](#セットアップとデプロイ)
-- [開発コマンド](#-開発コマンド)
-- [プロジェクト構造](#-プロジェクト構造)
-- [デプロイ](#-デプロイ)
-- [ライセンス](#-ライセンス)
+- [開発コマンド](#開発コマンド)
+- [プロジェクト構造](#プロジェクト構造)
+- [デプロイ](#デプロイ)
+- [ライセンス](#ライセンス)
 
-## 🚀 技術スタック
+## 技術スタック
 
-- **フロントエンド**: Next.js 16.1.1 (App Router), React 19.2.3, TypeScript 5, Tailwind CSS 4
-- **バックエンド**: Next.js API Routes, Prisma 7.2.0
-- **データベース**: Vercel Neon (PostgreSQL)
-- **ストレージ**: Vercel Blob Storage
-- **デプロイ**: Vercel
+### フロントエンド
+
+- **Next.js 16.1.1** (App Router) - ファイルベースのルーティングと Server Components
+- **React 19.2.3** - UI ライブラリ
+- **TypeScript 5** - 型安全性
+- **Tailwind CSS 4** - スタイリング
+
+### バックエンド
+
+- **Next.js API Routes** - RESTful API エンドポイント
+- **Prisma 7.2.0** - ORM（データベースアクセス）
+
+### データベース・ストレージ
+
+- **Vercel Neon** (PostgreSQL) - サーバーレスデータベース
+- **Vercel Blob Storage** - 画像ストレージ
+
+### デプロイ
+
+- **Vercel** - ホスティングプラットフォーム
+
+### アーキテクチャの特徴
+
+- **Server Components**: デフォルトでサーバーサイドでレンダリング。Prisma を使用してデータベースに直接アクセス
+- **Client Components**: インタラクティブな機能を実装。React Hooks と `fetch` API を使用して API Routes にアクセス
+- **API Routes**: Server Components と Client Components の橋渡し。Prisma を使用してデータベース操作を実行
 
 詳細は [技術スタックドキュメント](./doc/tech-stack.md) を参照してください。
 
-## 📋 前提条件
+## 前提条件
 
 - Node.js 24 以上（LTS 推奨）
 - npm 11 以上 または yarn
 - Git
 
-## 🛠️ セットアップ
+## セットアップ
 
 ### 1. リポジトリのクローン
 
@@ -91,7 +113,7 @@ npm run dev
 
 ブラウザで [http://localhost:3000](http://localhost:3000) を開いてください。
 
-## 📚 ドキュメント
+## ドキュメント
 
 ### 入門ガイド
 
@@ -115,17 +137,20 @@ npm run dev
 
 - **[開発ガイドライン](./doc/development-guide.md)** - コーディング規約とベストプラクティス。Next.js、Prisma、TypeScript などの技術スタック別のベストプラクティス、命名規則、Git ワークフローなどを説明します。
 
-### セットアップとデプロイ
+### 技術ガイド
 
-- **[Prisma & Blob セットアップガイド](./doc/setup-prisma-blob.md)** - データベースとストレージのセットアップ方法。開発環境の構築手順を説明します。
 - **[Next.js ガイド](./doc/guides/nextjs-guide.md)** - Next.js の詳細な使用方法。画像最適化、フォント最適化、メタデータ、ビルドとデプロイなどの説明と、このアプリでの実際の使用箇所を説明します。
 - **[App Router ガイド](./doc/guides/app-router-guide.md)** - Next.js App Router の詳細な使用方法。Server Components、Client Components、API Routes などの説明と、このアプリでの実際の使用箇所を説明します。
 - **[React ガイド](./doc/guides/react-guide.md)** - React の詳細な使用方法。Hooks、カスタムフック、コンポーネント設計などの説明と、このアプリでの実際の使用箇所を説明します。
 - **[TypeScript ガイド](./doc/guides/typescript-guide.md)** - TypeScript の詳細な使用方法。型定義、型安全性、Prisma との統合などの説明と、このアプリでの実際の使用箇所を説明します。
 - **[Prisma ガイド](./doc/guides/prisma-guide.md)** - Prisma の詳細な使用方法。各関数の説明と、このアプリでの実際の使用箇所を説明します。
+
+### セットアップとデプロイ
+
+- **[Prisma & Blob セットアップガイド](./doc/setup-prisma-blob.md)** - データベースとストレージのセットアップ方法。開発環境の構築手順を説明します。
 - **[デプロイメントガイド](./doc/deployment.md)** - デプロイ手順。Vercel へのデプロイ方法を説明します。
 
-## 🧑‍💻 開発コマンド
+## 開発コマンド
 
 ```bash
 # 開発サーバー起動
@@ -148,31 +173,44 @@ npm run db:migrate:deploy  # 本番環境でマイグレーションを適用
 npm run db:studio      # Prisma Studioを起動
 ```
 
-## 📁 プロジェクト構造
+## プロジェクト構造
 
 ```
 shirokumado-ts/
-├── app/              # Next.js App Router
-│   ├── api/         # API Routes
-│   ├── layout.tsx   # ルートレイアウト
-│   └── page.tsx     # ホームページ
-├── lib/              # ユーティリティ・ライブラリ
-│   ├── prisma.ts    # Prisma Clientインスタンス
-│   ├── blob.ts      # Blobストレージユーティリティ
-│   ├── env.ts       # 環境変数管理
-│   ├── errors.ts    # 統一されたエラーハンドリング
-│   └── api-helpers.ts # API Routes用ヘルパー
-├── prisma/           # Prisma設定
-│   ├── schema.prisma # データベーススキーマ定義
-│   └── migrations/  # マイグレーションファイル
-├── public/          # 静的ファイル
-├── doc/             # ドキュメント
-└── package.json     # 依存関係
+├── app/                    # Next.js App Router
+│   ├── api/               # API Routes
+│   │   ├── products/     # 商品API
+│   │   └── categories/   # カテゴリーAPI
+│   ├── dashboard/         # ダッシュボード機能
+│   │   ├── components/   # ダッシュボードコンポーネント
+│   │   ├── hooks/        # カスタムフック
+│   │   └── utils/        # ユーティリティ関数
+│   ├── components/       # フロントエンド共通コンポーネント
+│   ├── hooks/            # カスタムフック
+│   ├── utils/            # ユーティリティ関数
+│   ├── faq/              # FAQページ
+│   ├── layout.tsx        # ルートレイアウト
+│   └── page.tsx          # ホームページ
+├── lib/                    # ユーティリティ・ライブラリ
+│   ├── prisma.ts         # Prisma Clientインスタンス
+│   ├── blob.ts           # Blobストレージユーティリティ
+│   ├── env.ts            # 環境変数管理
+│   ├── errors.ts          # 統一されたエラーハンドリング
+│   ├── api-helpers.ts    # API Routes用ヘルパー
+│   ├── config.ts         # アプリケーション設定
+│   ├── image-compression.ts # 画像圧縮ユーティリティ
+│   └── product-utils.ts  # 商品関連ユーティリティ
+├── prisma/                 # Prisma設定
+│   ├── schema.prisma     # データベーススキーマ定義
+│   └── migrations/       # マイグレーションファイル
+├── public/                 # 静的ファイル
+├── doc/                    # ドキュメント
+└── package.json            # 依存関係
 ```
 
 詳細は [プロジェクト構造ドキュメント](./doc/project-structure.md) を参照してください。
 
-## 🚢 デプロイ
+## デプロイ
 
 このプロジェクトは Vercel にデプロイされています。
 
@@ -181,6 +219,6 @@ shirokumado-ts/
 
 詳細は [デプロイメントガイド](./doc/deployment.md) を参照してください。
 
-## 📝 ライセンス
+## ライセンス
 
-[ライセンス情報]
+このプロジェクトはプライベートプロジェクトです。

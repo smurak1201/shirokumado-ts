@@ -2,7 +2,7 @@
 
 白熊堂プロジェクトの開発ガイドラインです。コードの書き方から開発プロセスまで、プロジェクトで使用するベストプラクティスをまとめています。
 
-## 📋 目次
+## 目次
 
 - [コーディング規約](#コーディング規約)
   - [Next.js App Router](#nextjs-app-router)
@@ -27,10 +27,10 @@
 
 #### Server Components を優先
 
-**✅ 推奨**: デフォルトで Server Components を使用します。
+**推奨**: デフォルトで Server Components を使用します。
 
 ```typescript
-// ✅ 良い例: Server Component
+// 良い例: Server Component
 export default async function ProductPage({
   params,
 }: {
@@ -48,10 +48,10 @@ export default async function ProductPage({
 }
 ```
 
-**❌ 避ける**: 不要な Client Components。
+**避ける**: 不要な Client Components。
 
 ```typescript
-// ❌ 悪い例: 不要なClient Component
+// 悪い例: 不要なClient Component
 "use client";
 export default function ProductPage({ params }: { params: { id: string } }) {
   const [product, setProduct] = useState(null);
@@ -68,10 +68,10 @@ export default function ProductPage({ params }: { params: { id: string } }) {
 
 #### データフェッチング
 
-**✅ 推奨**: Server Components で直接データフェッチ。
+**推奨**: Server Components で直接データフェッチ。
 
 ```typescript
-// ✅ 良い例: Server Componentで直接フェッチ
+// 良い例: Server Componentで直接フェッチ
 export default async function ProductsPage() {
   const products = await prisma.product.findMany({
     where: { published: true },
@@ -82,10 +82,10 @@ export default async function ProductsPage() {
 }
 ```
 
-**❌ 避ける**: クライアントサイドでの不要なフェッチ。
+**避ける**: クライアントサイドでの不要なフェッチ。
 
 ```typescript
-// ❌ 悪い例: クライアントサイドでフェッチ
+// 悪い例: クライアントサイドでフェッチ
 "use client";
 export default function ProductsPage() {
   const [products, setProducts] = useState([]);
@@ -102,7 +102,7 @@ export default function ProductsPage() {
 
 #### ルーティング
 
-**✅ 推奨**: App Router の規約に従う。
+**推奨**: App Router の規約に従う。
 
 ```
 app/
@@ -122,32 +122,31 @@ app/
 
 #### クエリの最適化
 
-**✅ 推奨**: 必要なフィールドのみ取得。
+**推奨**: N+1 問題を回避するために`include`で関連データを一度に取得。
 
 ```typescript
-// ✅ 良い例: selectで必要なフィールドのみ
-const users = await prisma.user.findMany({
-  select: {
-    id: true,
-    name: true,
-    email: true,
+// 良い例: includeで関連データを一度に取得
+const products = await prisma.product.findMany({
+  include: {
+    category: true, // カテゴリー情報も一緒に取得（N+1問題を回避）
   },
 });
 ```
 
-**❌ 避ける**: すべてのフィールドを取得。
+**このアプリでの実装**:
 
-```typescript
-// ❌ 悪い例: すべてのフィールドを取得
-const users = await prisma.user.findMany(); // 不要なデータも取得
-```
+このアプリでは、`select`オプションは使用していません。代わりに`include`を使用して関連データを取得しています。商品情報は比較的少ないデータ量のため、すべてのフィールドを取得してもパフォーマンスへの影響が小さく、コードがシンプルで保守しやすいためです。
+
+**`select`について**:
+
+`select`は必要なフィールドのみを取得できる便利な機能ですが、このアプリでは使用していません。詳細は [Prisma ガイド - select（このアプリでは未使用）](./guides/prisma-guide.md#selectこのアプリでは未使用) を参照してください。
 
 #### N+1 問題の回避
 
-**✅ 推奨**: include で関連データを一度に取得。
+**推奨**: include で関連データを一度に取得。
 
 ```typescript
-// ✅ 良い例: includeで関連データを取得
+// 良い例: includeで関連データを取得
 const orders = await prisma.order.findMany({
   include: {
     items: {
@@ -159,10 +158,10 @@ const orders = await prisma.order.findMany({
 });
 ```
 
-**❌ 避ける**: ループ内でクエリを実行。
+**避ける**: ループ内でクエリを実行。
 
 ```typescript
-// ❌ 悪い例: N+1問題
+// 悪い例: N+1問題
 const orders = await prisma.order.findMany();
 for (const order of orders) {
   order.items = await prisma.orderItem.findMany({
@@ -173,7 +172,7 @@ for (const order of orders) {
 
 #### エラーハンドリング
 
-**✅ 推奨**: `safePrismaOperation` を使用。
+**推奨**: `safePrismaOperation` を使用。
 
 ```typescript
 import { safePrismaOperation } from "@/lib/prisma";
@@ -184,10 +183,10 @@ const user = await safePrismaOperation(
 );
 ```
 
-**❌ 避ける**: 直接 try-catch で処理。
+**避ける**: 直接 try-catch で処理。
 
 ```typescript
-// ❌ 悪い例: 直接try-catch
+// 悪い例: 直接try-catch
 try {
   const user = await prisma.user.findUnique({ where: { id } });
 } catch (error) {
@@ -197,10 +196,10 @@ try {
 
 #### トランザクション
 
-**✅ 推奨**: Prisma のトランザクションを使用。
+**推奨**: Prisma のトランザクションを使用。
 
 ```typescript
-// ✅ 良い例: トランザクション
+// 良い例: トランザクション
 await prisma.$transaction(async (tx) => {
   const user = await tx.user.create({ data: userData });
   await tx.order.create({ data: { userId: user.id, ...orderData } });
@@ -211,10 +210,10 @@ await prisma.$transaction(async (tx) => {
 
 #### 型安全性
 
-**✅ 推奨**: 明示的な型定義。
+**推奨**: 明示的な型定義。
 
 ```typescript
-// ✅ 良い例: 明示的な型
+// 良い例: 明示的な型
 interface UserProfileProps {
   userId: number;
   showEmail?: boolean;
@@ -225,10 +224,10 @@ export function UserProfile({ userId, showEmail = false }: UserProfileProps) {
 }
 ```
 
-**❌ 避ける**: `any` の使用。
+**避ける**: `any` の使用。
 
 ```typescript
-// ❌ 悪い例: anyの使用
+// 悪い例: anyの使用
 function getUser(id: any) {
   return prisma.user.findUnique({ where: { id } });
 }
@@ -236,20 +235,20 @@ function getUser(id: any) {
 
 #### 型推論の活用
 
-**✅ 推奨**: 適切な型推論を活用。
+**推奨**: 適切な型推論を活用。
 
 ```typescript
-// ✅ 良い例: 型推論を活用
+// 良い例: 型推論を活用
 const users = await prisma.user.findMany(); // User[]型が推論される
 const user = await prisma.user.findUnique({ where: { id: 1 } }); // User | null型が推論される
 ```
 
 #### 型ガード
 
-**✅ 推奨**: 型ガードを使用。
+**推奨**: 型ガードを使用。
 
 ```typescript
-// ✅ 良い例: 型ガード
+// 良い例: 型ガード
 function isUser(value: unknown): value is User {
   return (
     typeof value === "object" &&
@@ -269,12 +268,12 @@ if (isUser(data)) {
 
 #### 統一されたエラークラス
 
-**✅ 推奨**: `lib/errors.ts` のエラークラスを使用。
+**推奨**: `lib/errors.ts` のエラークラスを使用。
 
 ```typescript
 import { ValidationError, NotFoundError, DatabaseError } from "@/lib/errors";
 
-// ✅ 良い例: 統一されたエラークラス
+// 良い例: 統一されたエラークラス
 if (!email) {
   throw new ValidationError("Email is required");
 }
@@ -285,10 +284,10 @@ if (!user) {
 }
 ```
 
-**❌ 避ける**: 汎用的な Error。
+**避ける**: 汎用的な Error。
 
 ```typescript
-// ❌ 悪い例: 汎用的なError
+// 悪い例: 汎用的なError
 if (!email) {
   throw new Error("Email is required"); // 統一されていない
 }
@@ -296,7 +295,7 @@ if (!email) {
 
 #### API Routes でのエラーハンドリング
 
-**✅ 推奨**: `withErrorHandling` を使用。
+**推奨**: `withErrorHandling` を使用。
 
 ```typescript
 import { withErrorHandling, apiSuccess } from "@/lib/api-helpers";
@@ -307,10 +306,10 @@ export const GET = withErrorHandling(async () => {
 });
 ```
 
-**❌ 避ける**: 手動でのエラーハンドリング。
+**避ける**: 手動でのエラーハンドリング。
 
 ```typescript
-// ❌ 悪い例: 手動でのエラーハンドリング
+// 悪い例: 手動でのエラーハンドリング
 export async function GET() {
   try {
     const data = await fetchData();
@@ -325,10 +324,10 @@ export async function GET() {
 
 #### レスポンス形式
 
-**✅ 推奨**: 統一されたレスポンス形式。
+**推奨**: 統一されたレスポンス形式。
 
 ```typescript
-// ✅ 良い例: 統一されたレスポンス
+// 良い例: 統一されたレスポンス
 import { apiSuccess, apiError } from "@/lib/api-helpers";
 
 export const GET = withErrorHandling(async () => {
@@ -347,10 +346,10 @@ export const POST = withErrorHandling(async (request: Request) => {
 
 #### リクエストバリデーション
 
-**✅ 推奨**: 入力検証を実装。
+**推奨**: 入力検証を実装。
 
 ```typescript
-// ✅ 良い例: バリデーション
+// 良い例: バリデーション
 import { ValidationError } from "@/lib/errors";
 
 export const POST = withErrorHandling(async (request: Request) => {
@@ -366,10 +365,10 @@ export const POST = withErrorHandling(async (request: Request) => {
 
 #### HTTP メソッド
 
-**✅ 推奨**: 適切な HTTP メソッドを使用。
+**推奨**: 適切な HTTP メソッドを使用。
 
 ```typescript
-// ✅ 良い例: 適切なHTTPメソッド
+// 良い例: 適切なHTTPメソッド
 export const GET = withErrorHandling(async () => {
   /* ... */
 });
@@ -388,10 +387,10 @@ export const DELETE = withErrorHandling(async () => {
 
 #### Server Components 優先
 
-**✅ 推奨**: デフォルトで Server Component。
+**推奨**: デフォルトで Server Component。
 
 ```typescript
-// ✅ 良い例: Server Component
+// 良い例: Server Component
 export default async function ProductList() {
   const products = await prisma.product.findMany();
   return (
@@ -406,10 +405,10 @@ export default async function ProductList() {
 
 #### Client Components の使用
 
-**✅ 推奨**: 必要な場合のみ Client Component。
+**推奨**: 必要な場合のみ Client Component。
 
 ```typescript
-// ✅ 良い例: インタラクティブな場合のみ
+// 良い例: インタラクティブな場合のみ
 "use client";
 
 import { useState } from "react";
@@ -427,10 +426,10 @@ export function SearchForm() {
 
 #### コンポーネントの分割
 
-**✅ 推奨**: 単一責任の原則。
+**推奨**: 単一責任の原則。
 
 ```typescript
-// ✅ 良い例: 小さなコンポーネントに分割
+// 良い例: 小さなコンポーネントに分割
 export function ProductCard({ product }: { product: Product }) {
   return (
     <div>
@@ -641,12 +640,12 @@ describe("formatDate", () => {
 
 ### 画像最適化
 
-**✅ 推奨**: Next.js Image コンポーネントを使用。
+**推奨**: Next.js Image コンポーネントを使用。
 
 ```typescript
 import Image from "next/image";
 
-// ✅ 良い例: Next.js Image
+// 良い例: Next.js Image
 <Image
   src="/images/product.jpg"
   alt="Product"
@@ -657,19 +656,19 @@ import Image from "next/image";
 />;
 ```
 
-**❌ 避ける**: 通常の img タグ。
+**避ける**: 通常の img タグ。
 
 ```typescript
-// ❌ 悪い例: 通常のimgタグ
+// 悪い例: 通常のimgタグ
 <img src="/images/product.jpg" alt="Product" />
 ```
 
 ### コード分割
 
-**✅ 推奨**: 動的インポートを使用。
+**推奨**: 動的インポートを使用。
 
 ```typescript
-// ✅ 良い例: 動的インポート
+// 良い例: 動的インポート
 import dynamic from "next/dynamic";
 
 const HeavyComponent = dynamic(() => import("./HeavyComponent"), {
@@ -680,10 +679,10 @@ const HeavyComponent = dynamic(() => import("./HeavyComponent"), {
 
 ### データベースクエリの最適化
 
-**✅ 推奨**: インデックスの活用、必要なデータのみ取得。
+**推奨**: インデックスの活用、必要なデータのみ取得。
 
 ```typescript
-// ✅ 良い例: インデックスを活用したクエリ
+// 良い例: インデックスを活用したクエリ
 const products = await prisma.product.findMany({
   where: {
     category: "ice-cream",
@@ -705,26 +704,26 @@ const products = await prisma.product.findMany({
 
 ### 環境変数
 
-**✅ 推奨**: 機密情報は環境変数で管理。
+**推奨**: 機密情報は環境変数で管理。
 
 ```typescript
-// ✅ 良い例: 環境変数を使用
+// 良い例: 環境変数を使用
 const databaseUrl = process.env.DATABASE_URL;
 ```
 
-**❌ 避ける**: ハードコード。
+**避ける**: ハードコード。
 
 ```typescript
-// ❌ 悪い例: ハードコード
+// 悪い例: ハードコード
 const databaseUrl = "postgresql://user:password@localhost/db";
 ```
 
 ### 入力検証
 
-**✅ 推奨**: すべてのユーザー入力を検証。
+**推奨**: すべてのユーザー入力を検証。
 
 ```typescript
-// ✅ 良い例: 入力検証
+// 良い例: 入力検証
 import { z } from "zod"; // 必要に応じて
 
 const schema = z.object({
@@ -737,19 +736,19 @@ const validatedData = schema.parse(requestBody);
 
 ### SQL インジェクション対策
 
-**✅ 推奨**: Prisma を使用（自動的に対策される）。
+**推奨**: Prisma を使用（自動的に対策される）。
 
 ```typescript
-// ✅ 良い例: Prismaを使用（安全）
+// 良い例: Prismaを使用（安全）
 const user = await prisma.user.findUnique({
   where: { email: userEmail }, // 自動的にエスケープされる
 });
 ```
 
-**❌ 避ける**: 生の SQL（必要な場合を除く）。
+**避ける**: 生の SQL（必要な場合を除く）。
 
 ```typescript
-// ❌ 悪い例: 生のSQL（危険）
+// 悪い例: 生のSQL（危険）
 const user = await prisma.$queryRaw`
   SELECT * FROM users WHERE email = ${userEmail}
 `;

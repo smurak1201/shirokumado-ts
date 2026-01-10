@@ -12,6 +12,9 @@
 - [状態管理](#状態管理)
 - [API 連携](#api連携)
 - [開発ガイド](#開発ガイド)
+- [パフォーマンス最適化](#パフォーマンス最適化)
+- [セキュリティ](#セキュリティ)
+- [参考リンク](#参考リンク)
 
 ## 概要
 
@@ -481,9 +484,51 @@ file: [画像ファイル]
 
 ### データフェッチング
 
-- Server Component でデータを取得
-- 必要なデータのみを取得（Prisma の`select`を使用）
-- 並列データ取得（`Promise.all`を使用）
+- Server Component でデータを取得 - **このアプリで使用中**
+  - `app/dashboard/page.tsx`: Prisma を使用してデータベースから直接データを取得
+- Client Component で API Routes にアクセス - **このアプリで使用中**
+  - `app/dashboard/components/DashboardContent.tsx`: `fetch` API を使用して `/api/products` にアクセス
+  - `app/dashboard/components/DashboardForm.tsx`: `fetch` API を使用して `/api/products` に POST リクエスト
+  - `app/dashboard/components/ProductEditForm.tsx`: `fetch` API を使用して `/api/products/[id]` に PUT リクエスト
+  - `app/dashboard/components/ProductList.tsx`: `fetch` API を使用して `/api/products/[id]` に DELETE リクエスト
+  - `app/dashboard/hooks/useProductReorder.ts`: `fetch` API を使用して `/api/products/reorder` に POST リクエスト
+- 必要なデータのみを取得（Prisma の`select`を使用） - **このアプリでは未使用**
+- 並列データ取得（`Promise.all`を使用） - **このアプリで使用中**
+
+**Prisma の`select`について**:
+
+このアプリでは、`select`オプションは使用されていませんが、知っておくと便利な機能です。
+
+**使用例**:
+
+```typescript
+// 特定のフィールドのみを取得
+const products = await prisma.product.findMany({
+  select: {
+    id: true,
+    name: true,
+    imageUrl: true,
+    category: {
+      select: {
+        name: true,
+      },
+    },
+  },
+});
+```
+
+**`select`のメリット**:
+
+- 必要なデータのみを取得できるため、ネットワーク転送量を削減
+- パフォーマンスの向上（特に大量のデータを扱う場合）
+
+**このアプリで使用しない理由**:
+
+- 商品情報は比較的少ないデータ量のため、すべてのフィールドを取得してもパフォーマンスへの影響が小さい
+- `include`を使用してカテゴリー情報も一緒に取得する方が、コードがシンプルで保守しやすい
+- 商品データの構造が比較的シンプルで、不要なフィールドが少ない
+
+詳細は [Prisma ガイド - select（このアプリでは未使用）](./prisma-guide.md#selectこのアプリでは未使用) を参照してください。
 
 ### 画像最適化
 

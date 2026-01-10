@@ -5,15 +5,15 @@
 ## 目次
 
 - [概要](#概要)
-- [ディレクトリ構造](#ディレクトリ構造)
 - [ページ構成](#ページ構成)
+- [ディレクトリ構造](#ディレクトリ構造)
 - [コンポーネント構成](#コンポーネント構成)
-- [型定義](#型定義)
-- [カスタムフック](#カスタムフック)
-- [ユーティリティ関数](#ユーティリティ関数)
 - [レイアウトとスタイリング](#レイアウトとスタイリング)
 - [データフロー](#データフロー)
-- [レスポンシブデザイン](#レスポンシブデザイン)
+- [画像最適化](#画像最適化)
+- [パフォーマンス最適化](#パフォーマンス最適化)
+- [アクセシビリティ](#アクセシビリティ)
+- [参考リンク](#参考リンク)
 
 ## 概要
 
@@ -396,6 +396,13 @@ className = "text-sm md:text-base lg:text-lg";
 className = "grid grid-cols-1 md:grid-cols-3";
 ```
 
+**コンポーネント別のレスポンシブ設定**:
+
+- **ヘッダー**: 高さ固定 `h-20` (80px)、ロゴサイズ `max-h-20` (80px)
+- **フッター**: 常に 4 列グリッド、フォントサイズ `text-[10px]` → `text-sm`、スペーシング `gap-2` → `gap-4`、地図の高さ `h-32` → `h-48`
+- **商品グリッド**: 常に 3 列、ギャップ `gap-3` → `gap-6`、カテゴリータイトル `text-lg` → `text-2xl`
+- **ヒーローバナー**: 高さ `h-[30vh]` → `h-[60vh]`、最小高さ `min-h-[200px]` → `min-h-[500px]`
+
 ### 共通スタイル
 
 **グローバルスタイル** (`app/globals.css`):
@@ -405,6 +412,52 @@ className = "grid grid-cols-1 md:grid-cols-3";
 - カスタムアニメーション（フェードイン）
 
 ## データフロー
+
+### フロントエンドとバックエンドの使い分け
+
+このアプリでは、フロントエンド（Client Components）とバックエンド（Server Components、API Routes）で異なる技術を使用しています：
+
+**フロントエンド（Client Components）で使用**:
+
+- **`fetch` API**: API Routes に HTTP リクエストを送信
+  - `app/dashboard/components/DashboardForm.tsx`: 商品作成時に `/api/products` に POST リクエスト
+  - `app/dashboard/components/ProductEditForm.tsx`: 商品更新時に `/api/products/[id]` に PUT リクエスト
+  - `app/dashboard/components/DashboardContent.tsx`: 商品一覧取得時に `/api/products` に GET リクエスト
+  - `app/dashboard/hooks/useProductReorder.ts`: 商品並び替え時に `/api/products/reorder` に POST リクエスト
+  - `app/dashboard/components/ProductList.tsx`: 商品削除時に `/api/products/[id]` に DELETE リクエスト
+- **`FormData`**: 画像アップロード時に使用
+  - `app/dashboard/components/DashboardForm.tsx`: 画像ファイルを `FormData` に追加して `/api/products/upload` に送信
+  - `app/dashboard/components/ProductEditForm.tsx`: 同様に画像アップロード時に使用
+- **`localStorage`**: ブラウザのローカルストレージにデータを保存
+  - `app/dashboard/hooks/useTabState.ts`: タブの状態を `localStorage` に保存
+- **`URL.createObjectURL`**: 画像プレビュー用の URL を生成
+  - `app/dashboard/components/DashboardForm.tsx`: 画像選択時にプレビュー用 URL を生成
+- **動的インポート（`await import()`）**: モジュールの動的読み込み
+  - `app/dashboard/components/DashboardForm.tsx`: `config` モジュールを動的インポート
+  - `app/dashboard/components/ProductEditForm.tsx`: `config` モジュールを動的インポート
+- **React Hooks**: 状態管理や副作用の処理
+  - `useState`, `useEffect`, `useRef`, `useMemo`, `useCallback` など
+
+**バックエンド（Server Components、API Routes）で使用**:
+
+- **Prisma**: データベースに直接アクセス
+  - `app/page.tsx`: Prisma を使用して商品データを取得
+  - `app/dashboard/page.tsx`: Prisma を使用して商品データを取得
+  - `app/api/products/route.ts`: Prisma を使用して商品の CRUD 操作を実行
+  - `app/api/products/[id]/route.ts`: Prisma を使用して個別商品の操作を実行
+  - `app/api/products/reorder/route.ts`: Prisma の `$transaction` を使用して並び替えを実行
+  - `app/api/categories/route.ts`: Prisma を使用してカテゴリー一覧を取得
+- **`safePrismaOperation`**: Prisma 操作のエラーハンドリング
+  - すべての API Routes で使用
+- **`FormData` の受信**: 画像アップロード時に `FormData` を受信
+  - `app/api/products/upload/route.ts`: `FormData` から画像ファイルを取得
+
+**バックエンドで使用していない機能**:
+
+- **React Hooks**: サーバーサイドで実行されるため、`useState`、`useEffect` などの Hooks は使用しない
+- **`fetch` API**: バックエンドでは Prisma を直接使用するため、`fetch` は使用しない（外部 API を呼び出す場合を除く）
+- **`localStorage`**: サーバーサイドではブラウザ API にアクセスできないため、使用しない
+- **`window`、`document`**: サーバーサイドではブラウザ API にアクセスできないため、使用しない
 
 ### Server Component → Client Component
 
@@ -453,32 +506,6 @@ const publishedProducts = products.filter((product) => {
 });
 ```
 
-## レスポンシブデザイン
-
-### ヘッダー
-
-- **高さ**: 固定 `h-20` (80px)
-- **ロゴサイズ**: `max-h-20` (80px)
-- **ナビゲーション**: モバイルでも表示
-
-### フッター
-
-- **グリッドレイアウト**: 常に 4 列（モバイルでも）
-- **フォントサイズ**: モバイル `text-[10px]` → デスクトップ `text-sm`
-- **スペーシング**: モバイル `gap-2` → デスクトップ `gap-4`
-- **地図の高さ**: モバイル `h-32` → デスクトップ `h-48`
-
-### 商品グリッド
-
-- **列数**: 常に 3 列（モバイルでも）
-- **ギャップ**: モバイル `gap-3` → デスクトップ `gap-6`
-- **カテゴリータイトル**: モバイル `text-lg` → デスクトップ `text-2xl`
-
-### ヒーローバナー
-
-- **高さ**: モバイル `h-[30vh]` → デスクトップ `h-[60vh]`
-- **最小高さ**: モバイル `min-h-[200px]` → デスクトップ `min-h-[500px]`
-
 ## 画像最適化
 
 ### Next.js Image コンポーネント
@@ -521,8 +548,73 @@ const publishedProducts = products.filter((product) => {
 
 ### コード分割
 
-- ページごとの自動コード分割
-- 動的インポートの活用
+- ページごとの自動コード分割 - **このアプリで使用中**
+- コンポーネントの動的インポート（`React.lazy`や`next/dynamic`） - **このアプリでは未使用**
+- モジュールの動的インポート（`await import()`） - **このアプリで使用中**
+
+**コンポーネントの動的インポートについて**:
+
+このアプリでは、コンポーネントの動的インポート（`React.lazy`や`next/dynamic`）は使用されていませんが、知っておくと便利な機能です。
+
+**使用例**:
+
+```typescript
+// next/dynamicを使用した動的インポート
+import dynamic from "next/dynamic";
+
+const HeavyComponent = dynamic(() => import("./HeavyComponent"), {
+  loading: () => <div>読み込み中...</div>,
+  ssr: false, // サーバーサイドレンダリングを無効化
+});
+
+// React.lazyを使用した動的インポート
+import { lazy, Suspense } from "react";
+
+const LazyComponent = lazy(() => import("./LazyComponent"));
+
+function App() {
+  return (
+    <Suspense fallback={<div>読み込み中...</div>}>
+      <LazyComponent />
+    </Suspense>
+  );
+}
+```
+
+**コンポーネントの動的インポートのメリット**:
+
+- 初期バンドルサイズを削減できる
+- 必要な時だけコンポーネントを読み込める
+- パフォーマンスの向上
+
+**このアプリで使用しない理由**:
+
+- コンポーネント数が比較的少なく、コード分割の必要性が低い
+- Next.js の自動コード分割で十分に対応できている
+- すべてのコンポーネントを初期ロードしてもパフォーマンスへの影響が小さい
+
+**モジュールの動的インポート**:
+
+このアプリでは、`await import()`を使用したモジュールの動的インポートが**フロントエンド（Client Components）**で使用されています。
+
+**使用箇所**:
+
+- `app/dashboard/components/DashboardForm.tsx`: `config`モジュールの動的インポート（Client Component）
+- `app/dashboard/components/ProductEditForm.tsx`: `config`モジュールの動的インポート（Client Component）
+
+**注意**: これらは Client Components（`'use client'`）内で使用されているため、フロントエンドで実行されます。バックエンド（Server Components、API Routes）では使用されていません。
+
+**使用例**:
+
+```typescript
+// 動的インポートで config を読み込む（コード分割のため）
+const { config } = await import("@/lib/config");
+```
+
+**モジュールの動的インポートのメリット**:
+
+- 必要な時だけモジュールを読み込める
+- コード分割により、初期バンドルサイズを削減
 
 ## アクセシビリティ
 

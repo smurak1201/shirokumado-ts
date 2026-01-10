@@ -1,43 +1,44 @@
 # Prisma & Blob セットアップガイド
 
-## 📋 目次
+## 目次
 
 - [概要](#概要)
 - [インストール済みパッケージ](#インストール済みパッケージ)
 - [環境変数](#環境変数)
-- [Prismaの使用方法](#prismaの使用方法)
-  - [Prisma Clientのインポート](#prisma-clientのインポート)
+- [Prisma の使用方法](#prismaの使用方法)
+  - [Prisma Client のインポート](#prisma-clientのインポート)
   - [スキーマの定義](#スキーマの定義)
   - [マイグレーション](#マイグレーション)
-  - [Prisma Clientの生成](#prisma-clientの生成)
+  - [Prisma Client の生成](#prisma-clientの生成)
   - [トランザクション](#トランザクション)
   - [リレーション](#リレーション)
-- [Blob Storageの使用方法](#blob-storageの使用方法)
+- [Blob Storage の使用方法](#blob-storageの使用方法)
   - [ファイルのアップロード](#ファイルのアップロード)
   - [ファイル一覧の取得](#ファイル一覧の取得)
   - [ファイル情報の取得](#ファイル情報の取得)
   - [ファイルの削除](#ファイルの削除)
-- [API Routesでの使用例](#api-routesでの使用例)
-  - [Prismaを使用するAPI Route（ベストプラクティス）](#prismaを使用するapi-routeベストプラクティス)
-  - [Blob Storageを使用するAPI Route（ベストプラクティス）](#blob-storageを使用するapi-routeベストプラクティス)
-  - [PrismaとBlob Storageを組み合わせた例](#prismaとblob-storageを組み合わせた例)
+- [API Routes での使用例](#api-routesでの使用例)
+  - [Prisma を使用する API Route（ベストプラクティス）](#prismaを使用するapi-routeベストプラクティス)
+  - [Blob Storage を使用する API Route（ベストプラクティス）](#blob-storageを使用するapi-routeベストプラクティス)
+  - [Prisma と Blob Storage を組み合わせた例](#prismaとblob-storageを組み合わせた例)
 - [Prisma Studio](#prisma-studio)
 - [ベストプラクティス](#ベストプラクティス)
   - [Prisma](#prisma)
   - [Blob Storage](#blob-storage)
 - [トラブルシューティング](#トラブルシューティング)
-  - [Prisma関連](#prisma関連)
-  - [Blob Storage関連](#blob-storage関連)
+  - [Prisma 関連](#prisma関連)
+  - [Blob Storage 関連](#blob-storage関連)
 - [参考リンク](#参考リンク)
 
 ## 概要
-白熊堂プロジェクトでのPrisma（Neon PostgreSQL）とVercel Blob Storageのセットアップと使用方法を説明します。
+
+白熊堂プロジェクトでの Prisma（Neon PostgreSQL）と Vercel Blob Storage のセットアップと使用方法を説明します。
 
 ## インストール済みパッケージ
 
-- **Prisma** `^7.2.0` - ORMとマイグレーションツール
+- **Prisma** `^7.2.0` - ORM とマイグレーションツール
 - **@prisma/client** `^7.2.0` - Prisma Client（型安全なデータベースクライアント）
-- **@vercel/blob** `^2.0.0` - Blobストレージ操作用
+- **@vercel/blob** `^2.0.0` - Blob ストレージ操作用
 
 ## 環境変数
 
@@ -54,14 +55,14 @@ POSTGRES_URL_NON_POOLING=postgresql://...
 BLOB_READ_WRITE_TOKEN=vercel_blob_rw_...
 ```
 
-## Prismaの使用方法
+## Prisma の使用方法
 
-### Prisma Clientのインポート
+### Prisma Client のインポート
 
-`lib/prisma.ts`からPrisma Clientをインポートして使用します。
+`lib/prisma.ts`から Prisma Client をインポートして使用します。
 
 ```typescript
-import { prisma } from '@/lib/prisma';
+import { prisma } from "@/lib/prisma";
 
 // すべてのユーザーを取得
 const users = await prisma.user.findMany();
@@ -83,8 +84,8 @@ const user = await prisma.user.findUnique({
 // レコードを作成
 const newUser = await prisma.user.create({
   data: {
-    name: '山田太郎',
-    email: 'yamada@example.com',
+    name: "山田太郎",
+    email: "yamada@example.com",
   },
 });
 
@@ -94,7 +95,7 @@ const updatedUser = await prisma.user.update({
     id: 1,
   },
   data: {
-    name: '山田花子',
+    name: "山田花子",
   },
 });
 
@@ -148,9 +149,9 @@ npm run db:push
 npm run db:migrate:deploy
 ```
 
-### Prisma Clientの生成
+### Prisma Client の生成
 
-スキーマを変更した後、Prisma Clientを再生成する必要があります。
+スキーマを変更した後、Prisma Client を再生成する必要があります。
 
 ```bash
 npm run db:generate
@@ -161,14 +162,14 @@ npm run db:generate
 ### トランザクション
 
 ```typescript
-import { prisma } from '@/lib/prisma';
+import { prisma } from "@/lib/prisma";
 
 // トランザクションを使用
 await prisma.$transaction(async (tx) => {
   const user = await tx.user.create({
     data: {
-      name: '山田太郎',
-      email: 'yamada@example.com',
+      name: "山田太郎",
+      email: "yamada@example.com",
     },
   });
 
@@ -209,30 +210,26 @@ const userWithOrdersAndItems = await prisma.user.findUnique({
 });
 ```
 
-## Blob Storageの使用方法
+## Blob Storage の使用方法
 
 ### ファイルのアップロード
 
 `lib/blob.ts`から必要な関数をインポートして使用します。
 
 ```typescript
-import { uploadFile, uploadImage } from '@/lib/blob';
+import { uploadFile, uploadImage } from "@/lib/blob";
 
 // 一般的なファイルのアップロード
-const blob = await uploadFile(
-  'documents/report.pdf',
-  fileBuffer,
-  {
-    contentType: 'application/pdf',
-    access: 'public',
-  }
-);
+const blob = await uploadFile("documents/report.pdf", fileBuffer, {
+  contentType: "application/pdf",
+  access: "public",
+});
 
 // 画像のアップロード（推奨）
 const imageBlob = await uploadImage(
-  'images/product.jpg',
+  "images/product.jpg",
   imageBuffer,
-  'image/jpeg'
+  "image/jpeg"
 );
 
 console.log(blob.url); // アップロードされたファイルのURL
@@ -241,14 +238,14 @@ console.log(blob.url); // アップロードされたファイルのURL
 ### ファイル一覧の取得
 
 ```typescript
-import { listFiles } from '@/lib/blob';
+import { listFiles } from "@/lib/blob";
 
 // すべてのファイルを取得
 const { blobs } = await listFiles();
 
 // プレフィックスでフィルタリング
 const { blobs: images } = await listFiles({
-  prefix: 'images/',
+  prefix: "images/",
   limit: 100,
 });
 ```
@@ -256,9 +253,9 @@ const { blobs: images } = await listFiles({
 ### ファイル情報の取得
 
 ```typescript
-import { getBlobInfo } from '@/lib/blob';
+import { getBlobInfo } from "@/lib/blob";
 
-const info = await getBlobInfo('https://...blob.vercel-storage.com/...');
+const info = await getBlobInfo("https://...blob.vercel-storage.com/...");
 console.log(info.size); // ファイルサイズ
 console.log(info.uploadedAt); // アップロード日時
 ```
@@ -266,37 +263,42 @@ console.log(info.uploadedAt); // アップロード日時
 ### ファイルの削除
 
 ```typescript
-import { deleteFile, deleteFiles } from '@/lib/blob';
+import { deleteFile, deleteFiles } from "@/lib/blob";
 
 // 単一ファイルの削除
-await deleteFile('https://...blob.vercel-storage.com/...');
+await deleteFile("https://...blob.vercel-storage.com/...");
 
 // 複数ファイルの削除
 await deleteFiles([
-  'https://...blob.vercel-storage.com/file1.jpg',
-  'https://...blob.vercel-storage.com/file2.jpg',
+  "https://...blob.vercel-storage.com/file1.jpg",
+  "https://...blob.vercel-storage.com/file2.jpg",
 ]);
 ```
 
-## API Routesでの使用例
+## API Routes での使用例
 
-### Prismaを使用するAPI Route（ベストプラクティス）
+### Prisma を使用する API Route（ベストプラクティス）
 
 ```typescript
 // app/api/users/route.ts
-import { prisma, safePrismaOperation } from '@/lib/prisma';
-import { apiSuccess, handleApiError, withErrorHandling } from '@/lib/api-helpers';
-import { NotFoundError, ValidationError } from '@/lib/errors';
+import { prisma, safePrismaOperation } from "@/lib/prisma";
+import {
+  apiSuccess,
+  handleApiError,
+  withErrorHandling,
+} from "@/lib/api-helpers";
+import { NotFoundError, ValidationError } from "@/lib/errors";
 
 // エラーハンドリングを自動化
 export const GET = withErrorHandling(async () => {
   const users = await safePrismaOperation(
-    () => prisma.user.findMany({
-      orderBy: {
-        createdAt: 'desc',
-      },
-    }),
-    'GET /api/users'
+    () =>
+      prisma.user.findMany({
+        orderBy: {
+          createdAt: "desc",
+        },
+      }),
+    "GET /api/users"
   );
 
   return apiSuccess({ users });
@@ -307,43 +309,44 @@ export const POST = withErrorHandling(async (request: Request) => {
 
   // バリデーション
   if (!body.name || !body.email) {
-    throw new ValidationError('Name and email are required');
+    throw new ValidationError("Name and email are required");
   }
 
   const user = await safePrismaOperation(
-    () => prisma.user.create({
-      data: body,
-    }),
-    'POST /api/users'
+    () =>
+      prisma.user.create({
+        data: body,
+      }),
+    "POST /api/users"
   );
 
   return apiSuccess({ user }, 201);
 });
 ```
 
-### Blob Storageを使用するAPI Route（ベストプラクティス）
+### Blob Storage を使用する API Route（ベストプラクティス）
 
 ```typescript
 // app/api/upload/route.ts
-import { NextRequest } from 'next/server';
-import { uploadImage } from '@/lib/blob';
-import { apiSuccess, withErrorHandling } from '@/lib/api-helpers';
-import { ValidationError } from '@/lib/errors';
+import { NextRequest } from "next/server";
+import { uploadImage } from "@/lib/blob";
+import { apiSuccess, withErrorHandling } from "@/lib/api-helpers";
+import { ValidationError } from "@/lib/errors";
 
 // ファイルサイズ制限（5MB）
 const MAX_FILE_SIZE = 5 * 1024 * 1024;
 
 export const POST = withErrorHandling(async (request: NextRequest) => {
   const formData = await request.formData();
-  const file = formData.get('file') as File | null;
+  const file = formData.get("file") as File | null;
 
   if (!file) {
-    throw new ValidationError('No file provided');
+    throw new ValidationError("No file provided");
   }
 
   // ファイルサイズの検証
   if (file.size > MAX_FILE_SIZE) {
-    throw new ValidationError('File size exceeds 5MB limit');
+    throw new ValidationError("File size exceeds 5MB limit");
   }
 
   const buffer = Buffer.from(await file.arrayBuffer());
@@ -353,28 +356,32 @@ export const POST = withErrorHandling(async (request: NextRequest) => {
 });
 ```
 
-### PrismaとBlob Storageを組み合わせた例
+### Prisma と Blob Storage を組み合わせた例
 
 ```typescript
 // app/api/products/route.ts
-import { NextRequest, NextResponse } from 'next/server';
-import { prisma } from '@/lib/prisma';
-import { uploadImage } from '@/lib/blob';
+import { NextRequest, NextResponse } from "next/server";
+import { prisma } from "@/lib/prisma";
+import { uploadImage } from "@/lib/blob";
 
 export async function POST(request: NextRequest) {
   try {
     const formData = await request.formData();
-    const name = formData.get('name') as string;
-    const description = formData.get('description') as string;
-    const price = parseFloat(formData.get('price') as string);
-    const file = formData.get('image') as File;
+    const name = formData.get("name") as string;
+    const description = formData.get("description") as string;
+    const price = parseFloat(formData.get("price") as string);
+    const file = formData.get("image") as File;
 
     let imageUrl: string | undefined;
 
     // 画像をアップロード
     if (file) {
       const buffer = Buffer.from(await file.arrayBuffer());
-      const blob = await uploadImage(`products/${file.name}`, buffer, file.type);
+      const blob = await uploadImage(
+        `products/${file.name}`,
+        buffer,
+        file.type
+      );
       imageUrl = blob.url;
     }
 
@@ -390,9 +397,9 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({ product }, { status: 201 });
   } catch (error) {
-    console.error('Error creating product:', error);
+    console.error("Error creating product:", error);
     return NextResponse.json(
-      { error: 'Failed to create product' },
+      { error: "Failed to create product" },
       { status: 500 }
     );
   }
@@ -401,7 +408,7 @@ export async function POST(request: NextRequest) {
 
 ## Prisma Studio
 
-データベースの内容を視覚的に確認・編集するには、Prisma Studioを使用します。
+データベースの内容を視覚的に確認・編集するには、Prisma Studio を使用します。
 
 ```bash
 npm run db:studio
@@ -417,41 +424,41 @@ npm run db:studio
 
 2. **マイグレーション**: 本番環境では必ずマイグレーションを使用してください。`db:push`は開発環境のみで使用します。
 
-3. **Prisma Clientの生成**: スキーマを変更した後は必ず`npm run db:generate`を実行してください。
+3. **Prisma Client の生成**: スキーマを変更した後は必ず`npm run db:generate`を実行してください。
 
-4. **型安全性**: Prisma Clientは自動的に型を生成するため、TypeScriptの型チェックを活用してください。
+4. **型安全性**: Prisma Client は自動的に型を生成するため、TypeScript の型チェックを活用してください。
 
-5. **接続プール**: Neonでは`DATABASE_URL`（pooler）を通常のクエリに使用し、`DATABASE_URL_UNPOOLED`はマイグレーションや長時間実行されるクエリに使用します。
+5. **接続プール**: Neon では`DATABASE_URL`（pooler）を通常のクエリに使用し、`DATABASE_URL_UNPOOLED`はマイグレーションや長時間実行されるクエリに使用します。
 
-6. **エラーハンドリング**: すべてのPrisma操作で適切なエラーハンドリングを実装してください。
+6. **エラーハンドリング**: すべての Prisma 操作で適切なエラーハンドリングを実装してください。
 
 ### Blob Storage
 
-1. **ファイル名の管理**: 一意のファイル名を生成するために、`addRandomSuffix`オプションを使用するか、UUIDなどを含めることを検討してください。
+1. **ファイル名の管理**: 一意のファイル名を生成するために、`addRandomSuffix`オプションを使用するか、UUID などを含めることを検討してください。
 
 2. **キャッシュ制御**: 画像などの静的ファイルには適切な`cacheControlMaxAge`を設定してください。
 
 3. **アクセス制御**: 公開する必要のないファイルは`access: 'private'`に設定してください。
 
-4. **ファイルサイズ制限**: アップロード前にファイルサイズをチェックしてください（Vercel Blobの制限を確認）。
+4. **ファイルサイズ制限**: アップロード前にファイルサイズをチェックしてください（Vercel Blob の制限を確認）。
 
 5. **エラーハンドリング**: アップロード失敗時の適切なエラーハンドリングを実装してください。
 
 ## トラブルシューティング
 
-### Prisma関連
+### Prisma 関連
 
 - **マイグレーションエラー**: スキーマとデータベースの状態が一致しない場合、`npm run db:push`で強制的に同期できます（開発環境のみ）。
 
-- **Prisma Clientが見つからない**: `npm run db:generate`を実行してPrisma Clientを生成してください。
+- **Prisma Client が見つからない**: `npm run db:generate`を実行して Prisma Client を生成してください。
 
 - **接続エラー**: 環境変数`DATABASE_URL`が正しく設定されているか確認してください。
 
-### Blob Storage関連
+### Blob Storage 関連
 
 - **アップロードエラー**: 環境変数`BLOB_READ_WRITE_TOKEN`が正しく設定されているか確認してください。
 
-- **ファイルサイズエラー**: Vercel Blobの制限を確認してください。
+- **ファイルサイズエラー**: Vercel Blob の制限を確認してください。
 
 ## 参考リンク
 

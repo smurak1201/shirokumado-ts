@@ -2,24 +2,24 @@
 
 白熊堂プロジェクトのディレクトリ構造と各ファイルの役割を説明します。
 
-## 📋 目次
+## 目次
 
-- [ディレクトリ構造](#-ディレクトリ構造)
-- [各ディレクトリの詳細](#-各ディレクトリの詳細)
+- [ディレクトリ構造](#ディレクトリ構造)
+- [各ディレクトリの詳細](#各ディレクトリの詳細)
   - [app/ - Next.js App Router](#app---nextjs-app-router)
   - [lib/ - ユーティリティ・ライブラリ](#lib---ユーティリティライブラリ)
   - [prisma/ - Prisma 設定](#prisma---prisma-設定)
   - [public/ - 静的ファイル](#public---静的ファイル)
-- [ファイル命名規則](#-ファイル命名規則)
-- [ファイルの役割](#-ファイルの役割)
+- [ファイル命名規則](#ファイル命名規則)
+- [ファイルの役割](#ファイルの役割)
   - [設定ファイル](#設定ファイル)
   - [ドキュメント](#ドキュメント)
-- [ベストプラクティス](#-ベストプラクティス)
+- [ベストプラクティス](#ベストプラクティス)
   - [ファイルの配置](#ファイルの配置)
   - [インポートパス](#インポートパス)
-- [参考リンク](#-参考リンク)
+- [参考リンク](#参考リンク)
 
-## 📁 ディレクトリ構造
+## ディレクトリ構造
 
 ```
 shirokumado-ts/
@@ -118,7 +118,7 @@ shirokumado-ts/
 └── README.md              # プロジェクト概要
 ```
 
-## 📂 各ディレクトリの詳細
+## 各ディレクトリの詳細
 
 ### `app/` - Next.js App Router
 
@@ -366,7 +366,7 @@ public/
 └── robots.txt
 ```
 
-## 🔄 ファイル命名規則
+## ファイル命名規則
 
 ### コンポーネント
 
@@ -386,7 +386,7 @@ public/
 - **単一機能**: `camelCase.ts`（例: `formatDate.ts`）
 - **複数機能**: `plural.ts`（例: `formatters.ts`）
 
-## 📝 ファイルの役割
+## ファイルの役割
 
 ### 設定ファイル
 
@@ -413,7 +413,7 @@ public/
 - **`doc/setup-prisma-blob.md`**: Prisma と Blob のセットアップガイド
 - **`doc/deployment.md`**: デプロイメントガイド
 
-## 🎯 ベストプラクティス
+## ベストプラクティス
 
 ### ファイルの配置
 
@@ -427,15 +427,15 @@ public/
 - **相対パス**: 同じディレクトリ内のみで使用
 
 ```typescript
-// ✅ 良い例
+// 良い例
 import { prisma } from "@/lib/prisma";
 import { formatDate } from "@/lib/utils/format";
 
-// ❌ 悪い例（深い相対パス）
+// 悪い例（深い相対パス）
 import { prisma } from "../../../lib/prisma";
 ```
 
-## 📚 参考リンク
+## 参考リンク
 
 - [Next.js App Router](https://nextjs.org/docs/app)
 - [Prisma Schema](https://www.prisma.io/docs/concepts/components/prisma-schema)

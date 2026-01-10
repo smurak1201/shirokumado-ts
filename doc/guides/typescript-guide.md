@@ -39,7 +39,7 @@
   - [Prisma との統合](#prisma-との統合-1)
   - [設定ファイル](#設定ファイル-1)
 - [まとめ](#まとめ)
-- [関連ドキュメント](#関連ドキュメント)
+- [参考リンク](#参考リンク)
 
 ## 概要
 
@@ -408,8 +408,8 @@ const product = await prisma.product.findUnique({
 });
 
 // 型安全なプロパティアクセス
-console.log(product.name); // ✅ OK
-console.log(product.invalidField); // ❌ コンパイルエラー
+console.log(product.name); // OK
+console.log(product.invalidField); // コンパイルエラー
 ```
 
 **Prisma の型生成のメリット**:
@@ -701,7 +701,7 @@ type ReadonlyProduct = Readonly<Product>;
 
 すべてのコードは型安全に実装され、コンパイル時に型エラーを検出できます。これにより、実行時エラーを事前に防止し、コードの品質を向上させています。
 
-**関連ドキュメント**:
+## 参考リンク
 
 - **[Prisma ガイド](./prisma-guide.md)**: Prisma との型統合の詳細
 - **[React ガイド](./react-guide.md)**: React での TypeScript の使用方法

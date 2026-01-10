@@ -33,6 +33,7 @@
   - [状態管理のパターン](#状態管理のパターン)
 - [React のベストプラクティス](#react-のベストプラクティス)
 - [まとめ](#まとめ)
+- [参考リンク](#参考リンク)
 
 ## 概要
 
@@ -95,6 +96,18 @@ Next.js App Router では、React コンポーネントはデフォルトで Ser
 ## React Hooks
 
 React Hooks は、関数コンポーネントで状態管理や副作用を扱うための仕組みです。このアプリでは、標準の Hooks とカスタムフックを組み合わせて使用しています。
+
+**このアプリでの使用箇所**:
+
+- **フロントエンド（Client Components）**: React Hooks を使用して状態管理や副作用を実装
+  - `app/components/ProductGrid.tsx`: `useProductModal` カスタムフックを使用
+  - `app/components/ProductModal.tsx`: `useModal` カスタムフックを使用
+  - `app/dashboard/components/DashboardContent.tsx`: `useState` を使用
+  - `app/dashboard/components/DashboardForm.tsx`: `useState`、`useEffect` を使用
+  - `app/dashboard/hooks/useTabState.ts`: `useState`、`useEffect`、`localStorage` を使用
+  - `app/hooks/useModal.ts`: `useEffect`、`useRef` を使用
+  - `app/hooks/useProductModal.ts`: `useState`、`useRef` を使用
+- **バックエンド（Server Components、API Routes）**: React Hooks は使用していない。サーバーサイドで実行されるため、状態管理は不要
 
 ### useState
 
@@ -1267,3 +1280,10 @@ export default function ProductTile({ product, onClick }: ProductTileProps) {
 7. **メモリリーク対策**: `useEffect` のクリーンアップ関数で、イベントリスナーやタイマーを適切に削除
 
 すべてのコンポーネントは TypeScript で型安全に実装され、アクセシビリティにも配慮されています。また、カスタムフックを使用してロジックを分離し、コンポーネントの再利用性と保守性を向上させています。`forwardRef`や`useImperativeHandle`を使わず、React の推奨パターンに沿った実装となっています。
+
+## 参考リンク
+
+- **[Next.js ガイド](./nextjs-guide.md)**: Next.js での React の使用方法
+- **[TypeScript ガイド](./typescript-guide.md)**: TypeScript での React の使用方法
+- **[App Router ガイド](./app-router-guide.md)**: Server Components と Client Components の使い分け
+- **[React 公式ドキュメント](https://react.dev/)**: React の包括的なドキュメント

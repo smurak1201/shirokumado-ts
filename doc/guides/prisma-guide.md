@@ -36,12 +36,24 @@
   - [設定ファイルの管理](#設定ファイルの管理)
   - [パフォーマンスの最適化](#パフォーマンスの最適化)
 - [まとめ](#まとめ)
+- [参考リンク](#参考リンク)
 
 ## 概要
 
 Prisma 7 は、モダンなアプリケーション開発のための次世代 ORM（Object-Relational Mapping）です。型安全なデータベースアクセスと、直感的な API を提供します。
 
 このアプリケーションでは、**Prisma 7.2.0** を使用して PostgreSQL（Vercel Neon）に接続し、商品情報やカテゴリー情報などのデータを管理しています。
+
+**このアプリでの使用箇所**:
+
+- **バックエンド（Server Components、API Routes）**: Prisma を使用してデータベースに直接アクセス
+  - `app/page.tsx`: ホームページで商品データを取得
+  - `app/dashboard/page.tsx`: ダッシュボードページで商品データを取得
+  - `app/api/products/route.ts`: 商品一覧の取得・作成
+  - `app/api/products/[id]/route.ts`: 個別商品の取得・更新・削除
+  - `app/api/products/reorder/route.ts`: 商品の並び替え（`$transaction` を使用）
+  - `app/api/categories/route.ts`: カテゴリー一覧の取得
+- **フロントエンド（Client Components）**: Prisma は使用していない。代わりに `fetch` API を使用して API Routes にアクセス
 
 **Prisma 7 の主な特徴**:
 
@@ -586,8 +598,8 @@ const product: Product = await prisma.product.findUnique({
 });
 
 // 型エラーを検出
-console.log(product.name); // ✅ OK
-console.log(product.invalidField); // ❌ コンパイルエラー
+console.log(product.name); // OK
+console.log(product.invalidField); // コンパイルエラー
 ```
 
 **型生成のタイミング**:
@@ -1325,7 +1337,7 @@ const categories = await prisma.category.findMany({
 
 このアプリケーションで、商品とカテゴリーの関係を例に説明します。
 
-**❌ 悪い例: N+1 問題が発生するコード**
+**悪い例: N+1 問題が発生するコード**
 
 ```typescript
 // 1回目のクエリ: 商品一覧を取得
@@ -1347,7 +1359,7 @@ for (const product of products) {
 - データベースへの負荷が大幅に増加
 - レスポンスタイムが遅くなる
 
-**✅ 良い例: N+1 問題を回避するコード**
+**良い例: N+1 問題を回避するコード**
 
 ```typescript
 // 1回のクエリ: 商品とカテゴリーを一緒に取得
@@ -1402,7 +1414,7 @@ for (const product of products) {
 
 1. **`include` を使用**: 関連データが必要な場合は、必ず `include` オプションを使用する
 2. **必要なデータを事前に取得**: 後から個別に取得するのではなく、最初から一緒に取得する
-3. **クエリの最適化**: 不要なデータは取得しない（`select` を使用）
+3. **N+1 問題の回避**: ループ内でクエリを実行せず、`include` で一度に取得する
 
 ### select（このアプリでは未使用）
 
@@ -1574,8 +1586,8 @@ const product: Product = await prisma.product.findUnique({
 });
 
 // 型安全なプロパティアクセス
-console.log(product.name); // ✅ OK
-console.log(product.invalidField); // ❌ コンパイルエラー
+console.log(product.name); // OK
+console.log(product.invalidField); // コンパイルエラー
 ```
 
 **型生成コマンド**:
@@ -1646,3 +1658,10 @@ npm run db:push           # スキーマを直接プッシュ（開発環境の�
 - **パフォーマンス**: アダプターによる接続管理の最適化
 
 すべての操作は `safePrismaOperation` でラップされ、統一されたエラーハンドリングが行われています。また、`include` オプションを使用して N+1 問題を回避し、パフォーマンスを最適化しています。
+
+## 参考リンク
+
+- **[TypeScript ガイド](./typescript-guide.md)**: Prisma との型統合の詳細
+- **[App Router ガイド](./app-router-guide.md)**: Server Components での Prisma の使用方法
+- **[Prisma 公式ドキュメント](https://www.prisma.io/docs)**: Prisma の包括的なドキュメント
+- **[Prisma Client API Reference](https://www.prisma.io/docs/reference/api-reference/prisma-client-reference)**: Prisma Client の API リファレンス
