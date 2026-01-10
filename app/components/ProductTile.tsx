@@ -1,5 +1,6 @@
 "use client";
 
+import { memo } from "react";
 import Image from "next/image";
 import type { ProductTile as ProductTileType } from "../types";
 
@@ -23,10 +24,13 @@ interface ProductTileProps {
  * - ホバーエフェクト（画像の拡大、影の追加）
  * - アクセシビリティ対応（aria-label）
  *
+ * React.memoでメモ化しており、propsが変更されない限り再レンダリングされません。
+ * これにより、商品グリッドのパフォーマンスが向上します。
+ *
  * @param product - 表示する商品情報
  * @param onClick - クリック時のコールバック関数
  */
-export default function ProductTile({ product, onClick }: ProductTileProps) {
+function ProductTile({ product, onClick }: ProductTileProps) {
   return (
     <button
       onClick={onClick}
@@ -60,3 +64,6 @@ export default function ProductTile({ product, onClick }: ProductTileProps) {
     </button>
   );
 }
+
+// React.memoでメモ化（propsが変更されない限り再レンダリングされない）
+export default memo(ProductTile);

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo, useEffect, useCallback } from "react";
 import {
   DndContext,
   closestCenter,
@@ -83,50 +83,59 @@ export default function ProductList({
   /**
    * 商品編集を開始する
    * 編集フォームに商品情報を渡して表示します
+   *
+   * useCallbackでメモ化しており、依存配列が空のため常に同じ関数参照を返します。
    */
-  const handleEdit = (product: Product) => {
+  const handleEdit = useCallback((product: Product) => {
     setEditingProduct(product);
-  };
+  }, []);
 
   /**
    * 商品を削除する
    * 確認ダイアログを表示してから削除を実行します
+   *
+   * useCallbackでメモ化しており、refreshProductsが変更されたときのみ再作成されます。
    */
-  const handleDelete = async (productId: number) => {
-    // 削除前に確認ダイアログを表示
-    if (!confirm("本当にこの商品を削除しますか？")) {
-      return;
-    }
-
-    try {
-      // DELETE リクエストを送信
-      const response = await fetch(`/api/products/${productId}`, {
-        method: "DELETE",
-      });
-
-      if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.error || "削除に失敗しました");
+  const handleDelete = useCallback(
+    async (productId: number) => {
+      // 削除前に確認ダイアログを表示
+      if (!confirm("本当にこの商品を削除しますか？")) {
+        return;
       }
 
-      alert("商品を削除しました");
-      // 削除後に商品一覧を更新
-      await refreshProducts();
-    } catch (error) {
-      console.error("削除エラー:", error);
-      alert(
-        error instanceof Error ? error.message : "商品の削除に失敗しました"
-      );
-    }
-  };
+      try {
+        // DELETE リクエストを送信
+        const response = await fetch(`/api/products/${productId}`, {
+          method: "DELETE",
+        });
+
+        if (!response.ok) {
+          const error = await response.json();
+          throw new Error(error.error || "削除に失敗しました");
+        }
+
+        alert("商品を削除しました");
+        // 削除後に商品一覧を更新
+        await refreshProducts();
+      } catch (error) {
+        console.error("削除エラー:", error);
+        alert(
+          error instanceof Error ? error.message : "商品の削除に失敗しました"
+        );
+      }
+    },
+    [refreshProducts]
+  );
 
   /**
    * 商品更新後のコールバック関数
    * 商品一覧を更新します（編集フォームは ProductEditForm の onClose で閉じられます）
+   *
+   * useCallbackでメモ化しており、refreshProductsが変更されたときのみ再作成されます。
    */
-  const handleUpdated = async () => {
+  const handleUpdated = useCallback(async () => {
     await refreshProducts();
-  };
+  }, [refreshProducts]);
 
   /**
    * ドラッグ&ドロップ用のセンサーを設定
@@ -171,34 +180,41 @@ export default function ProductList({
   /**
    * ドラッグ&ドロップが終了したときの処理
    * 商品の順序を変更してサーバーに保存します
+   *
+   * useCallbackでメモ化しており、publishedProductsByCategoryとreorderProductsが変更されたときのみ再作成されます。
    */
-  const handleDragEnd = async (event: DragEndEvent, categoryName: string) => {
-    const { active, over } = event;
+  const handleDragEnd = useCallback(
+    async (event: DragEndEvent, categoryName: string) => {
+      const { active, over } = event;
 
-    if (!over || active.id === over.id) {
-      return;
-    }
+      if (!over || active.id === over.id) {
+        return;
+      }
 
-    const categoryGroup = publishedProductsByCategory.find(
-      (g) => g.name === categoryName
-    );
-    if (!categoryGroup) return;
-
-    const oldIndex = categoryGroup.products.findIndex(
-      (p) => p.id === active.id
-    );
-    const newIndex = categoryGroup.products.findIndex((p) => p.id === over.id);
-
-    if (oldIndex === -1 || newIndex === -1) return;
-
-    try {
-      await reorderProducts(categoryGroup, oldIndex, newIndex);
-    } catch (error) {
-      alert(
-        error instanceof Error ? error.message : "順序の更新に失敗しました"
+      const categoryGroup = publishedProductsByCategory.find(
+        (g) => g.name === categoryName
       );
-    }
-  };
+      if (!categoryGroup) return;
+
+      const oldIndex = categoryGroup.products.findIndex(
+        (p) => p.id === active.id
+      );
+      const newIndex = categoryGroup.products.findIndex(
+        (p) => p.id === over.id
+      );
+
+      if (oldIndex === -1 || newIndex === -1) return;
+
+      try {
+        await reorderProducts(categoryGroup, oldIndex, newIndex);
+      } catch (error) {
+        alert(
+          error instanceof Error ? error.message : "順序の更新に失敗しました"
+        );
+      }
+    },
+    [publishedProductsByCategory, reorderProducts]
+  );
 
   /**
    * 検索条件に基づいて商品をフィルタリング

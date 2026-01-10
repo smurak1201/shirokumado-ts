@@ -1,5 +1,6 @@
 "use client";
 
+import { useCallback } from "react";
 import ProductTile from "./ProductTile";
 import ProductModal from "./ProductModal";
 import type { Category, Product } from "../types";
@@ -29,17 +30,22 @@ interface ProductGridProps {
  */
 export default function ProductGrid({ category, products }: ProductGridProps) {
   // モーダルの状態管理（カスタムフックで実装）
-  const {
-    selectedProduct,
-    isModalOpen,
-    handleProductClick,
-    handleCloseModal,
-  } = useProductModal();
+  const { selectedProduct, isModalOpen, handleProductClick, handleCloseModal } =
+    useProductModal();
 
   // 商品がない場合は何も表示しない
   if (products.length === 0) {
     return null;
   }
+
+  // 商品クリックハンドラーをuseCallbackでメモ化
+  // これにより、ProductTileの再レンダリングを最小限に抑えます
+  const handleTileClick = useCallback(
+    (product: Product) => {
+      handleProductClick(product);
+    },
+    [handleProductClick]
+  );
 
   return (
     <>
@@ -61,7 +67,7 @@ export default function ProductGrid({ category, products }: ProductGridProps) {
                 name: product.name,
                 imageUrl: product.imageUrl,
               }}
-              onClick={() => handleProductClick(product)}
+              onClick={() => handleTileClick(product)}
             />
           ))}
         </div>

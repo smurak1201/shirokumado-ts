@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import type { Product } from "../types";
 
 /**
@@ -23,18 +23,24 @@ export function useProductModal() {
    * 商品タイルクリック時のハンドラー
    * 選択された商品を設定してモーダルを開きます
    *
+   * useCallbackでメモ化しており、依存配列が空のため常に同じ関数参照を返します。
+   * これにより、ProductGridコンポーネントの再レンダリングを最小限に抑えます。
+   *
    * @param product - クリックされた商品
    */
-  const handleProductClick = (product: Product) => {
+  const handleProductClick = useCallback((product: Product) => {
     setSelectedProduct(product);
     setIsModalOpen(true);
-  };
+  }, []);
 
   /**
    * モーダル閉じる時のハンドラー
    * モーダルを閉じ、アニメーション完了後に選択をクリアします
+   *
+   * useCallbackでメモ化しており、依存配列が空のため常に同じ関数参照を返します。
+   * これにより、ProductModalコンポーネントの再レンダリングを最小限に抑えます。
    */
-  const handleCloseModal = () => {
+  const handleCloseModal = useCallback(() => {
     setIsModalOpen(false);
     // 既存のタイマーをクリア（複数回呼ばれた場合に備える）
     if (timeoutRef.current) {
@@ -45,7 +51,7 @@ export function useProductModal() {
       setSelectedProduct(null);
       timeoutRef.current = null;
     }, 300);
-  };
+  }, []);
 
   // コンポーネントのアンマウント時にタイマーをクリーンアップ
   useEffect(() => {
