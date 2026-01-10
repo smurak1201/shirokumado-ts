@@ -334,6 +334,131 @@ const memoizedValue = useMemo(() => {
 - **依存配列**: 依存配列の値が変更された時のみ、再計算が実行される
 - **使用タイミング**: 計算コストが高い処理や、参照の同一性が重要な場合に使用
 
+2. **`app/dashboard/components/ProductList.tsx`** - 商品のフィルタリングとグループ化
+
+```158:163:app/dashboard/components/ProductList.tsx
+  const publishedProductsByCategory = useMemo(
+    () => groupProductsByCategory(products, categories),
+    [products, categories]
+  );
+```
+
+**説明**: 公開商品をカテゴリーごとにグループ化する処理をメモ化しています。`products` と `categories` が変更されない限り、前回計算した値を再利用します。
+
+```214:218:app/dashboard/components/ProductList.tsx
+  const filteredProducts = useMemo(
+    () =>
+      filterProducts(products, searchName, searchPublished, searchCategoryId),
+    [products, searchName, searchPublished, searchCategoryId]
+  );
+```
+
+**説明**: 検索条件に基づいて商品をフィルタリングする処理をメモ化しています。検索条件や商品一覧が変更されない限り、前回計算した値を再利用します。
+
+### useCallback
+
+**説明**: コールバック関数をメモ化するための Hook です。依存配列の値が変更されない限り、前回作成した関数を再利用します。これにより、子コンポーネントの不要な再レンダリングを防止できます。
+
+**基本的な使い方**:
+
+```typescript
+const memoizedCallback = useCallback(() => {
+  // コールバック関数の処理
+}, [dependencies]);
+```
+
+**このアプリでの使用箇所**:
+
+1. **`app/dashboard/components/CategoryTabs.tsx`** - スクロール位置のチェック
+
+```54:72:app/dashboard/components/CategoryTabs.tsx
+  const checkScrollPosition = useCallback(() => {
+    // ...
+  }, []);
+```
+
+**説明**: スクロール位置をチェックする関数をメモ化しています。依存配列が空のため、コンポーネントのライフサイクル全体を通じて同じ関数参照を保持します。
+
+2. **`app/hooks/useProductModal.ts`** - 商品モーダルの操作関数
+
+```28:31:app/hooks/useProductModal.ts
+  const handleProductClick = useCallback((product: Product) => {
+    setSelectedProduct(product);
+    setIsModalOpen(true);
+  }, []);
+```
+
+**説明**: 商品クリック時のハンドラーをメモ化しています。依存配列が空のため、常に同じ関数参照を返します。これにより、`ProductGrid` コンポーネントの再レンダリングを最小限に抑えます。
+
+```37:48:app/hooks/useProductModal.ts
+  const handleCloseModal = useCallback(() => {
+    setIsModalOpen(false);
+    // ...
+  }, []);
+```
+
+**説明**: モーダルを閉じるハンドラーをメモ化しています。依存配列が空のため、常に同じ関数参照を返します。これにより、`ProductModal` コンポーネントの再レンダリングを最小限に抑えます。
+
+3. **`app/dashboard/components/ProductList.tsx`** - 商品操作のコールバック関数
+
+```87:89:app/dashboard/components/ProductList.tsx
+  const handleEdit = useCallback((product: Product) => {
+    setEditingProduct(product);
+  }, []);
+```
+
+**説明**: 商品編集を開始する関数をメモ化しています。依存配列が空のため、常に同じ関数参照を返します。
+
+```95:121:app/dashboard/components/ProductList.tsx
+  const handleDelete = useCallback(
+    async (productId: number) => {
+      // ...
+    },
+    [refreshProducts]
+  );
+```
+
+**説明**: 商品を削除する関数をメモ化しています。`refreshProducts` が変更されたときのみ再作成されます。
+
+**useCallback の特徴**:
+
+- **パフォーマンス最適化**: コールバック関数をメモ化することで、子コンポーネントの不要な再レンダリングを防止
+- **依存配列**: 依存配列の値が変更された時のみ、新しい関数が作成される
+- **使用タイミング**: メモ化されたコンポーネント（`React.memo`）に渡すコールバック関数や、`useEffect` の依存配列に含める関数に使用
+
+### React.memo
+
+**説明**: コンポーネントをメモ化するための高階コンポーネント（HOC）です。props が変更されない限り、前回レンダリングした結果を再利用します。これにより、不要な再レンダリングを防止し、パフォーマンスを向上させます。
+
+**基本的な使い方**:
+
+```typescript
+import { memo } from "react";
+
+const MemoizedComponent = memo(Component);
+```
+
+**このアプリでの使用箇所**:
+
+1. **`app/components/ProductTile.tsx`** - 商品タイルコンポーネント
+
+```29:62:app/components/ProductTile.tsx
+function ProductTile({ product, onClick }: ProductTileProps) {
+  // ...
+}
+
+export default memo(ProductTile);
+```
+
+**説明**: `ProductTile` コンポーネントをメモ化しています。`product` と `onClick` の props が変更されない限り、再レンダリングされません。これにより、商品グリッドのパフォーマンスが向上します。
+
+**React.memo の特徴**:
+
+- **パフォーマンス最適化**: props が変更されない限り、再レンダリングをスキップ
+- **浅い比較**: props の浅い比較（shallow comparison）を実行
+- **使用タイミング**: 頻繁に再レンダリングされる可能性があるコンポーネントや、レンダリングコストが高いコンポーネントに使用
+- **useCallback との組み合わせ**: `useCallback` でメモ化されたコールバック関数と組み合わせることで、より効果的にパフォーマンスを向上
+
 ### useRef
 
 **説明**: コンポーネントのライフサイクル全体を通じて、変更可能な値を保持するための Hook です。再レンダリングを引き起こさない点が `useState` と異なります。
@@ -1219,9 +1344,34 @@ export default function ProductTile({ product, onClick }: ProductTileProps) {
 
 ### 3. パフォーマンスの最適化
 
-**原則**: `useMemo` を使用して計算コストの高い値をメモ化
+**原則**: パフォーマンス最適化のためのメモ化を適切に使用する
 
-**例**: `useCategoryTabState` で初期カテゴリータブの計算をメモ化
+**コンポーネントのメモ化**:
+
+- `React.memo` を使用してコンポーネントをメモ化し、props が変更されない限り再レンダリングを防止
+- **例**: `ProductTile` コンポーネントを `React.memo` でメモ化
+
+```tsx
+import { memo } from "react";
+
+function ProductTile({ product, onClick }: ProductTileProps) {
+  // ...
+}
+
+export default memo(ProductTile);
+```
+
+**値のメモ化**:
+
+- `useMemo` を使用して計算コストの高い値をメモ化
+- **例**: `useCategoryTabState` で初期カテゴリータブの計算をメモ化
+- **例**: `ProductList` で `filteredProducts` を `useMemo` でメモ化
+
+**コールバック関数のメモ化**:
+
+- `useCallback` を使用してコールバック関数をメモ化し、子コンポーネントの不要な再レンダリングを防止
+- **例**: `useProductModal` フック内の `handleProductClick` と `handleCloseModal` を `useCallback` でメモ化
+- **例**: `ProductList` の `handleEdit`, `handleDelete`, `handleUpdated`, `handleDragEnd` を `useCallback` でメモ化
 
 ### 4. クリーンアップ処理
 
@@ -1261,11 +1411,45 @@ export default function ProductTile({ product, onClick }: ProductTileProps) {
 
 **原則**: パフォーマンス最適化が必要な場合のみ使用する
 
-**例**:
+**useCallback の使用例**:
 
 - `CategoryTabs` で `checkScrollPosition` を `useCallback` でメモ化
+- `useProductModal` フック内の `handleProductClick` と `handleCloseModal` を `useCallback` でメモ化
+- `ProductList` の `handleEdit`, `handleDelete`, `handleUpdated`, `handleDragEnd` を `useCallback` でメモ化
+
+**useMemo の使用例**:
+
 - `ProductList` で `filteredProducts` を `useMemo` でメモ化
+- `ProductList` で `publishedProductsByCategory` を `useMemo` でメモ化
 - `useCategoryTabState` で `initialCategoryTab` を `useMemo` でメモ化
+
+**React.memo の使用例**:
+
+- `ProductTile` コンポーネントを `React.memo` でメモ化し、props が変更されない限り再レンダリングを防止
+
+### 9. エラーバウンダリー
+
+**原則**: 予期しないエラーからアプリケーションを保護するためにエラーバウンダリーを実装する
+
+**実装**:
+
+- `ErrorBoundary` コンポーネントをクラスコンポーネントとして実装（関数コンポーネントではエラーバウンダリーを実装できないため）
+- 子コンポーネントで発生したエラーをキャッチし、エラー UI を表示
+- 開発環境ではエラー詳細を表示し、本番環境ではユーザーフレンドリーなメッセージを表示
+
+**例**: `app/components/ErrorBoundary.tsx`
+
+```tsx
+<ErrorBoundary>
+  <YourComponent />
+</ErrorBoundary>
+```
+
+**機能**:
+
+- エラーのキャッチと表示
+- 再試行機能
+- 開発環境でのエラー詳細表示
 
 ## まとめ
 
@@ -1278,6 +1462,8 @@ export default function ProductTile({ product, onClick }: ProductTileProps) {
 5. **Next.js との統合**: Server Components と Client Components を適切に使い分け、パフォーマンスを最適化
 6. **楽観的 UI 更新**: API 呼び出し前に UI を更新し、ユーザーに即座にフィードバックを提供
 7. **メモリリーク対策**: `useEffect` のクリーンアップ関数で、イベントリスナーやタイマーを適切に削除
+8. **パフォーマンス最適化**: `React.memo`、`useCallback`、`useMemo` を適切に使用して、不要な再レンダリングを防止
+9. **エラーハンドリング**: エラーバウンダリーを実装し、予期しないエラーからアプリケーションを保護
 
 すべてのコンポーネントは TypeScript で型安全に実装され、アクセシビリティにも配慮されています。また、カスタムフックを使用してロジックを分離し、コンポーネントの再利用性と保守性を向上させています。`forwardRef`や`useImperativeHandle`を使わず、React の推奨パターンに沿った実装となっています。
 

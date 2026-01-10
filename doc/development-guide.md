@@ -693,12 +693,67 @@ const products = await prisma.product.findMany({
 });
 ```
 
+### React コンポーネントの最適化
+
+**推奨**: パフォーマンス最適化のためのメモ化を適切に使用。
+
+#### React.memo
+
+**推奨**: props が変更されない限り再レンダリングされないコンポーネントをメモ化。
+
+```typescript
+// 良い例: React.memoでメモ化
+import { memo } from "react";
+
+function ProductTile({ product, onClick }: ProductTileProps) {
+  // ...
+}
+
+export default memo(ProductTile);
+```
+
+#### useCallback
+
+**推奨**: コールバック関数をメモ化して、子コンポーネントの不要な再レンダリングを防止。
+
+```typescript
+// 良い例: useCallbackでメモ化
+const handleClick = useCallback(() => {
+  // 処理
+}, [dependencies]);
+```
+
+#### useMemo
+
+**推奨**: 計算コストの高い値をメモ化。
+
+```typescript
+// 良い例: useMemoでメモ化
+const filteredProducts = useMemo(
+  () => products.filter(/* ... */),
+  [products, filter]
+);
+```
+
+### エラーハンドリング
+
+**推奨**: エラーバウンダリーを実装して、予期しないエラーからアプリケーションを保護。
+
+```typescript
+// 良い例: エラーバウンダリーでコンポーネントを囲む
+<ErrorBoundary>
+  <YourComponent />
+</ErrorBoundary>
+```
+
 ### 最適化のポイント
 
 1. **画像最適化**: Next.js Image コンポーネントを使用
 2. **コード分割**: 動的インポートを使用
 3. **データフェッチ**: 適切なキャッシュ戦略を使用
 4. **データベース**: 必要なデータのみ取得（N+1 問題の回避）
+5. **React コンポーネント**: `React.memo`、`useCallback`、`useMemo` を適切に使用
+6. **エラーハンドリング**: エラーバウンダリーを実装
 
 ## セキュリティ
 
