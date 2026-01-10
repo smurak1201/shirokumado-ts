@@ -102,7 +102,11 @@ JSX は HTML に似ていますが、いくつかの重要な違いがありま�
 
 HTML では `class` を使用しますが、JSX では JavaScript の予約語である `class` の代わりに `className` を使用します。
 
-**HTML の例**: `<div class="container">Content</div>`
+**HTML の例**:
+
+```text
+<div class="container">Content</div>
+```
 
 **JSX の例**:
 
@@ -124,7 +128,12 @@ HTML では `class` を使用しますが、JSX では JavaScript の予約語�
 
 HTML では `for` を使用しますが、JSX では `htmlFor` を使用します。
 
-**HTML の例**: `<label for="email">Email</label>` と `<input type="email" id="email">`
+**HTML の例**:
+
+```text
+<label for="email">Email</label>
+<input type="email" id="email">
+```
 
 **JSX の例**:
 
@@ -137,7 +146,11 @@ HTML では `for` を使用しますが、JSX では `htmlFor` を使用しま�
 
 HTML では小文字の属性名（`onclick`）を使用し、文字列で JavaScript コードを記述しますが、JSX ではキャメルケース（`onClick`）を使用し、関数を直接渡します。
 
-**HTML の例**: `<button onclick="handleClick()">Click me</button>`
+**HTML の例**:
+
+```text
+<button onclick="handleClick()">Click me</button>
+```
 
 **JSX の例**:
 
@@ -199,7 +212,11 @@ JSX では、子要素を持たない要素は必ず自己閉じタグ（`/>`）
 
 HTML では静的なテキストのみを記述できますが、JSX では `{}` を使用して JavaScript 式を埋め込むことができます。
 
-**HTML の例**: `<div>Hello, World!</div>`（静的なテキストのみ）
+**HTML の例**（静的なテキストのみ）:
+
+```text
+<div>Hello, World!</div>
+```
 
 **JSX の例**:
 
@@ -226,7 +243,14 @@ const name = "World";
 
 HTML では `<!-- -->` を使用しますが、JSX では `{/* */}` を使用します。
 
-**HTML の例**: `<div><!-- これはコメントです -->Content</div>`
+**HTML の例**:
+
+```text
+<div>
+  <!-- これはコメントです -->
+  Content
+</div>
+```
 
 **JSX の例**:
 
@@ -262,7 +286,11 @@ HTML では `<!-- -->` を使用しますが、JSX では `{/* */}` を使用し
 
 HTML ではブール値の属性を省略できますが、JSX では明示的に `true` または `false` を指定する必要があります。
 
-**HTML の例**: `<input type="checkbox" checked disabled>`（属性を省略可能）
+**HTML の例**（属性を省略可能）:
+
+```text
+<input type="checkbox" checked disabled>
+```
 
 **JSX の例**:
 
@@ -276,7 +304,11 @@ HTML ではブール値の属性を省略できますが、JSX では明示的�
 
 HTML では文字列でスタイルを指定しますが、JSX ではオブジェクト形式で指定できます（ただし、このアプリでは Tailwind CSS を使用しているため、直接的なスタイル属性の使用は限定的です）。
 
-**HTML の例**: `<div style="color: red; font-size: 16px;">Text</div>`（文字列形式）
+**HTML の例**（文字列形式）:
+
+```text
+<div style="color: red; font-size: 16px;">Text</div>
+```
 
 **JSX の例**:
 
@@ -291,7 +323,11 @@ HTML では文字列でスタイルを指定しますが、JSX ではオブジ�
 
 HTML では属性値は常に文字列ですが、JSX では数値、ブール値、オブジェクト、配列など、任意の JavaScript の値を渡すことができます。
 
-**HTML の例**: `<div data-count="5" data-active="true">Content</div>`（すべて文字列）
+**HTML の例**（すべて文字列）:
+
+```text
+<div data-count="5" data-active="true">Content</div>
+```
 
 **JSX の例**:
 
