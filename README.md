@@ -50,9 +50,9 @@
 
 ### アーキテクチャの特徴
 
-- **Server Components**: デフォルトでサーバーサイドでレンダリング。Prisma を使用してデータベースに直接アクセス
-- **Client Components**: インタラクティブな機能を実装。React Hooks と `fetch` API を使用して API Routes にアクセス
-- **API Routes**: Server Components と Client Components の橋渡し。Prisma を使用してデータベース操作を実行
+- **Server Components**: デフォルトでサーバーサイドでレンダリング。Prisma を使用してデータベースに直接アクセスし、初期 HTML を生成
+- **Client Components**: インタラクティブな機能（状態管理、イベントハンドラーなど）を実装。必要に応じて `fetch` API を使用して API Routes にアクセス
+- **API Routes**: Client Components からのリクエストを処理。Prisma を使用してデータベース操作を実行し、RESTful API として機能
 
 詳細は [技術スタックドキュメント](./doc/tech-stack.md) を参照してください。
 

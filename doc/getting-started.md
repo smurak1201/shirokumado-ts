@@ -54,6 +54,17 @@
 
 ディレクトリ構造と各ファイルの役割を把握します。
 
+#### [`doc/development-guide.md`](./development-guide.md) (推奨)
+
+コードを読む前に、開発ガイドラインとベストプラクティスを確認しておくと、コードの意図を理解しやすくなります。特に以下の点を把握しておくと良いでしょう：
+
+- **Server Components を優先**: なぜ Server Component が推奨されるか
+- **エラーハンドリング**: 統一されたエラーハンドリングの方法
+- **型安全性**: TypeScript の使い方とベストプラクティス
+- **Prisma の最適化**: N+1 問題の回避方法
+
+**注意**: このドキュメントは長いので、全体を読む必要はありません。コードを読みながら、必要に応じて参照してください。
+
 ### 2. 設定ファイル
 
 #### [`package.json`](../package.json)
@@ -429,12 +440,15 @@ export default function ProductList() {
 
 ### プロジェクト内のドキュメント
 
-- **[Next.js ガイド](./guides/nextjs-guide.md)** - Next.js の詳細な使用方法。画像最適化、フォント最適化、メタデータ、ビルドとデプロイなどの説明と、このアプリでの実際の使用箇所を説明します。
+コードを読みながら、必要に応じて以下の技術ガイドを参照してください：
+
+- **[開発ガイドライン](./development-guide.md)** - コーディング規約とベストプラクティス。コードを読む前に主要なポイントを把握しておくと理解が深まります。
 - **[App Router ガイド](./guides/app-router-guide.md)** - Next.js App Router の詳細な使用方法。Server Components、Client Components、API Routes などの説明と、このアプリでの実際の使用箇所を説明します。
 - **[React ガイド](./guides/react-guide.md)** - React の詳細な使用方法。Hooks、カスタムフック、コンポーネント設計などの説明と、このアプリでの実際の使用箇所を説明します。
-- **[JSX ガイド](./guides/jsx-guide.md)** - JSX の構文と使用方法。HTML との違い、基本的な構文、ベストプラクティスなどの説明と、このアプリでの実際の使用例を説明します。
-- **[TypeScript ガイド](./guides/typescript-guide.md)** - TypeScript の詳細な使用方法。型定義、型安全性、Prisma との統合などの説明と、このアプリでの実際の使用箇所を説明します。
 - **[Prisma ガイド](./guides/prisma-guide.md)** - Prisma の詳細な使用方法。各関数の説明と、このアプリでの実際の使用箇所を説明します。
+- **[TypeScript ガイド](./guides/typescript-guide.md)** - TypeScript の詳細な使用方法。型定義、型安全性、Prisma との統合などの説明と、このアプリでの実際の使用箇所を説明します。
+- **[JSX ガイド](./guides/jsx-guide.md)** - JSX の構文と使用方法。HTML との違い、基本的な構文、ベストプラクティスなどの説明と、このアプリでの実際の使用例を説明します。
+- **[Next.js ガイド](./guides/nextjs-guide.md)** - Next.js の詳細な使用方法。画像最適化、フォント最適化、メタデータ、ビルドとデプロイなどの説明と、このアプリでの実際の使用箇所を説明します。
 
 ### 外部ドキュメント
 
