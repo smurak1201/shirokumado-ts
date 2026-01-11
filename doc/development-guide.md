@@ -104,15 +104,21 @@ export default function ProductPage({ params }: { params: { id: string } }) {
 ```
 app/
 ├── page.tsx              # / (ホーム)
-├── about/
-│   └── page.tsx          # /about
-├── products/
-│   ├── page.tsx          # /products
-│   └── [id]/
-│       └── page.tsx      # /products/[id]
-└── (admin)/              # ルートグループ（URLに影響しない）
-    └── dashboard/
-        └── page.tsx      # /dashboard
+├── faq/
+│   └── page.tsx          # /faq
+├── dashboard/
+│   └── page.tsx          # /dashboard
+└── api/                   # API Routes
+    ├── products/
+    │   ├── route.ts       # GET, POST /api/products
+    │   ├── [id]/
+    │   │   └── route.ts   # GET, PUT, DELETE /api/products/[id]
+    │   ├── upload/
+    │   │   └── route.ts   # POST /api/products/upload
+    │   └── reorder/
+    │       └── route.ts   # POST /api/products/reorder
+    └── categories/
+        └── route.ts       # GET /api/categories
 ```
 
 ### Prisma
