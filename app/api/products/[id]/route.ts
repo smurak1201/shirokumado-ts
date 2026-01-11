@@ -8,6 +8,9 @@ import { deleteFile } from '@/lib/blob';
 
 /**
  * 商品を取得
+ *
+ * 注意: 現在このエンドポイントは未使用です。
+ * 将来的に商品詳細ページや外部API連携が必要になった場合に使用する可能性があります。
  */
 export const GET = withErrorHandling(async (
   _request: NextRequest,
