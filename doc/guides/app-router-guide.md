@@ -110,6 +110,9 @@ export default function Loading() {
     </div>
   );
 }
+**参照**: [`app/products/loading.ts`](../app/products/loading.ts)
+**参照**: [`app/products/loading.ts`](../app/products/loading.ts)
+
 ```
 
 **`error.tsx`** - エラーバウンダリー
@@ -142,6 +145,9 @@ export default function Error({
     </div>
   );
 }
+**参照**: [`app/products/error.ts`](../app/products/error.ts)
+**参照**: [`app/products/error.ts`](../app/products/error.ts)
+
 ```
 
 **`not-found.tsx`** - 404 ページ
@@ -167,6 +173,9 @@ export default function NotFound() {
     </div>
   );
 }
+**参照**: [`app/products/not-found.ts`](../app/products/not-found.ts)
+**参照**: [`app/products/not-found.ts`](../app/products/not-found.ts)
+
 ```
 
 **`template.tsx`** - テンプレートコンポーネント
@@ -184,6 +193,9 @@ export default function Template({ children }: { children: React.ReactNode }) {
     </div>
   );
 }
+**参照**: [`app/products/template.ts`](../app/products/template.ts)
+**参照**: [`app/products/template.ts`](../app/products/template.ts)
+
 ```
 
 **このアプリで使用しない理由**:
@@ -209,6 +221,8 @@ export default function Template({ children }: { children: React.ReactNode }) {
 **このアプリでの使用箇所**:
 
 1. **[`app/page.tsx`](../../app/page.tsx)** - ホームページ（Server Component）
+
+**参照**: [`app/page.tsx`](../../app/page.tsx) (行 102-141)
 
 ```102:141:app/page.tsx
 export default async function Home() {
@@ -256,6 +270,8 @@ export default async function Home() {
 **説明**: ホームページは Server Component として実装されており、サーバーサイドでデータベースから直接データを取得してレンダリングします。
 
 2. **[`app/faq/page.tsx`](../../app/faq/page.tsx)** - FAQ ページ（Server Component）
+
+**参照**: [`app/faq/page.tsx`](../../app/faq/page.tsx) (行 17-117)
 
 ```17:117:app/faq/page.tsx
 export default function FAQPage() {
@@ -310,6 +326,8 @@ export default function FAQPage() {
 **説明**: FAQ ページも Server Component として実装されており、静的なコンテンツを表示します。
 
 3. **[`app/dashboard/page.tsx`](../../app/dashboard/page.tsx)** - ダッシュボード（Server Component）
+
+**参照**: [`app/dashboard/page.tsx`](../../app/dashboard/page.tsx) (行 58-70)
 
 ```58:70:app/dashboard/page.tsx
 export default async function DashboardPage() {
@@ -367,6 +385,8 @@ export default async function DashboardPage() {
 **このアプリでの使用箇所**:
 
 1. **[`app/page.tsx`](../../app/page.tsx)** - 公開商品をカテゴリーごとに取得
+
+**参照**: [`app/page.tsx`](../../app/page.tsx) (行 26-86)
 
 ```26:86:app/page.tsx
 async function getPublishedProductsByCategory() {
@@ -436,6 +456,8 @@ async function getPublishedProductsByCategory() {
 
 2. **[`app/dashboard/page.tsx`](../../app/dashboard/page.tsx)** - ダッシュボードデータを取得
 
+**参照**: [`app/dashboard/page.tsx`](../../app/dashboard/page.tsx) (行 17-52)
+
 ```17:52:app/dashboard/page.tsx
 async function getDashboardData() {
   // カテゴリーと商品を並列で取得（パフォーマンス向上）
@@ -502,6 +524,8 @@ async function getDashboardData() {
 
 1. **`app/dashboard/components/DashboardContent.tsx`** - 商品一覧の更新
 
+**参照**: [`app/dashboard/components/DashboardContent.tsx`](../../app/dashboard/components/DashboardContent.tsx) (行 40-56)
+
 ```40:56:app/dashboard/components/DashboardContent.tsx
   const refreshProducts = async () => {
     try {
@@ -520,11 +544,16 @@ async function getDashboardData() {
       console.error("商品一覧の更新に失敗しました:", error);
     }
   };
+**参照**: [`Next.js`](../Next.js)
+**参照**: [`Next.js`](../Next.js)
+
 ```
 
 **説明**: 商品の追加・更新・削除後に、最新の商品一覧を取得するために `fetch` を使用しています。キャッシュを無効化するために、タイムスタンプをクエリパラメータに追加し、`cache: "no-store"` と `Cache-Control: "no-cache"` ヘッダーを設定しています。
 
 2. **`app/dashboard/components/ProductList.tsx`** - 商品の削除
+
+**参照**: [`app/dashboard/components/ProductList.tsx`](../../app/dashboard/components/ProductList.tsx) (行 95-120)
 
 ```95:120:app/dashboard/components/ProductList.tsx
   const handleDelete = async (productId: number) => {
@@ -560,6 +589,8 @@ async function getDashboardData() {
 
 3. **`app/dashboard/hooks/useProductReorder.ts`** - 商品順序の変更
 
+**参照**: [`app/dashboard/hooks/useProductReorder.ts`](../../app/dashboard/hooks/useProductReorder.ts) (行 79-94)
+
 ```79:94:app/dashboard/hooks/useProductReorder.ts
     try {
       // API を呼び出して商品の順序をサーバーに保存
@@ -583,6 +614,8 @@ async function getDashboardData() {
 4. **[`app/dashboard/components/DashboardForm.tsx`](../../app/dashboard/components/DashboardForm.tsx)** - 商品の作成と画像アップロード
 
 **画像アップロード（FormData を使用）**:
+
+**参照**: [`app/dashboard/components/DashboardForm.tsx`](../../app/dashboard/components/DashboardForm.tsx) (行 107-134)
 
 ```107:134:app/dashboard/components/DashboardForm.tsx
           const uploadFormData = new FormData();
@@ -616,6 +649,8 @@ async function getDashboardData() {
 ```
 
 **商品作成（JSON データを送信）**:
+
+**参照**: [`app/dashboard/components/DashboardForm.tsx`](../../app/dashboard/components/DashboardForm.tsx) (行 150-172)
 
 ```150:172:app/dashboard/components/DashboardForm.tsx
       // 商品を登録
@@ -709,6 +744,8 @@ try {
 
 1. **`app/page.tsx`** - 動的レンダリングを強制
 
+**参照**: [`app/page.tsx`](../../app/page.tsx) (行 8-12)
+
 ```8:12:app/page.tsx
 /**
  * 動的レンダリングを強制
@@ -720,6 +757,8 @@ export const dynamic = "force-dynamic";
 **説明**: ホームページでは、データベースから最新の公開商品を取得する必要があるため、動的レンダリングを強制しています。
 
 2. **`app/dashboard/page.tsx`** - 動的レンダリングを強制
+
+**参照**: [`app/dashboard/page.tsx`](../../app/dashboard/page.tsx) (行 4-9)
 
 ```4:9:app/dashboard/page.tsx
 /**
@@ -733,6 +772,8 @@ export const dynamic = "force-dynamic";
 **説明**: ダッシュボードページでも、最新のデータを表示するために動的レンダリングを強制しています。
 
 3. **[`app/api/products/route.ts`](../../app/api/products/route.ts)** - API Route での動的レンダリング
+
+**参照**: [`app/api/products/route.ts`](../../app/api/products/route.ts) (行 9-13)
 
 ```9:13:app/api/products/route.ts
 /**
@@ -799,6 +840,8 @@ export const GET = withErrorHandling(async (
 
 1. **[`app/api/products/route.ts`](../../app/api/products/route.ts)** - 商品一覧の取得と作成
 
+**参照**: [`app/api/products/route.ts`](../../app/api/products/route.ts) (行 26-51)
+
 ```26:51:app/api/products/route.ts
 export const GET = withErrorHandling(async () => {
   // データベースから商品を取得
@@ -829,6 +872,8 @@ export const GET = withErrorHandling(async () => {
 ```
 
 **説明**: `GET` 関数をエクスポートすることで、`GET /api/products` エンドポイントが実装されます。キャッシュヘッダーを設定してパフォーマンスを最適化しています。
+
+**参照**: [`app/api/products/route.ts`](../../app/api/products/route.ts) (行 66-138)
 
 ```66:138:app/api/products/route.ts
 export const POST = withErrorHandling(async (request: NextRequest) => {
@@ -1081,6 +1126,10 @@ export default function ProductForm() {
     </form>
   );
 }
+**参照**: [`app/actions.ts`](../app/actions.ts)
+**参照**: [`app/components/ProductForm.ts`](../app/components/ProductForm.ts)
+**参照**: [`app/actions.ts`](../app/actions.ts)
+
 ```
 
 **Server Actions のメリット**:
@@ -1104,6 +1153,8 @@ export default function ProductForm() {
 **このアプリでの使用箇所**:
 
 1. **[`app/page.tsx`](../../app/page.tsx)** - ヒーロー画像の最適化
+
+**参照**: [`app/page.tsx`](../../app/page.tsx) (行 112-123)
 
 ```112:123:app/page.tsx
       {/* ヒーローバナー */}
@@ -1141,6 +1192,8 @@ export default function ProductForm() {
 
 **このアプリでの使用箇所**:
 
+**参照**: [`app/layout.tsx`](../../app/layout.tsx) (行 24-37)
+
 ```24:37:app/layout.tsx
 export default function RootLayout({
   children,
@@ -1166,6 +1219,8 @@ export default function RootLayout({
 
 **このアプリでの使用箇所**:
 
+**参照**: [`app/layout.tsx`](../../app/layout.tsx) (行 12-22)
+
 ```12:22:app/layout.tsx
 export const metadata: Metadata = {
   title: "白熊堂 | 本格かき氷のお店",
@@ -1187,6 +1242,8 @@ export const metadata: Metadata = {
 **説明**: Next.js の `next/font/google` を使用すると、Google Fonts を最適化して読み込めます。
 
 **このアプリでの使用箇所**:
+
+**参照**: [`app/layout.tsx`](../../app/layout.tsx) (行 6-10)
 
 ```6:10:app/layout.tsx
 const notoSansJP = Noto_Sans_JP({

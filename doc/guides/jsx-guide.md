@@ -84,6 +84,8 @@ return (
 );
 ```
 
+**参照**: [`app/components/ProductGrid.tsx`](../../app/components/ProductGrid.tsx)
+
 上記のコードは、TypeScript コンパイラによって自動的に`jsx`関数呼び出しに変換されますが、開発者は JSX 構文のままコードを書きます。
 
 **新しい JSX 変換の利点**:
@@ -104,7 +106,12 @@ HTML では `class` を使用しますが、JSX では JavaScript の予約語�
 
 **HTML の例**:
 
-```text
+```
+
+```
+
+**参照**: [`app/components/ProductGrid.tsx`](../../app/components/ProductGrid.tsx)
+
 <div class="container">Content</div>
 ```
 
@@ -122,7 +129,16 @@ HTML では `class` を使用しますが、JSX では JavaScript の予約語�
   className="group w-full overflow-hidden rounded-lg border border-gray-100 bg-white shadow-sm"
   aria-label={`${product.name}の詳細を見る`}
 >
+
+
+**参照**: [`app/components/ProductTile.ts`](../app/components/ProductTile.ts)
+
 ```
+
+````
+
+**参照**: [`app/components/ProductTile.ts`](../../app/components/ProductTile.ts)
+
 
 #### `for` → `htmlFor`
 
@@ -133,7 +149,7 @@ HTML では `for` を使用しますが、JSX では `htmlFor` を使用しま�
 ```text
 <label for="email">Email</label>
 <input type="email" id="email">
-```
+````
 
 **JSX の例**:
 
@@ -166,7 +182,17 @@ HTML では小文字の属性名（`onclick`）を使用し、文字列で JavaS
   onClick={onClick}
   className="group w-full overflow-hidden rounded-lg"
 >
+
+
 ```
+
+**参照**: [`app/components/ProductTile.ts`](../../app/components/ProductTile.ts)
+
+```
+
+```
+
+**参照**: [`app/components/ProductTile.ts`](../../app/components/ProductTile.ts)
 
 ```tsx
 // app/components/ProductModal.tsx
@@ -175,7 +201,17 @@ HTML では小文字の属性名（`onclick`）を使用し、文字列で JavaS
   className="rounded-full bg-white/90 p-2"
   aria-label="閉じる"
 >
+
+
 ```
+
+**参照**: [`app/components/ProductModal.ts`](../../app/components/ProductModal.ts)
+
+```
+
+```
+
+**参照**: [`app/components/ProductModal.ts`](../../app/components/ProductModal.ts)
 
 ### 3. 自己閉じタグの必須性
 
@@ -207,6 +243,14 @@ JSX では、子要素を持たない要素は必ず自己閉じタグ（`/>`）
   className="object-cover transition-transform duration-500 group-hover:scale-110"
 />
 ```
+
+**参照**: [`app/components/ProductTile.ts`](../../app/components/ProductTile.ts)
+
+```
+
+```
+
+**参照**: [`app/components/ProductTile.ts`](../../app/components/ProductTile.ts)
 
 ### 4. JavaScript 式の埋め込み
 
@@ -271,6 +315,14 @@ HTML では `<!-- -->` を使用しますが、JSX では `{/* */}` を使用し
   </div>
 </button>
 ```
+
+**参照**: [`app/components/ProductTile.ts`](../../app/components/ProductTile.ts)
+
+```
+
+```
+
+**参照**: [`app/components/ProductTile.ts`](../../app/components/ProductTile.ts)
 
 ### 6. ブール値の属性
 
@@ -403,6 +455,14 @@ JSX では、HTML と同様に要素を記述できます。
 </header>
 ```
 
+**参照**: [`app/components/Header.ts`](../../app/components/Header.ts)
+
+```
+
+```
+
+**参照**: [`app/components/Header.ts`](../../app/components/Header.ts)
+
 ### 属性（Props）
 
 JSX では、HTML の属性と同様に props を指定できます。HTML との違いについては、[JSX と HTML の違い](#jsx-と-html-の違い)セクションを参照してください。
@@ -431,6 +491,14 @@ JSX では、HTML の属性と同様に props を指定できます。HTML と�
 </button>
 ```
 
+**参照**: [`app/components/ProductTile.ts`](../../app/components/ProductTile.ts)
+
+```
+
+```
+
+**参照**: [`app/components/ProductTile.ts`](../../app/components/ProductTile.ts)
+
 ### 子要素
 
 JSX では、要素の中に他の要素やテキストを配置できます。
@@ -450,6 +518,14 @@ JSX では、要素の中に他の要素やテキストを配置できます。
   <h3 className="line-clamp-2 text-center">{product.name}</h3>
 </div>
 ```
+
+**参照**: [`app/components/ProductTile.ts`](../../app/components/ProductTile.ts)
+
+```
+
+```
+
+**参照**: [`app/components/ProductTile.ts`](../../app/components/ProductTile.ts)
 
 ### children prop（子要素を受け取る）
 
@@ -488,6 +564,14 @@ export default function RootLayout({
 }
 ```
 
+**参照**: [`app/layout.ts`](../../app/layout.ts)
+
+```
+
+```
+
+**参照**: [`app/layout.ts`](../../app/layout.ts)
+
 ```tsx
 // app/components/ErrorBoundary.tsx
 interface ErrorBoundaryProps {
@@ -507,6 +591,14 @@ export default class ErrorBoundary extends Component<
   }
 }
 ```
+
+**参照**: [`app/components/ErrorBoundary.ts`](../../app/components/ErrorBoundary.ts)
+
+```
+
+```
+
+**参照**: [`app/components/ErrorBoundary.ts`](../../app/components/ErrorBoundary.ts)
 
 **重要なポイント**:
 
@@ -532,6 +624,14 @@ const element = <h1>1 + 1 = {1 + 1}</h1>;
 // app/components/ProductGrid.tsx
 <h2 className="text-center text-lg font-light">{category.name}</h2>
 ```
+
+**参照**: [`app/components/ProductGrid.ts`](../../app/components/ProductGrid.ts)
+
+```
+
+```
+
+**参照**: [`app/components/ProductGrid.ts`](../../app/components/ProductGrid.ts)
 
 **JSX 式の制限**:
 
@@ -621,6 +721,14 @@ if (!isOpen || !product) {
 }
 ```
 
+**参照**: [`app/components/ProductModal.ts`](../../app/components/ProductModal.ts)
+
+```
+
+```
+
+**参照**: [`app/components/ProductModal.ts`](../../app/components/ProductModal.ts)
+
 **詳細な使用例**: このアプリでの条件付きレンダリングの実装例（三項演算子、論理 AND 演算子など）については、[このアプリでの JSX の使用例 - 条件付きレンダリング](#条件付きレンダリング-1)セクションを参照してください。
 
 ### リストのレンダリング
@@ -647,6 +755,14 @@ const items = ["Apple", "Banana", "Orange"];
   products.map((product) => <ProductTile key={product.id} product={product} />);
 }
 ```
+
+**参照**: [`app/components/ProductGrid.ts`](../../app/components/ProductGrid.ts)
+
+```
+
+```
+
+**参照**: [`app/components/ProductGrid.ts`](../../app/components/ProductGrid.ts)
 
 **詳細な使用例**: このアプリでのリストのレンダリングの実装例（`key` の使用方法、空配列の扱いなど）については、[このアプリでの JSX の使用例 - リストのレンダリング](#リストのレンダリング-1)セクションを参照してください。
 
@@ -740,6 +856,14 @@ export default function Header() {
 }
 ```
 
+**参照**: [`app/components/Header.ts`](../../app/components/Header.ts)
+
+```
+
+```
+
+**参照**: [`app/components/Header.ts`](../../app/components/Header.ts)
+
 **Client Component の例**:
 
 ```tsx
@@ -778,6 +902,14 @@ function ProductTile({ product, onClick }: ProductTileProps) {
 }
 ```
 
+**参照**: [`app/components/ProductTile.ts`](../../app/components/ProductTile.ts)
+
+```
+
+```
+
+**参照**: [`app/components/ProductTile.ts`](../../app/components/ProductTile.ts)
+
 ### 条件付きレンダリング
 
 **早期リターン**:
@@ -794,6 +926,14 @@ export default function ProductGrid({ category, products }: ProductGridProps) {
 }
 ```
 
+**参照**: [`app/components/ProductGrid.ts`](../../app/components/ProductGrid.ts)
+
+```
+
+```
+
+**参照**: [`app/components/ProductGrid.ts`](../../app/components/ProductGrid.ts)
+
 **三項演算子**:
 
 ```tsx
@@ -808,6 +948,14 @@ export default function ProductGrid({ category, products }: ProductGridProps) {
   );
 }
 ```
+
+**参照**: [`app/components/ProductTile.ts`](../../app/components/ProductTile.ts)
+
+```
+
+```
+
+**参照**: [`app/components/ProductTile.ts`](../../app/components/ProductTile.ts)
 
 **論理 AND 演算子**:
 
@@ -842,6 +990,14 @@ export default function ProductGrid({ category, products }: ProductGridProps) {
 }
 ```
 
+**参照**: [`app/components/ProductModal.ts`](../../app/components/ProductModal.ts)
+
+```
+
+```
+
+**参照**: [`app/components/ProductModal.ts`](../../app/components/ProductModal.ts)
+
 ### リストのレンダリング
 
 ```tsx
@@ -861,6 +1017,14 @@ export default function ProductGrid({ category, products }: ProductGridProps) {
 </div>
 ```
 
+**参照**: [`app/components/ProductGrid.ts`](../../app/components/ProductGrid.ts)
+
+```
+
+```
+
+**参照**: [`app/components/ProductGrid.ts`](../../app/components/ProductGrid.ts)
+
 **重要なポイント**:
 
 - `key` プロップは各要素に一意の値を指定する必要がある
@@ -878,6 +1042,14 @@ export default function ProductGrid({ category, products }: ProductGridProps) {
 </button>
 ```
 
+**参照**: [`app/components/ProductTile.ts`](../../app/components/ProductTile.ts)
+
+```
+
+```
+
+**参照**: [`app/components/ProductTile.ts`](../../app/components/ProductTile.ts)
+
 **インライン関数**:
 
 ```tsx
@@ -892,6 +1064,14 @@ export default function ProductGrid({ category, products }: ProductGridProps) {
   ));
 }
 ```
+
+**参照**: [`app/components/ProductGrid.ts`](../../app/components/ProductGrid.ts)
+
+```
+
+```
+
+**参照**: [`app/components/ProductGrid.ts`](../../app/components/ProductGrid.ts)
 
 **注意**: インライン関数は、`React.memo` でメモ化されたコンポーネントでは、毎回新しい関数が作成されるため、メモ化の効果が失われる可能性があります。このアプリでは、`useCallback` を使用してコールバック関数をメモ化しています。
 
@@ -925,7 +1105,17 @@ return (
     />
   </>
 );
+
+
 ```
+
+**参照**: [`app/components/ProductGrid.ts`](../../app/components/ProductGrid.ts)
+
+```
+
+```
+
+**参照**: [`app/components/ProductGrid.ts`](../../app/components/ProductGrid.ts)
 
 **フラグメントの利点**:
 
@@ -963,7 +1153,17 @@ return (
     />
   </>
 );
+
+
 ```
+
+**参照**: [`app/components/ProductGrid.ts`](../../app/components/ProductGrid.ts)
+
+```
+
+```
+
+**参照**: [`app/components/ProductGrid.ts`](../../app/components/ProductGrid.ts)
 
 ## JSX のベストプラクティス
 
@@ -1190,6 +1390,16 @@ if (products.length === 0) {
   return null; // 商品がない場合は何も表示しない
 }
 ```
+
+**参照**: [`app/components/ProductGrid.ts`](../../app/components/ProductGrid.ts)
+
+**参照**: [`app/components/ProductModal.ts`](../app/components/ProductModal.ts)
+
+```
+
+```
+
+**参照**: [`app/components/ProductModal.ts`](../../app/components/ProductModal.ts)
 
 **詳細**: `null` と `undefined` を含むレンダリング可能な値の詳細については、[基本的な構文 - JavaScript 式の埋め込み - レンダリング可能な値](#javascript-式の埋め込み)セクションを参照してください。
 

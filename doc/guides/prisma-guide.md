@@ -92,6 +92,9 @@ export default defineConfig({
     // DATABASE_URL_UNPOOLED または POSTGRES_URL_NON_POOLING を設定してください
   },
 });
+**参照**: [`prisma.config.ts`](../prisma.config.ts)
+**参照**: [`prisma.config.ts`](../prisma.config.ts)
+
 ```
 
 **Prisma 7 での変更点**:
@@ -145,6 +148,8 @@ const prisma = new PrismaClient({
 - すべての Server Components と API Routes で `import { prisma } from '@/lib/prisma'` として使用
 
 **実際の実装コード**:
+
+**参照**: [`lib/prisma.ts`](../../lib/prisma.ts) (行 28-70)
 
 ```28:70:lib/prisma.ts
 const createPrismaClient = (): PrismaClient => {
@@ -206,6 +211,8 @@ const createPrismaClient = (): PrismaClient => {
 
 3. **WebSocket の設定**（Node.js 環境用）:
 
+**参照**: [`lib/prisma.ts`](../../lib/prisma.ts) (行 19-22)
+
 ```19:22:lib/prisma.ts
 // WebSocketの設定（Node.js環境用）
 if (typeof globalThis !== 'undefined' && !globalThis.WebSocket) {
@@ -222,6 +229,8 @@ if (typeof globalThis !== 'undefined' && !globalThis.WebSocket) {
    - 本番環境ではエラーログのみ（`['error']`）
 
 5. **シングルトンインスタンスの管理**:
+
+**参照**: [`lib/prisma.ts`](../../lib/prisma.ts) (行 72-77)
 
 ```72:77:lib/prisma.ts
 export const prisma =
@@ -318,6 +327,9 @@ model Product {
 
   @@map("products")
 }
+**参照**: [`prisma/schema.prisma`](../prisma/schema.prisma)
+**参照**: [`prisma/schema.prisma`](../prisma/schema.prisma)
+
 ```
 
 **スキーマの主な要素**:
@@ -361,6 +373,9 @@ model Product {
   priceL      Decimal?  @map("price_l") @db.Decimal(10, 2)  // DECIMAL型を使用
   // ...
 }
+**参照**: [`prisma/schema.prisma`](../prisma/schema.prisma)
+**参照**: [`prisma/schema.prisma`](../prisma/schema.prisma)
+
 ```
 
 **説明**:
@@ -464,6 +479,9 @@ export default defineConfig({
     seed: "tsx prisma/seed.ts",
   },
 });
+**参照**: [`prisma.config.ts`](../prisma.config.ts)
+**参照**: [`prisma.config.ts`](../prisma.config.ts)
+
 ```
 
 **マイグレーションの作成と適用**:
@@ -655,6 +673,8 @@ const products = await prisma.product.findMany();
 
 1. **[`app/page.tsx`](../../app/page.tsx)** - カテゴリー一覧の取得
 
+**参照**: [`app/page.tsx`](../../app/page.tsx) (行 30-34)
+
 ```30:34:app/page.tsx
     prisma.category.findMany({
       orderBy: {
@@ -664,6 +684,8 @@ const products = await prisma.product.findMany();
 ```
 
 2. **[`app/page.tsx`](../../app/page.tsx)** - 商品一覧の取得（カテゴリー情報を含む）
+
+**参照**: [`app/page.tsx`](../../app/page.tsx) (行 36-46)
 
 ```36:46:app/page.tsx
     prisma.product.findMany({
@@ -681,6 +703,8 @@ const products = await prisma.product.findMany();
 
 3. **[`app/dashboard/page.tsx`](../../app/dashboard/page.tsx)** - カテゴリー一覧の取得
 
+**参照**: [`app/dashboard/page.tsx`](../../app/dashboard/page.tsx) (行 21-25)
+
 ```21:25:app/dashboard/page.tsx
     prisma.category.findMany({
       orderBy: {
@@ -690,6 +714,8 @@ const products = await prisma.product.findMany();
 ```
 
 4. **[`app/dashboard/page.tsx`](../../app/dashboard/page.tsx)** - 商品一覧の取得（カテゴリー情報を含む）
+
+**参照**: [`app/dashboard/page.tsx`](../../app/dashboard/page.tsx) (行 27-34)
 
 ```27:34:app/dashboard/page.tsx
     prisma.product.findMany({
@@ -704,6 +730,8 @@ const products = await prisma.product.findMany();
 
 5. **[`app/api/products/route.ts`](../../app/api/products/route.ts)** - 商品一覧の取得（API エンドポイント）
 
+**参照**: [`app/api/products/route.ts`](../../app/api/products/route.ts) (行 31-38)
+
 ```31:38:app/api/products/route.ts
       prisma.product.findMany({
         include: {
@@ -716,6 +744,8 @@ const products = await prisma.product.findMany();
 ```
 
 6. **[`app/api/categories/route.ts`](../../app/api/categories/route.ts)** - カテゴリー一覧の取得（API エンドポイント）
+
+**参照**: [`app/api/categories/route.ts`](../../app/api/categories/route.ts) (行 16-20)
 
 ```16:20:app/api/categories/route.ts
       prisma.category.findMany({
@@ -749,6 +779,8 @@ const product = await prisma.product.findUnique({
 **このアプリでの使用箇所**:
 
 1. **[`app/api/products/route.ts`](../../app/api/products/route.ts)** - カテゴリーの存在確認（商品作成時）
+
+**参照**: [`app/api/products/route.ts`](../../app/api/products/route.ts) (行 87-90)
 
 ```87:90:app/api/products/route.ts
     () => prisma.category.findUnique({ where: { id: body.categoryId } }),
@@ -817,6 +849,8 @@ const product = await prisma.product.create({
 
 1. **[`app/api/products/route.ts`](../../app/api/products/route.ts)** - 新規商品の作成
 
+**参照**: [`app/api/products/route.ts`](../../app/api/products/route.ts) (行 115-133)
+
 ```115:133:app/api/products/route.ts
     () =>
       prisma.product.create({
@@ -875,6 +909,8 @@ const product = await prisma.product.update({
 
 2. **[`app/api/products/reorder/route.ts`](../../app/api/products/reorder/route.ts)** - 商品の表示順序の更新（トランザクション内）
 
+**参照**: [`app/api/products/reorder/route.ts`](../../app/api/products/reorder/route.ts) (行 23-26)
+
 ```23:26:app/api/products/reorder/route.ts
           prisma.product.update({
             where: { id: item.id },
@@ -932,6 +968,8 @@ await prisma.$transaction([
 
 1. **[`app/api/products/reorder/route.ts`](../../app/api/products/reorder/route.ts)** - 複数商品の表示順序を一括更新
 
+**参照**: [`app/api/products/reorder/route.ts`](../../app/api/products/reorder/route.ts) (行 19-29)
+
 ```19:29:app/api/products/reorder/route.ts
     async () => {
       await prisma.$transaction(
@@ -979,6 +1017,8 @@ const products = await prisma.product.findMany({
 **このアプリでの使用箇所**:
 
 1. **[`app/api/products/route.ts`](../../app/api/products/route.ts)** - カテゴリーの存在確認（商品作成時）
+
+**参照**: [`app/api/products/route.ts`](../../app/api/products/route.ts) (行 87-90)
 
 ```87:90:app/api/products/route.ts
     () => prisma.category.findUnique({ where: { id: body.categoryId } }),
@@ -1044,6 +1084,8 @@ const products = await prisma.product.findMany({
 
 8. **`app/api/products/reorder/route.ts`** - 商品の表示順序の更新（トランザクション内）
 
+**参照**: [`app/api/products/reorder/route.ts`](../../app/api/products/reorder/route.ts) (行 23-26)
+
 ```23:26:app/api/products/reorder/route.ts
           prisma.product.update({
             where: { id: item.id },
@@ -1094,6 +1136,8 @@ const products = await prisma.product.findMany({
 
 1. **`app/page.tsx`** - カテゴリーを ID 順で取得
 
+**参照**: [`app/page.tsx`](../../app/page.tsx) (行 30-34)
+
 ```30:34:app/page.tsx
     prisma.category.findMany({
       orderBy: {
@@ -1103,6 +1147,8 @@ const products = await prisma.product.findMany({
 ```
 
 2. **`app/page.tsx`** - 商品を表示順序でソート（null 値は最後に）
+
+**参照**: [`app/page.tsx`](../../app/page.tsx) (行 36-46)
 
 ```36:46:app/page.tsx
     prisma.product.findMany({
@@ -1120,6 +1166,8 @@ const products = await prisma.product.findMany({
 
 3. **`app/dashboard/page.tsx`** - カテゴリーを ID 順で取得
 
+**参照**: [`app/dashboard/page.tsx`](../../app/dashboard/page.tsx) (行 21-25)
+
 ```21:25:app/dashboard/page.tsx
     prisma.category.findMany({
       orderBy: {
@@ -1129,6 +1177,8 @@ const products = await prisma.product.findMany({
 ```
 
 4. **`app/dashboard/page.tsx`** - 商品を作成日時の降順でソート
+
+**参照**: [`app/dashboard/page.tsx`](../../app/dashboard/page.tsx) (行 27-34)
 
 ```27:34:app/dashboard/page.tsx
     prisma.product.findMany({
@@ -1143,6 +1193,8 @@ const products = await prisma.product.findMany({
 
 5. **`app/api/products/route.ts`** - 商品を作成日時の降順でソート
 
+**参照**: [`app/api/products/route.ts`](../../app/api/products/route.ts) (行 31-38)
+
 ```31:38:app/api/products/route.ts
       prisma.product.findMany({
         include: {
@@ -1155,6 +1207,8 @@ const products = await prisma.product.findMany({
 ```
 
 6. **`app/api/categories/route.ts`** - カテゴリーを ID 順で取得
+
+**参照**: [`app/api/categories/route.ts`](../../app/api/categories/route.ts) (行 16-20)
 
 ```16:20:app/api/categories/route.ts
       prisma.category.findMany({
@@ -1190,6 +1244,9 @@ orderBy: {
     nulls: "last", // displayOrderがnullの商品は最後に
   },
 }
+**参照**: [`app/page.ts`](../app/page.ts)
+**参照**: [`app/page.ts`](../app/page.ts)
+
 ```
 
 これにより、表示順序が設定されている商品が先に表示され、設定されていない商品は最後に表示されます。
@@ -1220,6 +1277,8 @@ const categories = await prisma.category.findMany({
 
 1. **`app/page.tsx`** - 商品とカテゴリーを一緒に取得
 
+**参照**: [`app/page.tsx`](../../app/page.tsx) (行 36-46)
+
 ```36:46:app/page.tsx
     prisma.product.findMany({
       include: {
@@ -1236,6 +1295,8 @@ const categories = await prisma.category.findMany({
 
 2. **`app/dashboard/page.tsx`** - 商品とカテゴリーを一緒に取得
 
+**参照**: [`app/dashboard/page.tsx`](../../app/dashboard/page.tsx) (行 27-34)
+
 ```27:34:app/dashboard/page.tsx
     prisma.product.findMany({
       include: {
@@ -1249,6 +1310,8 @@ const categories = await prisma.category.findMany({
 
 3. **`app/api/products/route.ts`** - 商品とカテゴリーを一緒に取得
 
+**参照**: [`app/api/products/route.ts`](../../app/api/products/route.ts) (行 31-38)
+
 ```31:38:app/api/products/route.ts
       prisma.product.findMany({
         include: {
@@ -1261,6 +1324,8 @@ const categories = await prisma.category.findMany({
 ```
 
 4. **[`app/api/products/route.ts`](../../app/api/products/route.ts)** - 商品作成時にカテゴリー情報も含める
+
+**参照**: [`app/api/products/route.ts`](../../app/api/products/route.ts) (行 115-133)
 
 ```115:133:app/api/products/route.ts
     () =>

@@ -146,6 +146,8 @@ Next.js の設定を管理するファイルです。画像最適化、実験的
 
 **設定内容**:
 
+**参照**: [`next.config.ts`](../../next.config.ts) (行 1-30)
+
 ```1:30:next.config.ts
 import type { NextConfig } from "next";
 
@@ -208,6 +210,8 @@ Next.js は、`next/image` コンポーネントを使用して、画像の自�
 
 1. **`app/page.tsx`** - ヒーロー画像の最適化
 
+**参照**: [`app/page.tsx`](../../app/page.tsx) (行 90-98)
+
 ```90:98:app/page.tsx
       <section className="relative h-[30vh] min-h-[200px] w-full overflow-hidden md:h-[50vh] md:min-h-[400px] lg:h-[60vh] lg:min-h-[500px]">
         <Image
@@ -224,6 +228,8 @@ Next.js は、`next/image` コンポーネントを使用して、画像の自�
 
 2. **`app/components/ProductTile.tsx`** - 商品画像の最適化
 
+**参照**: [`app/components/ProductTile.tsx`](../../app/components/ProductTile.tsx) (行 39-46)
+
 ```39:46:app/components/ProductTile.tsx
         <div className="relative aspect-square w-full overflow-hidden bg-gray-50">
           <Image
@@ -239,6 +245,8 @@ Next.js は、`next/image` コンポーネントを使用して、画像の自�
 **説明**: `loading="lazy"` により、商品画像を遅延読み込みします。`sizes` 属性により、デバイスに応じた画像サイズを提供します。
 
 3. **`app/components/ProductModal.tsx`** - モーダル内の商品画像
+
+**参照**: [`app/components/ProductModal.tsx`](../../app/components/ProductModal.tsx) (行 68-75)
 
 ```68:75:app/components/ProductModal.tsx
           <div className="relative aspect-square w-full overflow-hidden bg-gray-50">
@@ -257,6 +265,8 @@ Next.js は、`next/image` コンポーネントを使用して、画像の自�
 ### 画像最適化の設定
 
 [`next.config.ts`](../../next.config.ts) で画像最適化の設定を行います：
+
+**参照**: [`next.config.ts`](../../next.config.ts) (行 4-13)
 
 ```4:13:next.config.ts
   // 画像最適化の設定
@@ -290,6 +300,8 @@ Next.js は、`next/font/google` を使用して、Google Fonts を最適化し�
 
 **[`app/layout.tsx`](../../app/layout.tsx)** - Noto Sans JP フォントの最適化
 
+**参照**: [`app/layout.tsx`](../../app/layout.tsx) (行 6-10)
+
 ```6:10:app/layout.tsx
 const notoSansJP = Noto_Sans_JP({
   variable: "--font-noto-sans-jp",
@@ -299,6 +311,8 @@ const notoSansJP = Noto_Sans_JP({
 ```
 
 **説明**: Noto Sans JP フォントを Google Fonts から読み込み、CSS 変数として設定しています。
+
+**参照**: [`app/layout.tsx`](../../app/layout.tsx) (行 31-31)
 
 ```31:31:app/layout.tsx
       <body className={`${notoSansJP.variable} antialiased`}>
@@ -321,6 +335,8 @@ Next.js は、`metadata` オブジェクトを使用して、ページのメタ�
 **このアプリでの使用箇所**:
 
 **[`app/layout.tsx`](../../app/layout.tsx)** - ルートレイアウトのメタデータ
+
+**参照**: [`app/layout.tsx`](../../app/layout.tsx) (行 12-22)
 
 ```12:22:app/layout.tsx
 export const metadata: Metadata = {

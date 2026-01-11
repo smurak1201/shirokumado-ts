@@ -87,6 +87,8 @@ TypeScript の設定を管理するファイルです。コンパイラオプシ
 
 **設定内容**:
 
+**参照**: [`tsconfig.json`](../../tsconfig.json) (行 1-40)
+
 ```1:40:tsconfig.json
 {
   "compilerOptions": {
@@ -166,6 +168,8 @@ TypeScript の設定を管理するファイルです。コンパイラオプシ
 
 **型定義の内容**:
 
+**参照**: [`app/types.ts`](../../app/types.ts) (行 1-44)
+
 ```1:44:app/types.ts
 /**
  * フロントエンドで使用する共通型定義
@@ -227,6 +231,8 @@ export interface ProductTile {
 
 **型定義の内容**:
 
+**参照**: [`app/dashboard/types.ts`](../../app/dashboard/types.ts) (行 1-22)
+
 ```1:22:app/dashboard/types.ts
 /**
  * ダッシュボードで使用する共通型定義
@@ -265,6 +271,8 @@ export interface Product {
 
 1. **`app/components/ProductGrid.tsx`** - Props の型定義
 
+**参照**: [`app/components/ProductGrid.tsx`](../../app/components/ProductGrid.tsx) (行 11-14)
+
 ```11:14:app/components/ProductGrid.tsx
 interface ProductGridProps {
   category: Category; // カテゴリー情報
@@ -275,6 +283,8 @@ interface ProductGridProps {
 **説明**: `ProductGrid` コンポーネントの Props に型を定義しています。
 
 2. **[`app/components/ProductModal.tsx`](../../app/components/ProductModal.tsx)** - Props の型定義
+
+**参照**: [`app/components/ProductModal.tsx`](../../app/components/ProductModal.tsx) (行 12-16)
 
 ```12:16:app/components/ProductModal.tsx
 interface ProductModalProps {
@@ -297,11 +307,16 @@ interface ProductModalProps {
 export function formatPrice(price: number): string {
   return `¥${price.toLocaleString()}`;
 }
+**参照**: [`app/utils/format.ts`](../app/utils/format.ts)
+**参照**: [`app/utils/format.ts`](../app/utils/format.ts)
+
 ```
 
 **説明**: 関数の引数と戻り値に型を指定しています。
 
 2. **[`app/hooks/useProductModal.ts`](../../app/hooks/useProductModal.ts)** - カスタムフックの戻り値の型
+
+**参照**: [`app/hooks/useProductModal.ts`](../../app/hooks/useProductModal.ts) (行 12-47)
 
 ```12:47:app/hooks/useProductModal.ts
 export function useProductModal() {
@@ -350,6 +365,8 @@ export function useProductModal() {
 
 1. **null 許容型**: `string | null`、`number | null` など
 
+**参照**: [`app/types.ts`](../../app/types.ts) (行 24-31)
+
 ```24:31:app/types.ts
 export interface Product {
   id: number; // 商品ID
@@ -365,6 +382,8 @@ export interface Product {
 
 2. **ユニオン型**: `Product | null`
 
+**参照**: [`app/components/ProductModal.tsx`](../../app/components/ProductModal.tsx) (行 13-13)
+
 ```13:13:app/components/ProductModal.tsx
   product: Product | null; // 表示する商品情報（nullの場合は非表示）
 ```
@@ -372,6 +391,8 @@ export interface Product {
 **説明**: `product` は `Product` 型または `null` の可能性があるため、ユニオン型を使用しています。
 
 3. **文字列リテラル型のユニオン型**: `"list" | "layout"`
+
+**参照**: [`app/dashboard/hooks/useTabState.ts`](../../app/dashboard/hooks/useTabState.ts) (行 16-16)
 
 ```16:16:app/dashboard/hooks/useTabState.ts
 type TabType = "list" | "layout";
@@ -420,6 +441,9 @@ const product = await prisma.product.findUnique({
 // 型安全なプロパティアクセス
 console.log(product.name); // OK
 console.log(product.invalidField); // コンパイルエラー
+**参照**: [`lib/prisma.ts`](../lib/prisma.ts)
+**参照**: [`lib/prisma.ts`](../lib/prisma.ts)
+
 ```
 
 **Prisma の型生成のメリット**:
@@ -461,6 +485,9 @@ export const POST = withErrorHandling(async (request: NextRequest) => {
 
   return apiSuccess({ product });
 });
+**参照**: [`app/api/products/route.ts`](../app/api/products/route.ts)
+**参照**: [`app/api/products/route.ts`](../app/api/products/route.ts)
+
 ```
 
 **説明**: リクエストボディの型をバリデーション時にチェックし、型安全なデータ操作を行います。
@@ -476,6 +503,9 @@ export const POST = withErrorHandling(async (request: NextRequest) => {
 export function apiSuccess<T>(data: T, status: number = 200): NextResponse {
   return NextResponse.json({ data }, { status });
 }
+**参照**: [`lib/api-helpers.ts`](../lib/api-helpers.ts)
+**参照**: [`lib/api-helpers.ts`](../lib/api-helpers.ts)
+
 ```
 
 **説明**: ジェネリクスを使用して、レスポンスデータの型を指定します。
@@ -505,6 +535,9 @@ export class NotFoundError extends Error {
     this.name = "NotFoundError";
   }
 }
+**参照**: [`lib/errors.ts`](../lib/errors.ts)
+**参照**: [`lib/errors.ts`](../lib/errors.ts)
+
 ```
 
 **使用例**:
@@ -581,6 +614,9 @@ export interface Product {
   name: string;
   // ...
 }
+**参照**: [`app/types.ts`](../app/types.ts)
+**参照**: [`app/types.ts`](../app/types.ts)
+
 ```
 
 **type を使用する場合**:
@@ -593,6 +629,8 @@ export interface Product {
 
 1. **文字列リテラル型のユニオン型**: [`app/dashboard/hooks/useTabState.ts`](../../app/dashboard/hooks/useTabState.ts)
 
+**参照**: [`app/dashboard/hooks/useTabState.ts`](../../app/dashboard/hooks/useTabState.ts) (行 16-16)
+
 ```16:16:app/dashboard/hooks/useTabState.ts
 type TabType = "list" | "layout";
 ```
@@ -601,9 +639,13 @@ type TabType = "list" | "layout";
 
 **使用例**:
 
+**参照**: [`app/dashboard/hooks/useTabState.ts`](../../app/dashboard/hooks/useTabState.ts) (行 30-30)
+
 ```30:30:app/dashboard/hooks/useTabState.ts
   const [activeTab, setActiveTab] = useState<TabType>(() => {
 ```
+
+**参照**: [`app/dashboard/components/ProductList.tsx`](../../app/dashboard/components/ProductList.tsx) (行 227-227)
 
 ```227:227:app/dashboard/components/ProductList.tsx
               onClick={() => setActiveTab("list")}
