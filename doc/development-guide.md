@@ -123,7 +123,7 @@ app/
 
 ### Prisma
 
-#### クエリの最適化
+#### クエリの最適化と N+1 問題の回避
 
 **推奨**: N+1 問題を回避するために`include`で関連データを一度に取得。
 
@@ -136,12 +136,25 @@ const products = await prisma.product.findMany({
 });
 ```
 
+**避ける**: ループ内でクエリを実行。
+
+```typescript
+// 悪い例: N+1問題
+const products = await prisma.product.findMany();
+for (const product of products) {
+  product.category = await prisma.category.findUnique({
+    where: { id: product.categoryId },
+  });
+}
+```
+
 **理由**:
 
 - **パフォーマンス**: 1 回のクエリで必要なデータをすべて取得でき、データベースへの負荷が最小化される
 - **レスポンスタイム**: クエリ回数が削減され、レスポンスタイムが大幅に短縮される
 - **スケーラビリティ**: データ件数が増えてもクエリ回数が一定のため、パフォーマンスが安定する
 - **コードの簡潔性**: ループ内でのクエリ実行が不要で、コードがシンプルになる
+- **N+1 問題の回避**: データが N 件ある場合、悪い例では合計 N+1 回のクエリが実行されるが、`include`を使用することで 1 回のクエリで済む
 
 **このアプリでの実装**:
 
@@ -150,48 +163,6 @@ const products = await prisma.product.findMany({
 **`select`について**:
 
 `select`は必要なフィールドのみを取得できる便利な機能ですが、このアプリでは使用していません。詳細は [Prisma ガイド - select（このアプリでは未使用）](./guides/prisma-guide.md#selectこのアプリでは未使用) を参照してください。
-
-#### N+1 問題の回避
-
-**推奨**: include で関連データを一度に取得。
-
-```typescript
-// 良い例: includeで関連データを取得
-const orders = await prisma.order.findMany({
-  include: {
-    items: {
-      include: {
-        product: true,
-      },
-    },
-  },
-});
-```
-
-**理由**:
-
-- **クエリ回数の削減**: 1 回のクエリで注文、注文アイテム、商品情報をすべて取得できる
-- **パフォーマンス**: データベースへの負荷が大幅に削減され、レスポンスタイムが向上
-- **スケーラビリティ**: 注文数が増えてもクエリ回数が一定で、パフォーマンスが安定
-
-**避ける**: ループ内でクエリを実行。
-
-```typescript
-// 悪い例: N+1問題
-const orders = await prisma.order.findMany();
-for (const order of orders) {
-  order.items = await prisma.orderItem.findMany({
-    where: { orderId: order.id },
-  });
-}
-```
-
-**理由**:
-
-- **N+1 問題**: 注文が N 件ある場合、合計 N+1 回のクエリが実行され、パフォーマンスが大幅に低下
-- **レスポンスタイム**: 各クエリの実行時間が累積され、レスポンスタイムが線形に増加
-- **データベース負荷**: データベースサーバーへの負荷が大幅に増加し、他のクエリにも影響
-- **スケーラビリティ**: データが増えるほど問題が深刻化し、アプリケーションのパフォーマンスが劣化
 
 #### エラーハンドリング
 
@@ -482,29 +453,7 @@ export const DELETE = withErrorHandling(async () => {
 
 ### コンポーネント設計
 
-#### Server Components 優先
-
-**推奨**: デフォルトで Server Component。
-
-```typescript
-// 良い例: Server Component
-export default async function ProductList() {
-  const products = await prisma.product.findMany();
-  return (
-    <div>
-      {products.map((product) => (
-        <ProductCard key={product.id} product={product} />
-      ))}
-    </div>
-  );
-}
-```
-
-**理由**:
-
-- **パフォーマンス**: サーバーサイドでレンダリングされ、初期 HTML が生成されるため、SEO とパフォーマンスに有利
-- **バンドルサイズ**: クライアント側の JavaScript が不要で、バンドルサイズが削減される
-- **データフェッチ**: データベースに直接アクセスでき、API 経由の不要なネットワークリクエストを回避
+**注意**: Server Components と Client Components の使い分けについては、[Next.js App Router セクション](#nextjs-app-router)の「Server Components を優先し、直接データフェッチ」を参照してください。
 
 #### Client Components の使用
 
@@ -809,19 +758,13 @@ const HeavyComponent = dynamic(() => import("./HeavyComponent"), {
 
 ### データベースクエリの最適化
 
-**推奨**: インデックスの活用、必要なデータのみ取得。
+**注意**: データベースクエリの最適化と N+1 問題の回避については、[Prisma セクション](#prisma)の「クエリの最適化と N+1 問題の回避」を参照してください。
 
-```typescript
-// 良い例: インデックスを活用したクエリ
-const products = await prisma.product.findMany({
-  where: {
-    category: "ice-cream",
-    published: true,
-  },
-  orderBy: { createdAt: "desc" },
-  take: 10, // ページネーション
-});
-```
+**その他の最適化ポイント**:
+
+- **インデックスの活用**: よく使用されるフィールドにインデックスを設定
+- **ページネーション**: `take` と `skip` を使用して大量データを分割取得
+- **必要なデータのみ取得**: `select` を使用して必要なフィールドのみ取得（このアプリでは未使用）
 
 ### React コンポーネントの最適化
 
@@ -883,7 +826,7 @@ const filteredProducts = useMemo(
 - **パフォーマンス**: 計算コストが高い処理（フィルタリング、ソート、変換など）で特に効果的
 - **参照の安定性**: オブジェクトや配列の参照が安定し、子コンポーネントの不要な再レンダリングを防止
 
-### エラーハンドリング
+### エラーバウンダリー
 
 **推奨**: エラーバウンダリーを実装して、予期しないエラーからアプリケーションを保護。
 
@@ -894,14 +837,16 @@ const filteredProducts = useMemo(
 </ErrorBoundary>
 ```
 
+**注意**: 一般的なエラーハンドリング（エラークラス、API Routes でのエラーハンドリング）については、[エラーハンドリングセクション](#エラーハンドリング)を参照してください。Prisma 操作でのエラーハンドリングについては、[Prisma セクション](#prisma)の「エラーハンドリング」を参照してください。
+
 ### 最適化のポイント
 
 1. **画像最適化**: Next.js Image コンポーネントを使用
 2. **コード分割**: 動的インポートを使用
 3. **データフェッチ**: 適切なキャッシュ戦略を使用
-4. **データベース**: 必要なデータのみ取得（N+1 問題の回避）
+4. **データベース**: [Prisma セクション](#prisma)の「クエリの最適化と N+1 問題の回避」を参照
 5. **React コンポーネント**: `React.memo`、`useCallback`、`useMemo` を適切に使用
-6. **エラーハンドリング**: エラーバウンダリーを実装
+6. **エラーバウンダリー**: エラーバウンダリーを実装（上記参照）
 
 ## セキュリティ
 

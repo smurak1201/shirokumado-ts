@@ -29,6 +29,8 @@
 
 ## ディレクトリ構造の設計思想
 
+**注意**: 詳細なディレクトリ構造と各ファイルの役割については、[プロジェクト構造ドキュメント](./project-structure.md)を参照してください。App Router のディレクトリ構造については、[App Router ガイド](./guides/app-router-guide.md#app-router-のディレクトリ構造)を参照してください。
+
 ### フロントエンド (`app/`)
 
 フロントエンドは、以下のように構造化されています：
@@ -206,6 +208,8 @@ const { selectedProduct, isModalOpen, handleProductClick, handleCloseModal } =
 ```
 
 ## データフロー
+
+**注意**: 技術的な詳細（使用している API、具体的な実装方法）については、[フロントエンドガイド](./guides/frontend-guide.md#データフロー)を参照してください。
 
 ### フロントエンド（公開ページ）
 
