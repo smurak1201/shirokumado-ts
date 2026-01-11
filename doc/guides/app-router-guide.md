@@ -78,6 +78,7 @@ App Router では、`app/` ディレクトリ内のファイル構造がその�
 ├── utils/             # ユーティリティ関数
 └── types.ts          # 型定義
 ```
+
 - `page.tsx`: ページコンポーネント（ルートとして機能） - **このアプリで使用中**
 - `layout.tsx`: レイアウトコンポーネント（ネストされたレイアウト） - **このアプリで使用中**
 - `route.ts`: API エンドポイント（API Routes） - **このアプリで使用中**
@@ -105,9 +106,10 @@ export default function Loading() {
     </div>
   );
 }
-**参照**: [`app/products/loading.ts`](../app/products/loading.ts)
+[`app/products/loading.ts`](../app/products/loading.ts)
 
 ```
+
 エラーバウンダリーとして機能し、エラー発生時に表示される UI を定義します。Client Component として実装する必要があります。
 
 **使用例**:
@@ -135,9 +137,10 @@ export default function Error({
     </div>
   );
 }
-**参照**: [`app/products/error.ts`](../app/products/error.ts)
+[`app/products/error.ts`](../app/products/error.ts)
 
 ```
+
 404 ページをカスタマイズします。`notFound()`関数を呼び出した時や、存在しないルートにアクセスした時に表示されます。
 
 **使用例**:
@@ -158,9 +161,10 @@ export default function NotFound() {
     </div>
   );
 }
-**参照**: [`app/products/not-found.ts`](../app/products/not-found.ts)
+[`app/products/not-found.ts`](../app/products/not-found.ts)
 
 ```
+
 `layout.tsx`と似ていますが、ナビゲーション時に毎回新しいインスタンスが作成されます。アニメーションや状態のリセットが必要な場合に使用します。
 
 **使用例**:
@@ -173,9 +177,10 @@ export default function Template({ children }: { children: React.ReactNode }) {
     </div>
   );
 }
-**参照**: [`app/products/template.ts`](../app/products/template.ts)
+[`app/products/template.ts`](../app/products/template.ts)
 
 ```
+
 - エラーハンドリングは API Routes で統一して実装している
 - ローディング状態は各コンポーネント内で管理している
 - 404 ページは Next.js のデフォルトを使用している
@@ -239,6 +244,7 @@ export default function Template({ children }: { children: React.ReactNode }) {
   );
 }
 ```
+
 2. **[`app/faq/page.tsx`](../../app/faq/page.tsx) (行 17-117)** - FAQ ページ（Server Component）
 
 ```17:117
@@ -289,6 +295,7 @@ export default function Template({ children }: { children: React.ReactNode }) {
   );
 }
 ```
+
 3. **[`app/dashboard/page.tsx`](../../app/dashboard/page.tsx) (行 58-70)** - ダッシュボード（Server Component）
 
 ```58:70
@@ -305,6 +312,7 @@ export default function Template({ children }: { children: React.ReactNode }) {
   );
 }
 ```
+
 ### Client Components
 
 **説明**: Client Components は、`'use client'` ディレクティブを使用してクライアントサイドでレンダリングされるコンポーネントです。インタラクティブな機能（状態管理、イベントハンドラーなど）を実装するために使用します。
@@ -406,6 +414,7 @@ export default function Template({ children }: { children: React.ReactNode }) {
     .filter(({ products }) => products.length > 0); // 商品があるカテゴリーのみを返す
 }
 ```
+
 2. **[`app/dashboard/page.tsx`](../../app/dashboard/page.tsx) (行 17-52)** - ダッシュボードデータを取得
 
 ```17:52
@@ -445,14 +454,15 @@ export default function Template({ children }: { children: React.ReactNode }) {
   };
 }
 ```
+
 ### Client Components でのデータフェッチング（fetch API）
 
 **説明**: Client Components では、ユーザーの操作（商品の追加・更新・削除など）に応じて動的にデータを取得する必要があります。この場合、`fetch` API を使用して API Routes を呼び出します。
 
 **なぜ Server Components で直接データベースにアクセスしないのか**:
 
+[`Next.js`](../../Next.js)
 
-**参照**: [`Next.js`](../../Next.js)
 - Server Components は初期レンダリング時にのみ実行される
 - ユーザーの操作（ボタンクリック、フォーム送信など）に応じて動的にデータを取得する必要がある
 - Client Components では `useState`、`useEffect` などの Hooks を使用して状態管理を行う
@@ -489,9 +499,10 @@ export default function Template({ children }: { children: React.ReactNode }) {
       console.error("商品一覧の更新に失敗しました:", error);
     }
   };
-**参照**: [`Next.js`](../Next.js)
+[`Next.js`](../Next.js)
 
 ```
+
 2. **[`app/dashboard/components/ProductList.tsx`](../../app/dashboard/components/ProductList.tsx) (行 95-120)** - 商品の削除
 
 ```95:120
@@ -522,6 +533,7 @@ export default function Template({ children }: { children: React.ReactNode }) {
     }
   };
 ```
+
 3. **[`app/dashboard/hooks/useProductReorder.ts`](../../app/dashboard/hooks/useProductReorder.ts) (行 79-94)** - 商品順序の変更
 
 ```79:94
@@ -540,11 +552,12 @@ export default function Template({ children }: { children: React.ReactNode }) {
         throw new Error(error.error || "順序の更新に失敗しました");
       }
 ```
+
 4. **`app/dashboard/components/DashboardForm.tsx`** - 商品の作成と画像アップロード
 
 **画像アップロード（FormData を使用）**:
 
-**参照**: [`app/dashboard/components/DashboardForm.tsx`](../../app/dashboard/components/DashboardForm.tsx) (行 107-134)
+[`app/dashboard/components/DashboardForm.tsx`](../../app/dashboard/components/DashboardForm.tsx) (行 107-134)
 
 ```107:134
           uploadFormData.append("file", formData.imageFile);
@@ -575,7 +588,9 @@ export default function Template({ children }: { children: React.ReactNode }) {
           const uploadData = await uploadResponse.json();
           imageUrl = uploadData.url;
 ```
-**参照**: [`app/dashboard/components/DashboardForm.tsx`](../../app/dashboard/components/DashboardForm.tsx) (行 150-172)
+
+[`app/dashboard/components/DashboardForm.tsx`](../../app/dashboard/components/DashboardForm.tsx) (行 150-172)
+
 ```150:172
       const response = await fetch("/api/products", {
         method: "POST",
@@ -600,6 +615,7 @@ export default function Template({ children }: { children: React.ReactNode }) {
         throw new Error(error.error || "登録に失敗しました");
       }
 ```
+
 **fetch の使用パターン**:
 
 1. **GET リクエスト**: データの取得
@@ -643,6 +659,7 @@ export default function Template({ children }: { children: React.ReactNode }) {
   // エラー時の処理（ユーザーへの通知など）
 }
 ```
+
 - **常に最新データを取得**: `cache: "no-store"` とタイムスタンプを使用
 - **Next.js のキャッシュを無効化**: `cache: "no-store"` オプション
 - **ブラウザのキャッシュを無効化**: `Cache-Control: "no-cache"` ヘッダー
@@ -666,6 +683,7 @@ export default function Template({ children }: { children: React.ReactNode }) {
  */
 export const dynamic = "force-dynamic";
 ```
+
 2. **[`app/dashboard/page.tsx`](../../app/dashboard/page.tsx) (行 4-9)** - 動的レンダリングを強制
 
 ```4:9
@@ -675,6 +693,7 @@ export const dynamic = "force-dynamic";
  */
 export const dynamic = "force-dynamic";
 ```
+
 3. **[`app/api/products/route.ts`](../../app/api/products/route.ts) (行 9-13)** - API Route での動的レンダリング
 
 ```9:13
@@ -683,6 +702,7 @@ export const dynamic = "force-dynamic";
  */
 export const dynamic = 'force-dynamic';
 ```
+
 ## 動的ルーティング
 
 **説明**: 動的ルーティングを使用すると、URL パラメータに基づいて動的にページを生成できます。
@@ -720,6 +740,7 @@ export const dynamic = 'force-dynamic';
   return apiSuccess({ product });
 });
 ```
+
 **動的ルートの規則**:
 
 - `[id]`: 単一の動的セグメント
@@ -761,7 +782,9 @@ export const dynamic = 'force-dynamic';
   return response;
 });
 ```
-**参照**: [`app/api/products/route.ts`](../../app/api/products/route.ts) (行 66-138)
+
+[`app/api/products/route.ts`](../../app/api/products/route.ts) (行 66-138)
+
 ```66:138
   const body = await request.json();
 
@@ -836,6 +859,7 @@ export const dynamic = 'force-dynamic';
   return apiSuccess({ product }, 201);
 });
 ```
+
 2. **`app/api/products/[id]/route.ts`** - 個別商品の操作
 
 ```44:154:app/api/products/[id]/route.ts
@@ -923,7 +947,7 @@ export const dynamic = 'force-dynamic';
     }
 
 
-**参照**: [`app/components/ProductForm.ts`](../../app/components/ProductForm.ts)
+[`app/components/ProductForm.ts`](../../app/components/ProductForm.ts)
   }
 
   // 商品を更新
@@ -953,6 +977,7 @@ export const dynamic = 'force-dynamic';
   return apiSuccess({ product });
 });
 ```
+
 **API Routes の特徴**:
 
 - Server Component として実行される（`'use client'` は不要）
@@ -1006,9 +1031,10 @@ export default function ProductForm() {
     </form>
   );
 }
-**参照**: [`app/actions.ts`](../app/actions.ts)
+[`app/actions.ts`](../app/actions.ts)
 
 ```
+
 - API Routes を書く必要がなく、よりシンプルなコードになる
 - 型安全性が高い（TypeScript と統合されている）
 - フォーム送信が簡単（`action`プロップに直接関数を渡せる）
@@ -1043,6 +1069,7 @@ export default function ProductForm() {
         <div className="absolute inset-0 bg-linear-to-b from-white/20 via-white/8 to-white/25" />
       </section>
 ```
+
 **Image コンポーネントの主なプロパティ**:
 
 - `src`: 画像のパス（`/` から始まるパスは `public/` ディレクトリを参照）
@@ -1061,7 +1088,7 @@ export default function ProductForm() {
 
 **このアプリでの使用箇所**:
 
-**参照**: [`app/layout.tsx`](../../app/layout.tsx) (行 24-37)
+[`app/layout.tsx`](../../app/layout.tsx) (行 24-37)
 
 ```24:37
   children,
@@ -1078,13 +1105,14 @@ export default function ProductForm() {
   );
 }
 ```
+
 ### メタデータ
 
 **説明**: `metadata` オブジェクトをエクスポートすることで、ページのメタデータ（タイトル、説明、OGP など）を設定できます。
 
 **このアプリでの使用箇所**:
 
-**参照**: [`app/layout.tsx`](../../app/layout.tsx) (行 12-22)
+[`app/layout.tsx`](../../app/layout.tsx) (行 12-22)
 
 ```12:22
   title: "白熊堂 | 本格かき氷のお店",
@@ -1098,13 +1126,14 @@ export default function ProductForm() {
   },
 };
 ```
+
 ### フォント最適化
 
 **説明**: Next.js の `next/font/google` を使用すると、Google Fonts を最適化して読み込めます。
 
 **このアプリでの使用箇所**:
 
-**参照**: [`app/layout.tsx`](../../app/layout.tsx) (行 6-10)
+[`app/layout.tsx`](../../app/layout.tsx) (行 6-10)
 
 ```6:10
   variable: "--font-noto-sans-jp",
@@ -1112,6 +1141,7 @@ export default function ProductForm() {
   weight: ["300", "400", "500", "700"],
 });
 ```
+
 ## このアプリでの App Router の使用例まとめ
 
 ### ページ構成

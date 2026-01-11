@@ -117,7 +117,6 @@ React Hooks は、関数コンポーネントで状態管理や副作用を扱�
 
 **基本的な使い方**:
 
-```
 1. **[`app/hooks/useProductModal.ts`](../../app/hooks/useProductModal.ts) (行 12-16)** - 商品モーダルの状態管理
 
 ```12:16
@@ -315,7 +314,7 @@ React では、副作用を `useEffect` Hook を使用して処理します。`u
   );
 ```
 
-**参照**: [`app/dashboard/components/ProductList.tsx`](../../app/dashboard/components/ProductList.tsx) (行 214-218)
+[`app/dashboard/components/ProductList.tsx`](../../app/dashboard/components/ProductList.tsx) (行 214-218)
 
 ```214:218
     () =>
@@ -350,7 +349,7 @@ React では、副作用を `useEffect` Hook を使用して処理します。`u
   }, []);
 ```
 
-**参照**: [`app/hooks/useProductModal.ts`](../../app/hooks/useProductModal.ts) (行 37-48)
+[`app/hooks/useProductModal.ts`](../../app/hooks/useProductModal.ts) (行 37-48)
 
 ```37:48
     setIsModalOpen(false);
@@ -365,7 +364,7 @@ React では、副作用を `useEffect` Hook を使用して処理します。`u
   }, []);
 ```
 
-**参照**: [`app/dashboard/components/ProductList.tsx`](../../app/dashboard/components/ProductList.tsx) (行 95-121)
+[`app/dashboard/components/ProductList.tsx`](../../app/dashboard/components/ProductList.tsx) (行 95-121)
 
 ```95:121
     async (productId: number) => {
@@ -413,7 +412,6 @@ export default memo(ProductTile);
 
 **基本的な使い方**:
 
-```typescript
 1. **[`app/dashboard/components/CategoryTabs.tsx`](../../app/dashboard/components/CategoryTabs.tsx) (行 39-41)** - DOM 要素への参照
 
 ```39:41
@@ -551,7 +549,7 @@ function ParentComponent() {
 
 **実装コード**:
 
-**参照**: [`app/hooks/useModal.ts`](../../app/hooks/useModal.ts) (行 12-48)
+[`app/hooks/useModal.ts`](../../app/hooks/useModal.ts) (行 12-48)
 
 ```12:48
   // onCloseの最新の参照を保持するref
@@ -590,7 +588,7 @@ function ParentComponent() {
 }
 ```
 
-**参照**: [`app/components/ProductModal.tsx`](../../app/components/ProductModal.tsx) (行 40-41)
+[`app/components/ProductModal.tsx`](../../app/components/ProductModal.tsx) (行 40-41)
 
 ```40:41
   useModal(isOpen, onClose);
@@ -612,7 +610,7 @@ function ParentComponent() {
 
 **実装コード**:
 
-**参照**: [`app/hooks/useProductModal.ts`](../../app/hooks/useProductModal.ts) (行 12-65)
+[`app/hooks/useProductModal.ts`](../../app/hooks/useProductModal.ts) (行 12-65)
 
 ```12:65
   // 選択された商品を管理（モーダル表示用）
@@ -668,7 +666,7 @@ function ParentComponent() {
 }
 ```
 
-**参照**: [`app/components/ProductGrid.tsx`](../../app/components/ProductGrid.tsx) (行 31-37)
+[`app/components/ProductGrid.tsx`](../../app/components/ProductGrid.tsx) (行 31-37)
 
 ```31:37
   const {
@@ -699,7 +697,7 @@ function ParentComponent() {
 
 **実装コード**:
 
-**参照**: [`app/dashboard/hooks/useTabState.ts`](../../app/dashboard/hooks/useTabState.ts) (行 27-50)
+[`app/dashboard/hooks/useTabState.ts`](../../app/dashboard/hooks/useTabState.ts) (行 27-50)
 
 ```27:50
   // 初期値を localStorage から読み込む
@@ -742,7 +740,7 @@ function ParentComponent() {
 
 **実装コード**:
 
-**参照**: [`app/dashboard/hooks/useTabState.ts`](../../app/dashboard/hooks/useTabState.ts) (行 64-116)
+[`app/dashboard/hooks/useTabState.ts`](../../app/dashboard/hooks/useTabState.ts) (行 64-116)
 
 ```64:116
   products: Product[],
@@ -815,7 +813,7 @@ function ParentComponent() {
 
 **実装コード**:
 
-**参照**: [`app/dashboard/hooks/useProductReorder.ts`](../../app/dashboard/hooks/useProductReorder.ts) (行 21-118)
+[`app/dashboard/hooks/useProductReorder.ts`](../../app/dashboard/hooks/useProductReorder.ts) (行 21-118)
 
 ```21:118
   setProducts: React.Dispatch<React.SetStateAction<Product[]>>,
@@ -955,7 +953,6 @@ function ParentComponent() {
 ├── CategoryTabs (Client Component)
 └── SortableProductItem (Client Component)
 
-```
 1. **[`app/components/ProductGrid.tsx`](../../app/components/ProductGrid.tsx) (行 30-78)** - 商品グリッドコンポーネント
 
 ```30:78
