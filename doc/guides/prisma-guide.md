@@ -92,7 +92,6 @@ export default defineConfig({
   },
 });
 **参照**: [`prisma.config.ts`](../prisma.config.ts)
-**参照**: [`prisma.config.ts`](../prisma.config.ts)
 
 ```
 - 設定ファイルが [`prisma.config.ts`](../../prisma.config.ts) に分離された
@@ -143,7 +142,7 @@ const prisma = new PrismaClient({
 
 **参照**: [`lib/prisma.ts`](../../lib/prisma.ts) (行 28-70)
 
-```28:70:lib/prisma.ts
+```28:70
   // Prisma 7では、Neonに接続するためにアダプターを使用します
   const rawConnectionString = process.env.DATABASE_URL || process.env.POSTGRES_URL;
 
@@ -201,7 +200,7 @@ const prisma = new PrismaClient({
 
 **参照**: [`lib/prisma.ts`](../../lib/prisma.ts) (行 19-22)
 
-```19:22:lib/prisma.ts
+```19:22
 if (typeof globalThis !== 'undefined' && !globalThis.WebSocket) {
   neonConfig.webSocketConstructor = ws;
 }
@@ -216,7 +215,7 @@ if (typeof globalThis !== 'undefined' && !globalThis.WebSocket) {
 
 **参照**: [`lib/prisma.ts`](../../lib/prisma.ts) (行 72-77)
 
-```72:77:lib/prisma.ts
+```72:77
   globalForPrisma.prisma ?? createPrismaClient();
 
 if (process.env.NODE_ENV !== 'production') {
@@ -302,7 +301,6 @@ model Product {
   @@map("products")
 }
 **参照**: [`prisma/schema.prisma`](../prisma/schema.prisma)
-**参照**: [`prisma/schema.prisma`](../prisma/schema.prisma)
 
 ```
 1. **Generator**: Prisma Client の生成方法を指定
@@ -342,7 +340,6 @@ model Product {
   priceL      Decimal?  @map("price_l") @db.Decimal(10, 2)  // DECIMAL型を使用
   // ...
 }
-**参照**: [`prisma/schema.prisma`](../prisma/schema.prisma)
 **参照**: [`prisma/schema.prisma`](../prisma/schema.prisma)
 
 ```
@@ -433,10 +430,8 @@ export default defineConfig({
   },
 });
 **参照**: [`prisma.config.ts`](../prisma.config.ts)
-**参照**: [`prisma.config.ts`](../prisma.config.ts)
 
 ```
-```bash
 npm run db:migrate
 
 # 本番環境でマイグレーションを適用
@@ -477,7 +472,6 @@ CREATE TABLE "products" (
 -- AddForeignKey
 ALTER TABLE "products" ADD CONSTRAINT "products_category_id_fkey"
     FOREIGN KEY ("category_id") REFERENCES "categories"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
-```
 ```sql
 -- AlterTable
 ALTER TABLE "products" ADD COLUMN "published" BOOLEAN NOT NULL DEFAULT true;
@@ -504,8 +498,6 @@ npm run db:push           # スキーマを直接プッシュ（開発環境の�
 
 **型生成の実行**:
 
-```bash
-```
 ```typescript
 export type Category = {
   id: number;
@@ -529,7 +521,6 @@ export type Product = {
   createdAt: Date;
   updatedAt: Date;
 };
-```
 ```typescript
 import { Product, Category } from "@prisma/client";
 
@@ -555,7 +546,6 @@ console.log(product.invalidField); // コンパイルエラー
 
 **Prisma Studio の起動**:
 
-```bash
 ```
 - データベースの内容をブラウザで確認
 - データの追加・編集・削除
@@ -577,19 +567,18 @@ npm run db:studio
 **基本的な使い方**:
 
 ```typescript
-```
 1. **[`app/page.tsx`](../../app/page.tsx)** - カテゴリー一覧の取得
 
 **参照**: [`app/page.tsx`](../../app/page.tsx) (行 30-34)
 
-```30:34:app/page.tsx
+```30:34
       orderBy: {
         id: "asc",
       },
     }),
 ```
 **参照**: [`app/page.tsx`](../../app/page.tsx) (行 36-46)
-```36:46:app/page.tsx
+```36:46
       include: {
         category: true, // カテゴリー情報も一緒に取得（N+1問題を回避）
       },
@@ -602,14 +591,14 @@ npm run db:studio
     }),
 ```
 **参照**: [`app/dashboard/page.tsx`](../../app/dashboard/page.tsx) (行 21-25)
-```21:25:app/dashboard/page.tsx
+```21:25
       orderBy: {
         id: "asc",
       },
     }),
 ```
 **参照**: [`app/dashboard/page.tsx`](../../app/dashboard/page.tsx) (行 27-34)
-```27:34:app/dashboard/page.tsx
+```27:34
       include: {
         category: true, // 関連するカテゴリー情報も一緒に取得
       },
@@ -619,7 +608,7 @@ npm run db:studio
     }),
 ```
 **参照**: [`app/api/products/route.ts`](../../app/api/products/route.ts) (行 31-38)
-```31:38:app/api/products/route.ts
+```31:38
         include: {
           category: true, // 関連するカテゴリー情報も取得
         },
@@ -629,7 +618,7 @@ npm run db:studio
       }),
 ```
 **参照**: [`app/api/categories/route.ts`](../../app/api/categories/route.ts) (行 16-20)
-```16:20:app/api/categories/route.ts
+```16:20
         orderBy: {
           id: 'asc',
         },
@@ -656,25 +645,21 @@ npm run db:studio
 
 **参照**: [`app/api/products/route.ts`](../../app/api/products/route.ts) (行 87-90)
 
-```87:90:app/api/products/route.ts
+```87:90
     'POST /api/products - category check'
   );
 ```
-```25:30:app/api/products/[id]/route.ts
         where: { id: productId },
         include: {
           category: true,
         },
       }),
-```
 ```57:60:app/api/products/[id]/route.ts
     `PUT /api/products/${id} - existence check`
   );
 ```
-```85:88:app/api/products/[id]/route.ts
       `PUT /api/products/${id} - category check`
     );
-```
 ```171:174:app/api/products/[id]/route.ts
     `DELETE /api/products/${id} - existence check`
   );
@@ -701,7 +686,7 @@ npm run db:studio
 
 **参照**: [`app/api/products/route.ts`](../../app/api/products/route.ts) (行 115-133)
 
-```115:133:app/api/products/route.ts
+```115:133
       prisma.product.create({
         data: {
           name: body.name.trim(), // 前後の空白を削除
@@ -748,7 +733,7 @@ npm run db:studio
       }),
 ```
 **参照**: [`app/api/products/reorder/route.ts`](../../app/api/products/reorder/route.ts) (行 23-26)
-```23:26:app/api/products/reorder/route.ts
+```23:26
             where: { id: item.id },
             data: { displayOrder: item.displayOrder },
           })
@@ -791,7 +776,7 @@ npm run db:studio
 
 **参照**: [`app/api/products/reorder/route.ts`](../../app/api/products/reorder/route.ts) (行 19-29)
 
-```19:29:app/api/products/reorder/route.ts
+```19:29
       await prisma.$transaction(
         body.productOrders.map((item: { id: number; displayOrder: number }) =>
           prisma.product.update({
@@ -833,30 +818,25 @@ const products = await prisma.product.findMany({
 
 **参照**: [`app/api/products/route.ts`](../../app/api/products/route.ts) (行 87-90)
 
-```87:90:app/api/products/route.ts
+```87:90
     'POST /api/products - category check'
   );
 ```
-```25:30:app/api/products/[id]/route.ts
         where: { id: productId },
         include: {
           category: true,
         },
       }),
-```
 ```57:60:app/api/products/[id]/route.ts
     `PUT /api/products/${id} - existence check`
   );
 ```
-```85:88:app/api/products/[id]/route.ts
       `PUT /api/products/${id} - category check`
     );
-```
 ```171:174:app/api/products/[id]/route.ts
     `DELETE /api/products/${id} - existence check`
   );
 ```
-```141:150:app/api/products/[id]/route.ts
       prisma.product.update({
         where: { id: productId },
         data: updateData,
@@ -864,13 +844,12 @@ const products = await prisma.product.findMany({
           category: true,
         },
       }),
-```
 ```192:195:app/api/products/[id]/route.ts
     `DELETE /api/products/${id}`
   );
 ```
 **参照**: [`app/api/products/reorder/route.ts`](../../app/api/products/reorder/route.ts) (行 23-26)
-```23:26:app/api/products/reorder/route.ts
+```23:26
             where: { id: item.id },
             data: { displayOrder: item.displayOrder },
           })
@@ -914,14 +893,14 @@ const products = await prisma.product.findMany({
 
 **参照**: [`app/page.tsx`](../../app/page.tsx) (行 30-34)
 
-```30:34:app/page.tsx
+```30:34
       orderBy: {
         id: "asc",
       },
     }),
 ```
 **参照**: [`app/page.tsx`](../../app/page.tsx) (行 36-46)
-```36:46:app/page.tsx
+```36:46
       include: {
         category: true, // カテゴリー情報も一緒に取得（N+1問題を回避）
       },
@@ -934,14 +913,14 @@ const products = await prisma.product.findMany({
     }),
 ```
 **参照**: [`app/dashboard/page.tsx`](../../app/dashboard/page.tsx) (行 21-25)
-```21:25:app/dashboard/page.tsx
+```21:25
       orderBy: {
         id: "asc",
       },
     }),
 ```
 **参照**: [`app/dashboard/page.tsx`](../../app/dashboard/page.tsx) (行 27-34)
-```27:34:app/dashboard/page.tsx
+```27:34
       include: {
         category: true, // 関連するカテゴリー情報も一緒に取得
       },
@@ -951,7 +930,7 @@ const products = await prisma.product.findMany({
     }),
 ```
 **参照**: [`app/api/products/route.ts`](../../app/api/products/route.ts) (行 31-38)
-```31:38:app/api/products/route.ts
+```31:38
         include: {
           category: true, // 関連するカテゴリー情報も取得
         },
@@ -961,7 +940,7 @@ const products = await prisma.product.findMany({
       }),
 ```
 **参照**: [`app/api/categories/route.ts`](../../app/api/categories/route.ts) (行 16-20)
-```16:20:app/api/categories/route.ts
+```16:20
         orderBy: {
           id: 'asc',
         },
@@ -991,7 +970,6 @@ orderBy: {
   },
 }
 **参照**: [`app/page.ts`](../app/page.ts)
-**参照**: [`app/page.ts`](../app/page.ts)
 
 ```
 ### include
@@ -1018,7 +996,7 @@ const categories = await prisma.category.findMany({
 
 **参照**: [`app/page.tsx`](../../app/page.tsx) (行 36-46)
 
-```36:46:app/page.tsx
+```36:46
       include: {
         category: true, // カテゴリー情報も一緒に取得（N+1問題を回避）
       },
@@ -1031,7 +1009,7 @@ const categories = await prisma.category.findMany({
     }),
 ```
 **参照**: [`app/dashboard/page.tsx`](../../app/dashboard/page.tsx) (行 27-34)
-```27:34:app/dashboard/page.tsx
+```27:34
       include: {
         category: true, // 関連するカテゴリー情報も一緒に取得
       },
@@ -1041,7 +1019,7 @@ const categories = await prisma.category.findMany({
     }),
 ```
 **参照**: [`app/api/products/route.ts`](../../app/api/products/route.ts) (行 31-38)
-```31:38:app/api/products/route.ts
+```31:38
         include: {
           category: true, // 関連するカテゴリー情報も取得
         },
@@ -1051,7 +1029,7 @@ const categories = await prisma.category.findMany({
       }),
 ```
 **参照**: [`app/api/products/route.ts`](../../app/api/products/route.ts) (行 115-133)
-```115:133:app/api/products/route.ts
+```115:133
       prisma.product.create({
         data: {
           name: body.name.trim(), // 前後の空白を削除
@@ -1069,13 +1047,11 @@ const categories = await prisma.category.findMany({
         },
       }),
 ```
-```25:30:app/api/products/[id]/route.ts
         where: { id: productId },
         include: {
           category: true,
         },
       }),
-```
 ```141:150:app/api/products/[id]/route.ts
       prisma.product.update({
         where: { id: productId },
@@ -1335,8 +1311,6 @@ const product: Product = await prisma.product.findUnique({
 // 型安全なプロパティアクセス
 console.log(product.name); // OK
 console.log(product.invalidField); // コンパイルエラー
-```
-```bash
 ```
 データベーススキーマの変更は、Prisma のマイグレーション機能で管理します。
 

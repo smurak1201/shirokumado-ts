@@ -167,7 +167,6 @@ useModal(isOpen, onClose);
 
 **使用例**:
 
-```typescript
 ```
 #### Header (`Header.tsx`)
 
@@ -433,7 +432,6 @@ ProductGrid (Client Component)
 ProductModal (Client Component)
   ↓ カスタムフック（useModal）
   ↓ ESCキー処理とスクロール無効化
-```
 ```
   ↓ useProductModal()
   ├── selectedProduct (選択された商品)

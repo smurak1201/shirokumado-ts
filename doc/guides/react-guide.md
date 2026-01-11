@@ -117,30 +117,31 @@ React Hooks は、関数コンポーネントで状態管理や副作用を扱�
 
 **基本的な使い方**:
 
-```typescript
 ```
 1. **`app/hooks/useProductModal.ts`** - 商品モーダルの状態管理
 
 **参照**: [`app/hooks/useProductModal.ts`](../../app/hooks/useProductModal.ts) (行 12-16)
 
-```12:16:app/hooks/useProductModal.ts
+```12:16
   // 選択された商品を管理（モーダル表示用）
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   // モーダルの開閉状態を管理
   const [isModalOpen, setIsModalOpen] = useState(false);
 ```
+
 2. **`app/dashboard/components/DashboardContent.tsx`** - フォームの開閉状態管理
 
 **参照**: [`app/dashboard/components/DashboardContent.tsx`](../../app/dashboard/components/DashboardContent.tsx) (行 30-31)
 
-```30:31:app/dashboard/components/DashboardContent.tsx
+```30:31
   const [isFormOpen, setIsFormOpen] = useState(false);
 ```
+
 3. **`app/dashboard/hooks/useTabState.ts`** - タブ状態の管理（localStorage と同期）
 
 **参照**: [`app/dashboard/hooks/useTabState.ts`](../../app/dashboard/hooks/useTabState.ts) (行 30-40)
 
-```30:40:app/dashboard/hooks/useTabState.ts
+```30:40
     if (typeof window !== "undefined") {
       const saved = localStorage.getItem(STORAGE_KEYS.ACTIVE_TAB);
       // 保存された値が有効なタブタイプか確認
@@ -152,6 +153,7 @@ React Hooks は、関数コンポーネントで状態管理や副作用を扱�
     return "list";
   });
 ```
+
 **useState の特徴**:
 
 - **初期値**: 直接値を指定するか、関数を指定して遅延初期化が可能
@@ -206,11 +208,12 @@ React では、副作用を `useEffect` Hook を使用して処理します。`u
   };
 }, [dependencies]);
 ```
+
 1. **`app/hooks/useModal.ts`** - ESC キー処理と背景スクロール無効化
 
 **参照**: [`app/hooks/useModal.ts`](../../app/hooks/useModal.ts) (行 12-48)
 
-```12:48:app/hooks/useModal.ts
+```12:48
   // onCloseの最新の参照を保持するref
   // これにより、onCloseが変更されてもuseEffectを再実行せずに最新の関数を呼び出せる
   const onCloseRef = useRef(onClose);
@@ -246,17 +249,19 @@ React では、副作用を `useEffect` Hook を使用して処理します。`u
   }, [isOpen]); // onCloseを依存配列から削除（refで最新の値を保持しているため）
 }
 ```
+
 2. **`app/dashboard/hooks/useTabState.ts`** - localStorage への保存
 
 **参照**: [`app/dashboard/hooks/useTabState.ts`](../../app/dashboard/hooks/useTabState.ts) (行 42-47)
 
-```42:47:app/dashboard/hooks/useTabState.ts
+```42:47
   useEffect(() => {
     if (typeof window !== "undefined") {
       localStorage.setItem(STORAGE_KEYS.ACTIVE_TAB, activeTab);
     }
   }, [activeTab]);
 ```
+
 **useEffect の特徴**:
 
 - **依存配列**: 依存配列に指定した値が変更された時のみ、副作用が実行される
@@ -274,11 +279,12 @@ React では、副作用を `useEffect` Hook を使用して処理します。`u
   return computedValue;
 }, [dependencies]);
 ```
+
 1. **`app/dashboard/hooks/useTabState.ts`** - 初期カテゴリータブの計算
 
 **参照**: [`app/dashboard/hooks/useTabState.ts`](../../app/dashboard/hooks/useTabState.ts) (行 75-101)
 
-```75:101:app/dashboard/hooks/useTabState.ts
+```75:101
     // localStorage から保存されたカテゴリータブを読み込む
     if (typeof window !== "undefined") {
       const saved = localStorage.getItem(STORAGE_KEYS.ACTIVE_CATEGORY_TAB);
@@ -306,6 +312,7 @@ React では、副作用を `useEffect` Hook を使用して処理します。`u
     return sortedCategories[0]?.name || "";
   }, [products, categories]);
 ```
+
 **useMemo の特徴**:
 
 - **パフォーマンス最適化**: 計算コストの高い処理をメモ化することで、不要な再計算を防ぐ
@@ -316,18 +323,21 @@ React では、副作用を `useEffect` Hook を使用して処理します。`u
 
 **参照**: [`app/dashboard/components/ProductList.tsx`](../../app/dashboard/components/ProductList.tsx) (行 158-163)
 
-```158:163:app/dashboard/components/ProductList.tsx
+```158:163
     () => groupProductsByCategory(products, categories),
     [products, categories]
   );
 ```
+
 **参照**: [`app/dashboard/components/ProductList.tsx`](../../app/dashboard/components/ProductList.tsx) (行 214-218)
-```214:218:app/dashboard/components/ProductList.tsx
+
+```214:218
     () =>
       filterProducts(products, searchName, searchPublished, searchCategoryId),
     [products, searchName, searchPublished, searchCategoryId]
   );
 ```
+
 ### useCallback
 
 **説明**: コールバック関数をメモ化するための Hook です。依存配列の値が変更されない限り、前回作成した関数を再利用します。これにより、子コンポーネントの不要な再レンダリングを防止できます。
@@ -338,45 +348,53 @@ React では、副作用を `useEffect` Hook を使用して処理します。`u
   // コールバック関数の処理
 }, [dependencies]);
 ```
+
 1. **`app/dashboard/components/CategoryTabs.tsx`** - スクロール位置のチェック
 
 **参照**: [`app/dashboard/components/CategoryTabs.tsx`](../../app/dashboard/components/CategoryTabs.tsx) (行 54-72)
 
-```54:72:app/dashboard/components/CategoryTabs.tsx
+```54:72
     // ...
   }, []);
 ```
+
 2. **`app/hooks/useProductModal.ts`** - 商品モーダルの操作関数
 
 **参照**: [`app/hooks/useProductModal.ts`](../../app/hooks/useProductModal.ts) (行 28-31)
 
-```28:31:app/hooks/useProductModal.ts
+```28:31
     setSelectedProduct(product);
     setIsModalOpen(true);
   }, []);
 ```
+
 **参照**: [`app/hooks/useProductModal.ts`](../../app/hooks/useProductModal.ts) (行 37-48)
-```37:48:app/hooks/useProductModal.ts
+
+```37:48
     setIsModalOpen(false);
     // ...
   }, []);
 ```
+
 3. **`app/dashboard/components/ProductList.tsx`** - 商品操作のコールバック関数
 
 **参照**: [`app/dashboard/components/ProductList.tsx`](../../app/dashboard/components/ProductList.tsx) (行 87-89)
 
-```87:89:app/dashboard/components/ProductList.tsx
+```87:89
     setEditingProduct(product);
   }, []);
 ```
+
 **参照**: [`app/dashboard/components/ProductList.tsx`](../../app/dashboard/components/ProductList.tsx) (行 95-121)
-```95:121:app/dashboard/components/ProductList.tsx
+
+```95:121
     async (productId: number) => {
       // ...
     },
     [refreshProducts]
   );
 ```
+
 **useCallback の特徴**:
 
 - **パフォーマンス最適化**: コールバック関数をメモ化することで、子コンポーネントの不要な再レンダリングを防止
@@ -392,16 +410,18 @@ React では、副作用を `useEffect` Hook を使用して処理します。`u
 ```typescript
 const MemoizedComponent = memo(Component);
 ```
+
 1. **`app/components/ProductTile.tsx`** - 商品タイルコンポーネント
 
 **参照**: [`app/components/ProductTile.tsx`](../../app/components/ProductTile.tsx) (行 29-62)
 
-```29:62:app/components/ProductTile.tsx
+```29:62
   // ...
 }
 
 export default memo(ProductTile);
 ```
+
 **React.memo の特徴**:
 
 - **パフォーマンス最適化**: props が変更されない限り、再レンダリングをスキップ
@@ -416,22 +436,23 @@ export default memo(ProductTile);
 **基本的な使い方**:
 
 ```typescript
-```
 1. **`app/dashboard/components/CategoryTabs.tsx`** - DOM 要素への参照
 
 **参照**: [`app/dashboard/components/CategoryTabs.tsx`](../../app/dashboard/components/CategoryTabs.tsx) (行 39-41)
 
-```39:41:app/dashboard/components/CategoryTabs.tsx
+```39:41
   // useRef を使用して DOM 要素に直接アクセスします
   const scrollContainerRef = useRef<HTMLDivElement>(null);
 ```
+
 2. **`app/hooks/useProductModal.ts`** - タイマー ID の保持
 
 **参照**: [`app/hooks/useProductModal.ts`](../../app/hooks/useProductModal.ts) (行 19-20)
 
-```19:20:app/hooks/useProductModal.ts
+```19:20
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 ```
+
 **useRef の特徴**:
 
 - **再レンダリングを引き起こさない**: `ref.current` を変更しても、コンポーネントは再レンダリングされない
@@ -466,6 +487,7 @@ function Component() {
   return <div className={theme}>テーマ: {theme}</div>;
 }
 ```
+
 - 状態管理は親コンポーネントから props で渡す方が、データフローが明確で理解しやすい
 - 状態の共有が必要な範囲が限定的で、props で十分に対応できる
 
@@ -497,6 +519,7 @@ function Counter() {
   );
 }
 ```
+
 - 状態管理が比較的シンプルで、`useState`で十分に対応できる
 - 複数の状態を個別に管理する方が、コードが読みやすい
 
@@ -534,6 +557,7 @@ function ParentComponent() {
   );
 }
 ```
+
 - React のベストプラクティスに従い、props とコールバック関数で親子間の通信を行っている
 - データフローが明確で、コンポーネント間の結合が緩くなる
 - 宣言的な実装により、コードが理解しやすくなる
@@ -555,7 +579,7 @@ function ParentComponent() {
 
 **参照**: [`app/hooks/useModal.ts`](../../app/hooks/useModal.ts) (行 12-48)
 
-```12:48:app/hooks/useModal.ts
+```12:48
   // onCloseの最新の参照を保持するref
   // これにより、onCloseが変更されてもuseEffectを再実行せずに最新の関数を呼び出せる
   const onCloseRef = useRef(onClose);
@@ -591,10 +615,13 @@ function ParentComponent() {
   }, [isOpen]); // onCloseを依存配列から削除（refで最新の値を保持しているため）
 }
 ```
+
 **参照**: [`app/components/ProductModal.tsx`](../../app/components/ProductModal.tsx) (行 40-41)
-```40:41:app/components/ProductModal.tsx
+
+```40:41
   useModal(isOpen, onClose);
 ```
+
 - ESC キーでモーダルを閉じる
 - モーダル表示時の背景スクロール無効化
 - クリーンアップ処理によるメモリリークの防止
@@ -613,7 +640,7 @@ function ParentComponent() {
 
 **参照**: [`app/hooks/useProductModal.ts`](../../app/hooks/useProductModal.ts) (行 12-65)
 
-```12:65:app/hooks/useProductModal.ts
+```12:65
   // 選択された商品を管理（モーダル表示用）
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   // モーダルの開閉状態を管理
@@ -666,8 +693,10 @@ function ParentComponent() {
   };
 }
 ```
+
 **参照**: [`app/components/ProductGrid.tsx`](../../app/components/ProductGrid.tsx) (行 31-37)
-```31:37:app/components/ProductGrid.tsx
+
+```31:37
   const {
     selectedProduct,
     isModalOpen,
@@ -675,6 +704,7 @@ function ParentComponent() {
     handleCloseModal,
   } = useProductModal();
 ```
+
 - 商品タイルクリック時にモーダルを開く
 - モーダル閉じる時にアニメーション完了を待ってから選択をクリア
 - `setTimeout`のクリーンアップ処理によりメモリリークを防止
@@ -697,7 +727,7 @@ function ParentComponent() {
 
 **参照**: [`app/dashboard/hooks/useTabState.ts`](../../app/dashboard/hooks/useTabState.ts) (行 27-50)
 
-```27:50:app/dashboard/hooks/useTabState.ts
+```27:50
   // 初期値を localStorage から読み込む
   // サーバーサイドレンダリング時は window が存在しないため、typeof window チェックが必要
   const [activeTab, setActiveTab] = useState<TabType>(() => {
@@ -722,6 +752,7 @@ function ParentComponent() {
   return { activeTab, setActiveTab };
 }
 ```
+
 - タブの状態を localStorage に保存・復元
 - ページリロード後も選択していたタブを保持
 - サーバーサイドレンダリング時の `window` チェック
@@ -739,7 +770,7 @@ function ParentComponent() {
 
 **参照**: [`app/dashboard/hooks/useTabState.ts`](../../app/dashboard/hooks/useTabState.ts) (行 64-116)
 
-```64:116:app/dashboard/hooks/useTabState.ts
+```64:116
   products: Product[],
   categories: Category[]
 ) {
@@ -793,6 +824,7 @@ function ParentComponent() {
   return { activeCategoryTab, setActiveCategoryTab, initialCategoryTab };
 }
 ```
+
 - カテゴリータブの状態を localStorage に保存・復元
 - 公開商品がある最初のカテゴリーを自動選択
 - ページリロード後も選択していたカテゴリーを保持
@@ -811,7 +843,7 @@ function ParentComponent() {
 
 **参照**: [`app/dashboard/hooks/useProductReorder.ts`](../../app/dashboard/hooks/useProductReorder.ts) (行 21-118)
 
-```21:118:app/dashboard/hooks/useProductReorder.ts
+```21:118
   setProducts: React.Dispatch<React.SetStateAction<Product[]>>,
   refreshProducts: () => Promise<void>
 ) {
@@ -910,6 +942,7 @@ function ParentComponent() {
   return { reorderProducts };
 }
 ```
+
 - 楽観的 UI 更新（API 呼び出し前に UI を更新）
 - API 呼び出しによるサーバーへの保存
 - エラーハンドリング（失敗時は元の状態に戻す）
@@ -941,18 +974,19 @@ function ParentComponent() {
       └── ProductModal (Client Component)
           └── CloseIcon (Client Component)
 ```
-```
-  └── DashboardContent (Client Component)
-      ├── DashboardFormWrapper (Client Component)
-      └── ProductList (Client Component)
-          ├── CategoryTabs (Client Component)
-          └── SortableProductItem (Client Component)
+
+└── DashboardContent (Client Component)
+├── DashboardFormWrapper (Client Component)
+└── ProductList (Client Component)
+├── CategoryTabs (Client Component)
+└── SortableProductItem (Client Component)
+
 ```
 1. **[`app/components/ProductGrid.tsx`](../../app/components/ProductGrid.tsx)** - 商品グリッドコンポーネント
 
 **参照**: [`app/components/ProductGrid.tsx`](../../app/components/ProductGrid.tsx) (行 30-78)
 
-```30:78:app/components/ProductGrid.tsx
+```30:78
   // モーダルの状態管理（カスタムフックで実装）
   const {
     selectedProduct,
@@ -1002,11 +1036,12 @@ function ParentComponent() {
   );
 }
 ```
+
 2. **[`app/components/ProductModal.tsx`](../../app/components/ProductModal.tsx)** - 商品モーダルコンポーネント
 
 **参照**: [`app/components/ProductModal.tsx`](../../app/components/ProductModal.tsx) (行 35-119)
 
-```35:119:app/components/ProductModal.tsx
+```35:119
   product,
   isOpen,
   onClose,
@@ -1094,6 +1129,7 @@ function ParentComponent() {
   );
 }
 ```
+
 ## 状態管理
 
 このアプリでは、React の標準的な状態管理機能とカスタムフックを組み合わせて、状態を管理しています。
@@ -1109,13 +1145,22 @@ function ParentComponent() {
 1. **ローカル状態**: `useState` を使用してコンポーネント内の状態を管理
 
 ```typescript
+const [isFormOpen, setIsFormOpen] = useState(false);
 ```
+
+2. **永続化された状態**: `localStorage` と `useState` を組み合わせて状態を永続化
+
 ```typescript
+const [activeTab, setActiveTab] = useState(() => {
   const saved = localStorage.getItem("activeTab");
   return saved || "default";
 });
 ```
+
+3. **楽観的更新**: API 呼び出し前に UI を更新し、エラー時は元に戻す
+
 ```typescript
+// 楽観的更新
 setProducts(newProducts);
 
 try {
@@ -1125,6 +1170,7 @@ try {
   await refreshProducts();
 }
 ```
+
 React では、イベントハンドラーを props として渡すことで、コンポーネント間でイベントを処理できます。
 
 **関連**: JSX でのイベントハンドラーの書き方については、[JSX ガイド - イベントハンドラー](./jsx-guide.md#イベントハンドラー)を参照してください。
@@ -1135,7 +1181,7 @@ React では、イベントハンドラーを props として渡すことで、�
 
 **参照**: [`app/components/ProductTile.tsx`](../../app/components/ProductTile.tsx) (行 29-62)
 
-```29:62:app/components/ProductTile.tsx
+```29:62
   return (
     <button
       onClick={onClick}
@@ -1170,15 +1216,17 @@ React では、イベントハンドラーを props として渡すことで、�
   );
 }
 ```
+
 2. **`app/components/ProductModal.tsx`** - イベント伝播の制御
 
 **参照**: [`app/components/ProductModal.tsx`](../../app/components/ProductModal.tsx) (行 50-54)
 
-```50:54:app/components/ProductModal.tsx
+```50:54
         className="relative max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-lg bg-white shadow-2xl"
         onClick={(e) => e.stopPropagation()}
       >
 ```
+
 ## このアプリでの React の使用例まとめ
 
 ### コンポーネント構成
@@ -1246,6 +1294,7 @@ function ProductTile({ product, onClick }: ProductTileProps) {
 
 export default memo(ProductTile);
 ```
+
 - `useMemo` を使用して計算コストの高い値をメモ化
 - **例**: `useCategoryTabState` で初期カテゴリータブの計算をメモ化
 - **例**: `ProductList` で `filteredProducts` を `useMemo` でメモ化
@@ -1326,6 +1375,7 @@ export default memo(ProductTile);
   <YourComponent />
 </ErrorBoundary>
 ```
+
 - エラーのキャッチと表示
 - 再試行機能
 - 開発環境でのエラー詳細表示

@@ -49,7 +49,6 @@ DashboardContent (Client Component)
       ├── CategoryTabs
       └── SortableProductItem
 ```
-```
 ├── page.tsx                    # エントリーポイント（Server Component）
 ├── types.ts                    # 共通型定義
 ├── components/                 # UIコンポーネント
@@ -241,7 +240,6 @@ DashboardContent (Client Component)
   ↓ useStateで状態管理
 子コンポーネント
 ```
-```
   ↓ フォーム入力
   ↓ バリデーション
   ↓ fetch('/api/products', { method: 'POST' })
@@ -315,7 +313,6 @@ React のベストプラクティスに従い、共有状態は親コンポー�
 
 **使用例**:
 
-```typescript
 ```
 商品順序変更のロジックを実装したカスタムフックです。
 
@@ -328,11 +325,8 @@ React のベストプラクティスに従い、共有状態は親コンポー�
 **使用例**:
 
 ```typescript
-```
 ### 商品一覧取得
 
-```typescript
-```
 ```typescript
 Content-Type: application/json
 
@@ -345,7 +339,6 @@ Content-Type: application/json
   "priceL": 800,
   "published": true
 }
-```
 ```typescript
 Content-Type: application/json
 
@@ -353,9 +346,6 @@ Content-Type: application/json
   "name": "更新後の商品名",
   // ...
 }
-```
-```typescript
-```
 ```typescript
 Content-Type: application/json
 
@@ -364,7 +354,6 @@ Content-Type: application/json
   "newOrder": 2
 }
 ```
-```typescript
 Content-Type: multipart/form-data
 
 file: [画像ファイル]

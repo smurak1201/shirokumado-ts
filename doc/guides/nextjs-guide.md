@@ -144,7 +144,7 @@ Next.js の設定を管理するファイルです。画像最適化、実験的
 
 **参照**: [`next.config.ts`](../../next.config.ts) (行 1-30)
 
-```1:30:next.config.ts
+```1:30
 const nextConfig: NextConfig = {
   // 画像最適化の設定
   images: {
@@ -203,7 +203,7 @@ Next.js は、`next/image` コンポーネントを使用して、画像の自�
 
 **参照**: [`app/page.tsx`](../../app/page.tsx) (行 90-98)
 
-```90:98:app/page.tsx
+```90:98
         <Image
           src="/hero.webp"
           alt="白熊堂"
@@ -217,7 +217,7 @@ Next.js は、`next/image` コンポーネントを使用して、画像の自�
 
 **参照**: [`app/components/ProductTile.tsx`](../../app/components/ProductTile.tsx) (行 39-46)
 
-```39:46:app/components/ProductTile.tsx
+```39:46
           <Image
             src={product.imageUrl}
             alt={product.name}
@@ -231,7 +231,7 @@ Next.js は、`next/image` コンポーネントを使用して、画像の自�
 
 **参照**: [`app/components/ProductModal.tsx`](../../app/components/ProductModal.tsx) (行 68-75)
 
-```68:75:app/components/ProductModal.tsx
+```68:75
             <Image
               src={product.imageUrl}
               alt={product.name}
@@ -247,7 +247,7 @@ Next.js は、`next/image` コンポーネントを使用して、画像の自�
 
 **参照**: [`next.config.ts`](../../next.config.ts) (行 4-13)
 
-```4:13:next.config.ts
+```4:13
   images: {
     formats: ['image/avif', 'image/webp'],
     remotePatterns: [
@@ -277,14 +277,13 @@ Next.js は、`next/font/google` を使用して、Google Fonts を最適化し�
 
 **参照**: [`app/layout.tsx`](../../app/layout.tsx) (行 6-10)
 
-```6:10:app/layout.tsx
+```6:10
   variable: "--font-noto-sans-jp",
   subsets: ["latin"],
   weight: ["300", "400", "500", "700"],
 });
 ```
 **参照**: [`app/layout.tsx`](../../app/layout.tsx) (行 31-31)
-```31:31:app/layout.tsx
 ```
 **フォント最適化のメリット**:
 
@@ -304,7 +303,7 @@ Next.js は、`metadata` オブジェクトを使用して、ページのメタ�
 
 **参照**: [`app/layout.tsx`](../../app/layout.tsx) (行 12-22)
 
-```12:22:app/layout.tsx
+```12:22
   title: "白熊堂 | 本格かき氷のお店",
   description:
     "白熊堂は本格かき氷のお店です。ふわふわの氷とこだわりのシロップでお待ちしています。",
@@ -345,7 +344,6 @@ Next.js は、`npm run build` コマンドでプロダクションビルドを�
 **ビルドコマンド**:
 
 ```bash
-```
 - `.next/`: ビルド成果物が保存されるディレクトリ
 - `out/`: 静的エクスポートの場合、静的ファイルが保存されるディレクトリ
 
