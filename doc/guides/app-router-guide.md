@@ -711,7 +711,7 @@ export const dynamic = 'force-dynamic';
 
 - **`app/api/products/[id]/route.ts`**: 商品 ID に基づく動的ルーティング
 
-```12:39:app/api/products/[id]/route.ts
+```12:39
   _request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) => {
@@ -862,7 +862,7 @@ export const dynamic = 'force-dynamic';
 
 2. **[`app/api/products/[id]/route.ts`](../../app/api/products/[id]/route.ts) (行 44-154)** - 個別商品の操作
 
-```44:154:app/api/products/[id]/route.ts
+```44:154
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) => {
