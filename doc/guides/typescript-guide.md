@@ -131,6 +131,59 @@ TypeScript の設定を管理するファイルです。コンパイラオプシ
 }
 ```
 
+**設定項目の詳細**:
+
+1. **基本設定**:
+
+   - `target: "ES2017"`: コンパイル後の JavaScript のバージョン（ES2017 をターゲット）
+   - `lib: ["dom", "dom.iterable", "esnext"]`: 使用する型定義ライブラリ（DOM API、ES6+ の機能）
+   - `allowJs: true`: JavaScript ファイルも TypeScript プロジェクトに含める（段階的移行を可能にする）
+   - `skipLibCheck: true`: 型定義ファイル（`.d.ts`）の型チェックをスキップ（ビルド時間の短縮）
+
+2. **厳格な型チェック**:
+
+   - `strict: true`: すべての厳格な型チェックオプションを有効化
+     - `noImplicitAny`: 暗黙的な `any` 型を禁止
+     - `strictNullChecks`: `null` と `undefined` の厳格なチェック
+     - `strictFunctionTypes`: 関数の型の厳格なチェック
+     - その他の厳格なチェックオプション
+   - `noUnusedLocals: true`: 未使用のローカル変数をエラーにする
+   - `noUnusedParameters: true`: 未使用のパラメータをエラーにする
+   - `noFallthroughCasesInSwitch: true`: switch 文で break がない場合をエラーにする
+   - `noUncheckedIndexedAccess: true`: インデックスアクセス（`array[0]`）の結果が `undefined` の可能性があることを型で表現
+
+3. **モジュール解決**:
+
+   - `module: "esnext"`: ES モジュール形式を使用
+   - `moduleResolution: "bundler"`: バンドラー（Next.js）向けのモジュール解決
+   - `resolveJsonModule: true`: JSON ファイルをモジュールとしてインポート可能
+   - `isolatedModules: true`: 各ファイルを独立してコンパイル可能にする（トランスパイラとの互換性）
+
+4. **JSX 設定**:
+
+   - `jsx: "react-jsx"`: React 19 の新しい JSX 変換を使用（`React` のインポートが不要）
+
+5. **パスエイリアス**:
+
+   - `paths: { "@/*": ["./*"] }`: `@/` でプロジェクトルートを参照可能
+     - 例: `import { prisma } from "@/lib/prisma"`
+     - 相対パス（`../../lib/prisma`）よりも読みやすく、メンテナンスしやすい
+
+6. **その他**:
+   - `noEmit: true`: JavaScript ファイルを生成しない（Next.js がビルドを担当）
+   - `incremental: true`: 増分コンパイルを有効化（ビルド時間の短縮）
+   - `forceConsistentCasingInFileNames: true`: ファイル名の大文字小文字の一貫性を強制
+
+**設定の変更方法**:
+
+設定を変更する場合は、[`tsconfig.json`](../../tsconfig.json) を編集してください。変更後は、TypeScript サーバーが自動的に再読み込みされます（VS Code の場合）。
+
+**理由**:
+
+- **型安全性**: 厳格な型チェックにより、実行時エラーを事前に検出
+- **開発効率**: パスエイリアスにより、インポートパスが簡潔になる
+- **パフォーマンス**: 増分コンパイルにより、ビルド時間が短縮される
+
 1. **基本設定**:
 
    - `target: "ES2017"`: コンパイル後の JavaScript のバージョン
@@ -711,4 +764,5 @@ type ReadonlyProduct = Readonly<Product>;
 - **[React ガイド](./react-guide.md)**: React での TypeScript の使用方法
 - **[JSX ガイド](./jsx-guide.md)**: TypeScript での JSX の使用方法
 - **[Next.js ガイド](./nextjs-guide.md)**: Next.js での TypeScript の使用方法
+- **[ユーティリティ関数ガイド](./utilities-guide.md)**: 環境変数の型安全な管理（`lib/env.ts`）の詳細
 - **[TypeScript 公式ドキュメント](https://www.typescriptlang.org/docs/)**: TypeScript の包括的なドキュメント

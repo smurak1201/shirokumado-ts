@@ -93,6 +93,15 @@ Next.js の設定を確認します。
 
 API Routes で使用する共通のヘルパー関数を確認します。
 
+#### その他のユーティリティ
+
+- [`lib/product-utils.ts`](../lib/product-utils.ts): 商品関連のユーティリティ関数（公開状態判定、価格フォーマットなど）
+- [`lib/image-compression.ts`](../lib/image-compression.ts): 画像圧縮ユーティリティ
+- [`lib/blob.ts`](../lib/blob.ts): Blob Storage ユーティリティ
+- [`lib/env.ts`](../lib/env.ts): 環境変数の型安全な管理
+
+**詳細**: ユーティリティ関数の詳細については、[ユーティリティ関数ガイド](./guides/utilities-guide.md)を参照してください。
+
 #### [`lib/prisma.ts`](../lib/prisma.ts)
 
 データベース接続の設定と使用方法を理解します。

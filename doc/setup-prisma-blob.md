@@ -55,6 +55,58 @@ POSTGRES_URL_NON_POOLING=postgresql://...
 BLOB_READ_WRITE_TOKEN=vercel_blob_rw_...
 ```
 
+### 環境変数の型安全な管理
+
+**説明**: このアプリでは、[`lib/env.ts`](../lib/env.ts) を使用して環境変数を型安全に取得します。
+
+**このアプリでの使用箇所**:
+
+- [`lib/prisma.ts`](../lib/prisma.ts): データベース接続情報の取得
+- [`lib/blob.ts`](../lib/blob.ts): Blob Storage トークンの取得
+
+**サーバーサイド環境変数の取得**:
+
+[`lib/env.ts`](../lib/env.ts) (行 37-63)
+
+```typescript
+import { getServerEnv } from "@/lib/env";
+
+// Server Component や API Route で使用
+const env = getServerEnv();
+const dbUrl = env.DATABASE_URL; // 型安全
+const blobToken = env.BLOB_READ_WRITE_TOKEN; // 型安全
+```
+
+**クライアントサイド環境変数の取得**:
+
+[`lib/env.ts`](../lib/env.ts) (行 69-75)
+
+```typescript
+import { getClientEnv } from "@/lib/env";
+
+// Client Component で使用
+const env = getClientEnv();
+const projectId = env.NEXT_PUBLIC_STACK_PROJECT_ID; // 型安全
+```
+
+**環境変数の使い分け**:
+
+- **`getServerEnv()`**: Server Components や API Routes で使用
+  - 機密情報（データベース URL、Blob Storage トークンなど）を含む
+  - `DATABASE_URL`, `BLOB_READ_WRITE_TOKEN` など
+- **`getClientEnv()`**: Client Components で使用
+  - `NEXT_PUBLIC_` プレフィックスが付いた公開可能な環境変数のみ
+  - `NEXT_PUBLIC_STACK_PROJECT_ID` など
+
+**理由**:
+
+- **型安全性**: 環境変数が型定義され、型安全なアクセスが可能
+- **バリデーション**: 必須の環境変数が設定されていない場合、エラーを早期に検出
+- **明確な分離**: サーバーサイドとクライアントサイドの環境変数を明確に分離
+- **セキュリティ**: クライアントサイドで機密情報が公開されることを防止
+
+**詳細**: 環境変数の管理方法の詳細については、[ユーティリティ関数ガイド](./guides/utilities-guide.md#環境変数の型安全な管理-libenvts)を参照してください。
+
 ## Prisma の使用方法
 
 ### Prisma Client のインポート

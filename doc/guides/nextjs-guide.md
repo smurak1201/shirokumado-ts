@@ -176,17 +176,40 @@ const nextConfig: NextConfig = {
 export default nextConfig;
 ```
 
+**設定項目の詳細**:
+
 1. **画像最適化** (`images`):
 
-   - `formats`: AVIF と WebP 形式を優先的に使用
-   - `remotePatterns`: Vercel Blob Storage からの画像読み込みを許可
+   - `formats: ['image/avif', 'image/webp']`: AVIF と WebP 形式を優先的に使用
+     - AVIF は最新の画像形式で、JPEG よりも約 50% 小さなファイルサイズを実現
+     - WebP は広くサポートされており、JPEG よりも約 25-35% 小さなファイルサイズを実現
+     - ブラウザがサポートしていない場合は、元の形式にフォールバック
+   - `remotePatterns`: 外部ドメインからの画像読み込みを許可
+     - `protocol: 'https'`: HTTPS プロトコルのみ許可（セキュリティ）
+     - `hostname: '*.public.blob.vercel-storage.com'`: Vercel Blob Storage からの画像読み込みを許可
+     - ワイルドカード（`*`）を使用して、すべてのサブドメインを許可
 
 2. **実験的な機能** (`experimental`):
 
-   - `serverActions`: サーバーアクションのボディサイズ制限を 2MB に設定
+   - `serverActions.bodySizeLimit: '2mb'`: サーバーアクションのボディサイズ制限を 2MB に設定
+     - ファイルアップロードなどの大きなペイロードを処理する際の制限
+     - このアプリでは画像アップロードに使用（実際の画像は Blob Storage に直接アップロード）
 
 3. **TypeScript** (`typescript`):
-   - `ignoreBuildErrors`: 本番ビルド時に型エラーがある場合、ビルドを失敗させる（型安全性を確保）
+
+   - `ignoreBuildErrors: false`: 本番ビルド時に型エラーがある場合、ビルドを失敗させる
+     - 型安全性を確保し、実行時エラーを防止
+     - 開発環境では型エラーがあってもビルドは続行されるが、本番環境では型エラーがあるとビルドが失敗
+
+**設定の変更方法**:
+
+設定を変更する場合は、[`next.config.ts`](../../next.config.ts) を編集し、開発サーバーを再起動してください。
+
+**理由**:
+
+- **パフォーマンス**: 画像最適化により、ページの読み込み速度が向上
+- **セキュリティ**: `remotePatterns` により、許可されたドメインからのみ画像を読み込む
+- **型安全性**: TypeScript の設定により、型エラーを早期に検出
 
 ## 画像最適化
 
@@ -444,6 +467,7 @@ Server Components により、クライアントサイドの JavaScript を最�
 - **[App Router ガイド](./app-router-guide.md)**: App Router の詳細な使用方法（Server Components、Client Components、API Routes、データフェッチングなど）
 - **[React ガイド](./react-guide.md)**: React の詳細な使用方法
 - **[JSX ガイド](./jsx-guide.md)**: JSX の構文と使用方法
+- **[ユーティリティ関数ガイド](./utilities-guide.md)**: 設定ファイル（`lib/config.ts`）の詳細
 - **[デプロイメントガイド](../deployment.md)**: デプロイ手順
 - **[Next.js 公式ドキュメント](https://nextjs.org/docs)**: Next.js の包括的なドキュメント
 ```

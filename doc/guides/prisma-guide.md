@@ -14,6 +14,7 @@
   - [マイグレーション](#マイグレーション)
   - [型生成](#型生成)
   - [Prisma Studio](#prisma-studio)
+  - [シードデータ](#シードデータ)
 - [Prisma 関数の説明と使用例](#prisma-関数の説明と使用例)
   - [findMany](#findmany)
   - [findUnique](#findunique)
@@ -449,7 +450,8 @@ npm run db:migrate
 # 本番環境でマイグレーションを適用
 
 npm run db:migrate:deploy
-```
+
+````
 
 - マイグレーションの設定が [`prisma.config.ts`](../../prisma.config.ts) で管理される
 - シードファイルのパスを設定ファイルで指定可能
@@ -492,7 +494,7 @@ ALTER TABLE "products" ADD COLUMN "published" BOOLEAN NOT NULL DEFAULT true;
 ALTER TABLE "products" ADD COLUMN "published_at" TIMESTAMP(3);
 ALTER TABLE "products" ADD COLUMN "ended_at" TIMESTAMP(3);
 ALTER TABLE "products" ADD COLUMN "display_order" INTEGER;
-```
+````
 
 - **バージョン管理**: スキーマの変更履歴を追跡
 - **ロールバック**: 問題が発生した場合、以前の状態に戻せる
@@ -514,7 +516,7 @@ npm run db:push           # スキーマを直接プッシュ（開発環境の�
 
 **型生成の実行**:
 
-```typescript
+````typescript
 export type Category = {
   id: number;
   name: string;
@@ -547,7 +549,7 @@ const product: Product = await prisma.product.findUnique({
 // 型エラーを検出
 console.log(product.name); // OK
 console.log(product.invalidField); // コンパイルエラー
-```
+````
 
 - スキーマファイル（`schema.prisma`）を変更した後
 - 依存関係をインストールした後
@@ -575,6 +577,93 @@ npm run db:studio
 
 # ブラウザで http://localhost:5555 を開く
 # カテゴリーや商品のデータを確認・編集できる
+```
+
+### シードデータ
+
+**説明**: シードデータは、開発環境やテスト環境で初期データを投入するために使用します。データベースを初期化した後、基本的なカテゴリーや商品データを自動的に投入できます。
+
+**このアプリでの使用箇所**:
+
+- [`prisma/seed.ts`](../../prisma/seed.ts): シードデータのスクリプト
+- [`prisma.config.ts`](../../prisma.config.ts): シードファイルのパスを設定
+
+**シードファイルの構成**:
+
+[`prisma/seed.ts`](../../prisma/seed.ts) (行 1-40)
+
+```typescript
+import { PrismaClient } from "@prisma/client";
+import "dotenv/config";
+
+const prisma = new PrismaClient();
+
+async function main() {
+  console.log("シードデータの投入を開始します...");
+
+  // カテゴリーの作成
+  const category1 = await prisma.category.upsert({
+    where: { name: "かき氷" },
+    update: {},
+    create: {
+      name: "かき氷",
+    },
+  });
+
+  const category2 = await prisma.category.upsert({
+    where: { name: "その他" },
+    update: {},
+    create: {
+      name: "その他",
+    },
+  });
+
+  console.log("カテゴリーを作成しました:", category1.name, category2.name);
+  console.log("シードデータの投入が完了しました！");
+}
+
+main()
+  .catch((e) => {
+    console.error("シードデータの投入中にエラーが発生しました:", e);
+    process.exit(1);
+  })
+  .finally(async () => {
+    await prisma.$disconnect();
+  });
+```
+
+**シードデータの実行方法**:
+
+```bash
+# シードデータを投入
+npm run db:seed
+```
+
+**シードファイルの設定**:
+
+[`prisma.config.ts`](../../prisma.config.ts) でシードファイルのパスを指定します：
+
+```typescript
+export default defineConfig({
+  migrations: {
+    path: "prisma/migrations",
+    seed: "tsx prisma/seed.ts", // シードファイルのパス
+  },
+});
+```
+
+**シードデータのベストプラクティス**:
+
+- **`upsert` を使用**: 既存のデータを更新し、存在しない場合は作成（冪等性を保証）
+- **エラーハンドリング**: エラーが発生した場合、適切にエラーログを出力
+- **接続の切断**: 処理完了後に `prisma.$disconnect()` を呼び出して接続を切断
+- **開発環境のみ**: 本番環境ではシードデータを実行しない（手動でデータを投入）
+
+**理由**:
+
+- **開発効率**: 開発環境で毎回同じ初期データを投入でき、開発効率が向上
+- **テスト**: テスト環境で一貫したデータを投入でき、テストの再現性が向上
+- **冪等性**: `upsert` を使用することで、何度実行しても同じ結果になる
 
 ### findMany
 
@@ -1443,5 +1532,7 @@ npm run db:push           # スキーマを直接プッシュ（開発環境の�
 
 - **[TypeScript ガイド](./typescript-guide.md)**: Prisma との型統合の詳細
 - **[App Router ガイド](./app-router-guide.md)**: Server Components での Prisma の使用方法
+- **[ユーティリティ関数ガイド](./utilities-guide.md)**: Blob Storage ユーティリティの詳細
+- **[Prisma & Blob セットアップガイド](../setup-prisma-blob.md)**: Prisma と Blob Storage のセットアップ方法
 - **[Prisma 公式ドキュメント](https://www.prisma.io/docs)**: Prisma の包括的なドキュメント
 - **[Prisma Client API Reference](https://www.prisma.io/docs/reference/api-reference/prisma-client-reference)**: Prisma Client の API リファレンス
