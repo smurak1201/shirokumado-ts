@@ -473,7 +473,7 @@ API Routes では、リクエストとレスポンスの型を定義すること
 
 **このアプリでの使用箇所**:
 
-[`app/api/products/route.ts`](../../app/api/products/route.ts) (行 52-139)
+[`app/api/products/route.ts`](../../app/api/products/route.ts) (行 68-140)
 
 ```typescript
 export const POST = withErrorHandling(async (request: NextRequest) => {
@@ -501,13 +501,20 @@ export const POST = withErrorHandling(async (request: NextRequest) => {
 
 **このアプリでの使用箇所**:
 
-[`lib/api-helpers.ts`](../../lib/api-helpers.ts) (行 41-43)
+[`lib/api-helpers.ts`](../../lib/api-helpers.ts) (行 45-49)
 
 ```typescript
 export function apiSuccess<T>(data: T, status: number = 200): NextResponse {
-  return NextResponse.json(data, { status });
+  const response = NextResponse.json(data, { status });
+  response.headers.set("Content-Type", "application/json; charset=utf-8");
+  return response;
 }
 ```
+
+**特徴**:
+
+- **文字エンコーディング**: 自動的に`Content-Type: application/json; charset=utf-8`ヘッダーを設定し、日本語を含む JSON の文字化けを防止
+- **型安全性**: ジェネリック型`<T>`により、レスポンスデータの型が推論される
 
 ## エラーハンドリングでの型安全性
 

@@ -716,9 +716,9 @@ export default defineConfig({
     }),
 ```
 
-[`app/api/products/route.ts`](../../app/api/products/route.ts) (行 31-38)
+[`app/api/products/route.ts`](../../app/api/products/route.ts) (行 29-40)
 
-```31:38
+```29:40
         include: {
           category: true, // 関連するカテゴリー情報も取得
         },
@@ -756,9 +756,9 @@ export default defineConfig({
 });
 ```
 
-1. **[`app/api/products/route.ts`](../../app/api/products/route.ts) (行 87-90)** - カテゴリーの存在確認（商品作成時）
+1. **[`app/api/products/route.ts`](../../app/api/products/route.ts) (行 89-92)** - カテゴリーの存在確認（商品作成時）
 
-```87:90
+```89:92
     'POST /api/products - category check'
   );
 ```
@@ -801,9 +801,9 @@ export default defineConfig({
 });
 ```
 
-1. **[`app/api/products/route.ts`](../../app/api/products/route.ts) (行 115-133)** - 新規商品の作成
+1. **[`app/api/products/route.ts`](../../app/api/products/route.ts) (行 117-135)** - 新規商品の作成
 
-```115:133
+```117:135
       prisma.product.create({
         data: {
           name: body.name.trim(), // 前後の空白を削除
@@ -943,9 +943,9 @@ const products = await prisma.product.findMany({
 });
 ```
 
-1. **[`app/api/products/route.ts`](../../app/api/products/route.ts) (行 87-90)** - カテゴリーの存在確認（商品作成時）
+1. **[`app/api/products/route.ts`](../../app/api/products/route.ts) (行 89-92)** - カテゴリーの存在確認（商品作成時）
 
-```87:90
+```89:92
     'POST /api/products - category check'
   );
 ```
@@ -1073,9 +1073,9 @@ const products = await prisma.product.findMany({
     }),
 ```
 
-[`app/api/products/route.ts`](../../app/api/products/route.ts) (行 31-38)
+[`app/api/products/route.ts`](../../app/api/products/route.ts) (行 29-40)
 
-```31:38
+```29:40
         include: {
           category: true, // 関連するカテゴリー情報も取得
         },
@@ -1170,9 +1170,9 @@ const categories = await prisma.category.findMany({
     }),
 ```
 
-[`app/api/products/route.ts`](../../app/api/products/route.ts) (行 31-38)
+[`app/api/products/route.ts`](../../app/api/products/route.ts) (行 29-40)
 
-```31:38
+```29:40
         include: {
           category: true, // 関連するカテゴリー情報も取得
         },

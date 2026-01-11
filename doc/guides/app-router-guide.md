@@ -755,9 +755,9 @@ export const dynamic = 'force-dynamic';
 
 **このアプリでの使用箇所**:
 
-1. **[`app/api/products/route.ts`](../../app/api/products/route.ts) (行 26-51)** - 商品一覧の取得と作成
+1. **[`app/api/products/route.ts`](../../app/api/products/route.ts) (行 26-53)** - 商品一覧の取得と作成
 
-```26:51
+```26:53
   // データベースから商品を取得
   // include でカテゴリー情報も一緒に取得することで、N+1問題を回避します
   const products = await safePrismaOperation(
@@ -774,6 +774,8 @@ export const dynamic = 'force-dynamic';
   );
 
   const response = NextResponse.json({ products }, { status: 200 });
+  // Content-Typeヘッダーを設定（日本語を含むJSONの文字化けを防ぐ）
+  response.headers.set('Content-Type', 'application/json; charset=utf-8');
   // キャッシュヘッダーを設定
   // s-maxage: CDNでのキャッシュ期間
   // stale-while-revalidate: キャッシュが古くなっても、再検証中は古いデータを返す
@@ -785,9 +787,9 @@ export const dynamic = 'force-dynamic';
 });
 ```
 
-[`app/api/products/route.ts`](../../app/api/products/route.ts) (行 66-138)
+[`app/api/products/route.ts`](../../app/api/products/route.ts) (行 68-140)
 
-```66:138
+```68:140
   const body = await request.json();
 
   // ===== バリデーション =====
@@ -982,6 +984,7 @@ export const dynamic = 'force-dynamic';
 - データベースに直接アクセス可能
 - 統一されたエラーハンドリング（`withErrorHandling` を使用）
 - 型安全なリクエスト・レスポンス処理
+- 日本語対応: `apiSuccess`、`apiError`、`handleApiError`関数は自動的に`Content-Type: application/json; charset=utf-8`ヘッダーを設定し、日本語を含む JSON の文字化けを防止
 
 ### Server Actions（このアプリでは未使用）
 

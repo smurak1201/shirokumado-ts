@@ -351,7 +351,7 @@ throw new DatabaseError("Failed to connect");
 
 ### API Routes でのエラーハンドリング
 
-[`lib/api-helpers.ts`](../lib/api-helpers.ts) (行 66-76)
+[`lib/api-helpers.ts`](../lib/api-helpers.ts) (行 74-84)
 
 ```typescript
 import { withErrorHandling, apiSuccess } from "@/lib/api-helpers";

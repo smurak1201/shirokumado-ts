@@ -438,7 +438,7 @@ if (!email) {
 
 **推奨**: `withErrorHandling` を使用。
 
-[`lib/api-helpers.ts`](../lib/api-helpers.ts) (行 66-76)
+[`lib/api-helpers.ts`](../lib/api-helpers.ts) (行 74-84)
 
 ```typescript
 import { withErrorHandling, apiSuccess } from "@/lib/api-helpers";
@@ -507,6 +507,7 @@ export const POST = withErrorHandling(async (request: Request) => {
 - **予測可能性**: レスポンス形式が予測可能で、フロントエンドのコードが簡潔になる
 - **エラーハンドリング**: エラーレスポンスも統一された形式で、フロントエンドでのエラー処理が統一される
 - **保守性**: レスポンス形式の変更を一箇所で管理でき、変更が容易
+- **文字エンコーディング**: `apiSuccess`、`apiError`、`handleApiError`関数は自動的に`Content-Type: application/json; charset=utf-8`ヘッダーを設定し、日本語を含む JSON の文字化けを防止
 
 **避ける**: 各エンドポイントで異なるレスポンス形式を使用。
 
