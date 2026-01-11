@@ -224,9 +224,9 @@ Next.js は、`next/image` コンポーネントを使用して、画像の自�
 
 ### このアプリでの使用箇所
 
-1. **[`app/page.tsx`](../../app/page.tsx) (行 90-98)** - ヒーロー画像の最適化
+1. **[`app/page.tsx`](../../app/page.tsx) (行 113-120)** - ヒーロー画像の最適化
 
-```90:98
+```113:120
         <Image
           src="/hero.webp"
           alt="白熊堂"
@@ -237,9 +237,9 @@ Next.js は、`next/image` コンポーネントを使用して、画像の自�
         />
 ```
 
-2. **[`app/components/ProductTile.tsx`](../../app/components/ProductTile.tsx) (行 39-46)** - 商品画像の最適化
+2. **[`app/components/ProductTile.tsx`](../../app/components/ProductTile.tsx) (行 43-49)** - 商品画像の最適化
 
-```39:46
+```43:49
           <Image
             src={product.imageUrl}
             alt={product.name}
@@ -250,9 +250,9 @@ Next.js は、`next/image` コンポーネントを使用して、画像の自�
           />
 ```
 
-3. **[`app/components/ProductModal.tsx`](../../app/components/ProductModal.tsx) (行 68-75)** - モーダル内の商品画像
+3. **[`app/components/ProductModal.tsx`](../../app/components/ProductModal.tsx) (行 71-78)** - モーダル内の商品画像
 
-```68:75
+```71:78
             <Image
               src={product.imageUrl}
               alt={product.name}

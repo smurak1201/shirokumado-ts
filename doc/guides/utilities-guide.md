@@ -312,7 +312,7 @@ import { isNumericKey } from "@/lib/product-utils";
 
 画像ファイルを圧縮・リサイズします。
 
-[`lib/image-compression.ts`](../../lib/image-compression.ts) (行 36-183)
+[`lib/image-compression.ts`](../../lib/image-compression.ts) (行 36-141)
 
 ```typescript
 export async function compressImage(

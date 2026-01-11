@@ -728,9 +728,10 @@ export default defineConfig({
       }),
 ```
 
-[`app/api/categories/route.ts`](../../app/api/categories/route.ts) (行 16-20)
+[`app/api/categories/route.ts`](../../app/api/categories/route.ts) (行 20-26)
 
-```16:20
+```20:26
+      prisma.category.findMany({
         orderBy: {
           id: 'asc',
         },
@@ -851,12 +852,14 @@ export default defineConfig({
       }),
 ```
 
-[`app/api/products/reorder/route.ts`](../../app/api/products/reorder/route.ts) (行 23-26)
+[`app/api/products/reorder/route.ts`](../../app/api/products/reorder/route.ts) (行 22-28)
 
-```23:26
+```22:28
+          prisma.product.update({
             where: { id: item.id },
             data: { displayOrder: item.displayOrder },
           })
+        )
 ```
 
 - `where`: 更新対象のレコードを指定（主キーまたはユニーク制約）
@@ -896,9 +899,10 @@ export default defineConfig({
 ]);
 ```
 
-1. **[`app/api/products/reorder/route.ts`](../../app/api/products/reorder/route.ts) (行 19-29)** - 複数商品の表示順序を一括更新
+1. **[`app/api/products/reorder/route.ts`](../../app/api/products/reorder/route.ts) (行 19-31)** - 複数商品の表示順序を一括更新
 
-```19:29
+```19:31
+    async () => {
       await prisma.$transaction(
         body.productOrders.map((item: { id: number; displayOrder: number }) =>
           prisma.product.update({
@@ -908,6 +912,7 @@ export default defineConfig({
         )
       );
     },
+    'POST /api/products/reorder'
 ```
 
 - 複数の操作を原子性（atomicity）を保証して実行
@@ -977,12 +982,14 @@ const products = await prisma.product.findMany({
   );
 ```
 
-[`app/api/products/reorder/route.ts`](../../app/api/products/reorder/route.ts) (行 23-26)
+[`app/api/products/reorder/route.ts`](../../app/api/products/reorder/route.ts) (行 22-28)
 
-```23:26
+```22:28
+          prisma.product.update({
             where: { id: item.id },
             data: { displayOrder: item.displayOrder },
           })
+        )
 ```
 
 - `equals`: 等しい（デフォルト）
@@ -1078,9 +1085,10 @@ const products = await prisma.product.findMany({
       }),
 ```
 
-[`app/api/categories/route.ts`](../../app/api/categories/route.ts) (行 16-20)
+[`app/api/categories/route.ts`](../../app/api/categories/route.ts) (行 20-26)
 
-```16:20
+```20:26
+      prisma.category.findMany({
         orderBy: {
           id: 'asc',
         },
