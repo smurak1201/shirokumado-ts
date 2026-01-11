@@ -1170,14 +1170,14 @@ export default function ProductForm() {
 
    - `GET /api/products`: 商品一覧取得
    - `POST /api/products`: 商品作成
-   - `GET /api/products/[id]`: 個別商品取得
+   - `GET /api/products/[id]`: 個別商品取得（**未使用** - 将来的に商品詳細ページや外部 API 連携が必要になった場合に使用する可能性があります）
    - `PUT /api/products/[id]`: 商品更新
    - `DELETE /api/products/[id]`: 商品削除
    - `POST /api/products/upload`: 画像アップロード
    - `POST /api/products/reorder`: 商品順序変更
 
 2. **カテゴリー API** (`app/api/categories/`)
-   - `GET /api/categories`: カテゴリー一覧取得
+   - `GET /api/categories`: カテゴリー一覧取得（**未使用** - ダッシュボードではサーバーコンポーネントから直接 Prisma で取得しているため、クライアントコンポーネントからの呼び出しは不要です。将来的にクライアント側でカテゴリー一覧を動的に取得する必要が生じた場合に使用する可能性があります）
 
 ### ベストプラクティス
 

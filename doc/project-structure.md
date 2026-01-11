@@ -140,9 +140,9 @@ app/api/
 │   ├── reorder/
 │   │   └── route.ts      # POST /api/products/reorder
 │   └── [id]/
-│       └── route.ts      # GET, PUT, DELETE /api/products/[id]
+│       └── route.ts      # GET, PUT, DELETE /api/products/[id]（GETは未使用）
 └── categories/
-    └── route.ts          # GET /api/categories
+    └── route.ts          # GET /api/categories（未使用）
 ```
 
 **詳細については、[App Router ガイド](./guides/app-router-guide.md#api-routes) を参照してください。**

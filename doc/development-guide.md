@@ -112,13 +112,13 @@ app/
     ├── products/
     │   ├── route.ts       # GET, POST /api/products
     │   ├── [id]/
-    │   │   └── route.ts   # GET, PUT, DELETE /api/products/[id]
+    │   │   └── route.ts   # GET, PUT, DELETE /api/products/[id]（GETは未使用）
     │   ├── upload/
     │   │   └── route.ts   # POST /api/products/upload
     │   └── reorder/
     │       └── route.ts   # POST /api/products/reorder
     └── categories/
-        └── route.ts       # GET /api/categories
+        └── route.ts       # GET /api/categories（未使用）
 ```
 
 ### Prisma

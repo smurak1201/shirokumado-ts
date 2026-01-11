@@ -196,9 +196,9 @@ app/api/
 │   ├── reorder/
 │   │   └── route.ts      # POST /api/products/reorder（順序変更）
 │   └── [id]/
-│       └── route.ts      # GET, PUT, DELETE /api/products/[id]
+│       └── route.ts      # GET, PUT, DELETE /api/products/[id]（GETは未使用）
 └── categories/
-    └── route.ts          # GET /api/categories
+    └── route.ts          # GET /api/categories（未使用）
 ```
 
 **特徴**:
