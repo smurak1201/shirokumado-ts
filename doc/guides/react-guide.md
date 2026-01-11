@@ -982,7 +982,7 @@ function ParentComponent() {
 └── SortableProductItem (Client Component)
 
 ```
-1. **[`app/components/ProductGrid.tsx`](../../app/components/ProductGrid.tsx)** - 商品グリッドコンポーネント
+1. **`app/components/ProductGrid.tsx`** - 商品グリッドコンポーネント
 
 **参照**: [`app/components/ProductGrid.tsx`](../../app/components/ProductGrid.tsx) (行 30-78)
 
@@ -1037,7 +1037,7 @@ function ParentComponent() {
 }
 ```
 
-2. **[`app/components/ProductModal.tsx`](../../app/components/ProductModal.tsx)** - 商品モーダルコンポーネント
+2. **`app/components/ProductModal.tsx`** - 商品モーダルコンポーネント
 
 **参照**: [`app/components/ProductModal.tsx`](../../app/components/ProductModal.tsx) (行 35-119)
 

@@ -270,7 +270,7 @@ export interface Product {
 }
 ```
 
-2. **[`app/components/ProductModal.tsx`](../../app/components/ProductModal.tsx)** - Props の型定義
+2. **`app/components/ProductModal.tsx`** - Props の型定義
 
 **参照**: [`app/components/ProductModal.tsx`](../../app/components/ProductModal.tsx) (行 12-16)
 
@@ -295,7 +295,7 @@ export function formatPrice(price: number): string {
 }
 ```
 
-2. **[`app/hooks/useProductModal.ts`](../../app/hooks/useProductModal.ts)** - カスタムフックの戻り値の型
+2. **`app/hooks/useProductModal.ts`** - カスタムフックの戻り値の型
 
 **参照**: [`app/hooks/useProductModal.ts`](../../app/hooks/useProductModal.ts) (行 12-47)
 
@@ -357,17 +357,15 @@ export function formatPrice(price: number): string {
 
 2. **ユニオン型**: `Product | null`
 
-**参照**: [`app/components/ProductModal.tsx`](../../app/components/ProductModal.tsx) (行 13-13)
-
 ```tsx
 product: Product | null; // 表示する商品情報（nullの場合は非表示）
 ```
 
+詳細は [コンポーネントの Props の型定義](#コンポーネントの-props-の型定義) セクションを参照
+
 3. **文字列リテラル型のユニオン型**: `"list" | "layout"`
 
-**参照**: [`app/dashboard/hooks/useTabState.ts`](../../app/dashboard/hooks/useTabState.ts) (行 16-16)
-
-```16:16
+```typescript
 type TabType = "list" | "layout";
 ```
 
@@ -557,7 +555,7 @@ export interface Product {
 }
 ```
 
-**参照**: [`app/types.ts`](../../app/types.ts)
+**参照**: [`app/types.ts`](../../app/types.ts) (行 193-200)
 
 - ユニオン型やインターセクション型を定義する場合
 - 型エイリアスを定義する場合
@@ -567,15 +565,13 @@ export interface Product {
 
 1. **文字列リテラル型のユニオン型**: `"list" | "layout"`
 
-**参照**: [`app/dashboard/hooks/useTabState.ts`](../../app/dashboard/hooks/useTabState.ts) (行 16-16)
+**参照**: [`app/dashboard/hooks/useTabState.ts`](../../app/dashboard/hooks/useTabState.ts) (行 16-16, 30-30)
 
 ```16:16
 type TabType = "list" | "layout";
 ```
 
 **使用例**:
-
-**参照**: [`app/dashboard/hooks/useTabState.ts`](../../app/dashboard/hooks/useTabState.ts) (行 30-30)
 
 ```30:30
   const [activeTab, setActiveTab] = useState<TabType>(() => {

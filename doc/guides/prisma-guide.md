@@ -567,7 +567,7 @@ npm run db:studio
 **基本的な使い方**:
 
 ```typescript
-1. **[`app/page.tsx`](../../app/page.tsx)** - カテゴリー一覧の取得
+1. **`app/page.tsx`** - カテゴリー一覧の取得
 
 **参照**: [`app/page.tsx`](../../app/page.tsx) (行 30-34)
 
@@ -641,7 +641,7 @@ npm run db:studio
   where: { id: 1 },
 });
 ```
-1. **[`app/api/products/route.ts`](../../app/api/products/route.ts)** - カテゴリーの存在確認（商品作成時）
+1. **`app/api/products/route.ts`** - カテゴリーの存在確認（商品作成時）
 
 **参照**: [`app/api/products/route.ts`](../../app/api/products/route.ts) (行 87-90)
 
@@ -682,7 +682,7 @@ npm run db:studio
   },
 });
 ```
-1. **[`app/api/products/route.ts`](../../app/api/products/route.ts)** - 新規商品の作成
+1. **`app/api/products/route.ts`** - 新規商品の作成
 
 **参照**: [`app/api/products/route.ts`](../../app/api/products/route.ts) (行 115-133)
 
@@ -772,7 +772,7 @@ npm run db:studio
   prisma.product.update({ where: { id: 2 }, data: { name: "商品2" } }),
 ]);
 ```
-1. **[`app/api/products/reorder/route.ts`](../../app/api/products/reorder/route.ts)** - 複数商品の表示順序を一括更新
+1. **`app/api/products/reorder/route.ts`** - 複数商品の表示順序を一括更新
 
 **参照**: [`app/api/products/reorder/route.ts`](../../app/api/products/reorder/route.ts) (行 19-29)
 
@@ -814,7 +814,7 @@ const products = await prisma.product.findMany({
   },
 });
 ```
-1. **[`app/api/products/route.ts`](../../app/api/products/route.ts)** - カテゴリーの存在確認（商品作成時）
+1. **`app/api/products/route.ts`** - カテゴリーの存在確認（商品作成時）
 
 **参照**: [`app/api/products/route.ts`](../../app/api/products/route.ts) (行 87-90)
 

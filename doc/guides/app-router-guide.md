@@ -196,7 +196,7 @@ export default function Template({ children }: { children: React.ReactNode }) {
 
 **このアプリでの使用箇所**:
 
-1. **[`app/page.tsx`](../../app/page.tsx)** - ホームページ（Server Component）
+1. **`app/page.tsx`** - ホームページ（Server Component）
 
 **参照**: [`app/page.tsx`](../../app/page.tsx) (行 102-141)
 
@@ -241,7 +241,7 @@ export default function Template({ children }: { children: React.ReactNode }) {
   );
 }
 ```
-2. **[`app/faq/page.tsx`](../../app/faq/page.tsx)** - FAQ ページ（Server Component）
+2. **`app/faq/page.tsx`** - FAQ ページ（Server Component）
 
 **参照**: [`app/faq/page.tsx`](../../app/faq/page.tsx) (行 17-117)
 
@@ -293,7 +293,7 @@ export default function Template({ children }: { children: React.ReactNode }) {
   );
 }
 ```
-3. **[`app/dashboard/page.tsx`](../../app/dashboard/page.tsx)** - ダッシュボード（Server Component）
+3. **`app/dashboard/page.tsx`** - ダッシュボード（Server Component）
 
 **参照**: [`app/dashboard/page.tsx`](../../app/dashboard/page.tsx) (行 58-70)
 
@@ -348,7 +348,7 @@ export default function Template({ children }: { children: React.ReactNode }) {
 
 **このアプリでの使用箇所**:
 
-1. **[`app/page.tsx`](../../app/page.tsx)** - 公開商品をカテゴリーごとに取得
+1. **`app/page.tsx`** - 公開商品をカテゴリーごとに取得
 
 **参照**: [`app/page.tsx`](../../app/page.tsx) (行 26-86)
 
@@ -414,7 +414,7 @@ export default function Template({ children }: { children: React.ReactNode }) {
     .filter(({ products }) => products.length > 0); // 商品があるカテゴリーのみを返す
 }
 ```
-2. **[`app/dashboard/page.tsx`](../../app/dashboard/page.tsx)** - ダッシュボードデータを取得
+2. **`app/dashboard/page.tsx`** - ダッシュボードデータを取得
 
 **参照**: [`app/dashboard/page.tsx`](../../app/dashboard/page.tsx) (行 17-52)
 
@@ -556,7 +556,7 @@ export default function Template({ children }: { children: React.ReactNode }) {
         throw new Error(error.error || "順序の更新に失敗しました");
       }
 ```
-4. **[`app/dashboard/components/DashboardForm.tsx`](../../app/dashboard/components/DashboardForm.tsx)** - 商品の作成と画像アップロード
+4. **`app/dashboard/components/DashboardForm.tsx`** - 商品の作成と画像アップロード
 
 **画像アップロード（FormData を使用）**:
 
@@ -695,7 +695,7 @@ export const dynamic = "force-dynamic";
  */
 export const dynamic = "force-dynamic";
 ```
-3. **[`app/api/products/route.ts`](../../app/api/products/route.ts)** - API Route での動的レンダリング
+3. **`app/api/products/route.ts`** - API Route での動的レンダリング
 
 **参照**: [`app/api/products/route.ts`](../../app/api/products/route.ts) (行 9-13)
 
@@ -754,7 +754,7 @@ export const dynamic = 'force-dynamic';
 
 **このアプリでの使用箇所**:
 
-1. **[`app/api/products/route.ts`](../../app/api/products/route.ts)** - 商品一覧の取得と作成
+1. **`app/api/products/route.ts`** - 商品一覧の取得と作成
 
 **参照**: [`app/api/products/route.ts`](../../app/api/products/route.ts) (行 26-51)
 
@@ -1051,7 +1051,7 @@ export default function ProductForm() {
 
 **このアプリでの使用箇所**:
 
-1. **[`app/page.tsx`](../../app/page.tsx)** - ヒーロー画像の最適化
+1. **`app/page.tsx`** - ヒーロー画像の最適化
 
 **参照**: [`app/page.tsx`](../../app/page.tsx) (行 112-123)
 
