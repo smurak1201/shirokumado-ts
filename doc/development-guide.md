@@ -440,6 +440,31 @@ export const POST = withErrorHandling(async (request: Request) => {
 - **エラーハンドリング**: エラーレスポンスも統一された形式で、フロントエンドでのエラー処理が統一される
 - **保守性**: レスポンス形式の変更を一箇所で管理でき、変更が容易
 
+**避ける**: 各エンドポイントで異なるレスポンス形式を使用。
+
+```typescript
+// 悪い例: 統一されていないレスポンス形式
+export const GET = async () => {
+  const data = await fetchData();
+  return Response.json(data); // 形式が統一されていない
+};
+
+export const POST = async (request: Request) => {
+  const body = await request.json();
+  if (!body.name) {
+    return Response.json({ error: "Name is required" }, { status: 400 }); // 形式が統一されていない
+  }
+  // ...
+};
+```
+
+**理由**:
+
+- **一貫性の欠如**: 各エンドポイントで異なるレスポンス形式が使用され、フロントエンドでの処理が複雑になる
+- **予測不可能性**: レスポンス形式が予測できず、フロントエンドのコードが複雑になる
+- **エラーハンドリングの分散**: エラーレスポンスの形式が統一されず、フロントエンドでのエラー処理が分散する
+- **保守性の低下**: レスポンス形式の変更を各エンドポイントで個別に管理する必要があり、変更が困難
+
 #### リクエストバリデーション
 
 **推奨**: 入力検証を実装。
@@ -793,6 +818,30 @@ const HeavyComponent = dynamic(() => import("./HeavyComponent"), {
 });
 ```
 
+**理由**:
+
+- **初期バンドルサイズの削減**: 重いコンポーネントを動的にインポートすることで、初期バンドルサイズが削減され、初期ロード時間が短縮される
+- **コード分割**: 必要な時だけコンポーネントを読み込むことで、コード分割が実現され、パフォーマンスが向上
+- **ローディング状態の管理**: `loading` オプションにより、読み込み中の状態を適切に表示できる
+- **SSR の制御**: `ssr: false` により、サーバーサイドレンダリングを無効にし、クライアントサイドのみでレンダリングできる
+
+**避ける**: すべてのコンポーネントを静的にインポート。
+
+```typescript
+// 悪い例: すべてを静的にインポート
+import HeavyComponent from "./HeavyComponent";
+
+export default function Page() {
+  return <HeavyComponent />; // 初期バンドルに含まれる
+}
+```
+
+**理由**:
+
+- **初期バンドルサイズの増加**: すべてのコンポーネントが初期バンドルに含まれ、初期ロード時間が増加する
+- **不要なコードの読み込み**: 使用されないコンポーネントも読み込まれ、リソースが無駄に消費される
+- **パフォーマンスの悪化**: 初期ロード時にすべてのコードが読み込まれ、パフォーマンスが悪化する
+
 ### データベースクエリの最適化
 
 **注意**: データベースクエリの最適化と N+1 問題の回避については、[Prisma セクション](#prisma)の「クエリの最適化と N+1 問題の回避」を参照してください。
@@ -933,6 +982,31 @@ const schema = z.object({
 const validatedData = schema.parse(requestBody);
 ```
 
+**理由**:
+
+- **セキュリティ**: 不正な入力データを検出し、セキュリティリスクを防止
+- **データの整合性**: データベースに保存されるデータの整合性が保たれる
+- **エラーメッセージ**: 適切なエラーメッセージを返すことで、ユーザー体験が向上
+- **型安全性**: 検証後のデータが型安全になり、その後の処理が安全に実行できる
+
+**避ける**: 入力検証なしでデータを処理。
+
+```typescript
+// 悪い例: 入力検証なし
+export const POST = async (request: Request) => {
+  const body = await request.json();
+  // 検証なしでデータベースに保存
+  await prisma.user.create({ data: body });
+};
+```
+
+**理由**:
+
+- **セキュリティリスク**: 不正な入力データがそのまま処理され、セキュリティリスクが発生する
+- **データの不整合**: 不正なデータがデータベースに保存され、データの整合性が損なわれる
+- **エラーの発生**: 実行時にエラーが発生し、ユーザー体験が悪化する
+- **デバッグの困難**: エラーが発生した際に、原因の特定が困難になる
+
 ### SQL インジェクション対策
 
 **推奨**: Prisma を使用（自動的に対策される）。
@@ -958,6 +1032,15 @@ const user = await prisma.user.findUnique({
 const user = await prisma.$queryRaw`
   SELECT * FROM users WHERE email = ${userEmail}
 `;
+```
+
+**理由**:
+
+- **SQL インジェクションのリスク**: パラメータが適切にエスケープされない場合、SQL インジェクション攻撃のリスクがある
+- **型安全性の欠如**: TypeScript の型チェックが機能せず、不正なクエリをコンパイル時に検出できない
+- **保守性の低下**: SQL クエリがコードに直接記述され、読みにくく保守しにくいコードになる
+- **データベース依存**: データベース固有の構文が使用され、データベースを変更する際にコードの変更が必要
+
 ```
 
 **理由**:
@@ -1003,3 +1086,4 @@ const user = await prisma.$queryRaw`
 - [TypeScript Best Practices](https://www.typescriptlang.org/docs/handbook/declaration-files/do-s-and-don-ts.html)
 - [React Best Practices](https://react.dev/learn)
 - [React Server Components](https://react.dev/blog/2023/03/22/react-labs-what-we-have-been-working-on-march-2023#react-server-components)
+```
