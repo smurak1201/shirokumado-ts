@@ -1270,7 +1270,7 @@ const user = await prisma.$queryRaw`
 
 <!-- 悪い例: 行番号で参照 -->
 
-[`lib/api-helpers.ts`](../lib/api-helpers.ts) (`withErrorHandling`関数)
+[`lib/api-helpers.ts`](../lib/api-helpers.ts) (行 74-84)
 ```
 
 **理由**:
@@ -1297,16 +1297,14 @@ export function apiSuccess<T>(data: T, status: number = 200): NextResponse {
 
 <!-- 悪い例: 行番号範囲を指定 -->
 
-[`lib/api-helpers.ts`](../lib/api-helpers.ts) (`apiSuccess`関数)
+[`lib/api-helpers.ts`](../lib/api-helpers.ts) (行 45-49)
 
-```typescript:lib/api-helpers.ts
+```45:49:lib/api-helpers.ts
 export function apiSuccess<T>(data: T, status: number = 200): NextResponse {
   const response = NextResponse.json(data, { status });
   response.headers.set('Content-Type', 'application/json; charset=utf-8');
   return response;
 }
-```
-
 ```
 
 **理由**:
@@ -1343,4 +1341,3 @@ export function apiSuccess<T>(data: T, status: number = 200): NextResponse {
 - [TypeScript Best Practices](https://www.typescriptlang.org/docs/handbook/declaration-files/do-s-and-don-ts.html)
 - [React Best Practices](https://react.dev/learn)
 - [React Server Components](https://react.dev/blog/2023/03/22/react-labs-what-we-have-been-working-on-march-2023#react-server-components)
-```
