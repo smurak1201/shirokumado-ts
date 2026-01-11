@@ -264,6 +264,8 @@ app/dashboard/
 
 Prisma Client のシングルトンインスタンスを管理します。
 
+[`lib/prisma.ts`](../lib/prisma.ts) (行 83-96)
+
 ```typescript
 import { prisma, safePrismaOperation } from "@/lib/prisma";
 
@@ -278,6 +280,8 @@ const users = await safePrismaOperation(
 
 Vercel Blob Storage の操作を提供します。
 
+[`lib/blob.ts`](../lib/blob.ts) (行 24-50)
+
 ```typescript
 import { uploadImage, deleteFile } from "@/lib/blob";
 
@@ -289,6 +293,8 @@ const blob = await uploadImage("images/product.jpg", buffer, "image/jpeg");
 
 統一されたエラーハンドリングを提供します。
 
+[`lib/errors.ts`](../lib/errors.ts) (行 45-57)
+
 ```typescript
 import { AppError, DatabaseError, ValidationError } from "@/lib/errors";
 
@@ -299,6 +305,8 @@ throw new ValidationError("Invalid input");
 #### [`lib/api-helpers.ts`](../lib/api-helpers.ts)
 
 API Routes 用のヘルパー関数を提供します。
+
+[`lib/api-helpers.ts`](../lib/api-helpers.ts) (行 66-76)
 
 ```typescript
 import { withErrorHandling, apiSuccess } from "@/lib/api-helpers";

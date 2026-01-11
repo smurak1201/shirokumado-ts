@@ -174,6 +174,8 @@ for (const order of orders) {
 
 **推奨**: `safePrismaOperation` を使用。
 
+[`lib/prisma.ts`](../lib/prisma.ts) (行 83-96)
+
 ```typescript
 import { safePrismaOperation } from "@/lib/prisma";
 
@@ -296,6 +298,8 @@ if (!email) {
 #### API Routes でのエラーハンドリング
 
 **推奨**: `withErrorHandling` を使用。
+
+[`lib/api-helpers.ts`](../lib/api-helpers.ts) (行 66-76)
 
 ```typescript
 import { withErrorHandling, apiSuccess } from "@/lib/api-helpers";

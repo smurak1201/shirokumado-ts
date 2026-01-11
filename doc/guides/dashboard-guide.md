@@ -49,22 +49,24 @@ DashboardContent (Client Component)
       ├── CategoryTabs
       └── SortableProductItem
 ```
-├── page.tsx                    # エントリーポイント（Server Component）
-├── types.ts                    # 共通型定義
-├── components/                 # UIコンポーネント
-│   ├── DashboardContent.tsx    # メインコンテナ
-│   ├── DashboardForm.tsx       # 新規商品登録フォーム
-│   ├── DashboardFormWrapper.tsx # フォームラッパー
-│   ├── ProductList.tsx         # 商品一覧・配置変更
-│   ├── ProductEditForm.tsx     # 商品編集フォーム
-│   ├── CategoryTabs.tsx        # カテゴリータブ
-│   └── SortableProductItem.tsx # ドラッグ&ドロップ可能な商品アイテム
-├── hooks/                      # カスタムフック
-│   ├── useTabState.ts          # タブ状態管理
-│   └── useProductReorder.ts     # 商品順序変更ロジック
-└── utils/                      # ユーティリティ関数
-    └── productUtils.ts          # 商品のグループ化・フィルタリング
-```
+
+├── page.tsx # エントリーポイント（Server Component）
+├── types.ts # 共通型定義
+├── components/ # UI コンポーネント
+│ ├── DashboardContent.tsx # メインコンテナ
+│ ├── DashboardForm.tsx # 新規商品登録フォーム
+│ ├── DashboardFormWrapper.tsx # フォームラッパー
+│ ├── ProductList.tsx # 商品一覧・配置変更
+│ ├── ProductEditForm.tsx # 商品編集フォーム
+│ ├── CategoryTabs.tsx # カテゴリータブ
+│ └── SortableProductItem.tsx # ドラッグ&ドロップ可能な商品アイテム
+├── hooks/ # カスタムフック
+│ ├── useTabState.ts # タブ状態管理
+│ └── useProductReorder.ts # 商品順序変更ロジック
+└── utils/ # ユーティリティ関数
+└── productUtils.ts # 商品のグループ化・フィルタリング
+
+````
 ### 1. 商品一覧表示
 
 - カテゴリーごとのタブ表示
@@ -111,6 +113,8 @@ DashboardContent (Client Component)
 
 **実装例**:
 
+[`app/dashboard/page.tsx`](../../app/dashboard/page.tsx) (行 58-70)
+
 ```typescript
   const { categories, products } = await getDashboardData();
 
@@ -123,7 +127,8 @@ DashboardContent (Client Component)
     </div>
   );
 }
-```
+````
+
 ダッシュボードのメインコンテナです。Client Component として実装されています。
 
 **主な機能**:
@@ -135,6 +140,8 @@ DashboardContent (Client Component)
 **状態管理**:
 
 React のベストプラクティスに従い、共有状態（商品一覧）を親コンポーネントで管理しています。
+
+[`app/dashboard/components/DashboardContent.tsx`](../../app/dashboard/components/DashboardContent.tsx) (行 31-34)
 
 ```typescript
 const [products, setProducts] = useState<Product[]>(initialProducts);
@@ -151,6 +158,7 @@ const refreshProducts = async () => {
   setProducts(data.products || []);
 };
 ```
+
 - `forwardRef`や`useImperativeHandle`を使わず、props でデータとコールバックを渡す
 - データフローが明確になり、コンポーネント間の結合が緩くなる
 - 子コンポーネント（`ProductList`）に`products`、`setProducts`、`refreshProducts`を props で渡す
@@ -200,6 +208,7 @@ const refreshProducts = async () => {
   onNewProductClick?: () => void; // 新規商品登録ボタンクリック時のコールバック
 }
 ```
+
 - React のベストプラクティスに従い、状態を親コンポーネントから受け取る
 - `forwardRef`や`useImperativeHandle`を使わない設計
 - `@dnd-kit`を使用したドラッグ&ドロップ
@@ -240,19 +249,21 @@ DashboardContent (Client Component)
   ↓ useStateで状態管理
 子コンポーネント
 ```
-  ↓ フォーム入力
-  ↓ バリデーション
-  ↓ fetch('/api/products', { method: 'POST' })
+
+↓ フォーム入力
+↓ バリデーション
+↓ fetch('/api/products', { method: 'POST' })
 API Route
-  ↓ Prisma操作
+↓ Prisma 操作
 Database
-  ↓ レスポンス
+↓ レスポンス
 DashboardContent
-  ↓ refreshProducts() を呼び出し
-  ↓ fetch('/api/products') で最新データを取得
-  ↓ setProducts() で状態更新
-  ↓ propsで ProductList に渡す
-  ↓ UI更新
+↓ refreshProducts() を呼び出し
+↓ fetch('/api/products') で最新データを取得
+↓ setProducts() で状態更新
+↓ props で ProductList に渡す
+↓ UI 更新
+
 ```
 - 商品追加後は、親コンポーネント（`DashboardContent`）の`refreshProducts`を呼び出す
 - 状態は親コンポーネントで管理され、props で子コンポーネントに渡される
@@ -261,15 +272,17 @@ DashboardContent
 ### 商品順序変更フロー
 
 ```
-  ↓ ドラッグ&ドロップ
+
+↓ ドラッグ&ドロップ
 ProductList
-  ↓ 楽観的UI更新（即座に状態更新）
-  ↓ fetch('/api/products/reorder', { method: 'POST' })
+↓ 楽観的 UI 更新（即座に状態更新）
+↓ fetch('/api/products/reorder', { method: 'POST' })
 API Route
-  ↓ Prisma操作
+↓ Prisma 操作
 Database
-  ↓ 成功: 最新データを取得
-  ↓ 失敗: エラー表示 + 元の状態に戻す
+↓ 成功: 最新データを取得
+↓ 失敗: エラー表示 + 元の状態に戻す
+
 ```
 ### 状態のリフトアップ
 
@@ -314,6 +327,7 @@ React のベストプラクティスに従い、共有状態は親コンポー�
 **使用例**:
 
 ```
+
 商品順序変更のロジックを実装したカスタムフックです。
 
 **機能**:
@@ -324,7 +338,7 @@ React のベストプラクティスに従い、共有状態は親コンポー�
 
 **使用例**:
 
-```typescript
+````typescript
 ### 商品一覧取得
 
 ```typescript
@@ -353,11 +367,13 @@ Content-Type: application/json
   "productId": 1,
   "newOrder": 2
 }
-```
+````
+
 Content-Type: multipart/form-data
 
 file: [画像ファイル]
-```
+
+````
 ### 新しい機能の追加
 
 1. **型定義の追加**: [`app/dashboard/types.ts`](../../app/dashboard/types.ts)に追加
@@ -439,7 +455,8 @@ const products = await prisma.product.findMany({
     },
   },
 });
-```
+````
+
 - 必要なデータのみを取得できるため、ネットワーク転送量を削減
 - パフォーマンスの向上（特に大量のデータを扱う場合）
 

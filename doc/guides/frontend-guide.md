@@ -41,6 +41,8 @@
 
 **データ取得**:
 
+[`app/page.tsx`](../../app/page.tsx) (行 28-47)
+
 ```typescript
   // カテゴリーと商品を並列で取得
   const [categories, products] = await Promise.all([
@@ -60,6 +62,7 @@
   // ...
 }
 ```
+
 1. **ヘッダー**: ロゴ、Instagram リンク、ナビゲーション
 2. **ヒーローバナー**: メイン画像（`/hero.webp`）
 3. **メインコンテンツ**: カテゴリーごとの商品グリッド
@@ -81,6 +84,7 @@
   // ...
 ];
 ```
+
 フロントエンドは以下のように構造化されています：
 
 ```
@@ -102,6 +106,7 @@
 └── faq/
     └── page.tsx               # FAQページ
 ```
+
 - **`types.ts`**: フロントエンドで使用する型を一元管理（重複を防止）
 - **`hooks/`**: 状態管理や副作用をカスタムフックに分離（再利用可能）
 - **`utils/`**: 純粋関数として実装可能なビジネスロジック（テストしやすい）
@@ -139,9 +144,12 @@
 
 **使用例**:
 
+[`app/hooks/useModal.ts`](../../app/hooks/useModal.ts) (行 15-49)
+
 ```typescript
 useModal(isOpen, onClose);
 ```
+
 商品モーダルの状態管理を行うカスタムフックです。
 
 **機能**:
@@ -153,12 +161,17 @@ useModal(isOpen, onClose);
 
 **使用例**:
 
+[`app/hooks/useProductModal.ts`](../../app/hooks/useProductModal.ts) (行 14-71)
+
 ```typescript
-  useProductModal();
+useProductModal();
 ```
+
 #### formatPrice (`utils/format.ts`)
 
 価格をフォーマットして表示用の文字列を返す関数です。
+
+[`app/utils/format.ts`](../../app/utils/format.ts) (行 11-13)
 
 **機能**:
 
@@ -167,7 +180,7 @@ useModal(isOpen, onClose);
 
 **使用例**:
 
-```
+````
 #### Header (`Header.tsx`)
 
 全ページ共通のヘッダーコンポーネントです。
@@ -186,6 +199,8 @@ useModal(isOpen, onClose);
 
 **実装例**:
 
+[`app/components/Header.tsx`](../../app/components/Header.tsx) (行 14-60)
+
 ```typescript
   <div className="mx-auto flex h-full max-w-6xl items-center justify-between">
     {/* ロゴとInstagram */}
@@ -203,7 +218,8 @@ useModal(isOpen, onClose);
     </nav>
   </div>
 </header>
-```
+````
+
 全ページ共通のフッターコンポーネントです。
 
 **機能**:
@@ -246,6 +262,8 @@ useModal(isOpen, onClose);
 
 **実装例**:
 
+[`app/components/ProductGrid.tsx`](../../app/components/ProductGrid.tsx) (行 31-34)
+
 ```typescript
 import { useProductModal } from "../hooks/useProductModal";
 
@@ -280,6 +298,7 @@ export default function ProductGrid({ category, products }) {
   );
 }
 ```
+
 個別商品のタイル表示コンポーネントです。
 
 **機能**:
@@ -359,6 +378,7 @@ className = "text-sm md:text-base lg:text-lg";
 // モバイル: 1列、デスクトップ: 3列
 className = "grid grid-cols-1 md:grid-cols-3";
 ```
+
 - **ヘッダー**: 高さ固定 `h-20` (80px)、ロゴサイズ `max-h-20` (80px)
 - **フッター**: 常に 4 列グリッド、フォントサイズ `text-[10px]` → `text-sm`、スペーシング `gap-2` → `gap-4`、地図の高さ `h-32` → `h-48`
 - **商品グリッド**: 常に 3 列、ギャップ `gap-3` → `gap-6`、カテゴリータイトル `text-lg` → `text-2xl`
@@ -433,17 +453,19 @@ ProductModal (Client Component)
   ↓ カスタムフック（useModal）
   ↓ ESCキー処理とスクロール無効化
 ```
-  ↓ useProductModal()
-  ├── selectedProduct (選択された商品)
-  ├── isModalOpen (モーダルの開閉状態)
-  ├── handleProductClick (商品クリック時の処理)
-  └── handleCloseModal (モーダル閉じる時の処理)
-  ↓
+
+↓ useProductModal()
+├── selectedProduct (選択された商品)
+├── isModalOpen (モーダルの開閉状態)
+├── handleProductClick (商品クリック時の処理)
+└── handleCloseModal (モーダル閉じる時の処理)
+↓
 ProductModal
-  ↓ useModal(isOpen, onClose)
-  ├── ESCキー処理
-  └── 背景スクロール無効化
-```
+↓ useModal(isOpen, onClose)
+├── ESC キー処理
+└── 背景スクロール無効化
+
+````
 商品の公開状態は、以下のロジックで判定されます：
 
 1. **公開日・終了日が設定されている場合**: `calculatePublishedStatus()`で自動判定
@@ -455,7 +477,8 @@ ProductModal
   }
   return product.published;
 });
-```
+````
+
 ### Next.js Image コンポーネント
 
 すべての画像は `next/image` を使用して最適化されています。
@@ -478,6 +501,7 @@ ProductModal
   priority // 優先読み込み（ヘッダーのロゴなど）
 />
 ```
+
 ### Server Components
 
 - デフォルトで Server Components を使用
@@ -523,6 +547,7 @@ function App() {
   );
 }
 ```
+
 - 初期バンドルサイズを削減できる
 - 必要な時だけコンポーネントを読み込める
 - パフォーマンスの向上
@@ -549,6 +574,7 @@ function App() {
 ```typescript
 const { config } = await import("@/lib/config");
 ```
+
 - 必要な時だけモジュールを読み込める
 - コード分割により、初期バンドルサイズを削減
 

@@ -156,12 +156,16 @@ DashboardPage (Server Component)
 
 ##### `useTabState`
 
+[`app/dashboard/hooks/useTabState.ts`](../app/dashboard/hooks/useTabState.ts) (行 27-50)
+
 ```typescript
 // タブ状態をlocalStorageと同期
 const { activeTab, setActiveTab } = useTabState();
 ```
 
 ##### `useCategoryTabState`
+
+[`app/dashboard/hooks/useTabState.ts`](../app/dashboard/hooks/useTabState.ts) (行 64-116)
 
 ```typescript
 // カテゴリータブの状態管理
@@ -173,6 +177,8 @@ const { activeCategoryTab, setActiveCategoryTab } = useCategoryTabState(
 
 ##### `useProductReorder`
 
+[`app/dashboard/hooks/useProductReorder.ts`](../app/dashboard/hooks/useProductReorder.ts) (行 21-118)
+
 ```typescript
 // 商品順序変更の楽観的UI更新
 const { reorderProducts } = useProductReorder(setProducts, refreshProducts);
@@ -182,12 +188,16 @@ const { reorderProducts } = useProductReorder(setProducts, refreshProducts);
 
 ##### `useModal`
 
+[`app/hooks/useModal.ts`](../app/hooks/useModal.ts) (行 15-49)
+
 ```typescript
 // モーダルの開閉状態とESCキー処理を管理
 useModal(isOpen, onClose);
 ```
 
 ##### `useProductModal`
+
+[`app/hooks/useProductModal.ts`](../app/hooks/useProductModal.ts) (行 14-71)
 
 ```typescript
 // 商品モーダルの状態管理
@@ -259,7 +269,7 @@ Client Component (状態更新)
 
 ### 一元管理 ([`lib/config.ts`](../lib/config.ts))
 
-すべての設定値を[`lib/config.ts`](../lib/config.ts)に集約：
+すべての設定値を[`lib/config.ts`](../lib/config.ts) (行 7-105) に集約：
 
 ```typescript
 export const config = {
@@ -299,6 +309,8 @@ export const config = {
 
 機能内で使用する型を一元管理：
 
+[`app/dashboard/types.ts`](../app/dashboard/types.ts) (行 5-22)
+
 ```typescript
 export interface Category {
   id: number;
@@ -322,6 +334,8 @@ export interface Product {
 
 ### 統一されたエラークラス ([`lib/errors.ts`](../lib/errors.ts))
 
+[`lib/errors.ts`](../lib/errors.ts) (行 45-57)
+
 ```typescript
 // 使用例
 throw new ValidationError("Invalid input");
@@ -330,6 +344,8 @@ throw new DatabaseError("Failed to connect");
 ```
 
 ### API Routes でのエラーハンドリング
+
+[`lib/api-helpers.ts`](../lib/api-helpers.ts) (行 66-76)
 
 ```typescript
 import { withErrorHandling, apiSuccess } from "@/lib/api-helpers";

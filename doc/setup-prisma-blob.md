@@ -59,7 +59,7 @@ BLOB_READ_WRITE_TOKEN=vercel_blob_rw_...
 
 ### Prisma Client のインポート
 
-[`lib/prisma.ts`](../lib/prisma.ts)から Prisma Client をインポートして使用します。
+[`lib/prisma.ts`](../lib/prisma.ts) (行 72-73) から Prisma Client をインポートして使用します。
 
 ```typescript
 import { prisma } from "@/lib/prisma";
@@ -161,6 +161,8 @@ npm run db:generate
 
 ### トランザクション
 
+[`lib/prisma.ts`](../lib/prisma.ts) (行 72-73)
+
 ```typescript
 import { prisma } from "@/lib/prisma";
 
@@ -183,6 +185,8 @@ await prisma.$transaction(async (tx) => {
 ```
 
 ### リレーション
+
+[`lib/prisma.ts`](../lib/prisma.ts) (行 72-73)
 
 ```typescript
 // リレーションを含めて取得
@@ -214,7 +218,7 @@ const userWithOrdersAndItems = await prisma.user.findUnique({
 
 ### ファイルのアップロード
 
-[`lib/blob.ts`](../lib/blob.ts)から必要な関数をインポートして使用します。
+[`lib/blob.ts`](../lib/blob.ts) (行 24-50) から必要な関数をインポートして使用します。
 
 ```typescript
 import { uploadFile, uploadImage } from "@/lib/blob";
@@ -237,6 +241,8 @@ console.log(blob.url); // アップロードされたファイルのURL
 
 ### ファイル一覧の取得
 
+[`lib/blob.ts`](../lib/blob.ts) (行 82-94)
+
 ```typescript
 import { listFiles } from "@/lib/blob";
 
@@ -252,6 +258,8 @@ const { blobs: images } = await listFiles({
 
 ### ファイル情報の取得
 
+[`lib/blob.ts`](../lib/blob.ts) (行 101-112)
+
 ```typescript
 import { getBlobInfo } from "@/lib/blob";
 
@@ -261,6 +269,8 @@ console.log(info.uploadedAt); // アップロード日時
 ```
 
 ### ファイルの削除
+
+[`lib/blob.ts`](../lib/blob.ts) (行 119-130)
 
 ```typescript
 import { deleteFile, deleteFiles } from "@/lib/blob";
@@ -325,6 +335,8 @@ export const POST = withErrorHandling(async (request: Request) => {
 ```
 
 ### Blob Storage を使用する API Route（ベストプラクティス）
+
+[`app/api/products/upload/route.ts`](../app/api/products/upload/route.ts) (行 13-47)
 
 ```typescript
 // app/api/upload/route.ts
