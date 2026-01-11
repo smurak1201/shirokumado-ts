@@ -69,7 +69,7 @@ Next.js は、Vercel が開発した、React ベースの本番環境対応フ�
 **ISR の使用例**:
 
 ```typescript
-// app/products/[id]/page.tsx
+```typescript
 // 1時間ごとにページを再生成
 export const revalidate = 3600;
 
@@ -90,8 +90,7 @@ export default async function ProductPage({
   return <ProductDetails product={product} />;
 }
 ```
-
-**ISR のメリット**:
+```
 
 - ビルド時にすべてのページを生成する必要がない
 - 指定した間隔で自動的にページを再生成
@@ -149,7 +148,7 @@ Next.js の設定を管理するファイルです。画像最適化、実験的
 **参照**: [`next.config.ts`](../../next.config.ts) (行 1-30)
 
 ```1:30:next.config.ts
-import type { NextConfig } from "next";
+```1:30:next.config.ts
 
 const nextConfig: NextConfig = {
   // 画像最適化の設定
@@ -180,8 +179,7 @@ const nextConfig: NextConfig = {
 
 export default nextConfig;
 ```
-
-**設定の説明**:
+```
 
 1. **画像最適化** (`images`):
 
@@ -213,7 +211,7 @@ Next.js は、`next/image` コンポーネントを使用して、画像の自�
 **参照**: [`app/page.tsx`](../../app/page.tsx) (行 90-98)
 
 ```90:98:app/page.tsx
-      <section className="relative h-[30vh] min-h-[200px] w-full overflow-hidden md:h-[50vh] md:min-h-[400px] lg:h-[60vh] lg:min-h-[500px]">
+```90:98:app/page.tsx
         <Image
           src="/hero.webp"
           alt="白熊堂"
@@ -223,15 +221,14 @@ Next.js は、`next/image` コンポーネントを使用して、画像の自�
           sizes="100vw"
         />
 ```
-
-**説明**: `fill` プロパティを使用して、親要素のサイズに合わせて画像を表示します。`priority` により、優先読み込みが行われます。
+```
 
 2. **`app/components/ProductTile.tsx`** - 商品画像の最適化
 
 **参照**: [`app/components/ProductTile.tsx`](../../app/components/ProductTile.tsx) (行 39-46)
 
 ```39:46:app/components/ProductTile.tsx
-        <div className="relative aspect-square w-full overflow-hidden bg-gray-50">
+```39:46:app/components/ProductTile.tsx
           <Image
             src={product.imageUrl}
             alt={product.name}
@@ -241,15 +238,14 @@ Next.js は、`next/image` コンポーネントを使用して、画像の自�
             loading="lazy"
           />
 ```
-
-**説明**: `loading="lazy"` により、商品画像を遅延読み込みします。`sizes` 属性により、デバイスに応じた画像サイズを提供します。
+```
 
 3. **`app/components/ProductModal.tsx`** - モーダル内の商品画像
 
 **参照**: [`app/components/ProductModal.tsx`](../../app/components/ProductModal.tsx) (行 68-75)
 
 ```68:75:app/components/ProductModal.tsx
-          <div className="relative aspect-square w-full overflow-hidden bg-gray-50">
+```68:75:app/components/ProductModal.tsx
             <Image
               src={product.imageUrl}
               alt={product.name}
@@ -259,8 +255,7 @@ Next.js は、`next/image` コンポーネントを使用して、画像の自�
               priority
             />
 ```
-
-**説明**: モーダル内の画像は `priority` により優先読み込みされます。
+```
 
 ### 画像最適化の設定
 
@@ -269,7 +264,7 @@ Next.js は、`next/image` コンポーネントを使用して、画像の自�
 **参照**: [`next.config.ts`](../../next.config.ts) (行 4-13)
 
 ```4:13:next.config.ts
-  // 画像最適化の設定
+```4:13:next.config.ts
   images: {
     formats: ['image/avif', 'image/webp'],
     remotePatterns: [
@@ -280,8 +275,7 @@ Next.js は、`next/image` コンポーネントを使用して、画像の自�
     ],
   },
 ```
-
-**設定の説明**:
+```
 
 - `formats`: AVIF と WebP 形式を優先的に使用（ブラウザがサポートしている場合）
 - `remotePatterns`: Vercel Blob Storage からの画像読み込みを許可
@@ -303,22 +297,20 @@ Next.js は、`next/font/google` を使用して、Google Fonts を最適化し�
 **参照**: [`app/layout.tsx`](../../app/layout.tsx) (行 6-10)
 
 ```6:10:app/layout.tsx
-const notoSansJP = Noto_Sans_JP({
+```6:10:app/layout.tsx
   variable: "--font-noto-sans-jp",
   subsets: ["latin"],
   weight: ["300", "400", "500", "700"],
 });
 ```
-
-**説明**: Noto Sans JP フォントを Google Fonts から読み込み、CSS 変数として設定しています。
+```
 
 **参照**: [`app/layout.tsx`](../../app/layout.tsx) (行 31-31)
 
 ```31:31:app/layout.tsx
-      <body className={`${notoSansJP.variable} antialiased`}>
+```31:31:app/layout.tsx
 ```
-
-**説明**: フォント変数を `body` 要素に適用し、`antialiased` クラスでアンチエイリアスを有効化しています。
+```
 
 **フォント最適化のメリット**:
 
@@ -339,7 +331,7 @@ Next.js は、`metadata` オブジェクトを使用して、ページのメタ�
 **参照**: [`app/layout.tsx`](../../app/layout.tsx) (行 12-22)
 
 ```12:22:app/layout.tsx
-export const metadata: Metadata = {
+```12:22:app/layout.tsx
   title: "白熊堂 | 本格かき氷のお店",
   description:
     "白熊堂は本格かき氷のお店です。ふわふわの氷とこだわりのシロップでお待ちしています。",
@@ -351,8 +343,7 @@ export const metadata: Metadata = {
   },
 };
 ```
-
-**説明**: メタデータにより、SEO と OGP（Open Graph Protocol）の設定が行われます。
+```
 
 **メタデータの種類**:
 
@@ -383,10 +374,9 @@ Next.js は、`npm run build` コマンドでプロダクションビルドを�
 **ビルドコマンド**:
 
 ```bash
-npm run build
+```bash
 ```
-
-**ビルド出力**:
+```
 
 - `.next/`: ビルド成果物が保存されるディレクトリ
 - `out/`: 静的エクスポートの場合、静的ファイルが保存されるディレクトリ

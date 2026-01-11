@@ -90,7 +90,7 @@ TypeScript の設定を管理するファイルです。コンパイラオプシ
 **参照**: [`tsconfig.json`](../../tsconfig.json) (行 1-40)
 
 ```1:40:tsconfig.json
-{
+```1:40:tsconfig.json
   "compilerOptions": {
     "target": "ES2017",
     "lib": ["dom", "dom.iterable", "esnext"],
@@ -131,8 +131,7 @@ TypeScript の設定を管理するファイルです。コンパイラオプシ
   "exclude": ["node_modules"]
 }
 ```
-
-**設定の説明**:
+```
 
 1. **基本設定**:
 
@@ -171,7 +170,7 @@ TypeScript の設定を管理するファイルです。コンパイラオプシ
 **参照**: [`app/types.ts`](../../app/types.ts) (行 1-44)
 
 ```1:44:app/types.ts
-/**
+```1:44:app/types.ts
  * フロントエンドで使用する共通型定義
  *
  * フロントエンドのコンポーネント間で共有される型定義を集約しています。
@@ -215,8 +214,7 @@ export interface ProductTile {
   imageUrl: string | null; // 商品画像URL（Blob StorageのURL）
 }
 ```
-
-**型定義の特徴**:
+```
 
 - **インターフェース**: `interface` キーワードを使用して型を定義
 - **コメント**: JSDoc コメントで型の説明を記述
@@ -234,7 +232,7 @@ export interface ProductTile {
 **参照**: [`app/dashboard/types.ts`](../../app/dashboard/types.ts) (行 1-22)
 
 ```1:22:app/dashboard/types.ts
-/**
+```1:22:app/dashboard/types.ts
  * ダッシュボードで使用する共通型定義
  */
 
@@ -257,8 +255,7 @@ export interface Product {
   displayOrder: number | null;
 }
 ```
-
-**型定義の特徴**:
+```
 
 - **ネストされた型**: `category: Category` のように、他の型を参照
 - **日付の文字列化**: `publishedAt: string | null` のように、Date 型を文字列として扱う（JSON シリアライズのため）
@@ -274,27 +271,25 @@ export interface Product {
 **参照**: [`app/components/ProductGrid.tsx`](../../app/components/ProductGrid.tsx) (行 11-14)
 
 ```11:14:app/components/ProductGrid.tsx
-interface ProductGridProps {
+```11:14:app/components/ProductGrid.tsx
   category: Category; // カテゴリー情報
   products: Product[]; // 商品一覧
 }
 ```
-
-**説明**: `ProductGrid` コンポーネントの Props に型を定義しています。
+```
 
 2. **[`app/components/ProductModal.tsx`](../../app/components/ProductModal.tsx)** - Props の型定義
 
 **参照**: [`app/components/ProductModal.tsx`](../../app/components/ProductModal.tsx) (行 12-16)
 
 ```12:16:app/components/ProductModal.tsx
-interface ProductModalProps {
+```12:16:app/components/ProductModal.tsx
   product: Product | null; // 表示する商品情報（nullの場合は非表示）
   isOpen: boolean; // モーダルの開閉状態
   onClose: () => void; // モーダルを閉じるコールバック関数
 }
 ```
-
-**説明**: `ProductModal` コンポーネントの Props に型を定義し、`product` が `null` の可能性を明示しています。
+```
 
 ### 関数の型定義
 
@@ -303,7 +298,7 @@ interface ProductModalProps {
 1. **`app/utils/format.ts`** - 価格フォーマット関数
 
 ```typescript
-// app/utils/format.ts
+```typescript
 export function formatPrice(price: number): string {
   return `¥${price.toLocaleString()}`;
 }
@@ -311,15 +306,14 @@ export function formatPrice(price: number): string {
 **参照**: [`app/utils/format.ts`](../app/utils/format.ts)
 
 ```
-
-**説明**: 関数の引数と戻り値に型を指定しています。
+```
 
 2. **[`app/hooks/useProductModal.ts`](../../app/hooks/useProductModal.ts)** - カスタムフックの戻り値の型
 
 **参照**: [`app/hooks/useProductModal.ts`](../../app/hooks/useProductModal.ts) (行 12-47)
 
 ```12:47:app/hooks/useProductModal.ts
-export function useProductModal() {
+```12:47:app/hooks/useProductModal.ts
   // 選択された商品を管理（モーダル表示用）
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   // モーダルの開閉状態を管理
@@ -356,8 +350,7 @@ export function useProductModal() {
   };
 }
 ```
-
-**説明**: カスタムフックの戻り値の型は、TypeScript が自動的に推論します。
+```
 
 ### ユニオン型と null 許容型
 
@@ -368,7 +361,7 @@ export function useProductModal() {
 **参照**: [`app/types.ts`](../../app/types.ts) (行 24-31)
 
 ```24:31:app/types.ts
-export interface Product {
+```24:31:app/types.ts
   id: number; // 商品ID
   name: string; // 商品名
   description: string; // 商品説明
@@ -377,28 +370,25 @@ export interface Product {
   priceL: number | null; // Lサイズの価格（円）
 }
 ```
-
-**説明**: `imageUrl`、`priceS`、`priceL` は `null` の可能性があるため、ユニオン型を使用しています。
+```
 
 2. **ユニオン型**: `Product | null`
 
 **参照**: [`app/components/ProductModal.tsx`](../../app/components/ProductModal.tsx) (行 13-13)
 
 ```13:13:app/components/ProductModal.tsx
-  product: Product | null; // 表示する商品情報（nullの場合は非表示）
+```13:13:app/components/ProductModal.tsx
 ```
-
-**説明**: `product` は `Product` 型または `null` の可能性があるため、ユニオン型を使用しています。
+```
 
 3. **文字列リテラル型のユニオン型**: `"list" | "layout"`
 
 **参照**: [`app/dashboard/hooks/useTabState.ts`](../../app/dashboard/hooks/useTabState.ts) (行 16-16)
 
 ```16:16:app/dashboard/hooks/useTabState.ts
-type TabType = "list" | "layout";
+```16:16:app/dashboard/hooks/useTabState.ts
 ```
-
-**説明**: `TabType` は、`"list"` または `"layout"` という特定の文字列リテラルのみを許可する型です。文字列リテラル型を使用することで、`string` 型よりも厳密な型チェックが可能になり、誤った文字列（例: `"lists"`）を代入できないようになります。
+```
 
 **詳細は [interface vs type](#interface-vs-type) セクションを参照してください。**
 
@@ -413,13 +403,12 @@ Prisma は、データベーススキーマから TypeScript の型定義を自�
 **型生成コマンド**:
 
 ```bash
-npm run db:generate
+```bash
+```
 ```
 
-**生成される型**:
-
 ```typescript
-// @prisma/client から自動生成される型
+```typescript
 import { Product, Category } from "@prisma/client";
 
 // 型安全なデータアクセス
@@ -427,11 +416,10 @@ const product: Product = await prisma.product.findUnique({
   where: { id: 1 },
 });
 ```
-
-**このアプリでの使用例**:
+```
 
 ```typescript
-// lib/prisma.ts などで使用
+```typescript
 import { PrismaClient } from "@prisma/client";
 
 const product = await prisma.product.findUnique({
@@ -445,8 +433,7 @@ console.log(product.invalidField); // コンパイルエラー
 **参照**: [`lib/prisma.ts`](../lib/prisma.ts)
 
 ```
-
-**Prisma の型生成のメリット**:
+```
 
 - **型安全性**: データベーススキーマと TypeScript の型が自動的に同期
 - **自動補完**: IDE で自動補完が利用可能
@@ -465,7 +452,7 @@ API Routes では、リクエストとレスポンスの型を定義すること
 **[`app/api/products/route.ts`](../../app/api/products/route.ts)** - POST リクエストの型
 
 ```typescript
-// app/api/products/route.ts
+```typescript
 export const POST = withErrorHandling(async (request: NextRequest) => {
   const body = await request.json();
 
@@ -489,8 +476,7 @@ export const POST = withErrorHandling(async (request: NextRequest) => {
 **参照**: [`app/api/products/route.ts`](../app/api/products/route.ts)
 
 ```
-
-**説明**: リクエストボディの型をバリデーション時にチェックし、型安全なデータ操作を行います。
+```
 
 ### レスポンスの型定義
 
@@ -499,7 +485,7 @@ export const POST = withErrorHandling(async (request: NextRequest) => {
 **[`lib/api-helpers.ts`](../../lib/api-helpers.ts)** - API レスポンスの型
 
 ```typescript
-// lib/api-helpers.ts
+```typescript
 export function apiSuccess<T>(data: T, status: number = 200): NextResponse {
   return NextResponse.json({ data }, { status });
 }
@@ -507,8 +493,7 @@ export function apiSuccess<T>(data: T, status: number = 200): NextResponse {
 **参照**: [`lib/api-helpers.ts`](../lib/api-helpers.ts)
 
 ```
-
-**説明**: ジェネリクスを使用して、レスポンスデータの型を指定します。
+```
 
 ## エラーハンドリングでの型安全性
 
@@ -521,7 +506,7 @@ export function apiSuccess<T>(data: T, status: number = 200): NextResponse {
 **エラークラスの例**:
 
 ```typescript
-// lib/errors.ts
+```typescript
 export class ValidationError extends Error {
   constructor(message: string) {
     super(message);
@@ -539,17 +524,15 @@ export class NotFoundError extends Error {
 **参照**: [`lib/errors.ts`](../lib/errors.ts)
 
 ```
-
-**使用例**:
+```
 
 ```typescript
-// app/api/products/[id]/route.ts
+```typescript
 if (!product) {
   throw new NotFoundError("商品");
 }
 ```
-
-**型安全なエラーハンドリングのメリット**:
+```
 
 - **エラーの種類を明確化**: エラーの種類を型で区別
 - **IDE サポート**: エラーの種類に応じた処理を自動補完
@@ -564,37 +547,34 @@ TypeScript は、型を明示的に指定しなくても、コンパイラが型
 **このアプリでの使用箇所**:
 
 ```typescript
-// 型を明示的に指定しなくても、TypeScript が推論
+```typescript
 const products = await prisma.product.findMany();
 // products の型は Product[] と推論される
 ```
-
-### 関数の戻り値の型推論
+```
 
 **このアプリでの使用箇所**:
 
 ```typescript
-// 戻り値の型を明示的に指定しなくても、TypeScript が推論
+```typescript
 export function formatPrice(price: number) {
   return `¥${price.toLocaleString()}`;
   // 戻り値の型は string と推論される
 }
 ```
-
-### 配列の型推論
+```
 
 **このアプリでの使用箇所**:
 
 ```typescript
-// 配列の要素の型を推論
+```typescript
 const categories = [
   { id: 1, name: "かき氷" },
   { id: 2, name: "ドリンク" },
 ];
 // categories の型は { id: number; name: string }[] と推論される
 ```
-
-## 型の使い分け
+```
 
 このアプリでは、用途に応じて適切な型定義方法を選択しています。
 
@@ -608,7 +588,7 @@ const categories = [
 **このアプリでの使用例**:
 
 ```typescript
-// app/types.ts
+```typescript
 export interface Product {
   id: number;
   name: string;
@@ -618,8 +598,7 @@ export interface Product {
 **参照**: [`app/types.ts`](../app/types.ts)
 
 ```
-
-**type を使用する場合**:
+```
 
 - ユニオン型やインターセクション型を定義する場合
 - 型エイリアスを定義する場合
@@ -632,28 +611,25 @@ export interface Product {
 **参照**: [`app/dashboard/hooks/useTabState.ts`](../../app/dashboard/hooks/useTabState.ts) (行 16-16)
 
 ```16:16:app/dashboard/hooks/useTabState.ts
-type TabType = "list" | "layout";
+```16:16:app/dashboard/hooks/useTabState.ts
 ```
-
-**説明**: ダッシュボードのタブ状態を管理するために、文字列リテラル型のユニオン型を使用しています。これにより、`"list"` または `"layout"` のみを許可し、型安全性を確保しています。
+```
 
 **使用例**:
 
 **参照**: [`app/dashboard/hooks/useTabState.ts`](../../app/dashboard/hooks/useTabState.ts) (行 30-30)
 
 ```30:30:app/dashboard/hooks/useTabState.ts
-  const [activeTab, setActiveTab] = useState<TabType>(() => {
-```
+```30:30:app/dashboard/hooks/useTabState.ts
+
 
 **参照**: [`app/dashboard/components/ProductList.tsx`](../../app/dashboard/components/ProductList.tsx) (行 227-227)
-
-```227:227:app/dashboard/components/ProductList.tsx
-              onClick={() => setActiveTab("list")}
 ```
-
-**文字列リテラル型のユニオン型のメリット**:
-
-- **型安全性**: 許可された文字列のみを受け付けるため、タイプミスを防げる
+```
+```227:227:app/dashboard/components/ProductList.tsx
+```227:227:app/dashboard/components/ProductList.tsx
+```
+```
 - **可読性**: 使用可能な値を型定義から明確に把握できる
 - **IDE サポート**: 自動補完で使用可能な値を提案してくれる
 
@@ -665,7 +641,7 @@ type TabType = "list" | "layout";
 **その他の使用例**:
 
 ```typescript
-// ユニオン型の例
+```typescript
 type Status = "pending" | "completed" | "failed";
 
 // 型エイリアスの例
@@ -680,8 +656,7 @@ type AdminUser = User & {
 type PartialProduct = Partial<Product>;
 type ReadonlyProduct = Readonly<Product>;
 ```
-
-### 型の分離
+```
 
 **このアプリでの使用例**:
 

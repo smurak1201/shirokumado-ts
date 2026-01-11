@@ -42,7 +42,7 @@
 **データ取得**:
 
 ```typescript
-async function getPublishedProductsByCategory() {
+```typescript
   // カテゴリーと商品を並列で取得
   const [categories, products] = await Promise.all([
     prisma.category.findMany({ orderBy: { id: "asc" } }),
@@ -61,8 +61,7 @@ async function getPublishedProductsByCategory() {
   // ...
 }
 ```
-
-**レイアウト**:
+```
 
 1. **ヘッダー**: ロゴ、Instagram リンク、ナビゲーション
 2. **ヒーローバナー**: メイン画像（`/hero.webp`）
@@ -81,18 +80,17 @@ async function getPublishedProductsByCategory() {
 **構造**:
 
 ```typescript
-const faqs = [
+```typescript
   { question: "質問", answer: "回答" },
   // ...
 ];
 ```
-
-## ディレクトリ構造
+```
 
 フロントエンドは以下のように構造化されています：
 
 ```
-app/
+```
 ├── types.ts                    # 共通型定義
 ├── hooks/                      # カスタムフック
 │   ├── useModal.ts            # モーダル管理フック
@@ -111,8 +109,7 @@ app/
 └── faq/
     └── page.tsx               # FAQページ
 ```
-
-**設計思想**:
+```
 
 - **`types.ts`**: フロントエンドで使用する型を一元管理（重複を防止）
 - **`hooks/`**: 状態管理や副作用をカスタムフックに分離（再利用可能）
@@ -152,12 +149,11 @@ app/
 **使用例**:
 
 ```typescript
-import { useModal } from "../hooks/useModal";
+```typescript
 
 useModal(isOpen, onClose);
 ```
-
-#### useProductModal (`hooks/useProductModal.ts`)
+```
 
 商品モーダルの状態管理を行うカスタムフックです。
 
@@ -171,11 +167,10 @@ useModal(isOpen, onClose);
 **使用例**:
 
 ```typescript
-const { selectedProduct, isModalOpen, handleProductClick, handleCloseModal } =
+```typescript
   useProductModal();
 ```
-
-### ユーティリティ関数 (`app/utils/`)
+```
 
 #### formatPrice (`utils/format.ts`)
 
@@ -189,10 +184,9 @@ const { selectedProduct, isModalOpen, handleProductClick, handleCloseModal } =
 **使用例**:
 
 ```typescript
-formatPrice(1000); // "¥1,000"
+```typescript
 ```
-
-### 共通コンポーネント (`app/components/`)
+```
 
 #### Header (`Header.tsx`)
 
@@ -213,7 +207,7 @@ formatPrice(1000); // "¥1,000"
 **実装例**:
 
 ```typescript
-<header className="sticky top-0 z-50 h-20 overflow-visible bg-white">
+```typescript
   <div className="mx-auto flex h-full max-w-6xl items-center justify-between">
     {/* ロゴとInstagram */}
     <div className="flex items-center gap-3">
@@ -231,8 +225,7 @@ formatPrice(1000); // "¥1,000"
   </div>
 </header>
 ```
-
-#### Footer (`Footer.tsx`)
+```
 
 全ページ共通のフッターコンポーネントです。
 
@@ -277,7 +270,7 @@ formatPrice(1000); // "¥1,000"
 **実装例**:
 
 ```typescript
-"use client";
+```typescript
 
 import { useProductModal } from "../hooks/useProductModal";
 
@@ -312,8 +305,7 @@ export default function ProductGrid({ category, products }) {
   );
 }
 ```
-
-#### ProductTile (`ProductTile.tsx`)
+```
 
 個別商品のタイル表示コンポーネントです。
 
@@ -389,14 +381,13 @@ export default function ProductGrid({ category, products }) {
 **実装例**:
 
 ```typescript
-// モバイル: 小さいサイズ、デスクトップ: 大きいサイズ
+```typescript
 className = "text-sm md:text-base lg:text-lg";
 
 // モバイル: 1列、デスクトップ: 3列
 className = "grid grid-cols-1 md:grid-cols-3";
 ```
-
-**コンポーネント別のレスポンシブ設定**:
+```
 
 - **ヘッダー**: 高さ固定 `h-20` (80px)、ロゴサイズ `max-h-20` (80px)
 - **フッター**: 常に 4 列グリッド、フォントサイズ `text-[10px]` → `text-sm`、スペーシング `gap-2` → `gap-4`、地図の高さ `h-32` → `h-48`
@@ -462,7 +453,7 @@ className = "grid grid-cols-1 md:grid-cols-3";
 ### Server Component → Client Component
 
 ```
-app/page.tsx (Server Component)
+```
   ↓ データ取得（Prisma）
   ↓ 公開商品のフィルタリング
   ↓ propsで渡す
@@ -473,11 +464,10 @@ ProductModal (Client Component)
   ↓ カスタムフック（useModal）
   ↓ ESCキー処理とスクロール無効化
 ```
-
-### 状態管理の流れ
+```
 
 ```
-ProductGrid
+```
   ↓ useProductModal()
   ├── selectedProduct (選択された商品)
   ├── isModalOpen (モーダルの開閉状態)
@@ -489,8 +479,7 @@ ProductModal
   ├── ESCキー処理
   └── 背景スクロール無効化
 ```
-
-### 公開状態の判定
+```
 
 商品の公開状態は、以下のロジックで判定されます：
 
@@ -498,15 +487,14 @@ ProductModal
 2. **公開日・終了日が設定されていない場合**: `published`フィールドの値を使用
 
 ```typescript
-const publishedProducts = products.filter((product) => {
+```typescript
   if (product.publishedAt || product.endedAt) {
     return calculatePublishedStatus(product.publishedAt, product.endedAt);
   }
   return product.published;
 });
 ```
-
-## 画像最適化
+```
 
 ### Next.js Image コンポーネント
 
@@ -522,7 +510,7 @@ const publishedProducts = products.filter((product) => {
 **実装例**:
 
 ```typescript
-<Image
+```typescript
   src="/logo.webp"
   alt="白熊堂"
   width={120}
@@ -531,8 +519,7 @@ const publishedProducts = products.filter((product) => {
   priority // 優先読み込み（ヘッダーのロゴなど）
 />
 ```
-
-## パフォーマンス最適化
+```
 
 ### Server Components
 
@@ -559,7 +546,7 @@ const publishedProducts = products.filter((product) => {
 **使用例**:
 
 ```typescript
-// next/dynamicを使用した動的インポート
+```typescript
 import dynamic from "next/dynamic";
 
 const HeavyComponent = dynamic(() => import("./HeavyComponent"), {
@@ -580,8 +567,7 @@ function App() {
   );
 }
 ```
-
-**コンポーネントの動的インポートのメリット**:
+```
 
 - 初期バンドルサイズを削減できる
 - 必要な時だけコンポーネントを読み込める
@@ -607,11 +593,10 @@ function App() {
 **使用例**:
 
 ```typescript
-// 動的インポートで config を読み込む（コード分割のため）
+```typescript
 const { config } = await import("@/lib/config");
 ```
-
-**モジュールの動的インポートのメリット**:
+```
 
 - 必要な時だけモジュールを読み込める
 - コード分割により、初期バンドルサイズを削減

@@ -55,7 +55,7 @@ App Router では、`app/` ディレクトリ内のファイル構造がその�
 **このアプリでのディレクトリ構造**:
 
 ```
-app/
+```
 ├── layout.tsx          # ルートレイアウト（全ページ共通）
 ├── page.tsx           # ホームページ（/）
 ├── globals.css        # グローバルスタイル
@@ -79,8 +79,7 @@ app/
 ├── utils/             # ユーティリティ関数
 └── types.ts          # 型定義
 ```
-
-**ルーティングの規則**:
+```
 
 - `page.tsx`: ページコンポーネント（ルートとして機能） - **このアプリで使用中**
 - `layout.tsx`: レイアウトコンポーネント（ネストされたレイアウト） - **このアプリで使用中**
@@ -101,7 +100,7 @@ app/
 **使用例**:
 
 ```typescript
-// app/products/loading.tsx
+```typescript
 export default function Loading() {
   return (
     <div className="flex items-center justify-center p-8">
@@ -114,15 +113,14 @@ export default function Loading() {
 **参照**: [`app/products/loading.ts`](../app/products/loading.ts)
 
 ```
-
-**`error.tsx`** - エラーバウンダリー
+```
 
 エラーバウンダリーとして機能し、エラー発生時に表示される UI を定義します。Client Component として実装する必要があります。
 
 **使用例**:
 
 ```typescript
-// app/products/error.tsx
+```typescript
 "use client";
 
 export default function Error({
@@ -149,15 +147,14 @@ export default function Error({
 **参照**: [`app/products/error.ts`](../app/products/error.ts)
 
 ```
-
-**`not-found.tsx`** - 404 ページ
+```
 
 404 ページをカスタマイズします。`notFound()`関数を呼び出した時や、存在しないルートにアクセスした時に表示されます。
 
 **使用例**:
 
 ```typescript
-// app/products/not-found.tsx
+```typescript
 import Link from "next/link";
 
 export default function NotFound() {
@@ -177,15 +174,14 @@ export default function NotFound() {
 **参照**: [`app/products/not-found.ts`](../app/products/not-found.ts)
 
 ```
-
-**`template.tsx`** - テンプレートコンポーネント
+```
 
 `layout.tsx`と似ていますが、ナビゲーション時に毎回新しいインスタンスが作成されます。アニメーションや状態のリセットが必要な場合に使用します。
 
 **使用例**:
 
 ```typescript
-// app/products/template.tsx
+```typescript
 export default function Template({ children }: { children: React.ReactNode }) {
   return (
     <div className="animate-fade-in transition-opacity duration-300">
@@ -197,8 +193,7 @@ export default function Template({ children }: { children: React.ReactNode }) {
 **参照**: [`app/products/template.ts`](../app/products/template.ts)
 
 ```
-
-**このアプリで使用しない理由**:
+```
 
 - エラーハンドリングは API Routes で統一して実装している
 - ローディング状態は各コンポーネント内で管理している
@@ -225,7 +220,7 @@ export default function Template({ children }: { children: React.ReactNode }) {
 **参照**: [`app/page.tsx`](../../app/page.tsx) (行 102-141)
 
 ```102:141:app/page.tsx
-export default async function Home() {
+```102:141:app/page.tsx
   // カテゴリーごとにグループ化された公開商品を取得
   const categoriesWithProducts = await getPublishedProductsByCategory();
 
@@ -266,15 +261,14 @@ export default async function Home() {
   );
 }
 ```
-
-**説明**: ホームページは Server Component として実装されており、サーバーサイドでデータベースから直接データを取得してレンダリングします。
+```
 
 2. **[`app/faq/page.tsx`](../../app/faq/page.tsx)** - FAQ ページ（Server Component）
 
 **参照**: [`app/faq/page.tsx`](../../app/faq/page.tsx) (行 17-117)
 
 ```17:117:app/faq/page.tsx
-export default function FAQPage() {
+```17:117:app/faq/page.tsx
   /**
    * FAQデータ
    * 質問と回答のペアを配列で定義
@@ -322,15 +316,14 @@ export default function FAQPage() {
   );
 }
 ```
-
-**説明**: FAQ ページも Server Component として実装されており、静的なコンテンツを表示します。
+```
 
 3. **[`app/dashboard/page.tsx`](../../app/dashboard/page.tsx)** - ダッシュボード（Server Component）
 
 **参照**: [`app/dashboard/page.tsx`](../../app/dashboard/page.tsx) (行 58-70)
 
 ```58:70:app/dashboard/page.tsx
-export default async function DashboardPage() {
+```58:70:app/dashboard/page.tsx
   const { categories, products } = await getDashboardData();
 
   return (
@@ -344,8 +337,7 @@ export default async function DashboardPage() {
   );
 }
 ```
-
-**説明**: ダッシュボードページも Server Component として実装されており、サーバーサイドでデータを取得してから Client Component に渡します。
+```
 
 ### Client Components
 
@@ -389,7 +381,7 @@ export default async function DashboardPage() {
 **参照**: [`app/page.tsx`](../../app/page.tsx) (行 26-86)
 
 ```26:86:app/page.tsx
-async function getPublishedProductsByCategory() {
+```26:86:app/page.tsx
   // カテゴリーと商品を並列で取得（パフォーマンス向上）
   const [categories, products] = await Promise.all([
     // カテゴリーをID順で取得
@@ -451,15 +443,14 @@ async function getPublishedProductsByCategory() {
     .filter(({ products }) => products.length > 0); // 商品があるカテゴリーのみを返す
 }
 ```
-
-**説明**: `Promise.all` を使用してカテゴリーと商品を並列で取得し、パフォーマンスを向上させています。
+```
 
 2. **[`app/dashboard/page.tsx`](../../app/dashboard/page.tsx)** - ダッシュボードデータを取得
 
 **参照**: [`app/dashboard/page.tsx`](../../app/dashboard/page.tsx) (行 17-52)
 
 ```17:52:app/dashboard/page.tsx
-async function getDashboardData() {
+```17:52:app/dashboard/page.tsx
   // カテゴリーと商品を並列で取得（パフォーマンス向上）
   const [categories, products] = await Promise.all([
     // カテゴリーをID順で取得
@@ -496,8 +487,7 @@ async function getDashboardData() {
   };
 }
 ```
-
-**説明**: ダッシュボードページでも、サーバーサイドでデータを取得し、クライアント側で使いやすい形式に変換しています。
+```
 
 ### Client Components でのデータフェッチング（fetch API）
 
@@ -527,7 +517,7 @@ async function getDashboardData() {
 **参照**: [`app/dashboard/components/DashboardContent.tsx`](../../app/dashboard/components/DashboardContent.tsx) (行 40-56)
 
 ```40:56:app/dashboard/components/DashboardContent.tsx
-  const refreshProducts = async () => {
+```40:56:app/dashboard/components/DashboardContent.tsx
     try {
       // キャッシュを完全に無効化するためにタイムスタンプをクエリパラメータに追加
       // これにより、常に最新のデータを取得できます
@@ -548,15 +538,14 @@ async function getDashboardData() {
 **参照**: [`Next.js`](../Next.js)
 
 ```
-
-**説明**: 商品の追加・更新・削除後に、最新の商品一覧を取得するために `fetch` を使用しています。キャッシュを無効化するために、タイムスタンプをクエリパラメータに追加し、`cache: "no-store"` と `Cache-Control: "no-cache"` ヘッダーを設定しています。
+```
 
 2. **`app/dashboard/components/ProductList.tsx`** - 商品の削除
 
 **参照**: [`app/dashboard/components/ProductList.tsx`](../../app/dashboard/components/ProductList.tsx) (行 95-120)
 
 ```95:120:app/dashboard/components/ProductList.tsx
-  const handleDelete = async (productId: number) => {
+```95:120:app/dashboard/components/ProductList.tsx
     // 削除前に確認ダイアログを表示
     if (!confirm("本当にこの商品を削除しますか？")) {
       return;
@@ -584,15 +573,14 @@ async function getDashboardData() {
     }
   };
 ```
-
-**説明**: 商品を削除するために `fetch` を使用して DELETE リクエストを送信しています。エラーハンドリングも実装されています。
+```
 
 3. **`app/dashboard/hooks/useProductReorder.ts`** - 商品順序の変更
 
 **参照**: [`app/dashboard/hooks/useProductReorder.ts`](../../app/dashboard/hooks/useProductReorder.ts) (行 79-94)
 
 ```79:94:app/dashboard/hooks/useProductReorder.ts
-    try {
+```79:94:app/dashboard/hooks/useProductReorder.ts
       // API を呼び出して商品の順序をサーバーに保存
       const response = await fetch("/api/products/reorder", {
         method: "POST",
@@ -608,8 +596,7 @@ async function getDashboardData() {
         throw new Error(error.error || "順序の更新に失敗しました");
       }
 ```
-
-**説明**: ドラッグ&ドロップで商品の順序を変更した後、サーバーに保存するために `fetch` を使用しています。楽観的 UI 更新を実装しており、API 呼び出し前に UI を更新しています。
+```
 
 4. **[`app/dashboard/components/DashboardForm.tsx`](../../app/dashboard/components/DashboardForm.tsx)** - 商品の作成と画像アップロード
 
@@ -618,7 +605,7 @@ async function getDashboardData() {
 **参照**: [`app/dashboard/components/DashboardForm.tsx`](../../app/dashboard/components/DashboardForm.tsx) (行 107-134)
 
 ```107:134:app/dashboard/components/DashboardForm.tsx
-          const uploadFormData = new FormData();
+```107:134:app/dashboard/components/DashboardForm.tsx
           uploadFormData.append("file", formData.imageFile);
 
           const uploadResponse = await fetch("/api/products/upload", {
@@ -647,13 +634,12 @@ async function getDashboardData() {
           const uploadData = await uploadResponse.json();
           imageUrl = uploadData.url;
 ```
-
-**商品作成（JSON データを送信）**:
+```
 
 **参照**: [`app/dashboard/components/DashboardForm.tsx`](../../app/dashboard/components/DashboardForm.tsx) (行 150-172)
 
 ```150:172:app/dashboard/components/DashboardForm.tsx
-      // 商品を登録
+```150:172:app/dashboard/components/DashboardForm.tsx
       const response = await fetch("/api/products", {
         method: "POST",
         headers: {
@@ -677,8 +663,7 @@ async function getDashboardData() {
         throw new Error(error.error || "登録に失敗しました");
       }
 ```
-
-**説明**: 商品作成フォームでは、まず画像をアップロードしてから商品データを送信します。`FormData` を使用したファイルアップロードと、JSON データの送信の両方のパターンが実装されています。
+```
 
 **fetch の使用パターン**:
 
@@ -703,7 +688,7 @@ async function getDashboardData() {
 **エラーハンドリング**:
 
 ```typescript
-try {
+```typescript
   const response = await fetch("/api/products", {
     method: "POST",
     headers: {
@@ -724,8 +709,7 @@ try {
   // エラー時の処理（ユーザーへの通知など）
 }
 ```
-
-**キャッシュの制御**:
+```
 
 - **常に最新データを取得**: `cache: "no-store"` とタイムスタンプを使用
 - **Next.js のキャッシュを無効化**: `cache: "no-store"` オプション
@@ -747,43 +731,40 @@ try {
 **参照**: [`app/page.tsx`](../../app/page.tsx) (行 8-12)
 
 ```8:12:app/page.tsx
-/**
+```8:12:app/page.tsx
  * 動的レンダリングを強制
  * データベースから最新のデータを取得する必要があるため、常にサーバー側でレンダリングします
  */
 export const dynamic = "force-dynamic";
 ```
-
-**説明**: ホームページでは、データベースから最新の公開商品を取得する必要があるため、動的レンダリングを強制しています。
+```
 
 2. **`app/dashboard/page.tsx`** - 動的レンダリングを強制
 
 **参照**: [`app/dashboard/page.tsx`](../../app/dashboard/page.tsx) (行 4-9)
 
 ```4:9:app/dashboard/page.tsx
-/**
+```4:9:app/dashboard/page.tsx
  * 動的レンダリングを強制
  * データベースから最新のデータを取得する必要があるため、
  * このページは常にサーバー側でレンダリングされます
  */
 export const dynamic = "force-dynamic";
 ```
-
-**説明**: ダッシュボードページでも、最新のデータを表示するために動的レンダリングを強制しています。
+```
 
 3. **[`app/api/products/route.ts`](../../app/api/products/route.ts)** - API Route での動的レンダリング
 
 **参照**: [`app/api/products/route.ts`](../../app/api/products/route.ts) (行 9-13)
 
 ```9:13:app/api/products/route.ts
-/**
+```9:13:app/api/products/route.ts
  * 動的レンダリングを強制
  * データベースから最新のデータを取得する必要があるため、常にサーバー側でレンダリングします
  */
 export const dynamic = 'force-dynamic';
 ```
-
-**説明**: API Routes でも、最新のデータを返すために動的レンダリングを強制しています。
+```
 
 ## 動的ルーティング
 
@@ -794,7 +775,7 @@ export const dynamic = 'force-dynamic';
 - **`app/api/products/[id]/route.ts`**: 商品 ID に基づく動的ルーティング
 
 ```12:39:app/api/products/[id]/route.ts
-export const GET = withErrorHandling(async (
+```12:39:app/api/products/[id]/route.ts
   _request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) => {
@@ -823,8 +804,7 @@ export const GET = withErrorHandling(async (
   return apiSuccess({ product });
 });
 ```
-
-**説明**: `[id]` というディレクトリ名により、`/api/products/1`、`/api/products/2` などの動的ルートが生成されます。`params` は Promise として提供されるため、`await` を使用して取得します。
+```
 
 **動的ルートの規則**:
 
@@ -843,7 +823,7 @@ export const GET = withErrorHandling(async (
 **参照**: [`app/api/products/route.ts`](../../app/api/products/route.ts) (行 26-51)
 
 ```26:51:app/api/products/route.ts
-export const GET = withErrorHandling(async () => {
+```26:51:app/api/products/route.ts
   // データベースから商品を取得
   // include でカテゴリー情報も一緒に取得することで、N+1問題を回避します
   const products = await safePrismaOperation(
@@ -870,13 +850,12 @@ export const GET = withErrorHandling(async () => {
   return response;
 });
 ```
-
-**説明**: `GET` 関数をエクスポートすることで、`GET /api/products` エンドポイントが実装されます。キャッシュヘッダーを設定してパフォーマンスを最適化しています。
+```
 
 **参照**: [`app/api/products/route.ts`](../../app/api/products/route.ts) (行 66-138)
 
 ```66:138:app/api/products/route.ts
-export const POST = withErrorHandling(async (request: NextRequest) => {
+```66:138:app/api/products/route.ts
   const body = await request.json();
 
   // ===== バリデーション =====
@@ -950,13 +929,12 @@ export const POST = withErrorHandling(async (request: NextRequest) => {
   return apiSuccess({ product }, 201);
 });
 ```
-
-**説明**: `POST` 関数をエクスポートすることで、`POST /api/products` エンドポイントが実装されます。バリデーション、カテゴリーの存在確認、公開状態の自動判定などを行っています。
+```
 
 2. **`app/api/products/[id]/route.ts`** - 個別商品の操作
 
 ```44:154:app/api/products/[id]/route.ts
-export const PUT = withErrorHandling(async (
+```44:154:app/api/products/[id]/route.ts
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) => {
@@ -1068,8 +1046,7 @@ export const PUT = withErrorHandling(async (
   return apiSuccess({ product });
 });
 ```
-
-**説明**: `PUT` 関数をエクスポートすることで、`PUT /api/products/[id]` エンドポイントが実装されます。商品の更新、バリデーション、画像の削除などを行っています。
+```
 
 **API Routes の特徴**:
 
@@ -1087,7 +1064,7 @@ export const PUT = withErrorHandling(async (
 **使用例**:
 
 ```typescript
-// app/actions.ts
+```typescript
 "use server";
 
 import { prisma } from "@/lib/prisma";
@@ -1131,8 +1108,7 @@ export default function ProductForm() {
 **参照**: [`app/actions.ts`](../app/actions.ts)
 
 ```
-
-**Server Actions のメリット**:
+```
 
 - API Routes を書く必要がなく、よりシンプルなコードになる
 - 型安全性が高い（TypeScript と統合されている）
@@ -1157,7 +1133,7 @@ export default function ProductForm() {
 **参照**: [`app/page.tsx`](../../app/page.tsx) (行 112-123)
 
 ```112:123:app/page.tsx
-      {/* ヒーローバナー */}
+```112:123:app/page.tsx
       <section className="relative h-[30vh] min-h-[200px] w-full overflow-hidden md:h-[50vh] md:min-h-[400px] lg:h-[60vh] lg:min-h-[500px]">
         <Image
           src="/hero.webp"
@@ -1171,8 +1147,7 @@ export default function ProductForm() {
         <div className="absolute inset-0 bg-linear-to-b from-white/20 via-white/8 to-white/25" />
       </section>
 ```
-
-**説明**: `Image` コンポーネントの `fill` プロパティを使用して、親要素のサイズに合わせて画像を表示します。`priority` プロパティにより、画像の優先読み込みが行われます。
+```
 
 **Image コンポーネントの主なプロパティ**:
 
@@ -1195,7 +1170,7 @@ export default function ProductForm() {
 **参照**: [`app/layout.tsx`](../../app/layout.tsx) (行 24-37)
 
 ```24:37:app/layout.tsx
-export default function RootLayout({
+```24:37:app/layout.tsx
   children,
 }: Readonly<{
   children: React.ReactNode;
@@ -1210,8 +1185,7 @@ export default function RootLayout({
   );
 }
 ```
-
-**説明**: ルートレイアウトでは、HTML の `lang` 属性、フォント変数、Analytics コンポーネントなどを設定しています。
+```
 
 ### メタデータ
 
@@ -1222,7 +1196,7 @@ export default function RootLayout({
 **参照**: [`app/layout.tsx`](../../app/layout.tsx) (行 12-22)
 
 ```12:22:app/layout.tsx
-export const metadata: Metadata = {
+```12:22:app/layout.tsx
   title: "白熊堂 | 本格かき氷のお店",
   description:
     "白熊堂は本格かき氷のお店です。ふわふわの氷とこだわりのシロップでお待ちしています。",
@@ -1234,8 +1208,7 @@ export const metadata: Metadata = {
   },
 };
 ```
-
-**説明**: メタデータにより、SEO と OGP（Open Graph Protocol）の設定が行われます。
+```
 
 ### フォント最適化
 
@@ -1246,14 +1219,13 @@ export const metadata: Metadata = {
 **参照**: [`app/layout.tsx`](../../app/layout.tsx) (行 6-10)
 
 ```6:10:app/layout.tsx
-const notoSansJP = Noto_Sans_JP({
+```6:10:app/layout.tsx
   variable: "--font-noto-sans-jp",
   subsets: ["latin"],
   weight: ["300", "400", "500", "700"],
 });
 ```
-
-**説明**: Noto Sans JP フォントを Google Fonts から読み込み、CSS 変数として設定しています。これにより、フォントの読み込みが最適化され、パフォーマンスが向上します。
+```
 
 ## このアプリでの App Router の使用例まとめ
 

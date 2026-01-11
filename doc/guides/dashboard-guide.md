@@ -40,7 +40,7 @@
 ダッシュボードは、Server Component と Client Component を組み合わせた実装です。
 
 ```
-DashboardPage (Server Component)
+```
   ↓ データ取得（Prisma）
   ↓ propsで渡す
 DashboardContent (Client Component)
@@ -50,11 +50,10 @@ DashboardContent (Client Component)
       ├── CategoryTabs
       └── SortableProductItem
 ```
-
-### ディレクトリ構造
+```
 
 ```
-app/dashboard/
+```
 ├── page.tsx                    # エントリーポイント（Server Component）
 ├── types.ts                    # 共通型定義
 ├── components/                 # UIコンポーネント
@@ -71,8 +70,7 @@ app/dashboard/
 └── utils/                      # ユーティリティ関数
     └── productUtils.ts          # 商品のグループ化・フィルタリング
 ```
-
-## 主要機能
+```
 
 ### 1. 商品一覧表示
 
@@ -121,7 +119,7 @@ app/dashboard/
 **実装例**:
 
 ```typescript
-export default async function DashboardPage() {
+```typescript
   const { categories, products } = await getDashboardData();
 
   return (
@@ -134,8 +132,7 @@ export default async function DashboardPage() {
   );
 }
 ```
-
-### DashboardContent ([`components/DashboardContent.tsx`](../../app/dashboard/components/DashboardContent.tsx))
+```
 
 ダッシュボードのメインコンテナです。Client Component として実装されています。
 
@@ -150,7 +147,7 @@ export default async function DashboardPage() {
 React のベストプラクティスに従い、共有状態（商品一覧）を親コンポーネントで管理しています。
 
 ```typescript
-// 商品一覧の状態を親コンポーネントで管理（状態のリフトアップ）
+```typescript
 const [products, setProducts] = useState<Product[]>(initialProducts);
 
 // 商品登録フォームの開閉状態を管理
@@ -165,8 +162,7 @@ const refreshProducts = async () => {
   setProducts(data.products || []);
 };
 ```
-
-**設計の特徴**:
+```
 
 - `forwardRef`や`useImperativeHandle`を使わず、props でデータとコールバックを渡す
 - データフローが明確になり、コンポーネント間の結合が緩くなる
@@ -210,7 +206,7 @@ const refreshProducts = async () => {
 **Props**:
 
 ```typescript
-interface ProductListProps {
+```typescript
   products: Product[]; // 商品一覧（親コンポーネントから受け取る）
   setProducts: React.Dispatch<React.SetStateAction<Product[]>>; // 状態更新関数
   refreshProducts: () => Promise<void>; // 商品一覧を更新する関数
@@ -218,8 +214,7 @@ interface ProductListProps {
   onNewProductClick?: () => void; // 新規商品登録ボタンクリック時のコールバック
 }
 ```
-
-**実装の特徴**:
+```
 
 - React のベストプラクティスに従い、状態を親コンポーネントから受け取る
 - `forwardRef`や`useImperativeHandle`を使わない設計
@@ -252,7 +247,7 @@ interface ProductListProps {
 ### 初期データ取得
 
 ```
-DashboardPage (Server Component)
+```
   ↓ getDashboardData()
   ↓ Prismaクエリ
 Database
@@ -262,11 +257,10 @@ DashboardContent (Client Component)
   ↓ useStateで状態管理
 子コンポーネント
 ```
-
-### 商品追加フロー
+```
 
 ```
-DashboardForm
+```
   ↓ フォーム入力
   ↓ バリデーション
   ↓ fetch('/api/products', { method: 'POST' })
@@ -281,8 +275,7 @@ DashboardContent
   ↓ propsで ProductList に渡す
   ↓ UI更新
 ```
-
-**設計のポイント**:
+```
 
 - 商品追加後は、親コンポーネント（`DashboardContent`）の`refreshProducts`を呼び出す
 - 状態は親コンポーネントで管理され、props で子コンポーネントに渡される
@@ -291,7 +284,7 @@ DashboardContent
 ### 商品順序変更フロー
 
 ```
-SortableProductItem
+```
   ↓ ドラッグ&ドロップ
 ProductList
   ↓ 楽観的UI更新（即座に状態更新）
@@ -302,8 +295,7 @@ Database
   ↓ 成功: 最新データを取得
   ↓ 失敗: エラー表示 + 元の状態に戻す
 ```
-
-## 状態管理
+```
 
 ### 状態のリフトアップ
 
@@ -348,10 +340,9 @@ React のベストプラクティスに従い、共有状態は親コンポー�
 **使用例**:
 
 ```typescript
-const { activeTab, setActiveTab } = useTabState();
+```typescript
 ```
-
-#### useProductReorder ([`hooks/useProductReorder.ts`](../../app/dashboard/hooks/useProductReorder.ts))
+```
 
 商品順序変更のロジックを実装したカスタムフックです。
 
@@ -364,21 +355,19 @@ const { activeTab, setActiveTab } = useTabState();
 **使用例**:
 
 ```typescript
-const { reorderProducts } = useProductReorder(setProducts, refreshProducts);
+```typescript
 ```
-
-## API 連携
+```
 
 ### 商品一覧取得
 
 ```typescript
-GET / api / products;
+```typescript
+```
 ```
 
-### 商品作成
-
 ```typescript
-POST /api/products
+```typescript
 Content-Type: application/json
 
 {
@@ -391,11 +380,10 @@ Content-Type: application/json
   "published": true
 }
 ```
-
-### 商品更新
+```
 
 ```typescript
-PUT /api/products/[id]
+```typescript
 Content-Type: application/json
 
 {
@@ -403,17 +391,15 @@ Content-Type: application/json
   // ...
 }
 ```
-
-### 商品削除
-
-```typescript
-DELETE / api / products / [id];
 ```
 
-### 商品順序変更
+```typescript
+```typescript
+```
+```
 
 ```typescript
-POST /api/products/reorder
+```typescript
 Content-Type: application/json
 
 {
@@ -421,17 +407,15 @@ Content-Type: application/json
   "newOrder": 2
 }
 ```
-
-### 画像アップロード
+```
 
 ```typescript
-POST /api/products/upload
+```typescript
 Content-Type: multipart/form-data
 
 file: [画像ファイル]
 ```
-
-## 開発ガイド
+```
 
 ### 新しい機能の追加
 
@@ -502,7 +486,7 @@ file: [画像ファイル]
 **使用例**:
 
 ```typescript
-// 特定のフィールドのみを取得
+```typescript
 const products = await prisma.product.findMany({
   select: {
     id: true,
@@ -516,8 +500,7 @@ const products = await prisma.product.findMany({
   },
 });
 ```
-
-**`select`のメリット**:
+```
 
 - 必要なデータのみを取得できるため、ネットワーク転送量を削減
 - パフォーマンスの向上（特に大量のデータを扱う場合）
