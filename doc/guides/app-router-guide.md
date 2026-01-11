@@ -203,7 +203,7 @@ export default function Template({ children }: { children: React.ReactNode }) {
 
 **このアプリでの使用箇所**:
 
-1. **[`app/page.tsx`](../../app/page.tsx) (行 102-141)** - ホームページ（Server Component）
+1. **[`app/page.tsx`](../../app/page.tsx) (`Home`コンポーネント)** - ホームページ（Server Component）
 
 ```102:141
   // カテゴリーごとにグループ化された公開商品を取得
@@ -247,7 +247,7 @@ export default function Template({ children }: { children: React.ReactNode }) {
 }
 ```
 
-2. **[`app/faq/page.tsx`](../../app/faq/page.tsx) (行 17-117)** - FAQ ページ（Server Component）
+2. **[`app/faq/page.tsx`](../../app/faq/page.tsx) (`FAQPage`コンポーネント)** - FAQ ページ（Server Component）
 
 ```17:117
   /**
@@ -298,7 +298,7 @@ export default function Template({ children }: { children: React.ReactNode }) {
 }
 ```
 
-3. **[`app/dashboard/page.tsx`](../../app/dashboard/page.tsx) (行 58-70)** - ダッシュボード（Server Component）
+3. **[`app/dashboard/page.tsx`](../../app/dashboard/page.tsx) (`DashboardPage`コンポーネント)** - ダッシュボード（Server Component）
 
 ```58:70
   const { categories, products } = await getDashboardData();
@@ -352,7 +352,7 @@ export default function Template({ children }: { children: React.ReactNode }) {
 
 **このアプリでの使用箇所**:
 
-1. **[`app/page.tsx`](../../app/page.tsx) (行 26-86)** - 公開商品をカテゴリーごとに取得
+1. **[`app/page.tsx`](../../app/page.tsx) (`getPublishedProductsByCategory`関数)** - 公開商品をカテゴリーごとに取得
 
 ```26:86
   // カテゴリーと商品を並列で取得（パフォーマンス向上）
@@ -417,7 +417,7 @@ export default function Template({ children }: { children: React.ReactNode }) {
 }
 ```
 
-2. **[`app/dashboard/page.tsx`](../../app/dashboard/page.tsx) (行 17-52)** - ダッシュボードデータを取得
+2. **[`app/dashboard/page.tsx`](../../app/dashboard/page.tsx) (`getDashboardData`関数)** - ダッシュボードデータを取得
 
 ```17:52
   // カテゴリーと商品を並列で取得（パフォーマンス向上）
@@ -482,7 +482,7 @@ export default function Template({ children }: { children: React.ReactNode }) {
 
 **このアプリでの使用箇所**:
 
-1. **[`app/dashboard/components/DashboardContent.tsx`](../../app/dashboard/components/DashboardContent.tsx) (行 40-56)** - 商品一覧の更新
+1. **[`app/dashboard/components/DashboardContent.tsx`](../../app/dashboard/components/DashboardContent.tsx) (`refreshProducts`関数)** - 商品一覧の更新
 
 ```40:56
     try {
@@ -505,7 +505,7 @@ export default function Template({ children }: { children: React.ReactNode }) {
 
 ```
 
-2. **[`app/dashboard/components/ProductList.tsx`](../../app/dashboard/components/ProductList.tsx) (行 95-120)** - 商品の削除
+2. **[`app/dashboard/components/ProductList.tsx`](../../app/dashboard/components/ProductList.tsx) (`handleDelete`関数)** - 商品の削除
 
 ```95:120
     // 削除前に確認ダイアログを表示
@@ -536,7 +536,7 @@ export default function Template({ children }: { children: React.ReactNode }) {
   };
 ```
 
-3. **[`app/dashboard/hooks/useProductReorder.ts`](../../app/dashboard/hooks/useProductReorder.ts) (行 79-94)** - 商品順序の変更
+3. **[`app/dashboard/hooks/useProductReorder.ts`](../../app/dashboard/hooks/useProductReorder.ts) (`reorderProducts`関数)** - 商品順序の変更
 
 ```79:94
       // API を呼び出して商品の順序をサーバーに保存
@@ -559,7 +559,7 @@ export default function Template({ children }: { children: React.ReactNode }) {
 
 **画像アップロード（FormData を使用）**:
 
-[`app/dashboard/components/DashboardForm.tsx`](../../app/dashboard/components/DashboardForm.tsx) (行 107-134)
+[`app/dashboard/components/DashboardForm.tsx`](../../app/dashboard/components/DashboardForm.tsx) (`handleSubmit`関数 - 画像アップロード部分)
 
 ```107:134
           uploadFormData.append("file", formData.imageFile);
@@ -591,7 +591,7 @@ export default function Template({ children }: { children: React.ReactNode }) {
           imageUrl = uploadData.url;
 ```
 
-[`app/dashboard/components/DashboardForm.tsx`](../../app/dashboard/components/DashboardForm.tsx) (行 150-172)
+[`app/dashboard/components/DashboardForm.tsx`](../../app/dashboard/components/DashboardForm.tsx) (`handleSubmit`関数 - 商品登録部分)
 
 ```150:172
       const response = await fetch("/api/products", {
@@ -677,7 +677,7 @@ export default function Template({ children }: { children: React.ReactNode }) {
 
 **このアプリでの使用箇所**:
 
-1. **[`app/page.tsx`](../../app/page.tsx) (行 8-12)** - 動的レンダリングを強制
+1. **[`app/page.tsx`](../../app/page.tsx) (`dynamic`エクスポート)** - 動的レンダリングを強制
 
 ```8:12
  * 動的レンダリングを強制
@@ -686,7 +686,7 @@ export default function Template({ children }: { children: React.ReactNode }) {
 export const dynamic = "force-dynamic";
 ```
 
-2. **[`app/dashboard/page.tsx`](../../app/dashboard/page.tsx) (行 4-9)** - 動的レンダリングを強制
+2. **[`app/dashboard/page.tsx`](../../app/dashboard/page.tsx) (`dynamic`エクスポート)** - 動的レンダリングを強制
 
 ```4:9
  * 動的レンダリングを強制
@@ -696,7 +696,7 @@ export const dynamic = "force-dynamic";
 export const dynamic = "force-dynamic";
 ```
 
-3. **[`app/api/products/route.ts`](../../app/api/products/route.ts) (行 9-13)** - API Route での動的レンダリング
+3. **[`app/api/products/route.ts`](../../app/api/products/route.ts) (`dynamic`エクスポート)** - API Route での動的レンダリング
 
 ```9:13
  * 動的レンダリングを強制
@@ -755,7 +755,7 @@ export const dynamic = 'force-dynamic';
 
 **このアプリでの使用箇所**:
 
-1. **[`app/api/products/route.ts`](../../app/api/products/route.ts) (行 26-53)** - 商品一覧の取得と作成
+1. **[`app/api/products/route.ts`](../../app/api/products/route.ts) (`GET`エクスポート)** - 商品一覧の取得と作成
 
 ```26:53
   // データベースから商品を取得
@@ -787,7 +787,7 @@ export const dynamic = 'force-dynamic';
 });
 ```
 
-[`app/api/products/route.ts`](../../app/api/products/route.ts) (行 68-140)
+[`app/api/products/route.ts`](../../app/api/products/route.ts) (`POST`エクスポート)
 
 ```68:140
   const body = await request.json();
@@ -864,7 +864,7 @@ export const dynamic = 'force-dynamic';
 });
 ```
 
-2. **[`app/api/products/[id]/route.ts`](../../app/api/products/[id]/route.ts) (行 44-154)** - 個別商品の操作
+2. **[`app/api/products/[id]/route.ts`](../../app/api/products/[id]/route.ts) (`PUT`/`DELETE`エクスポート)** - 個別商品の操作
 
 ```44:154
   request: NextRequest,
@@ -1058,7 +1058,7 @@ export default function ProductForm() {
 
 **このアプリでの使用箇所**:
 
-1. **[`app/page.tsx`](../../app/page.tsx) (行 112-123)** - ヒーロー画像の最適化
+1. **[`app/page.tsx`](../../app/page.tsx) (`Image`コンポーネント - ヒーロー画像)** - ヒーロー画像の最適化
 
 ```112:123
       <section className="relative h-[30vh] min-h-[200px] w-full overflow-hidden md:h-[50vh] md:min-h-[400px] lg:h-[60vh] lg:min-h-[500px]">
@@ -1093,7 +1093,7 @@ export default function ProductForm() {
 
 **このアプリでの使用箇所**:
 
-[`app/layout.tsx`](../../app/layout.tsx) (行 24-37)
+[`app/layout.tsx`](../../app/layout.tsx) (`RootLayout`コンポーネント)
 
 ```24:37
   children,
@@ -1117,7 +1117,7 @@ export default function ProductForm() {
 
 **このアプリでの使用箇所**:
 
-[`app/layout.tsx`](../../app/layout.tsx) (行 12-22)
+[`app/layout.tsx`](../../app/layout.tsx) (`metadata`エクスポート)
 
 ```12:22
   title: "白熊堂 | 本格かき氷のお店",
@@ -1138,7 +1138,7 @@ export default function ProductForm() {
 
 **このアプリでの使用箇所**:
 
-[`app/layout.tsx`](../../app/layout.tsx) (行 6-10)
+[`app/layout.tsx`](../../app/layout.tsx) (`notoSansJP`フォント設定)
 
 ```6:10
   variable: "--font-noto-sans-jp",

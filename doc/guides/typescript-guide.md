@@ -87,7 +87,7 @@ TypeScript の設定を管理するファイルです。コンパイラオプシ
 
 **設定内容**:
 
-[`tsconfig.json`](../../tsconfig.json) (行 1-40)
+[`tsconfig.json`](../../tsconfig.json) (設定ファイル全体)
 
 ```1:40
   "compilerOptions": {
@@ -218,7 +218,7 @@ TypeScript の設定を管理するファイルです。コンパイラオプシ
 
 **型定義の内容**:
 
-[`app/types.ts`](../../app/types.ts) (行 1-44)
+[`app/types.ts`](../../app/types.ts) (`Category`/`Product`/`ProductTile`インターフェース)
 
 ```1:44
  * フロントエンドで使用する共通型定義
@@ -336,7 +336,7 @@ export interface Product {
 
 1. **価格フォーマット関数**
 
-[`app/utils/format.ts`](../../app/utils/format.ts) (行 11-13)
+[`app/utils/format.ts`](../../app/utils/format.ts) (`formatPrice`関数)
 
 ```typescript
 export function formatPrice(price: number): string {
@@ -344,7 +344,7 @@ export function formatPrice(price: number): string {
 }
 ```
 
-2. **[`app/hooks/useProductModal.ts`](../../app/hooks/useProductModal.ts) (行 12-47)** - カスタムフックの戻り値の型
+2. **[`app/hooks/useProductModal.ts`](../../app/hooks/useProductModal.ts) (`useProductModal`関数)** - カスタムフックの戻り値の型
 
 ```12:47
   // 選択された商品を管理（モーダル表示用）
@@ -390,7 +390,7 @@ export function formatPrice(price: number): string {
 
 1. **null 許容型**: `string | null`、`number | null` など
 
-[`app/types.ts`](../../app/types.ts) (行 24-31)
+[`app/types.ts`](../../app/types.ts) (`Product`インターフェース)
 
 ```24:31
   id: number; // 商品ID
@@ -473,7 +473,7 @@ API Routes では、リクエストとレスポンスの型を定義すること
 
 **このアプリでの使用箇所**:
 
-[`app/api/products/route.ts`](../../app/api/products/route.ts) (行 68-140)
+[`app/api/products/route.ts`](../../app/api/products/route.ts) (`POST`エクスポート)
 
 ```typescript
 export const POST = withErrorHandling(async (request: NextRequest) => {
@@ -501,7 +501,7 @@ export const POST = withErrorHandling(async (request: NextRequest) => {
 
 **このアプリでの使用箇所**:
 
-[`lib/api-helpers.ts`](../../lib/api-helpers.ts) (行 45-49)
+[`lib/api-helpers.ts`](../../lib/api-helpers.ts) (`apiSuccess`関数)
 
 ```typescript
 export function apiSuccess<T>(data: T, status: number = 200): NextResponse {
@@ -526,7 +526,7 @@ export function apiSuccess<T>(data: T, status: number = 200): NextResponse {
 
 **エラークラスの例**:
 
-[`lib/errors.ts`](../../lib/errors.ts) (行 45-57)
+[`lib/errors.ts`](../../lib/errors.ts) (`ValidationError`クラス)
 
 ```typescript
 export class ValidationError extends AppError {
@@ -564,7 +564,7 @@ TypeScript は、型を明示的に指定しなくても、コンパイラが型
 
 **このアプリでの使用箇所**:
 
-[`lib/prisma.ts`](../../lib/prisma.ts) (行 29-38)
+[`lib/prisma.ts`](../../lib/prisma.ts) (`createPrismaClient`関数内)
 
 ```typescript
 const products = await prisma.product.findMany();
@@ -573,7 +573,7 @@ const products = await prisma.product.findMany();
 
 **このアプリでの使用箇所**:
 
-[`app/utils/format.ts`](../../app/utils/format.ts) (行 11-13)
+[`app/utils/format.ts`](../../app/utils/format.ts) (`formatPrice`関数)
 
 ```typescript
 export function formatPrice(price: number) {
@@ -603,7 +603,7 @@ const categories = [
 
 **このアプリでの使用例**:
 
-[`app/types.ts`](../../app/types.ts) (行 193-200)
+[`app/types.ts`](../../app/types.ts) (`Product`インターフェース)
 
 ```typescript
 export interface Product {
@@ -621,7 +621,7 @@ export interface Product {
 
 1. **文字列リテラル型のユニオン型**: `"list" | "layout"`
 
-[`app/dashboard/hooks/useTabState.ts`](../../app/dashboard/hooks/useTabState.ts) (行 16-16)
+[`app/dashboard/hooks/useTabState.ts`](../../app/dashboard/hooks/useTabState.ts) (`TabType`型定義)
 
 ```16:16
 type TabType = "list" | "layout";
@@ -629,13 +629,13 @@ type TabType = "list" | "layout";
 
 **使用例**:
 
-[`app/dashboard/hooks/useTabState.ts`](../../app/dashboard/hooks/useTabState.ts) (行 30-30)
+[`app/dashboard/hooks/useTabState.ts`](../../app/dashboard/hooks/useTabState.ts) (`useState`の型パラメータ)
 
 ```30:30
   const [activeTab, setActiveTab] = useState<TabType>(() => {
 ```
 
-[`app/dashboard/components/ProductList.tsx`](../../app/dashboard/components/ProductList.tsx) (行 227-227)
+[`app/dashboard/components/ProductList.tsx`](../../app/dashboard/components/ProductList.tsx) (型推論の例)
 
 ```227:227
               onClick={() => setActiveTab("list")}

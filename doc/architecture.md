@@ -158,7 +158,7 @@ DashboardPage (Server Component)
 
 ##### `useTabState`
 
-[`app/dashboard/hooks/useTabState.ts`](../app/dashboard/hooks/useTabState.ts) (行 27-50)
+[`app/dashboard/hooks/useTabState.ts`](../app/dashboard/hooks/useTabState.ts) (`useTabState`関数)
 
 ```typescript
 // タブ状態をlocalStorageと同期
@@ -167,7 +167,7 @@ const { activeTab, setActiveTab } = useTabState();
 
 ##### `useCategoryTabState`
 
-[`app/dashboard/hooks/useTabState.ts`](../app/dashboard/hooks/useTabState.ts) (行 64-116)
+[`app/dashboard/hooks/useTabState.ts`](../app/dashboard/hooks/useTabState.ts) (`useCategoryTabState`関数)
 
 ```typescript
 // カテゴリータブの状態管理
@@ -179,7 +179,7 @@ const { activeCategoryTab, setActiveCategoryTab } = useCategoryTabState(
 
 ##### `useProductReorder`
 
-[`app/dashboard/hooks/useProductReorder.ts`](../app/dashboard/hooks/useProductReorder.ts) (行 21-118)
+[`app/dashboard/hooks/useProductReorder.ts`](../app/dashboard/hooks/useProductReorder.ts) (`useProductReorder`関数)
 
 ```typescript
 // 商品順序変更の楽観的UI更新
@@ -190,7 +190,7 @@ const { reorderProducts } = useProductReorder(setProducts, refreshProducts);
 
 ##### `useModal`
 
-[`app/hooks/useModal.ts`](../app/hooks/useModal.ts) (行 15-49)
+[`app/hooks/useModal.ts`](../app/hooks/useModal.ts) (`useModal`関数)
 
 ```typescript
 // モーダルの開閉状態とESCキー処理を管理
@@ -199,7 +199,7 @@ useModal(isOpen, onClose);
 
 ##### `useProductModal`
 
-[`app/hooks/useProductModal.ts`](../app/hooks/useProductModal.ts) (行 14-71)
+[`app/hooks/useProductModal.ts`](../app/hooks/useProductModal.ts) (`useProductModal`関数)
 
 ```typescript
 // 商品モーダルの状態管理
@@ -275,7 +275,7 @@ Client Component (状態更新)
 
 ### 一元管理
 
-すべての設定値を[`lib/config.ts`](../lib/config.ts) (行 7-105) に集約：
+すべての設定値を[`lib/config.ts`](../lib/config.ts) (`config`オブジェクト) に集約：
 
 ```typescript
 export const config = {
@@ -315,7 +315,7 @@ export const config = {
 
 機能内で使用する型を一元管理：
 
-[`app/dashboard/types.ts`](../app/dashboard/types.ts) (行 5-22)
+[`app/dashboard/types.ts`](../app/dashboard/types.ts) (`Category`/`Product`インターフェース)
 
 ```typescript
 export interface Category {
@@ -340,7 +340,7 @@ export interface Product {
 
 ### 統一されたエラークラス
 
-[`lib/errors.ts`](../lib/errors.ts) (行 45-57)
+[`lib/errors.ts`](../lib/errors.ts) (`ValidationError`クラス)
 
 ```typescript
 // 使用例
@@ -351,7 +351,7 @@ throw new DatabaseError("Failed to connect");
 
 ### API Routes でのエラーハンドリング
 
-[`lib/api-helpers.ts`](../lib/api-helpers.ts) (行 74-84)
+[`lib/api-helpers.ts`](../lib/api-helpers.ts) (`withErrorHandling`関数)
 
 ```typescript
 import { withErrorHandling, apiSuccess } from "@/lib/api-helpers";

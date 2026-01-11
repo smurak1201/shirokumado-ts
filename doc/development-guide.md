@@ -19,6 +19,7 @@
 - [テスト](#テスト)
 - [パフォーマンス最適化](#パフォーマンス最適化)
 - [セキュリティ](#セキュリティ)
+- [ドキュメントの記述方法](#ドキュメントの記述方法)
 - [コード生成時のチェックリスト](#コード生成時のチェックリスト)
 
 ## コーディング規約
@@ -202,7 +203,7 @@ for (const product of products) {
 
 **推奨**: `safePrismaOperation` を使用。
 
-[`lib/prisma.ts`](../lib/prisma.ts) (行 83-96)
+[`lib/prisma.ts`](../lib/prisma.ts) (`safePrismaOperation`関数)
 
 ```typescript
 import { safePrismaOperation } from "@/lib/prisma";
@@ -438,7 +439,7 @@ if (!email) {
 
 **推奨**: `withErrorHandling` を使用。
 
-[`lib/api-helpers.ts`](../lib/api-helpers.ts) (行 74-84)
+[`lib/api-helpers.ts`](../lib/api-helpers.ts) (`withErrorHandling`関数)
 
 ```typescript
 import { withErrorHandling, apiSuccess } from "@/lib/api-helpers";
@@ -1256,6 +1257,64 @@ const user = await prisma.$queryRaw`
 4. **XSS 対策**: React の自動エスケープを活用
 5. **CSRF 対策**: Next.js の CSRF 保護を活用
 
+## ドキュメントの記述方法
+
+### コード参照の記述
+
+**推奨**: 行番号ではなく、関数名や識別子で参照します。
+
+```markdown
+<!-- 良い例: 関数名で参照 -->
+
+[`lib/api-helpers.ts`](../lib/api-helpers.ts) (`withErrorHandling`関数)
+
+<!-- 悪い例: 行番号で参照 -->
+
+[`lib/api-helpers.ts`](../lib/api-helpers.ts) (行 74-84)
+```
+
+**理由**:
+
+- **保守性**: ソースコードの行番号が変わっても、ドキュメントの修正が不要
+- **可読性**: 関数名や識別子の方が、何を参照しているかが明確
+- **検索性**: 関数名で検索しやすく、コードとの対応関係が分かりやすい
+
+**コードブロックの記述**:
+
+````markdown
+<!-- 良い例: 行番号範囲を削除し、関数全体を表示 -->
+
+[`lib/api-helpers.ts`](../lib/api-helpers.ts) (`apiSuccess`関数)
+
+```typescript
+export function apiSuccess<T>(data: T, status: number = 200): NextResponse {
+  const response = NextResponse.json(data, { status });
+  response.headers.set("Content-Type", "application/json; charset=utf-8");
+  return response;
+}
+```
+````
+
+<!-- 悪い例: 行番号範囲を指定 -->
+
+[`lib/api-helpers.ts`](../lib/api-helpers.ts) (行 45-49)
+
+```45:49:lib/api-helpers.ts
+export function apiSuccess<T>(data: T, status: number = 200): NextResponse {
+  const response = NextResponse.json(data, { status });
+  response.headers.set('Content-Type', 'application/json; charset=utf-8');
+  return response;
+}
+```
+
+```
+
+**理由**:
+
+- **保守性**: 行番号が変わっても、コードブロックの修正が不要
+- **可読性**: 関数全体が見えるため、コンテキストが理解しやすい
+- **一貫性**: 関数名で参照することで、ドキュメント全体の一貫性が保たれる
+
 ## コード生成時のチェックリスト
 
 コードを生成する際は、以下の点を確認してください：
@@ -1284,3 +1343,4 @@ const user = await prisma.$queryRaw`
 - [TypeScript Best Practices](https://www.typescriptlang.org/docs/handbook/declaration-files/do-s-and-don-ts.html)
 - [React Best Practices](https://react.dev/learn)
 - [React Server Components](https://react.dev/blog/2023/03/22/react-labs-what-we-have-been-working-on-march-2023#react-server-components)
+```
