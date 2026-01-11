@@ -42,7 +42,6 @@
 **データ取得**:
 
 ```typescript
-```typescript
   // カテゴリーと商品を並列で取得
   const [categories, products] = await Promise.all([
     prisma.category.findMany({ orderBy: { id: "asc" } }),
@@ -61,8 +60,6 @@
   // ...
 }
 ```
-```
-
 1. **ヘッダー**: ロゴ、Instagram リンク、ナビゲーション
 2. **ヒーローバナー**: メイン画像（`/hero.webp`）
 3. **メインコンテンツ**: カテゴリーごとの商品グリッド
@@ -80,16 +77,12 @@
 **構造**:
 
 ```typescript
-```typescript
   { question: "質問", answer: "回答" },
   // ...
 ];
 ```
-```
-
 フロントエンドは以下のように構造化されています：
 
-```
 ```
 ├── types.ts                    # 共通型定義
 ├── hooks/                      # カスタムフック
@@ -109,8 +102,6 @@
 └── faq/
     └── page.tsx               # FAQページ
 ```
-```
-
 - **`types.ts`**: フロントエンドで使用する型を一元管理（重複を防止）
 - **`hooks/`**: 状態管理や副作用をカスタムフックに分離（再利用可能）
 - **`utils/`**: 純粋関数として実装可能なビジネスロジック（テストしやすい）
@@ -149,12 +140,8 @@
 **使用例**:
 
 ```typescript
-```typescript
-
 useModal(isOpen, onClose);
 ```
-```
-
 商品モーダルの状態管理を行うカスタムフックです。
 
 **機能**:
@@ -167,11 +154,8 @@ useModal(isOpen, onClose);
 **使用例**:
 
 ```typescript
-```typescript
   useProductModal();
 ```
-```
-
 #### formatPrice (`utils/format.ts`)
 
 価格をフォーマットして表示用の文字列を返す関数です。
@@ -184,10 +168,7 @@ useModal(isOpen, onClose);
 **使用例**:
 
 ```typescript
-```typescript
 ```
-```
-
 #### Header (`Header.tsx`)
 
 全ページ共通のヘッダーコンポーネントです。
@@ -207,7 +188,6 @@ useModal(isOpen, onClose);
 **実装例**:
 
 ```typescript
-```typescript
   <div className="mx-auto flex h-full max-w-6xl items-center justify-between">
     {/* ロゴとInstagram */}
     <div className="flex items-center gap-3">
@@ -225,8 +205,6 @@ useModal(isOpen, onClose);
   </div>
 </header>
 ```
-```
-
 全ページ共通のフッターコンポーネントです。
 
 **機能**:
@@ -270,8 +248,6 @@ useModal(isOpen, onClose);
 **実装例**:
 
 ```typescript
-```typescript
-
 import { useProductModal } from "../hooks/useProductModal";
 
 export default function ProductGrid({ category, products }) {
@@ -305,8 +281,6 @@ export default function ProductGrid({ category, products }) {
   );
 }
 ```
-```
-
 個別商品のタイル表示コンポーネントです。
 
 **機能**:
@@ -381,14 +355,11 @@ export default function ProductGrid({ category, products }) {
 **実装例**:
 
 ```typescript
-```typescript
 className = "text-sm md:text-base lg:text-lg";
 
 // モバイル: 1列、デスクトップ: 3列
 className = "grid grid-cols-1 md:grid-cols-3";
 ```
-```
-
 - **ヘッダー**: 高さ固定 `h-20` (80px)、ロゴサイズ `max-h-20` (80px)
 - **フッター**: 常に 4 列グリッド、フォントサイズ `text-[10px]` → `text-sm`、スペーシング `gap-2` → `gap-4`、地図の高さ `h-32` → `h-48`
 - **商品グリッド**: 常に 3 列、ギャップ `gap-3` → `gap-6`、カテゴリータイトル `text-lg` → `text-2xl`
@@ -453,7 +424,6 @@ className = "grid grid-cols-1 md:grid-cols-3";
 ### Server Component → Client Component
 
 ```
-```
   ↓ データ取得（Prisma）
   ↓ 公開商品のフィルタリング
   ↓ propsで渡す
@@ -463,9 +433,6 @@ ProductGrid (Client Component)
 ProductModal (Client Component)
   ↓ カスタムフック（useModal）
   ↓ ESCキー処理とスクロール無効化
-```
-```
-
 ```
 ```
   ↓ useProductModal()
@@ -479,14 +446,11 @@ ProductModal
   ├── ESCキー処理
   └── 背景スクロール無効化
 ```
-```
-
 商品の公開状態は、以下のロジックで判定されます：
 
 1. **公開日・終了日が設定されている場合**: `calculatePublishedStatus()`で自動判定
 2. **公開日・終了日が設定されていない場合**: `published`フィールドの値を使用
 
-```typescript
 ```typescript
   if (product.publishedAt || product.endedAt) {
     return calculatePublishedStatus(product.publishedAt, product.endedAt);
@@ -494,8 +458,6 @@ ProductModal
   return product.published;
 });
 ```
-```
-
 ### Next.js Image コンポーネント
 
 すべての画像は `next/image` を使用して最適化されています。
@@ -510,7 +472,6 @@ ProductModal
 **実装例**:
 
 ```typescript
-```typescript
   src="/logo.webp"
   alt="白熊堂"
   width={120}
@@ -519,8 +480,6 @@ ProductModal
   priority // 優先読み込み（ヘッダーのロゴなど）
 />
 ```
-```
-
 ### Server Components
 
 - デフォルトで Server Components を使用
@@ -546,7 +505,6 @@ ProductModal
 **使用例**:
 
 ```typescript
-```typescript
 import dynamic from "next/dynamic";
 
 const HeavyComponent = dynamic(() => import("./HeavyComponent"), {
@@ -567,8 +525,6 @@ function App() {
   );
 }
 ```
-```
-
 - 初期バンドルサイズを削減できる
 - 必要な時だけコンポーネントを読み込める
 - パフォーマンスの向上
@@ -593,11 +549,8 @@ function App() {
 **使用例**:
 
 ```typescript
-```typescript
 const { config } = await import("@/lib/config");
 ```
-```
-
 - 必要な時だけモジュールを読み込める
 - コード分割により、初期バンドルサイズを削減
 

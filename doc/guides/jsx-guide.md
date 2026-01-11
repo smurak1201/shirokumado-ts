@@ -46,15 +46,13 @@ JSX は、JavaScript の構文拡張で、React 要素を記述するために�
 
 **JSX の変換例**:
 
-```jsx
 const element = <h1>Hello, World!</h1>;
 
-// 自動変換後（React 19の新しいJSX変換）
-// 注意: この変換はTypeScriptコンパイラが自動的に行います
+// 自動変換後（React 19 の新しい JSX 変換）
+// 注意: この変換は TypeScript コンパイラが自動的に行います
 // 開発者が直接このコードを書く必要はありません
 import { jsx } from "react/jsx-runtime";
 const element = jsx("h1", { children: "Hello, World!" });
-```
 
 - **開発者は JSX 構文（`<h1>`, `<div>`など）を直接書きます**
 - **`jsx`関数を直接呼び出す必要はありません**（TypeScript コンパイラが自動変換）
@@ -62,7 +60,7 @@ const element = jsx("h1", { children: "Hello, World!" });
 
 **このアプリでの実際の使用例**:
 
-**参照**: [`app/components/ProductGrid.tsx`](../../app/components/ProductGrid.tsx)
+**参照**: [`app/components/ProductGrid.tsx`](../../app/components/ProductGrid.tsx) (行 50-83)
 
 ```tsx
 // app/components/ProductGrid.tsx
@@ -105,64 +103,51 @@ HTML では `class` を使用しますが、JSX では JavaScript の予約語�
 
 **参照**: [`app/components/ProductGrid.tsx`](../../app/components/ProductGrid.tsx)
 
-```text
 <div class="container">Content</div>
-```
-
 **JSX の例**:
 
-```jsx
 <div className="container">Content</div>
 ```
-
 **このアプリでの使用例**:
 
 **参照**: [`app/components/ProductTile.tsx`](../../app/components/ProductTile.tsx)
 
-````tsx
 <button
-  className="group w-full overflow-hidden rounded-lg border border-gray-100 bg-white shadow-sm"
-  aria-label={`${product.name}の詳細を見る`}
+className="group w-full overflow-hidden rounded-lg border border-gray-100 bg-white shadow-sm"
+aria-label={`${product.name}の詳細を見る`}
+
 >
+
 #### `for` → `htmlFor`
 
 HTML では `for` を使用しますが、JSX では `htmlFor` を使用します。
 
 **HTML の例**:
 
-```text
 <input type="email" id="email">
-```jsx
 <input type="email" id="email" />
 ````
-
 HTML では小文字の属性名（`onclick`）を使用し、文字列で JavaScript コードを記述しますが、JSX ではキャメルケース（`onClick`）を使用し、関数を直接渡します。
 
 **HTML の例**:
 
-````jsx
-```tsx
 <button
-  onClick={onClick}
-  className="group w-full overflow-hidden rounded-lg"
+onClick={onClick}
+className="group w-full overflow-hidden rounded-lg"
+
 >
-
-
 
 **参照**: [`app/components/ProductTile.ts`](../../app/components/ProductTile.ts)
-```tsx
 <button
-  onClick={onClose}
-  className="rounded-full bg-white/90 p-2"
-  aria-label="閉じる"
+onClick={onClose}
+className="rounded-full bg-white/90 p-2"
+aria-label="閉じる"
+
 >
 
-
-
 **参照**: [`app/components/ProductModal.ts`](../../app/components/ProductModal.ts)
-````
 
-````
+```
 ### 3. 自己閉じタグの必須性
 
 JSX では、子要素を持たない要素は必ず自己閉じタグ（`/>`）で閉じる必要があります。
@@ -176,10 +161,8 @@ JSX では、子要素を持たない要素は必ず自己閉じタグ（`/>`）
 
 **JSX での例**（自己閉じタグが必須）:
 
-```jsx
 <img src="image.jpg" alt="Image" />
 <br />
-```tsx
 <Image
   src={product.imageUrl}
   alt={product.name}
@@ -189,7 +172,7 @@ JSX では、子要素を持たない要素は必ず自己閉じタグ（`/>`）
 
 
 **参照**: [`app/components/ProductTile.ts`](../../app/components/ProductTile.ts)
-````
+```
 
 ### 4. JavaScript 式の埋め込み
 
@@ -197,13 +180,10 @@ HTML では静的なテキストのみを記述できますが、JSX では `{}`
 
 **HTML の例**（静的なテキストのみ）:
 
-````
-
-```jsx
 const name = "World";
+
 <div>Hello, {name}!</div>
 <div>計算結果: {1 + 2}</div>
-````
 
 ### 5. コメントの書き方
 
@@ -211,17 +191,14 @@ HTML では `<!-- -->` を使用しますが、JSX では `{/* */}` を使用し
 
 **HTML の例**:
 
-```text
+````text
   <!-- これはコメントです -->
   Content
 </div>
-```
 
-```jsx
   {/* これはコメントです */}
   Content
 </div>
-```
 
 ```tsx
 <button onClick={onClick}>
@@ -242,18 +219,15 @@ HTML では `<!-- -->` を使用しますが、JSX では `{/* */}` を使用し
 
 
 **参照**: [`app/components/ProductTile.ts`](../../app/components/ProductTile.ts)
-```
 
 **参照**: [`app/components/ProductTile.ts`](../../app/components/ProductTile.ts)
 
-````
 ### 6. ブール値の属性
 
 HTML ではブール値の属性を省略できますが、JSX では明示的に `true` または `false` を指定する必要があります。
 
 **HTML の例**（属性を省略可能）:
 
-```jsx
 // または、true の場合は省略可能
 <input type="checkbox" checked disabled />
 ````
@@ -262,22 +236,17 @@ HTML では文字列でスタイルを指定しますが、JSX ではオブジ�
 
 **HTML の例**（文字列形式）:
 
-```jsx
 <div style={{ color: "red", fontSize: "16px" }}>Text</div>
-```
-
 ### 8. 属性値の型
 
 HTML では属性値は常に文字列ですが、JSX では数値、ブール値、オブジェクト、配列など、任意の JavaScript の値を渡すことができます。
 
 **HTML の例**（すべて文字列）:
 
-```
 <div data-count={5} data-active={true}>
   Content
 </div>
 ```
-
 JSX では、JavaScript の予約語と衝突する属性名は別名を使用します。
 
 | HTML       | JSX         | 理由                           |
@@ -306,17 +275,14 @@ JSX では、JavaScript の予約語と衝突する属性名は別名を使用�
 
 **間違い: HTML の書き方をそのまま使用**
 
-````jsx
 <div class="container" onclick="handleClick()">
   <!-- コメント -->
   <img src="image.jpg" alt="Image">
 </div>
-```jsx
 <div className="container" onClick={handleClick}>
   {/* コメント */}
   <img src="image.jpg" alt="Image" />
 </div>
-````
 
 ## 基本的な構文
 
@@ -329,7 +295,6 @@ JSX では、HTML と同様に要素を記述できます。
 
 // 自己閉じタグ
 <img src="image.jpg" alt="Image" />
-```tsx
 <header className="sticky top-0 z-50 h-20 overflow-visible bg-white">
   <div className="mx-auto flex h-full max-w-6xl items-center justify-between px-4 md:px-6">
     {/* ... */}
@@ -338,13 +303,10 @@ JSX では、HTML と同様に要素を記述できます。
 
 
 **参照**: [`app/components/Header.ts`](../../app/components/Header.ts)
-````
-
 ### 属性（Props）
 
 JSX では、HTML の属性と同様に props を指定できます。HTML との違いについては、[JSX と HTML の違い](#jsx-と-html-の違い)セクションを参照してください。
 
-```jsx
 <div className="container">Content</div>
 
 // イベントハンドラー（キャメルケース）
@@ -353,10 +315,7 @@ JSX では、HTML の属性と同様に props を指定できます。HTML と�
 // ブール値の属性
 <input type="checkbox" checked={isChecked} />
 ```
-
 **参照**: [`app/components/ProductTile.ts`](../../app/components/ProductTile.ts)
-
-```tsx
 <button
   onClick={onClick}
   className="group w-full overflow-hidden rounded-lg border border-gray-100 bg-white shadow-sm"
@@ -367,9 +326,6 @@ JSX では、HTML の属性と同様に props を指定できます。HTML と�
 
 
 **参照**: [`app/components/ProductTile.ts`](../../app/components/ProductTile.ts)
-```
-
-````
 ### 子要素
 
 JSX では、要素の中に他の要素やテキストを配置できます。
@@ -378,20 +334,16 @@ JSX では、要素の中に他の要素やテキストを配置できます。
   <h1>Title</h1>
   <p>Description</p>
 </div>
-```tsx
 <div className="flex h-[3em] items-center justify-center p-1.5">
   <h3 className="line-clamp-2 text-center">{product.name}</h3>
 </div>
 
 
 **参照**: [`app/components/ProductTile.ts`](../../app/components/ProductTile.ts)
-````
-
 ### children prop（子要素を受け取る）
 
 コンポーネントは、`children` prop を使用して子要素を受け取ることができます。これにより、コンポーネントをラッパーとして使用できます。
 
-```jsx
 function Container({ children }) {
   return <div className="container">{children}</div>;
 }
@@ -402,10 +354,7 @@ function Container({ children }) {
   <p>Description</p>
 </Container>;
 ```
-
 **参照**: [`app/layout.ts`](../../app/layout.ts)
-
-```tsx
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -423,9 +372,6 @@ export default function RootLayout({
 
 
 **参照**: [`app/layout.ts`](../../app/layout.ts)
-```
-
-```tsx
 interface ErrorBoundaryProps {
   children: ReactNode; // エラーバウンダリーで囲む子コンポーネント
   fallback?: ReactNode; // エラー発生時に表示するフォールバックUI（オプション）
@@ -446,7 +392,6 @@ export default class ErrorBoundary extends Component<
 
 **参照**: [`app/components/ErrorBoundary.ts`](../../app/components/ErrorBoundary.ts)
 ```
-
 **重要なポイント**:
 
 - `children` は特別な prop で、コンポーネントの開始タグと終了タグの間の内容が自動的に渡されます
@@ -457,28 +402,20 @@ export default class ErrorBoundary extends Component<
 
 JSX では、`{}` を使用して JavaScript の式を埋め込むことができます。
 
-```jsx
 const element = <h1>Hello, {name}!</h1>;
 
 // 式も使用可能
 const element = <h1>1 + 1 = {1 + 1}</h1>;
-```
-
 **参照**: [`app/components/ProductGrid.ts`](../../app/components/ProductGrid.ts)
-
-```tsx
 <h2 className="text-center text-lg font-light">{category.name}</h2>
 
 
 **参照**: [`app/components/ProductGrid.ts`](../../app/components/ProductGrid.ts)
 ```
-
-````
 **JSX 式の制限**:
 
 JSX では、以下のような値は直接レンダリングできません：
 
-```jsx
 const user = { name: "John", age: 30 };
 <div>{user}</div> // エラー: Objects are not valid as a React child
 
@@ -497,7 +434,6 @@ const handleClick = () => console.log("clicked");
 
 // 正しい: イベントハンドラーとして使用
 <button onClick={handleClick}>Click me</button>
-````
 
 - 文字列
 - 数値
@@ -517,7 +453,6 @@ const handleClick = () => console.log("clicked");
 <div>{""}</div>              {/* 何も表示しない */}
 <div>{"Hello"}</div>         {/* Hello が表示される */}
 <div>{123}</div>             {/* 123 が表示される */}
-```
 
 JSX では、条件に応じて要素を表示/非表示できます。
 
@@ -525,24 +460,19 @@ JSX では、条件に応じて要素を表示/非表示できます。
 
 **方法 1: 三項演算子**
 
-````jsx
   isLoggedIn ? <UserMenu /> : <LoginButton />;
 }
-```jsx
   isLoading && <LoadingSpinner />;
 }
 ```jsx
   return null;
 }
-```tsx
 if (!isOpen || !product) {
   return null;
 }
 
 
 **参照**: [`app/components/ProductModal.ts`](../../app/components/ProductModal.ts)
-````
-
 **詳細な使用例**: このアプリでの条件付きレンダリングの実装例（三項演算子、論理 AND 演算子など）については、[このアプリでの JSX の使用例 - 条件付きレンダリング](#条件付きレンダリング-1)セクションを参照してください。
 
 ### リストのレンダリング
@@ -551,26 +481,19 @@ JSX では、配列をマップしてリストをレンダリングできます�
 
 **注意**: このセクションでは JSX 構文でのリストのレンダリングに焦点を当てています。React での実装パターンについては、[React ガイド](./react-guide.md)も参照してください。
 
-```jsx
 <ul>
   {items.map((item, index) => (
     <li key={index}>{item}</li>
   ))}
 </ul>
 ```
-
 **参照**: [`app/components/ProductGrid.ts`](../../app/components/ProductGrid.ts)
-
-```tsx
 {
   products.map((product) => <ProductTile key={product.id} product={product} />);
 }
 
 
 **参照**: [`app/components/ProductGrid.ts`](../../app/components/ProductGrid.ts)
-```
-
-````
 **詳細な使用例**: このアプリでのリストのレンダリングの実装例（`key` の使用方法、空配列の扱いなど）については、[このアプリでの JSX の使用例 - リストのレンダリング](#リストのレンダリング-1)セクションを参照してください。
 
 **空配列のレンダリング**:
@@ -595,11 +518,9 @@ JSX では、配列をマップしてリストをレンダリングできます�
     ))
   );
 }
-````
 
 `key` prop は、React が要素を識別し、効率的に更新するために使用されます。
 
-```jsx
 {
   products.map((product) => <ProductTile key={product.id} product={product} />);
 }
@@ -613,7 +534,6 @@ JSX では、配列をマップしてリストをレンダリングできます�
 
 // 悪い例: 順序が変更される可能性がある場合にインデックスを使用
 // ドラッグ&ドロップで順序を変更できる場合など
-```
 
 1. **効率的な更新**: React は `key` を使用して、どの要素が変更されたかを判断します
 2. **状態の保持**: コンポーネントの状態が正しく保持されます
@@ -656,11 +576,9 @@ export default function Header() {
 
 
 **参照**: [`app/components/Header.ts`](../../app/components/Header.ts)
-```
 
 **Client Component の例**:
 
-```tsx
 function ProductTile({ product, onClick }: ProductTileProps) {
   return (
     <button
@@ -696,52 +614,44 @@ function ProductTile({ product, onClick }: ProductTileProps) {
 
 
 **参照**: [`app/components/ProductTile.ts`](../../app/components/ProductTile.ts)
-```
 
 **参照**: [`app/components/ProductTile.ts`](../../app/components/ProductTile.ts)
 
 ````
+
 ### 条件付きレンダリング
 
 **早期リターン**:
 
-```tsx
 export default function ProductGrid({ category, products }: ProductGridProps) {
-  // 商品がない場合は何も表示しない
-  if (products.length === 0) {
-    return null;
-  }
-
-  return <section className="mb-8 md:mb-16 lg:mb-12">{/* ... */}</section>;
+// 商品がない場合は何も表示しない
+if (products.length === 0) {
+return null;
 }
 
+return <section className="mb-8 md:mb-16 lg:mb-12">{/_ ... _/}</section>;
+}
 
 **参照**: [`app/components/ProductGrid.ts`](../../app/components/ProductGrid.ts)
-````
-
 **三項演算子**:
 
 **参照**: [`app/components/ProductTile.ts`](../../app/components/ProductTile.ts)
 
-```tsx
 {
-  product.imageUrl ? (
-    <div className="relative aspect-square w-full">
-      <Image src={product.imageUrl} alt={product.name} fill />
-    </div>
-  ) : (
-    <div className="aspect-square w-full bg-gray-100" />
-  );
+product.imageUrl ? (
+<div className="relative aspect-square w-full">
+<Image src={product.imageUrl} alt={product.name} fill />
+</div>
+) : (
+<div className="aspect-square w-full bg-gray-100" />
+);
 }
 
-
 **参照**: [`app/components/ProductTile.ts`](../../app/components/ProductTile.ts)
-```
 
 ````
 **論理 AND 演算子**:
 
-```tsx
 {
   product.description && (
     <p className="mb-6 whitespace-pre-wrap text-base leading-relaxed text-gray-600">
@@ -772,7 +682,6 @@ export default function ProductGrid({ category, products }: ProductGridProps) {
 
 
 **参照**: [`app/components/ProductModal.ts`](../../app/components/ProductModal.ts)
-````
 
 ### リストのレンダリング
 
@@ -793,11 +702,9 @@ export default function ProductGrid({ category, products }: ProductGridProps) {
 
 
 **参照**: [`app/components/ProductGrid.ts`](../../app/components/ProductGrid.ts)
-```
 
 **参照**: [`app/components/ProductGrid.ts`](../../app/components/ProductGrid.ts)
 
-````
 **重要なポイント**:
 
 - `key` プロップは各要素に一意の値を指定する必要がある
@@ -808,7 +715,6 @@ export default function ProductGrid({ category, products }: ProductGridProps) {
 
 **関連**: React でのイベントハンドリングの実装パターンについては、[React ガイド - イベントハンドリング](./react-guide.md#イベントハンドリング)を参照してください。
 
-```tsx
 <button onClick={onClick} className="group w-full overflow-hidden rounded-lg">
   {/* ... */}
 </button>
@@ -821,22 +727,17 @@ export default function ProductGrid({ category, products }: ProductGridProps) {
 
 **参照**: [`app/components/ProductGrid.ts`](../../app/components/ProductGrid.ts)
 
-```tsx
 {
-  products.map((product) => (
-    <ProductTile
-      key={product.id}
-      product={product}
-      onClick={() => handleTileClick(product)}
-    />
-  ));
+products.map((product) => (
+<ProductTile
+key={product.id}
+product={product}
+onClick={() => handleTileClick(product)}
+/>
+));
 }
 
-
 **参照**: [`app/components/ProductGrid.ts`](../../app/components/ProductGrid.ts)
-```
-
-````
 **注意**: インライン関数は、`React.memo` でメモ化されたコンポーネントでは、毎回新しい関数が作成されるため、メモ化の効果が失われる可能性があります。このアプリでは、`useCallback` を使用してコールバック関数をメモ化しています。
 
 ### フラグメント
@@ -872,7 +773,6 @@ return (
 
 
 **参照**: [`app/components/ProductGrid.ts`](../../app/components/ProductGrid.ts)
-````
 
 **フラグメントの利点**:
 
@@ -884,7 +784,6 @@ return (
 
 JSX では、`{/* ... */}` の形式でコメントを記述します。
 
-```tsx
 return (
   <>
     <section className="mb-8 md:mb-16 lg:mb-12">
@@ -913,18 +812,17 @@ return (
 
 
 **参照**: [`app/components/ProductGrid.ts`](../../app/components/ProductGrid.ts)
-```
 
 **参照**: [`app/components/ProductGrid.ts`](../../app/components/ProductGrid.ts)
 
-````
+```
+
 ## JSX のベストプラクティス
 
 ### 1. 読みやすさを重視
 
 **推奨**: 複数の props がある場合は、1 行に 1 つの prop を記述。
 
-```tsx
 <Image
   src={product.imageUrl}
   alt={product.name}
@@ -933,7 +831,6 @@ return (
   sizes="(max-width: 768px) 100vw, 800px"
   priority
 />
-```tsx
 <Image
   src={product.imageUrl}
   alt={product.name}
@@ -942,7 +839,6 @@ return (
   sizes="(max-width: 768px) 100vw, 800px"
   priority
 />
-````
 
 **推奨**: 早期リターンを使用して、条件が満たされない場合は早期に return。
 
@@ -952,7 +848,6 @@ if (products.length === 0) {
 }
 
 return <div>{/* ... */}</div>;
-```tsx
 const hasImage = product.imageUrl !== null;
 const hasPrice = product.priceS || product.priceL;
 
@@ -962,11 +857,8 @@ return (
     {hasPrice && <PriceDisplay product={product} />}
   </div>
 );
-````
-
 **推奨**: 一意で安定した ID を使用。
 
-````tsx
 {
   products.map((product) => <ProductTile key={product.id} product={product} />);
 }
@@ -976,13 +868,11 @@ return (
     <ProductTile key={index} product={product} />
   ));
 }
-````
 
 ### 4. アクセシビリティの考慮
 
 **推奨**: 適切なセマンティック HTML と aria 属性を使用。
 
-```tsx
 <button
   onClick={onClick}
   aria-label={`${product.name}の詳細を見る`}
@@ -990,7 +880,6 @@ return (
 >
   {/* ... */}
 </button>
-```
 
 **推奨**: TypeScript を使用して、props に型を付ける。
 
@@ -1003,58 +892,53 @@ interface ProductTileProps {
 function ProductTile({ product, onClick }: ProductTileProps) {
   return <button onClick={onClick}>{product.name}</button>;
 }
-```
+
+
+**参照**: [`app/components/ProductGrid.ts`](../../app/components/ProductGrid.ts)
 
 ### 1. `class` ではなく `className` を使用
 
 **間違い**:
 
-```tsx
-
-```
 
 **間違い**:
 
 ````
-**間違い**:
 
-```tsx
-````
+**間違い**:
 
 ### 4. 条件付きレンダリングでの `false` の扱い
 
 **注意**: `false` はレンダリングされませんが、`0` はレンダリングされます。
 
-```tsx
 {
-  false && <div>Content</div>;
+false && <div>Content</div>;
 }
 {
-  /* 何も表示されない */
+/_ 何も表示されない _/
 }
 
 // 0 は表示される
 {
-  count && <div>Count: {count}</div>;
+count && <div>Count: {count}</div>;
 }
 {
-  /* count が 0 の場合、0 が表示される */
+/_ count が 0 の場合、0 が表示される _/
 }
 
 // 正しい方法
 {
-  count > 0 && <div>Count: {count}</div>;
+count > 0 && <div>Count: {count}</div>;
 }
 {
-  /* count が 0 の場合、何も表示されない */
+/_ count が 0 の場合、何も表示されない _/
 }
-```
 
+````
 ### 5. null と undefined の扱い
 
 JSX では、`null` と `undefined` は何も表示しませんが、エラーにはなりません。
 
-````tsx
 <div>{null}</div>
 <div>{undefined}</div>
 <div>{null && <div>Content</div>}</div>
@@ -1066,7 +950,6 @@ function ConditionalComponent({ isVisible }: { isVisible: boolean }) {
   }
   return <div>Content</div>;
 }
-```tsx
 if (!isOpen || !product) {
   return null; // モーダルを表示しない
 }
@@ -1078,7 +961,6 @@ if (products.length === 0) {
 
 
 **参照**: [`app/components/ProductGrid.ts`](../../app/components/ProductGrid.ts)
-````
 
 **詳細**: `null` と `undefined` を含むレンダリング可能な値の詳細については、[基本的な構文 - JavaScript 式の埋め込み - レンダリング可能な値](#javascript-式の埋め込み)セクションを参照してください。
 
@@ -1101,36 +983,9 @@ const handleClick = () => console.log("clicked");
 
 // 正しい: イベントハンドラーとして使用
 <button onClick={handleClick}>Click me</button>
-```
 
 **間違い**:
 
-```tsx
   <ProductTile product={product} />  {/* key がない */}
 ))}
-```
-
-```tsx
-  products.map((product) => <ProductTile key={product.id} product={product} />);
-}
-```
-
-このアプリケーションでは、JSX を使用して以下のように実装しています：
-
-1. **基本的な構文**: HTML に似た構文で、`className`、`onClick` などの属性を使用
-2. **条件付きレンダリング**: 早期リターン、三項演算子、論理 AND 演算子を適切に使い分け
-3. **リストのレンダリング**: `map` を使用してリストをレンダリングし、`key` プロップを適切に設定
-4. **イベントハンドラー**: `onClick` などのイベントハンドラーを使用してインタラクティブな UI を実装
-5. **フラグメント**: 複数の要素を返す場合に `<>...</>` を使用
-6. **コメント**: `{/* ... */}` の形式でコメントを記述
-7. **型安全性**: TypeScript と組み合わせて、型安全な JSX を記述
-
-JSX は、React で UI を記述するための強力な構文です。適切に使用することで、読みやすく保守しやすいコードを記述できます。
-
-## 参考リンク
-
-- **[React ガイド](./react-guide.md)**: React の包括的なガイド
-- **[TypeScript ガイド](./typescript-guide.md)**: TypeScript での JSX の使用方法
-- **[React 公式ドキュメント - JSX](https://react.dev/learn/writing-markup-with-jsx)**: JSX の公式ドキュメント
-- **[React 公式ドキュメント - 条件付きレンダリング](https://react.dev/learn/conditional-rendering)**: 条件付きレンダリングの公式ドキュメント
-- **[React 公式ドキュメント - リストと key](https://react.dev/learn/rendering-lists)**: リストのレンダリングの公式ドキュメント
+````

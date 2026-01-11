@@ -40,7 +40,6 @@
 ダッシュボードは、Server Component と Client Component を組み合わせた実装です。
 
 ```
-```
   ↓ データ取得（Prisma）
   ↓ propsで渡す
 DashboardContent (Client Component)
@@ -49,9 +48,6 @@ DashboardContent (Client Component)
   └── ProductList
       ├── CategoryTabs
       └── SortableProductItem
-```
-```
-
 ```
 ```
 ├── page.tsx                    # エントリーポイント（Server Component）
@@ -70,8 +66,6 @@ DashboardContent (Client Component)
 └── utils/                      # ユーティリティ関数
     └── productUtils.ts          # 商品のグループ化・フィルタリング
 ```
-```
-
 ### 1. 商品一覧表示
 
 - カテゴリーごとのタブ表示
@@ -119,7 +113,6 @@ DashboardContent (Client Component)
 **実装例**:
 
 ```typescript
-```typescript
   const { categories, products } = await getDashboardData();
 
   return (
@@ -132,8 +125,6 @@ DashboardContent (Client Component)
   );
 }
 ```
-```
-
 ダッシュボードのメインコンテナです。Client Component として実装されています。
 
 **主な機能**:
@@ -146,7 +137,6 @@ DashboardContent (Client Component)
 
 React のベストプラクティスに従い、共有状態（商品一覧）を親コンポーネントで管理しています。
 
-```typescript
 ```typescript
 const [products, setProducts] = useState<Product[]>(initialProducts);
 
@@ -162,8 +152,6 @@ const refreshProducts = async () => {
   setProducts(data.products || []);
 };
 ```
-```
-
 - `forwardRef`や`useImperativeHandle`を使わず、props でデータとコールバックを渡す
 - データフローが明確になり、コンポーネント間の結合が緩くなる
 - 子コンポーネント（`ProductList`）に`products`、`setProducts`、`refreshProducts`を props で渡す
@@ -206,7 +194,6 @@ const refreshProducts = async () => {
 **Props**:
 
 ```typescript
-```typescript
   products: Product[]; // 商品一覧（親コンポーネントから受け取る）
   setProducts: React.Dispatch<React.SetStateAction<Product[]>>; // 状態更新関数
   refreshProducts: () => Promise<void>; // 商品一覧を更新する関数
@@ -214,8 +201,6 @@ const refreshProducts = async () => {
   onNewProductClick?: () => void; // 新規商品登録ボタンクリック時のコールバック
 }
 ```
-```
-
 - React のベストプラクティスに従い、状態を親コンポーネントから受け取る
 - `forwardRef`や`useImperativeHandle`を使わない設計
 - `@dnd-kit`を使用したドラッグ&ドロップ
@@ -247,7 +232,6 @@ const refreshProducts = async () => {
 ### 初期データ取得
 
 ```
-```
   ↓ getDashboardData()
   ↓ Prismaクエリ
 Database
@@ -256,9 +240,6 @@ Database
 DashboardContent (Client Component)
   ↓ useStateで状態管理
 子コンポーネント
-```
-```
-
 ```
 ```
   ↓ フォーム入力
@@ -275,15 +256,12 @@ DashboardContent
   ↓ propsで ProductList に渡す
   ↓ UI更新
 ```
-```
-
 - 商品追加後は、親コンポーネント（`DashboardContent`）の`refreshProducts`を呼び出す
 - 状態は親コンポーネントで管理され、props で子コンポーネントに渡される
 - データフローが明確で、React のベストプラクティスに沿った実装
 
 ### 商品順序変更フロー
 
-```
 ```
   ↓ ドラッグ&ドロップ
 ProductList
@@ -295,8 +273,6 @@ Database
   ↓ 成功: 最新データを取得
   ↓ 失敗: エラー表示 + 元の状態に戻す
 ```
-```
-
 ### 状態のリフトアップ
 
 React のベストプラクティスに従い、共有状態は親コンポーネントで管理します。
@@ -340,10 +316,7 @@ React のベストプラクティスに従い、共有状態は親コンポー�
 **使用例**:
 
 ```typescript
-```typescript
 ```
-```
-
 商品順序変更のロジックを実装したカスタムフックです。
 
 **機能**:
@@ -355,18 +328,11 @@ React のベストプラクティスに従い、共有状態は親コンポー�
 **使用例**:
 
 ```typescript
-```typescript
 ```
-```
-
 ### 商品一覧取得
 
 ```typescript
-```typescript
 ```
-```
-
-```typescript
 ```typescript
 Content-Type: application/json
 
@@ -380,9 +346,6 @@ Content-Type: application/json
   "published": true
 }
 ```
-```
-
-```typescript
 ```typescript
 Content-Type: application/json
 
@@ -391,14 +354,8 @@ Content-Type: application/json
   // ...
 }
 ```
-```
-
-```typescript
 ```typescript
 ```
-```
-
-```typescript
 ```typescript
 Content-Type: application/json
 
@@ -407,16 +364,11 @@ Content-Type: application/json
   "newOrder": 2
 }
 ```
-```
-
-```typescript
 ```typescript
 Content-Type: multipart/form-data
 
 file: [画像ファイル]
 ```
-```
-
 ### 新しい機能の追加
 
 1. **型定義の追加**: [`app/dashboard/types.ts`](../../app/dashboard/types.ts)に追加
@@ -486,7 +438,6 @@ file: [画像ファイル]
 **使用例**:
 
 ```typescript
-```typescript
 const products = await prisma.product.findMany({
   select: {
     id: true,
@@ -500,8 +451,6 @@ const products = await prisma.product.findMany({
   },
 });
 ```
-```
-
 - 必要なデータのみを取得できるため、ネットワーク転送量を削減
 - パフォーマンスの向上（特に大量のデータを扱う場合）
 

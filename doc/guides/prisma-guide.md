@@ -76,7 +76,6 @@ Prisma 7 は、モダンなアプリケーション開発のための次世代 O
 **設定ファイルの構成**:
 
 ```typescript
-```typescript
 import "dotenv/config";
 import { defineConfig } from "prisma/config";
 
@@ -96,8 +95,6 @@ export default defineConfig({
 **参照**: [`prisma.config.ts`](../prisma.config.ts)
 
 ```
-```
-
 - 設定ファイルが [`prisma.config.ts`](../../prisma.config.ts) に分離された
 - `defineConfig` 関数を使用して設定を定義
 - マイグレーションの設定（パス、シード）を設定ファイルで管理
@@ -119,7 +116,6 @@ export default defineConfig({
 2. **Prisma Client の初期化**: アダプターを指定して Prisma Client を作成
 
 ```typescript
-```typescript
 import { PrismaClient } from "@prisma/client";
 import { Adapter } from "@prisma/adapter-xxx"; // データベースに応じたアダプター
 
@@ -129,8 +125,6 @@ const prisma = new PrismaClient({
   adapter, // アダプターを指定
 });
 ```
-```
-
 - **アダプターシステム**: Prisma 6 までは接続文字列を直接指定していましたが、Prisma 7 ではアダプターを使用
 - **接続管理**: アダプターが接続プール、WebSocket、トランザクションなどを管理
 - **パフォーマンス**: サーバーレス環境でのパフォーマンスが向上
@@ -149,7 +143,6 @@ const prisma = new PrismaClient({
 
 **参照**: [`lib/prisma.ts`](../../lib/prisma.ts) (行 28-70)
 
-```28:70:lib/prisma.ts
 ```28:70:lib/prisma.ts
   // Prisma 7では、Neonに接続するためにアダプターを使用します
   const rawConnectionString = process.env.DATABASE_URL || process.env.POSTGRES_URL;
@@ -194,8 +187,6 @@ const prisma = new PrismaClient({
   }
 };
 ```
-```
-
 1. **環境変数からの接続文字列取得**:
 
    - `DATABASE_URL` または `POSTGRES_URL` から接続文字列を取得
@@ -211,13 +202,10 @@ const prisma = new PrismaClient({
 **参照**: [`lib/prisma.ts`](../../lib/prisma.ts) (行 19-22)
 
 ```19:22:lib/prisma.ts
-```19:22:lib/prisma.ts
 if (typeof globalThis !== 'undefined' && !globalThis.WebSocket) {
   neonConfig.webSocketConstructor = ws;
 }
 ```
-```
-
 4. **Prisma Client の作成**:
 
    - 作成したアダプターを `PrismaClient` のコンストラクタに渡す
@@ -229,15 +217,12 @@ if (typeof globalThis !== 'undefined' && !globalThis.WebSocket) {
 **参照**: [`lib/prisma.ts`](../../lib/prisma.ts) (行 72-77)
 
 ```72:77:lib/prisma.ts
-```72:77:lib/prisma.ts
   globalForPrisma.prisma ?? createPrismaClient();
 
 if (process.env.NODE_ENV !== 'production') {
   globalForPrisma.prisma = prisma;
 }
 ```
-```
-
 **PostgreSQL（Neon）接続の特徴**:
 
 - **サーバーレス対応**: Neon はサーバーレスアーキテクチャの PostgreSQL サービス
@@ -248,14 +233,11 @@ if (process.env.NODE_ENV !== 'production') {
 **環境変数の設定**:
 
 ```env
-```env
 DATABASE_URL=postgresql://user:password@host/database
 DATABASE_URL_UNPOOLED=postgresql://user:password@host/database
 POSTGRES_URL=postgresql://user:password@host/database
 POSTGRES_URL_NON_POOLING=postgresql://user:password@host/database
 ```
-```
-
 - `DATABASE_URL`: プールされた接続（通常のクエリ用）
 - `DATABASE_URL_UNPOOLED` または `POSTGRES_URL_NON_POOLING`: プールされていない接続（マイグレーション用）
 - Prisma 7 では、これらの環境変数から自動的に適切な接続を使用します
@@ -277,8 +259,6 @@ Prisma 7 では、スキーマファイルの基本的な構造は Prisma 6 と�
 **スキーマファイルの構成**:
 
 ```prisma
-```prisma
-
 // Generator: Prisma Client の生成設定
 generator client {
   provider = "prisma-client-js"
@@ -325,8 +305,6 @@ model Product {
 **参照**: [`prisma/schema.prisma`](../prisma/schema.prisma)
 
 ```
-```
-
 1. **Generator**: Prisma Client の生成方法を指定
 
    - `provider = "prisma-client-js"`: JavaScript/TypeScript 用のクライアントを生成
@@ -358,8 +336,6 @@ model Product {
 **このアプリでの使用例**:
 
 ```prisma
-```prisma
-
 model Product {
   description String    @db.Text  // PostgreSQLのTEXT型を使用
   priceS      Decimal?  @map("price_s") @db.Decimal(10, 2)  // DECIMAL型を使用
@@ -370,14 +346,11 @@ model Product {
 **参照**: [`prisma/schema.prisma`](../prisma/schema.prisma)
 
 ```
-```
-
 - `@db.Text`: 商品説明などの長いテキストを保存するために使用
 - `@db.Decimal(10, 2)`: 価格などの数値を正確に保存するために使用（浮動小数点数の誤差を避けるため）
 
 **このアプリでの使用例**:
 
-```typescript
 ```typescript
 import { Category, Product } from "@prisma/client";
 
@@ -390,8 +363,6 @@ const product: Product = await prisma.product.findUnique({
   where: { id: 1 },
 });
 ```
-```
-
 **説明**: Prisma では、モデル間の関連（リレーション）をスキーマで定義します。これにより、関連するデータを簡単に取得できます。
 
 **このアプリでの使用箇所**:
@@ -400,7 +371,6 @@ const product: Product = await prisma.product.findUnique({
 
 **1 対多のリレーション**:
 
-```prisma
 ```prisma
 model Category {
   id        Int       @id @default(autoincrement())
@@ -416,8 +386,6 @@ model Product {
   // ...
 }
 ```
-```
-
 - `Category.products`: `Product[]` 型で、このカテゴリーに属するすべての商品を表す
 - `Product.category`: `Category` 型で、この商品が属するカテゴリーを表す
 - `@relation(fields: [categoryId], references: [id])`: 外部キー関係を定義
@@ -426,7 +394,6 @@ model Product {
 
 **このアプリでの使用例**:
 
-```typescript
 ```typescript
 const products = await prisma.product.findMany({
   include: {
@@ -441,8 +408,6 @@ const categories = await prisma.category.findMany({
   },
 });
 ```
-```
-
 - [`app/page.tsx`](../../app/page.tsx): 商品とカテゴリーを一緒に取得
 - [`app/dashboard/page.tsx`](../../app/dashboard/page.tsx): 商品とカテゴリーを一緒に取得
 - [`app/api/products/route.ts`](../../app/api/products/route.ts): 商品とカテゴリーを一緒に取得
@@ -461,7 +426,6 @@ const categories = await prisma.category.findMany({
 Prisma 7 では、`prisma.config.ts` でマイグレーションの設定を管理します：
 
 ```typescript
-```typescript
 export default defineConfig({
   migrations: {
     path: "prisma/migrations",
@@ -472,17 +436,12 @@ export default defineConfig({
 **参照**: [`prisma.config.ts`](../prisma.config.ts)
 
 ```
-```
-
-```bash
 ```bash
 npm run db:migrate
 
 # 本番環境でマイグレーションを適用
 npm run db:migrate:deploy
 ```
-```
-
 - マイグレーションの設定が [`prisma.config.ts`](../../prisma.config.ts) で管理される
 - シードファイルのパスを設定ファイルで指定可能
 
@@ -491,8 +450,6 @@ npm run db:migrate:deploy
 1. **初期スキーマの作成** (`20260101062802_init_products_schema`):
 
 ```sql
-```sql
-
 -- CreateTable
 CREATE TABLE "categories" (
     "id" SERIAL NOT NULL,
@@ -521,19 +478,13 @@ CREATE TABLE "products" (
 ALTER TABLE "products" ADD CONSTRAINT "products_category_id_fkey"
     FOREIGN KEY ("category_id") REFERENCES "categories"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 ```
-```
-
 ```sql
-```sql
-
 -- AlterTable
 ALTER TABLE "products" ADD COLUMN "published" BOOLEAN NOT NULL DEFAULT true;
 ALTER TABLE "products" ADD COLUMN "published_at" TIMESTAMP(3);
 ALTER TABLE "products" ADD COLUMN "ended_at" TIMESTAMP(3);
 ALTER TABLE "products" ADD COLUMN "display_order" INTEGER;
 ```
-```
-
 - **バージョン管理**: スキーマの変更履歴を追跡
 - **ロールバック**: 問題が発生した場合、以前の状態に戻せる
 - **チーム開発**: 複数の開発者が同じスキーマ変更を適用できる
@@ -542,12 +493,9 @@ ALTER TABLE "products" ADD COLUMN "display_order" INTEGER;
 **マイグレーションコマンド**:
 
 ```bash
-```bash
 npm run db:migrate:deploy # 本番環境でマイグレーションを適用
 npm run db:push           # スキーマを直接プッシュ（開発環境のみ）
 ```
-```
-
 **説明**: Prisma は、スキーマファイルから TypeScript の型定義を自動生成します。これにより、コンパイル時に型エラーを検出でき、IDE での自動補完も利用できます。
 
 **このアプリでの使用箇所**:
@@ -557,13 +505,8 @@ npm run db:push           # スキーマを直接プッシュ（開発環境の�
 **型生成の実行**:
 
 ```bash
-```bash
 ```
-```
-
 ```typescript
-```typescript
-
 export type Category = {
   id: number;
   name: string;
@@ -587,9 +530,6 @@ export type Product = {
   updatedAt: Date;
 };
 ```
-```
-
-```typescript
 ```typescript
 import { Product, Category } from "@prisma/client";
 
@@ -601,8 +541,6 @@ const product: Product = await prisma.product.findUnique({
 console.log(product.name); // OK
 console.log(product.invalidField); // コンパイルエラー
 ```
-```
-
 - スキーマファイル（`schema.prisma`）を変更した後
 - 依存関係をインストールした後
 - マイグレーションを適用した後
@@ -618,10 +556,7 @@ console.log(product.invalidField); // コンパイルエラー
 **Prisma Studio の起動**:
 
 ```bash
-```bash
 ```
-```
-
 - データベースの内容をブラウザで確認
 - データの追加・編集・削除
 - リレーションの確認
@@ -630,14 +565,11 @@ console.log(product.invalidField); // コンパイルエラー
 **このアプリでの使用例**:
 
 ```bash
-```bash
 npm run db:studio
 
 # ブラウザで http://localhost:5555 を開く
 # カテゴリーや商品のデータを確認・編集できる
 ```
-```
-
 ### findMany
 
 **説明**: 複数のレコードを取得します。条件を指定してフィルタリングやソートが可能です。
@@ -645,26 +577,18 @@ npm run db:studio
 **基本的な使い方**:
 
 ```typescript
-```typescript
 ```
-```
-
 1. **[`app/page.tsx`](../../app/page.tsx)** - カテゴリー一覧の取得
 
 **参照**: [`app/page.tsx`](../../app/page.tsx) (行 30-34)
 
-```30:34:app/page.tsx
 ```30:34:app/page.tsx
       orderBy: {
         id: "asc",
       },
     }),
 ```
-```
-
 **参照**: [`app/page.tsx`](../../app/page.tsx) (行 36-46)
-
-```36:46:app/page.tsx
 ```36:46:app/page.tsx
       include: {
         category: true, // カテゴリー情報も一緒に取得（N+1問題を回避）
@@ -677,22 +601,14 @@ npm run db:studio
       },
     }),
 ```
-```
-
 **参照**: [`app/dashboard/page.tsx`](../../app/dashboard/page.tsx) (行 21-25)
-
-```21:25:app/dashboard/page.tsx
 ```21:25:app/dashboard/page.tsx
       orderBy: {
         id: "asc",
       },
     }),
 ```
-```
-
 **参照**: [`app/dashboard/page.tsx`](../../app/dashboard/page.tsx) (行 27-34)
-
-```27:34:app/dashboard/page.tsx
 ```27:34:app/dashboard/page.tsx
       include: {
         category: true, // 関連するカテゴリー情報も一緒に取得
@@ -702,11 +618,7 @@ npm run db:studio
       },
     }),
 ```
-```
-
 **参照**: [`app/api/products/route.ts`](../../app/api/products/route.ts) (行 31-38)
-
-```31:38:app/api/products/route.ts
 ```31:38:app/api/products/route.ts
         include: {
           category: true, // 関連するカテゴリー情報も取得
@@ -716,19 +628,13 @@ npm run db:studio
         },
       }),
 ```
-```
-
 **参照**: [`app/api/categories/route.ts`](../../app/api/categories/route.ts) (行 16-20)
-
-```16:20:app/api/categories/route.ts
 ```16:20:app/api/categories/route.ts
         orderBy: {
           id: 'asc',
         },
       }),
 ```
-```
-
 - `where`: フィルタリング条件
 - `orderBy`: ソート順序
 - `include`: 関連データの取得（N+1 問題を回避）
@@ -743,24 +649,17 @@ npm run db:studio
 **基本的な使い方**:
 
 ```typescript
-```typescript
   where: { id: 1 },
 });
 ```
-```
-
 1. **[`app/api/products/route.ts`](../../app/api/products/route.ts)** - カテゴリーの存在確認（商品作成時）
 
 **参照**: [`app/api/products/route.ts`](../../app/api/products/route.ts) (行 87-90)
 
 ```87:90:app/api/products/route.ts
-```87:90:app/api/products/route.ts
     'POST /api/products - category check'
   );
 ```
-```
-
-```25:30:app/api/products/[id]/route.ts
 ```25:30:app/api/products/[id]/route.ts
         where: { id: productId },
         include: {
@@ -768,29 +667,18 @@ npm run db:studio
         },
       }),
 ```
-```
-
-```57:60:app/api/products/[id]/route.ts
 ```57:60:app/api/products/[id]/route.ts
     `PUT /api/products/${id} - existence check`
   );
 ```
-```
-
-```85:88:app/api/products/[id]/route.ts
 ```85:88:app/api/products/[id]/route.ts
       `PUT /api/products/${id} - category check`
     );
 ```
-```
-
-```171:174:app/api/products/[id]/route.ts
 ```171:174:app/api/products/[id]/route.ts
     `DELETE /api/products/${id} - existence check`
   );
 ```
-```
-
 - `where`: 検索条件（主キーまたはユニーク制約のフィールド）
 - `include`: 関連データの取得
 - `select`: 取得するフィールドの指定
@@ -802,7 +690,6 @@ npm run db:studio
 **基本的な使い方**:
 
 ```typescript
-```typescript
   data: {
     name: "商品名",
     description: "商品説明",
@@ -810,13 +697,10 @@ npm run db:studio
   },
 });
 ```
-```
-
 1. **[`app/api/products/route.ts`](../../app/api/products/route.ts)** - 新規商品の作成
 
 **参照**: [`app/api/products/route.ts`](../../app/api/products/route.ts) (行 115-133)
 
-```115:133:app/api/products/route.ts
 ```115:133:app/api/products/route.ts
       prisma.product.create({
         data: {
@@ -835,8 +719,6 @@ npm run db:studio
         },
       }),
 ```
-```
-
 - `data`: 作成するデータ
 - `include`: 作成後に取得する関連データ
 - `select`: 作成後に取得するフィールドの指定
@@ -848,18 +730,14 @@ npm run db:studio
 **基本的な使い方**:
 
 ```typescript
-```typescript
   where: { id: 1 },
   data: {
     name: "更新された商品名",
   },
 });
 ```
-```
-
 1. **`app/api/products/[id]/route.ts`** - 商品情報の更新
 
-```141:150:app/api/products/[id]/route.ts
 ```141:150:app/api/products/[id]/route.ts
       prisma.product.update({
         where: { id: productId },
@@ -869,18 +747,12 @@ npm run db:studio
         },
       }),
 ```
-```
-
 **参照**: [`app/api/products/reorder/route.ts`](../../app/api/products/reorder/route.ts) (行 23-26)
-
-```23:26:app/api/products/reorder/route.ts
 ```23:26:app/api/products/reorder/route.ts
             where: { id: item.id },
             data: { displayOrder: item.displayOrder },
           })
 ```
-```
-
 - `where`: 更新対象のレコードを指定（主キーまたはユニーク制約）
 - `data`: 更新するデータ
 - `include`: 更新後に取得する関連データ
@@ -893,21 +765,15 @@ npm run db:studio
 **基本的な使い方**:
 
 ```typescript
-```typescript
   where: { id: 1 },
 });
 ```
-```
-
 1. **`app/api/products/[id]/route.ts`** - 商品の削除
 
-```192:195:app/api/products/[id]/route.ts
 ```192:195:app/api/products/[id]/route.ts
     `DELETE /api/products/${id}`
   );
 ```
-```
-
 - `where`: 削除対象のレコードを指定（主キーまたはユニーク制約）
 
 ### $transaction
@@ -917,18 +783,14 @@ npm run db:studio
 **基本的な使い方**:
 
 ```typescript
-```typescript
   prisma.product.update({ where: { id: 1 }, data: { name: "商品1" } }),
   prisma.product.update({ where: { id: 2 }, data: { name: "商品2" } }),
 ]);
 ```
-```
-
 1. **[`app/api/products/reorder/route.ts`](../../app/api/products/reorder/route.ts)** - 複数商品の表示順序を一括更新
 
 **参照**: [`app/api/products/reorder/route.ts`](../../app/api/products/reorder/route.ts) (行 19-29)
 
-```19:29:app/api/products/reorder/route.ts
 ```19:29:app/api/products/reorder/route.ts
       await prisma.$transaction(
         body.productOrders.map((item: { id: number; displayOrder: number }) =>
@@ -940,8 +802,6 @@ npm run db:studio
       );
     },
 ```
-```
-
 - 複数の操作を原子性（atomicity）を保証して実行
 - 一括更新や一括削除
 - データの整合性を保つ必要がある操作
@@ -957,7 +817,6 @@ Prisma のクエリ関数では、様々なオプションを使用してデー�
 **基本的な使い方**:
 
 ```typescript
-```typescript
 const product = await prisma.product.findUnique({
   where: { id: 1 },
 });
@@ -970,20 +829,14 @@ const products = await prisma.product.findMany({
   },
 });
 ```
-```
-
 1. **[`app/api/products/route.ts`](../../app/api/products/route.ts)** - カテゴリーの存在確認（商品作成時）
 
 **参照**: [`app/api/products/route.ts`](../../app/api/products/route.ts) (行 87-90)
 
 ```87:90:app/api/products/route.ts
-```87:90:app/api/products/route.ts
     'POST /api/products - category check'
   );
 ```
-```
-
-```25:30:app/api/products/[id]/route.ts
 ```25:30:app/api/products/[id]/route.ts
         where: { id: productId },
         include: {
@@ -991,30 +844,18 @@ const products = await prisma.product.findMany({
         },
       }),
 ```
-```
-
-```57:60:app/api/products/[id]/route.ts
 ```57:60:app/api/products/[id]/route.ts
     `PUT /api/products/${id} - existence check`
   );
 ```
-```
-
-```85:88:app/api/products/[id]/route.ts
 ```85:88:app/api/products/[id]/route.ts
       `PUT /api/products/${id} - category check`
     );
 ```
-```
-
-```171:174:app/api/products/[id]/route.ts
 ```171:174:app/api/products/[id]/route.ts
     `DELETE /api/products/${id} - existence check`
   );
 ```
-```
-
-```141:150:app/api/products/[id]/route.ts
 ```141:150:app/api/products/[id]/route.ts
       prisma.product.update({
         where: { id: productId },
@@ -1024,25 +865,16 @@ const products = await prisma.product.findMany({
         },
       }),
 ```
-```
-
-```192:195:app/api/products/[id]/route.ts
 ```192:195:app/api/products/[id]/route.ts
     `DELETE /api/products/${id}`
   );
 ```
-```
-
 **参照**: [`app/api/products/reorder/route.ts`](../../app/api/products/reorder/route.ts) (行 23-26)
-
-```23:26:app/api/products/reorder/route.ts
 ```23:26:app/api/products/reorder/route.ts
             where: { id: item.id },
             data: { displayOrder: item.displayOrder },
           })
 ```
-```
-
 - `equals`: 等しい（デフォルト）
 - `not`: 等しくない
 - `in`: 配列内の値に一致
@@ -1056,7 +888,6 @@ const products = await prisma.product.findMany({
 
 **基本的な使い方**:
 
-```typescript
 ```typescript
 const products = await prisma.product.findMany({
   orderBy: {
@@ -1079,24 +910,17 @@ const products = await prisma.product.findMany({
   },
 });
 ```
-```
-
 1. **`app/page.tsx`** - カテゴリーを ID 順で取得
 
 **参照**: [`app/page.tsx`](../../app/page.tsx) (行 30-34)
 
-```30:34:app/page.tsx
 ```30:34:app/page.tsx
       orderBy: {
         id: "asc",
       },
     }),
 ```
-```
-
 **参照**: [`app/page.tsx`](../../app/page.tsx) (行 36-46)
-
-```36:46:app/page.tsx
 ```36:46:app/page.tsx
       include: {
         category: true, // カテゴリー情報も一緒に取得（N+1問題を回避）
@@ -1109,22 +933,14 @@ const products = await prisma.product.findMany({
       },
     }),
 ```
-```
-
 **参照**: [`app/dashboard/page.tsx`](../../app/dashboard/page.tsx) (行 21-25)
-
-```21:25:app/dashboard/page.tsx
 ```21:25:app/dashboard/page.tsx
       orderBy: {
         id: "asc",
       },
     }),
 ```
-```
-
 **参照**: [`app/dashboard/page.tsx`](../../app/dashboard/page.tsx) (行 27-34)
-
-```27:34:app/dashboard/page.tsx
 ```27:34:app/dashboard/page.tsx
       include: {
         category: true, // 関連するカテゴリー情報も一緒に取得
@@ -1134,11 +950,7 @@ const products = await prisma.product.findMany({
       },
     }),
 ```
-```
-
 **参照**: [`app/api/products/route.ts`](../../app/api/products/route.ts) (行 31-38)
-
-```31:38:app/api/products/route.ts
 ```31:38:app/api/products/route.ts
         include: {
           category: true, // 関連するカテゴリー情報も取得
@@ -1148,19 +960,13 @@ const products = await prisma.product.findMany({
         },
       }),
 ```
-```
-
 **参照**: [`app/api/categories/route.ts`](../../app/api/categories/route.ts) (行 16-20)
-
-```16:20:app/api/categories/route.ts
 ```16:20:app/api/categories/route.ts
         orderBy: {
           id: 'asc',
         },
       }),
 ```
-```
-
 - `"asc"`: 昇順（小さい順）
 - `"desc"`: 降順（大きい順）
 
@@ -1178,7 +984,6 @@ Prisma 7 では、PostgreSQL の `NULLS FIRST` / `NULLS LAST` 構文をサポー
 `displayOrder` フィールドが `null` の商品を最後に配置する例：
 
 ```typescript
-```typescript
 orderBy: {
   displayOrder: {
     sort: "asc",
@@ -1189,15 +994,12 @@ orderBy: {
 **参照**: [`app/page.ts`](../app/page.ts)
 
 ```
-```
-
 ### include
 
 **説明**: 関連するデータ（リレーション）を一緒に取得します。`include` を使用することで、N+1 問題を回避し、パフォーマンスを向上させます。
 
 **基本的な使い方**:
 
-```typescript
 ```typescript
 const products = await prisma.product.findMany({
   include: {
@@ -1212,13 +1014,10 @@ const categories = await prisma.category.findMany({
   },
 });
 ```
-```
-
 1. **`app/page.tsx`** - 商品とカテゴリーを一緒に取得
 
 **参照**: [`app/page.tsx`](../../app/page.tsx) (行 36-46)
 
-```36:46:app/page.tsx
 ```36:46:app/page.tsx
       include: {
         category: true, // カテゴリー情報も一緒に取得（N+1問題を回避）
@@ -1231,11 +1030,7 @@ const categories = await prisma.category.findMany({
       },
     }),
 ```
-```
-
 **参照**: [`app/dashboard/page.tsx`](../../app/dashboard/page.tsx) (行 27-34)
-
-```27:34:app/dashboard/page.tsx
 ```27:34:app/dashboard/page.tsx
       include: {
         category: true, // 関連するカテゴリー情報も一緒に取得
@@ -1245,11 +1040,7 @@ const categories = await prisma.category.findMany({
       },
     }),
 ```
-```
-
 **参照**: [`app/api/products/route.ts`](../../app/api/products/route.ts) (行 31-38)
-
-```31:38:app/api/products/route.ts
 ```31:38:app/api/products/route.ts
         include: {
           category: true, // 関連するカテゴリー情報も取得
@@ -1259,11 +1050,7 @@ const categories = await prisma.category.findMany({
         },
       }),
 ```
-```
-
 **参照**: [`app/api/products/route.ts`](../../app/api/products/route.ts) (行 115-133)
-
-```115:133:app/api/products/route.ts
 ```115:133:app/api/products/route.ts
       prisma.product.create({
         data: {
@@ -1282,9 +1069,6 @@ const categories = await prisma.category.findMany({
         },
       }),
 ```
-```
-
-```25:30:app/api/products/[id]/route.ts
 ```25:30:app/api/products/[id]/route.ts
         where: { id: productId },
         include: {
@@ -1292,9 +1076,6 @@ const categories = await prisma.category.findMany({
         },
       }),
 ```
-```
-
-```141:150:app/api/products/[id]/route.ts
 ```141:150:app/api/products/[id]/route.ts
       prisma.product.update({
         where: { id: productId },
@@ -1304,8 +1085,6 @@ const categories = await prisma.category.findMany({
         },
       }),
 ```
-```
-
 - **N+1 問題の回避**: 関連データを一度のクエリで取得できるため、データベースへのクエリ回数を削減
 - **パフォーマンス向上**: 複数のクエリを実行するよりも高速
 - **コードの簡潔性**: 関連データを簡単に取得できる
@@ -1338,7 +1117,6 @@ const categories = await prisma.category.findMany({
 **悪い例: N+1 問題が発生するコード**
 
 ```typescript
-```typescript
 const products = await prisma.product.findMany();
 
 // N回のクエリ: 各商品のカテゴリー情報を個別に取得
@@ -1349,8 +1127,6 @@ for (const product of products) {
   // 商品とカテゴリーを使用
 }
 ```
-```
-
 - 商品が 10 件ある場合、合計 11 回（1 + 10）のクエリが実行される
 - 商品が 100 件ある場合、合計 101 回（1 + 100）のクエリが実行される
 - データベースへの負荷が大幅に増加
@@ -1358,7 +1134,6 @@ for (const product of products) {
 
 **良い例: N+1 問題を回避するコード**
 
-```typescript
 ```typescript
 const products = await prisma.product.findMany({
   include: {
@@ -1372,8 +1147,6 @@ for (const product of products) {
   console.log(product.category.name);
 }
 ```
-```
-
 - 商品が何件あっても、常に 1 回のクエリで完了
 - データベースへの負荷が大幅に削減
 - レスポンスタイムが向上
@@ -1421,7 +1194,6 @@ for (const product of products) {
 **基本的な使い方**:
 
 ```typescript
-```typescript
 const products = await prisma.product.findMany({
   select: {
     id: true,
@@ -1437,15 +1209,12 @@ const products = await prisma.product.findMany({
   },
 });
 ```
-```
-
 - 必要なデータのみを取得できるため、ネットワーク転送量を削減
 - パフォーマンスの向上（特に大量のデータを扱う場合）
 - 機密情報を含むフィールドを意図的に除外できる
 
 **使用例**:
 
-```typescript
 ```typescript
 const productTiles = await prisma.product.findMany({
   select: {
@@ -1468,8 +1237,6 @@ const productDetails = await prisma.product.findUnique({
   },
 });
 ```
-```
-
 - 商品情報は比較的少ないデータ量のため、すべてのフィールドを取得してもパフォーマンスへの影響が小さい
 - `include`を使用してカテゴリー情報も一緒に取得する方が、コードがシンプルで保守しやすい
 - 商品データの構造が比較的シンプルで、不要なフィールドが少ない
@@ -1482,7 +1249,6 @@ const productDetails = await prisma.product.findUnique({
 
 **基本的な使い方**:
 
-```typescript
 ```typescript
 const products = await prisma.product.findMany({
   take: 10,
@@ -1501,8 +1267,6 @@ const products = await prisma.product.findMany({
   },
 });
 ```
-```
-
 - 大量のデータを分割して取得できる
 - ページネーション機能の実装が容易
 - メモリ使用量を削減できる
@@ -1510,7 +1274,6 @@ const products = await prisma.product.findMany({
 
 **使用例**:
 
-```typescript
 ```typescript
 async function getProducts(page: number = 1, pageSize: number = 20) {
   const [products, total] = await Promise.all([
@@ -1532,8 +1295,6 @@ async function getProducts(page: number = 1, pageSize: number = 20) {
   };
 }
 ```
-```
-
 - 商品数が比較的少ないため、ページネーションが不要
 - すべての商品を一度に取得してもパフォーマンスへの影響が小さい
 - ユーザーがすべての商品を一度に確認できる方が使いやすい
@@ -1551,15 +1312,11 @@ async function getProducts(page: number = 1, pageSize: number = 20) {
 **使用例**:
 
 ```typescript
-```typescript
-
 const products = await safePrismaOperation(
   () => prisma.product.findMany(),
   "GET /api/products"
 );
 ```
-```
-
 - エラーを `DatabaseError` に統一
 - エラーログの自動記録
 - コンテキスト情報の付与
@@ -1571,7 +1328,6 @@ Prisma は、スキーマから TypeScript の型定義を自動生成します�
 **このアプリでの使用例**:
 
 ```typescript
-```typescript
 const product: Product = await prisma.product.findUnique({
   where: { id: 1 },
 });
@@ -1580,13 +1336,8 @@ const product: Product = await prisma.product.findUnique({
 console.log(product.name); // OK
 console.log(product.invalidField); // コンパイルエラー
 ```
-```
-
-```bash
 ```bash
 ```
-```
-
 データベーススキーマの変更は、Prisma のマイグレーション機能で管理します。
 
 **このアプリでの使用箇所**:
@@ -1596,12 +1347,9 @@ console.log(product.invalidField); // コンパイルエラー
 **マイグレーションコマンド**:
 
 ```bash
-```bash
 npm run db:migrate:deploy # 本番環境でマイグレーションを適用
 npm run db:push           # スキーマを直接プッシュ（開発環境のみ）
 ```
-```
-
 ### アダプターの使用
 
 **説明**: Prisma 7 では、データベースプロバイダーごとに専用のアダプターを使用します。これにより、サーバーレス環境でのパフォーマンスが向上し、接続管理が最適化されます。
