@@ -860,7 +860,7 @@ export const dynamic = 'force-dynamic';
 });
 ```
 
-2. **`app/api/products/[id]/route.ts`** - 個別商品の操作
+2. **[`app/api/products/[id]/route.ts`](../../app/api/products/[id]/route.ts) (行 44-154)** - 個別商品の操作
 
 ```44:154:app/api/products/[id]/route.ts
   request: NextRequest,
@@ -945,10 +945,6 @@ export const dynamic = 'force-dynamic';
       // 画像削除に失敗しても商品更新は続行（エラーログのみ）
       console.error(`元の画像の削除に失敗しました: ${oldImageUrl}`, error);
     }
-
-
-[`app/components/ProductForm.ts`](../../app/components/ProductForm.ts)
-  }
 
   // 商品を更新
   const updateData: any = {};
