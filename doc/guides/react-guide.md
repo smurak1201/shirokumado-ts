@@ -117,9 +117,9 @@ React Hooks は、関数コンポーネントで状態管理や副作用を扱�
 
 **基本的な使い方**:
 
-1. **[`app/hooks/useProductModal.ts`](../../app/hooks/useProductModal.ts) (行 12-16)** - 商品モーダルの状態管理
+1. **[`app/hooks/useProductModal.ts`](../../app/hooks/useProductModal.ts) (行 14-18)** - 商品モーダルの状態管理
 
-```12:16
+```14:18
   // 選択された商品を管理（モーダル表示用）
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   // モーダルの開閉状態を管理
@@ -202,9 +202,9 @@ React では、副作用を `useEffect` Hook を使用して処理します。`u
 }, [dependencies]);
 ```
 
-1. **[`app/hooks/useModal.ts`](../../app/hooks/useModal.ts) (行 12-48)** - ESC キー処理と背景スクロール無効化
+1. **[`app/hooks/useModal.ts`](../../app/hooks/useModal.ts) (行 15-49)** - ESC キー処理と背景スクロール無効化
 
-```12:48
+```15:49
   // onCloseの最新の参照を保持するref
   // これにより、onCloseが変更されてもuseEffectを再実行せずに最新の関数を呼び出せる
   const onCloseRef = useRef(onClose);
@@ -241,9 +241,9 @@ React では、副作用を `useEffect` Hook を使用して処理します。`u
 }
 ```
 
-2. **[`app/dashboard/hooks/useTabState.ts`](../../app/dashboard/hooks/useTabState.ts) (行 42-47)** - localStorage への保存
+2. **[`app/dashboard/hooks/useTabState.ts`](../../app/dashboard/hooks/useTabState.ts) (行 43-47)** - localStorage への保存
 
-```42:47
+```43:47
   useEffect(() => {
     if (typeof window !== "undefined") {
       localStorage.setItem(STORAGE_KEYS.ACTIVE_TAB, activeTab);
@@ -306,20 +306,22 @@ React では、副作用を `useEffect` Hook を使用して処理します。`u
 - **依存配列**: 依存配列の値が変更された時のみ、再計算が実行される
 - **使用タイミング**: 計算コストが高い処理や、参照の同一性が重要な場合に使用
 
-2. **[`app/dashboard/components/ProductList.tsx`](../../app/dashboard/components/ProductList.tsx) (行 158-163)** - 商品のフィルタリングとグループ化
+2. **[`app/dashboard/components/ProductList.tsx`](../../app/dashboard/components/ProductList.tsx) (行 169-171)** - 商品のフィルタリングとグループ化
 
-```158:163
+```169:171
+  const publishedProductsByCategory = useMemo(
     () => groupProductsByCategory(products, categories),
     [products, categories]
   );
 ```
 
-[`app/dashboard/components/ProductList.tsx`](../../app/dashboard/components/ProductList.tsx) (行 214-218)
+[`app/dashboard/components/ProductList.tsx`](../../app/dashboard/components/ProductList.tsx) (行 230-234)
 
-```214:218
+```230:234
+  const filteredProducts = useMemo(
     () =>
       filterProducts(products, searchName, searchPublished, searchCategoryId),
-    [products, searchName, searchPublished, searchCategoryId]
+    [products, searchName, searchPublished, searchCategoryId] // 依存配列
   );
 ```
 
@@ -334,39 +336,58 @@ React では、副作用を `useEffect` Hook を使用して処理します。`u
 }, [dependencies]);
 ```
 
-1. **[`app/dashboard/components/CategoryTabs.tsx`](../../app/dashboard/components/CategoryTabs.tsx) (行 54-72)** - スクロール位置のチェック
+1. **[`app/dashboard/components/CategoryTabs.tsx`](../../app/dashboard/components/CategoryTabs.tsx) (行 56-64)** - スクロール位置のチェック
 
-```54:72
-    // ...
+```56:64
+  const checkScrollPosition = useCallback(() => {
+    if (!scrollContainerRef.current) return;
+    const { scrollLeft, scrollWidth, clientWidth } = scrollContainerRef.current;
+    // 左側にスクロールできる場合（scrollLeft > 0）は左側のグラデーションを表示
+    setShowLeftGradient(scrollLeft > 0);
+    // 右側にスクロールできる場合（scrollLeft < scrollWidth - clientWidth - 1）は右側のグラデーションを表示
+    // -1 は丸め誤差を考慮したマージン
+    setShowRightGradient(scrollLeft < scrollWidth - clientWidth - 1);
   }, []);
 ```
 
-2. **[`app/hooks/useProductModal.ts`](../../app/hooks/useProductModal.ts) (行 28-31)** - 商品モーダルの操作関数
+2. **[`app/hooks/useProductModal.ts`](../../app/hooks/useProductModal.ts) (行 31-34)** - 商品モーダルの操作関数
 
-```28:31
+```31:34
+  const handleProductClick = useCallback((product: Product) => {
     setSelectedProduct(product);
     setIsModalOpen(true);
   }, []);
 ```
 
-[`app/hooks/useProductModal.ts`](../../app/hooks/useProductModal.ts) (行 37-48)
+[`app/hooks/useProductModal.ts`](../../app/hooks/useProductModal.ts) (行 43-54)
 
-```37:48
+```43:54
+  const handleCloseModal = useCallback(() => {
     setIsModalOpen(false);
-    // ...
+    // 既存のタイマーをクリア（複数回呼ばれた場合に備える）
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+    }
+    // モーダルが閉じた後に選択をクリア（アニメーション完了を待つ）
+    timeoutRef.current = setTimeout(() => {
+      setSelectedProduct(null);
+      timeoutRef.current = null;
+    }, 300);
   }, []);
 ```
 
-3. **[`app/dashboard/components/ProductList.tsx`](../../app/dashboard/components/ProductList.tsx) (行 87-89)** - 商品操作のコールバック関数
+3. **[`app/dashboard/components/ProductList.tsx`](../../app/dashboard/components/ProductList.tsx) (行 89-89)** - 商品操作のコールバック関数
 
-```87:89
+```89:89
+  const handleEdit = useCallback((product: Product) => {
     setEditingProduct(product);
   }, []);
 ```
 
-[`app/dashboard/components/ProductList.tsx`](../../app/dashboard/components/ProductList.tsx) (行 95-121)
+[`app/dashboard/components/ProductList.tsx`](../../app/dashboard/components/ProductList.tsx) (行 99-123)
 
-```95:121
+```99:123
+  const handleDelete = useCallback(
     async (productId: number) => {
       // ...
     },
@@ -390,10 +411,42 @@ React では、副作用を `useEffect` Hook を使用して処理します。`u
 const MemoizedComponent = memo(Component);
 ```
 
-1. **[`app/components/ProductTile.tsx`](../../app/components/ProductTile.tsx) (行 29-62)** - 商品タイルコンポーネント
+1. **[`app/components/ProductTile.tsx`](../../app/components/ProductTile.tsx) (行 33-64)** - 商品タイルコンポーネント
 
-```29:62
-  // ...
+```33:64
+function ProductTile({ product, onClick }: ProductTileProps) {
+  return (
+    <button
+      onClick={onClick}
+      className="group w-full overflow-hidden rounded-lg border border-gray-100 bg-white shadow-sm transition-all duration-300 hover:border-gray-200 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-gray-300 focus:ring-offset-2"
+      aria-label={`${product.name}の詳細を見る`}
+    >
+      {/* 商品画像 */}
+      {product.imageUrl ? (
+        <div className="relative aspect-square w-full overflow-hidden bg-gray-50">
+          <Image
+            src={product.imageUrl}
+            alt={product.name}
+            fill
+            className="object-cover transition-transform duration-500 group-hover:scale-110"
+            sizes="(max-width: 768px) 33vw, (max-width: 1024px) 33vw, 33vw"
+            loading="lazy"
+          />
+          {/* ホバー時のオーバーレイ */}
+          <div className="absolute inset-0 bg-white/0 transition-colors duration-300 group-hover:bg-white/5" />
+        </div>
+      ) : (
+        <div className="aspect-square w-full bg-linear-to-br from-gray-50 to-gray-100" />
+      )}
+
+      {/* 商品名 */}
+      <div className="flex h-[3em] items-center justify-center p-1.5 md:h-[4em] md:p-5 lg:h-[3.5em] lg:p-4">
+        <h3 className="line-clamp-2 whitespace-pre-wrap text-center text-[10px] font-medium leading-relaxed text-gray-800 md:text-lg lg:text-base">
+          {product.name}
+        </h3>
+      </div>
+    </button>
+  );
 }
 
 export default memo(ProductTile);
@@ -549,9 +602,10 @@ function ParentComponent() {
 
 **実装コード**:
 
-[`app/hooks/useModal.ts`](../../app/hooks/useModal.ts) (行 12-48)
+[`app/hooks/useModal.ts`](../../app/hooks/useModal.ts) (行 15-49)
 
-```12:48
+```15:49
+export function useModal(isOpen: boolean, onClose: () => void) {
   // onCloseの最新の参照を保持するref
   // これにより、onCloseが変更されてもuseEffectを再実行せずに最新の関数を呼び出せる
   const onCloseRef = useRef(onClose);
@@ -588,9 +642,10 @@ function ParentComponent() {
 }
 ```
 
-[`app/components/ProductModal.tsx`](../../app/components/ProductModal.tsx) (行 40-41)
+[`app/components/ProductModal.tsx`](../../app/components/ProductModal.tsx) (行 41-42)
 
-```40:41
+```41:42
+  // ESCキー処理と背景スクロール無効化を管理
   useModal(isOpen, onClose);
 ```
 
@@ -610,9 +665,10 @@ function ParentComponent() {
 
 **実装コード**:
 
-[`app/hooks/useProductModal.ts`](../../app/hooks/useProductModal.ts) (行 12-65)
+[`app/hooks/useProductModal.ts`](../../app/hooks/useProductModal.ts) (行 14-71)
 
-```12:65
+```14:71
+export function useProductModal() {
   // 選択された商品を管理（モーダル表示用）
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   // モーダルの開閉状態を管理
@@ -666,15 +722,13 @@ function ParentComponent() {
 }
 ```
 
-[`app/components/ProductGrid.tsx`](../../app/components/ProductGrid.tsx) (行 31-37)
+[`app/components/ProductGrid.tsx`](../../app/components/ProductGrid.tsx) (行 31-34)
 
-```31:37
-  const {
-    selectedProduct,
-    isModalOpen,
-    handleProductClick,
-    handleCloseModal,
-  } = useProductModal();
+```31:34
+export default function ProductGrid({ category, products }: ProductGridProps) {
+  // モーダルの状態管理（カスタムフックで実装）
+  const { selectedProduct, isModalOpen, handleProductClick, handleCloseModal } =
+    useProductModal();
 ```
 
 - 商品タイルクリック時にモーダルを開く
@@ -953,9 +1007,10 @@ function ParentComponent() {
 ├── CategoryTabs (Client Component)
 └── SortableProductItem (Client Component)
 
-1. **[`app/components/ProductGrid.tsx`](../../app/components/ProductGrid.tsx) (行 30-78)** - 商品グリッドコンポーネント
+1. **[`app/components/ProductGrid.tsx`](../../app/components/ProductGrid.tsx) (行 31-78)** - 商品グリッドコンポーネント
 
-```30:78
+```31:78
+export default function ProductGrid({ category, products }: ProductGridProps) {
   // モーダルの状態管理（カスタムフックで実装）
   const {
     selectedProduct,
@@ -1006,9 +1061,10 @@ function ParentComponent() {
 }
 ```
 
-2. **[`app/components/ProductModal.tsx`](../../app/components/ProductModal.tsx) (行 35-119)** - 商品モーダルコンポーネント
+2. **[`app/components/ProductModal.tsx`](../../app/components/ProductModal.tsx) (行 36-121)** - 商品モーダルコンポーネント
 
-```35:119
+```36:121
+export default function ProductModal({
   product,
   isOpen,
   onClose,
@@ -1144,9 +1200,10 @@ React では、イベントハンドラーを props として渡すことで、�
 
 ### イベントハンドリングの例
 
-1. **[`app/components/ProductTile.tsx`](../../app/components/ProductTile.tsx) (行 29-62)** - クリックイベントの処理
+1. **[`app/components/ProductTile.tsx`](../../app/components/ProductTile.tsx) (行 33-64)** - クリックイベントの処理
 
-```29:62
+```33:64
+function ProductTile({ product, onClick }: ProductTileProps) {
   return (
     <button
       onClick={onClick}
@@ -1182,9 +1239,10 @@ React では、イベントハンドラーを props として渡すことで、�
 }
 ```
 
-2. **[`app/components/ProductModal.tsx`](../../app/components/ProductModal.tsx) (行 50-54)** - イベント伝播の制御
+2. **[`app/components/ProductModal.tsx`](../../app/components/ProductModal.tsx) (行 53-57)** - イベント伝播の制御
 
-```50:54
+```53:57
+      <div
         className="relative max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-lg bg-white shadow-2xl"
         onClick={(e) => e.stopPropagation()}
       >

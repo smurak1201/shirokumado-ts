@@ -1008,8 +1008,12 @@ export async function createProduct(formData: FormData) {
 
   return product;
 }
+```
 
-("use client");
+**Client Component での使用例**:
+
+```typescript
+"use client";
 
 import { createProduct } from "@/app/actions";
 
@@ -1027,9 +1031,11 @@ export default function ProductForm() {
     </form>
   );
 }
-[`app/actions.ts`](../app/actions.ts)
-
 ```
+
+**注意**: このアプリでは Server Actions は使用していません。上記は参考例です。
+
+````
 
 - API Routes を書く必要がなく、よりシンプルなコードになる
 - 型安全性が高い（TypeScript と統合されている）
@@ -1064,7 +1070,7 @@ export default function ProductForm() {
         {/* オーバーレイ */}
         <div className="absolute inset-0 bg-linear-to-b from-white/20 via-white/8 to-white/25" />
       </section>
-```
+````
 
 **Image コンポーネントの主なプロパティ**:
 
