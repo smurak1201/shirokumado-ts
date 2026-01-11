@@ -343,12 +343,19 @@ JSX では、JavaScript の予約語と衝突する属性名は別名を使用�
 
 **間違い: HTML の書き方をそのまま使用**
 
-```html
+```text
 <div class="container" onclick="handleClick()">
   <!-- コメント -->
   <img src="image.jpg" alt="Image" />
 </div>
 ```
+
+**理由**:
+
+- **構文エラー**: JSX では `class` は使用できず、`className` を使用する必要がある
+- **イベントハンドラー**: HTML の `onclick` は文字列だが、JSX では `onClick` にキャメルケースで関数を渡す必要がある
+- **コメント形式**: HTML の `<!-- -->` は JSX では使用できず、`{/* */}` を使用する必要がある
+- **自己閉じタグ**: JSX では子要素を持たない要素は必ず `/>` で閉じる必要がある
 
 **正しい: JSX の書き方**
 
@@ -358,6 +365,13 @@ JSX では、JavaScript の予約語と衝突する属性名は別名を使用�
   <img src="image.jpg" alt="Image" />
 </div>
 ```
+
+**理由**:
+
+- **正しい構文**: JSX の構文規則に従い、`className` を使用している
+- **イベントハンドラー**: `onClick` にキャメルケースで関数を渡し、正しく動作する
+- **コメント形式**: JSX の `{/* */}` 形式を使用し、正しくコメントが記述される
+- **自己閉じタグ**: `img` 要素が `/>` で正しく閉じられている
 
 ## 基本的な構文
 
@@ -501,31 +515,74 @@ const element = <h1>1 + 1 = {1 + 1}</h1>;
 
 JSX では、以下のような値は直接レンダリングできません：
 
+**間違い: オブジェクトを直接レンダリング**
+
+```tsx
 const user = { name: "John", age: 30 };
+<div>{user}</div>; // エラー: Objects are not valid as a React child
+```
 
-````tsx
-<div>{user}</div> // エラー: Objects are not valid as a React child
+**理由**:
 
-// 正しい: オブジェクトのプロパティをレンダリング
+- **レンダリングエラー**: オブジェクトは React の子要素として有効でないため、実行時エラーが発生する
+- **型の不一致**: JSX はプリミティブ値や React 要素を期待しており、オブジェクトは直接レンダリングできない
+
+**正しい: オブジェクトのプロパティをレンダリング**
+
 ```tsx
 <div>{user.name}</div>
+```
 
-// 正しい: JSON.stringify を使用
+**理由**:
+
+- **正しいレンダリング**: オブジェクトのプロパティ（文字列）をレンダリングすることで、エラーなく表示できる
+- **型の一致**: 文字列は React の子要素として有効で、正しくレンダリングされる
+
+**正しい: JSON.stringify を使用**
+
 ```tsx
 <div>{JSON.stringify(user)}</div>
+```
 
-// 間違い: 関数を直接レンダリングできない
-const handleClick = () => console.log("clicked");
+**理由**:
+
+- **デバッグ用途**: オブジェクト全体を文字列として表示でき、デバッグ時に便利
+- **型の変換**: `JSON.stringify` によりオブジェクトが文字列に変換され、レンダリング可能になる
+
+**間違い: 関数を直接レンダリング**
+
 ```tsx
-<div>{handleClick}</div> // エラー: Functions are not valid as a React child
+const handleClick = () => console.log("clicked");
+<div>{handleClick}</div>; // エラー: Functions are not valid as a React child
+```
 
-// 正しい: 関数を呼び出す（ただし、これは推奨されない）
+**理由**:
+
+- **レンダリングエラー**: 関数は React の子要素として有効でないため、実行時エラーが発生する
+- **型の不一致**: JSX は関数を直接レンダリングできず、関数を呼び出すか、イベントハンドラーとして使用する必要がある
+
+**正しい: 関数を呼び出す（ただし、これは推奨されない）**
+
 ```tsx
 <div>{handleClick()}</div>
+```
 
-// 正しい: イベントハンドラーとして使用
+**理由**:
+
+- **動作はする**: 関数を呼び出すことで、戻り値がレンダリングされる（この例では `undefined` が返されるため何も表示されない）
+- **推奨されない理由**: レンダリング時に毎回関数が実行され、パフォーマンスの問題や予期しない副作用が発生する可能性がある
+
+**正しい: イベントハンドラーとして使用**
+
 ```tsx
 <button onClick={handleClick}>Click me</button>
+```
+
+**理由**:
+
+- **正しい使用方法**: 関数をイベントハンドラーとして渡すことで、ユーザーの操作に応じて関数が実行される
+- **パフォーマンス**: レンダリング時ではなく、イベント発生時のみ関数が実行される
+- **意図の明確化**: イベントハンドラーとして使用することで、コードの意図が明確になる
 
 - 文字列
 - 数値
@@ -536,7 +593,7 @@ const handleClick = () => console.log("clicked");
 - React 要素の配列
 - フラグメント
 
-```jsx
+````jsx
 <div>{null}</div>           {/* 何も表示しない */}
 <div>{undefined}</div>       {/* 何も表示しない */}
 <div>{true}</div>            {/* 何も表示しない */}
@@ -947,6 +1004,8 @@ return (
 
 **推奨**: 複数の props がある場合は、1 行に 1 つの prop を記述。
 
+```tsx
+// 良い例: 1行に1つのprop
 <Image
   src={product.imageUrl}
   alt={product.name}
@@ -955,6 +1014,18 @@ return (
   sizes="(max-width: 768px) 100vw, 800px"
   priority
 />
+```
+
+**理由**:
+
+- **可読性**: 各 prop が独立した行にあるため、読みやすく理解しやすい
+- **差分の確認**: Git の差分で変更箇所が明確になり、コードレビューが容易
+- **保守性**: prop の追加・削除・変更が容易で、保守が簡単
+
+**避ける**: すべての props を 1 行に記述。
+
+```tsx
+// 悪い例: すべてのpropsを1行に記述
 <Image
   src={product.imageUrl}
   alt={product.name}
@@ -963,42 +1034,96 @@ return (
   sizes="(max-width: 768px) 100vw, 800px"
   priority
 />
+```
+
+**理由**:
+
+- **可読性の低下**: 1 行が長くなり、読みにくくなる
+- **差分の確認**: Git の差分で変更箇所が特定しにくくなる
+- **保守性の低下**: prop の追加・削除・変更が困難になる
 
 **推奨**: 早期リターンを使用して、条件が満たされない場合は早期に return。
 
-````tsx
-if (products.length === 0) {
-  return null;
+```tsx
+// 良い例: 早期リターン
+function ProductList({ products }: { products: Product[] }) {
+  if (products.length === 0) {
+    return null;
+  }
+
+  return <div>{/* ... */}</div>;
 }
+```
 
-return <div>{/* ... */}</div>;
-const hasImage = product.imageUrl !== null;
-const hasPrice = product.priceS || product.priceL;
+**理由**:
 
-return (
+- **可読性**: ネストが浅くなり、コードが読みやすくなる
+- **パフォーマンス**: 不要な処理をスキップでき、パフォーマンスが向上する
+- **保守性**: 条件分岐が明確になり、保守が容易になる
+
+**避ける**: 深いネストでの条件分岐。
+
 ```tsx
-  <div>
-    {hasImage && <Image src={product.imageUrl} alt={product.name} />}
-    {hasPrice && <PriceDisplay product={product} />}
-```tsx
-  </div>
-);
+// 悪い例: 深いネストでの条件分岐
+function ProductList({ products }: { products: Product[] }) {
+  return (
+    <div>
+      {products.length > 0 ? (
+        <div>
+          {products.map((product) => (
+            <ProductTile key={product.id} product={product} />
+          ))}
+        </div>
+      ) : null}
+    </div>
+  );
+}
+```
+
+**理由**:
+
+- **可読性の低下**: ネストが深くなり、コードが読みにくくなる
+- **保守性の低下**: 条件分岐が複雑になり、保守が困難になる
+- **パフォーマンス**: 不要な処理が実行される可能性がある
+
 **推奨**: 一意で安定した ID を使用。
 
+```tsx
+// 良い例: 一意で安定したIDを使用
 {
   products.map((product) => <ProductTile key={product.id} product={product} />);
 }
+```
+
+**理由**:
+
+- **効率的な更新**: React は `key` を使用して、どの要素が変更されたかを正確に判断する
+- **状態の保持**: コンポーネントの状態が正しい要素に紐づき、順序が変更されても状態が保持される
+- **パフォーマンス**: 不要な再レンダリングを防ぎ、パフォーマンスが向上する
+
+**避ける**: 順序が変更される可能性がある場合にインデックスを使用。
+
 ```tsx
+// 悪い例: 順序が変更される可能性がある場合にインデックスを使用
 {
   products.map((product, index) => (
     <ProductTile key={index} product={product} />
   ));
 }
+```
+
+**理由**:
+
+- **状態の不整合**: 順序が変更されると、React が要素を正しく識別できず、コンポーネントの状態が間違った要素に紐づく
+- **パフォーマンス**: React が要素の変更を正しく検出できず、不要な再レンダリングが発生する
+- **バグの原因**: フォーム入力などの状態を持つコンポーネントで、値が間違った要素に表示される
 
 ### 4. アクセシビリティの考慮
 
 **推奨**: 適切なセマンティック HTML と aria 属性を使用。
 
+```tsx
+// 良い例: 適切なセマンティックHTMLとaria属性
 <button
   onClick={onClick}
   aria-label={`${product.name}の詳細を見る`}
@@ -1006,10 +1131,36 @@ return (
 >
   {/* ... */}
 </button>
+```
+
+**理由**:
+
+- **アクセシビリティ**: スクリーンリーダーなどの支援技術がコンテンツを正しく読み上げられる
+- **ユーザー体験**: すべてのユーザーがアプリケーションを利用できる
+- **セマンティクス**: HTML の意味が明確になり、検索エンジンでの評価が向上する
+- **法律遵守**: アクセシビリティに関する法律や規制に準拠できる
+
+**避ける**: セマンティック HTML や aria 属性の欠如。
+
+```tsx
+// 悪い例: セマンティックHTMLやaria属性の欠如
+<div onClick={onClick} className="...">
+  {/* ボタンの役割なのにdivを使用、aria-labelがない */}
+  {/* ... */}
+</div>
+```
+
+**理由**:
+
+- **アクセシビリティの欠如**: スクリーンリーダーがコンテンツを正しく読み上げられない
+- **ユーザー体験の悪化**: 支援技術を使用するユーザーがアプリケーションを利用できない
+- **セマンティクスの欠如**: HTML の意味が不明確になり、検索エンジンでの評価が低下する
+- **法律違反のリスク**: アクセシビリティに関する法律や規制に違反する可能性がある
 
 **推奨**: TypeScript を使用して、props に型を付ける。
 
 ```tsx
+// 良い例: TypeScriptで型を付ける
 interface ProductTileProps {
   product: ProductTileType;
   onClick: () => void;
@@ -1018,101 +1169,195 @@ interface ProductTileProps {
 function ProductTile({ product, onClick }: ProductTileProps) {
   return <button onClick={onClick}>{product.name}</button>;
 }
+```
 
+**理由**:
 
-[`app/components/ProductGrid.ts`](../../app/components/ProductGrid.ts)
+- **型安全性**: コンパイル時に型エラーを検出でき、実行時エラーを防止できる
+- **IDE 支援**: 自動補完や型チェックが機能し、開発効率が向上する
+- **ドキュメント**: 型定義が実質的なドキュメントとして機能し、コードの理解が容易になる
+- **リファクタリング**: 型定義により、安全にリファクタリングが可能になる
+
+**避ける**: 型定義なしで props を使用。
+
+```tsx
+// 悪い例: 型定義なし
+function ProductTile({ product, onClick }: any) {
+  return <button onClick={onClick}>{product.name}</button>;
+}
+```
+
+**理由**:
+
+- **型安全性の欠如**: TypeScript の型チェックが機能せず、実行時エラーのリスクが増加する
+- **IDE 支援の欠如**: 自動補完や型チェックが機能せず、開発効率が低下する
+- **バグの発生**: 不正な値が渡されても検出できず、バグの原因となる
+- **保守性**: コードの意図が不明確になり、保守が困難になる
 
 ### 1. `class` ではなく `className` を使用
 
-**間違い**:
-
-
-**間違い**:
+**間違い: HTML の `class` 属性を使用**
 
 ```tsx
-// 悪い例: 複雑な条件分岐
-````
+// 悪い例: class を使用
+<div class="container">Content</div>
+```
+
+**理由**:
+
+- **構文エラー**: JSX では `class` は JavaScript の予約語のため使用できず、コンパイルエラーが発生する
+- **JSX の規則違反**: JSX では `className` を使用する必要がある
+
+**正しい: JSX の `className` を使用**
+
+```tsx
+// 良い例: className を使用
+<div className="container">Content</div>
+```
+
+**理由**:
+
+- **正しい構文**: JSX の規則に従い、`className` を使用することでエラーなく動作する
+- **一貫性**: React の標準的な書き方に従い、コードの一貫性が保たれる
 
 ### 4. 条件付きレンダリングでの `false` の扱い
 
 **注意**: `false` はレンダリングされませんが、`0` はレンダリングされます。
 
-{
-false && <div>Content</div>;
-}
-{
-/_ 何も表示されない _/
-}
+**間違い: 数値の `0` が表示される**
 
-// 0 は表示される
+```tsx
+// 悪い例: count が 0 の場合、0 が表示される
 {
-count && <div>Count: {count}</div>;
+  count && <div>Count: {count}</div>;
 }
-{
-/_ count が 0 の場合、0 が表示される _/
-}
+// count が 0 の場合、0 が表示される
+```
 
-// 正しい方法
+**理由**:
+
+- **予期しない表示**: `count` が `0` の場合、`0` が画面に表示され、ユーザーに混乱を与える
+- **論理的な誤り**: `0` は falsy だが、JSX ではレンダリングされるため、条件分岐の意図が正しく反映されない
+
+**正しい: 明示的な条件チェック**
+
+```tsx
+// 良い例: 明示的な条件チェック
 {
-count > 0 && <div>Count: {count}</div>;
+  count > 0 && <div>Count: {count}</div>;
 }
-{
 // count が 0 の場合、何も表示されない
-}
+```
 
-````
+**理由**:
+
+- **意図の明確化**: `count > 0` という明示的な条件により、コードの意図が明確になる
+- **正しい表示**: `count` が `0` 以下の場合、何も表示されず、ユーザーに混乱を与えない
+- **予測可能性**: 条件が明確で、動作が予測しやすくなる
 
 ### 5. null と undefined の扱い
 
 JSX では、`null` と `undefined` は何も表示しませんが、エラーにはなりません。
 
+**正しい: null と undefined の使用**
+
 ```tsx
-<div>{null}</div>
-<div>{undefined}</div>
-<div>{null && <div>Content</div>}</div>
-````
+<div>{null}</div>           {/* 何も表示されない */}
+<div>{undefined}</div>      {/* 何も表示されない */}
+<div>{null && <div>Content</div>}</div>  {/* 何も表示されない */}
+```
 
-// コンポーネントから null を返すことで、何も表示しない
+**理由**:
+
+- **エラーなし**: `null` と `undefined` は React の有効な子要素として扱われ、エラーが発生しない
+- **条件付きレンダリング**: 条件が満たされない場合に何も表示しないことを明示できる
+- **柔軟性**: コンポーネントの条件付きレンダリングで便利に使用できる
+
+**正しい: コンポーネントから null を返す**
+
+```tsx
+// 良い例: コンポーネントから null を返すことで、何も表示しない
 function ConditionalComponent({ isVisible }: { isVisible: boolean }) {
-if (!isVisible) {
-return null; // 何も表示しない
+  if (!isVisible) {
+    return null; // 何も表示しない
+  }
+  return <div>Content</div>;
 }
-return <div>Content</div>;
-}
+```
+
+**理由**:
+
+- **早期リターン**: 条件が満たされない場合に早期に `null` を返すことで、コードが簡潔になる
+- **パフォーマンス**: 不要な処理をスキップでき、パフォーマンスが向上する
+- **可読性**: 条件分岐が明確になり、コードが読みやすくなる
+
+**このアプリでの使用例**:
+
+[`app/components/ProductModal.tsx`](../../app/components/ProductModal.tsx)
+
+```tsx
 if (!isOpen || !product) {
-return null; // モーダルを表示しない
+  return null; // モーダルを表示しない
 }
+```
 
+[`app/components/ProductGrid.tsx`](../../app/components/ProductGrid.tsx)
+
+```tsx
 if (products.length === 0) {
-return null; // 商品がない場合は何も表示しない
+  return null; // 商品がない場合は何も表示しない
 }
-
-[`app/components/ProductGrid.ts`](../../app/components/ProductGrid.ts)
+```
 
 **詳細**: `null` と `undefined` を含むレンダリング可能な値の詳細については、[基本的な構文 - JavaScript 式の埋め込み - レンダリング可能な値](#javascript-式の埋め込み)セクションを参照してください。
 
 ### 6. オブジェクトや関数の直接レンダリング
 
-**間違い**: オブジェクトや関数を直接レンダリングしようとするとエラーになります。
-
 詳細については、[JavaScript 式の埋め込み - JSX 式の制限](#javascript-式の埋め込み)セクションを参照してください。
+
+**間違い: オブジェクトを直接レンダリング**
 
 ```tsx
 const user = { name: "John", age: 30 };
-<div>{user}</div> // エラー: Objects are not valid as a React child
-
-// 正しい: オブジェクトのプロパティをレンダリング
-<div>{user.name}</div>
-
-// 間違い: 関数を直接レンダリング
-const handleClick = () => console.log("clicked");
-<div>{handleClick}</div> // エラー: Functions are not valid as a React child
-
-// 正しい: イベントハンドラーとして使用
-<button onClick={handleClick}>Click me</button>
-
-**間違い**:
-
-  <ProductTile product={product} />  {/* key がない */}
-))}
+<div>{user}</div>; // エラー: Objects are not valid as a React child
 ```
+
+**理由**:
+
+- **実行時エラー**: オブジェクトは React の子要素として有効でないため、実行時エラーが発生する
+- **型の不一致**: JSX はプリミティブ値や React 要素を期待しており、オブジェクトは直接レンダリングできない
+
+**正しい: オブジェクトのプロパティをレンダリング**
+
+```tsx
+<div>{user.name}</div>
+```
+
+**理由**:
+
+- **正しいレンダリング**: オブジェクトのプロパティ（文字列）をレンダリングすることで、エラーなく表示できる
+- **型の一致**: 文字列は React の子要素として有効で、正しくレンダリングされる
+
+**間違い: 関数を直接レンダリング**
+
+```tsx
+const handleClick = () => console.log("clicked");
+<div>{handleClick}</div>; // エラー: Functions are not valid as a React child
+```
+
+**理由**:
+
+- **実行時エラー**: 関数は React の子要素として有効でないため、実行時エラーが発生する
+- **型の不一致**: JSX は関数を直接レンダリングできず、関数を呼び出すか、イベントハンドラーとして使用する必要がある
+
+**正しい: イベントハンドラーとして使用**
+
+```tsx
+<button onClick={handleClick}>Click me</button>
+```
+
+**理由**:
+
+- **正しい使用方法**: 関数をイベントハンドラーとして渡すことで、ユーザーの操作に応じて関数が実行される
+- **パフォーマンス**: レンダリング時ではなく、イベント発生時のみ関数が実行される
+- **意図の明確化**: イベントハンドラーとして使用することで、コードの意図が明確になる
