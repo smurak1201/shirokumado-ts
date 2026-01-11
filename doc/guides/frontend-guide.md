@@ -182,7 +182,6 @@ useProductModal();
 
 **使用例**:
 
-````
 #### Header (`Header.tsx`)
 
 全ページ共通のヘッダーコンポーネントです。
@@ -220,7 +219,7 @@ useProductModal();
     </nav>
   </div>
 </header>
-````
+```
 
 全ページ共通のフッターコンポーネントです。
 
@@ -470,6 +469,7 @@ ProductModal
 └── 背景スクロール無効化
 
 ````
+
 商品の公開状態は、以下のロジックで判定されます：
 
 1. **公開日・終了日が設定されている場合**: `calculatePublishedStatus()`で自動判定

@@ -67,6 +67,7 @@ DashboardContent (Client Component)
 └── productUtils.ts # 商品のグループ化・フィルタリング
 
 ````
+
 ### 1. 商品一覧表示
 
 - カテゴリーごとのタブ表示
@@ -338,7 +339,6 @@ React のベストプラクティスに従い、共有状態は親コンポー�
 
 **使用例**:
 
-````typescript
 ### 商品一覧取得
 
 ```typescript
@@ -353,6 +353,10 @@ Content-Type: application/json
   "priceL": 800,
   "published": true
 }
+```
+
+### 商品更新
+
 ```typescript
 Content-Type: application/json
 
@@ -360,6 +364,10 @@ Content-Type: application/json
   "name": "更新後の商品名",
   // ...
 }
+```
+
+### 商品順序変更
+
 ```typescript
 Content-Type: application/json
 
@@ -367,13 +375,16 @@ Content-Type: application/json
   "productId": 1,
   "newOrder": 2
 }
-````
+```
 
+### 画像アップロード
+
+```
 Content-Type: multipart/form-data
 
 file: [画像ファイル]
+```
 
-````
 ### 新しい機能の追加
 
 1. **型定義の追加**: [`app/dashboard/types.ts`](../../app/dashboard/types.ts)に追加
@@ -455,7 +466,7 @@ const products = await prisma.product.findMany({
     },
   },
 });
-````
+```
 
 - 必要なデータのみを取得できるため、ネットワーク転送量を削減
 - パフォーマンスの向上（特に大量のデータを扱う場合）

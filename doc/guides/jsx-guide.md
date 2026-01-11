@@ -593,7 +593,7 @@ const handleClick = () => console.log("clicked");
 - React 要素の配列
 - フラグメント
 
-````jsx
+```jsx
 <div>{null}</div>           {/* 何も表示しない */}
 <div>{undefined}</div>       {/* 何も表示しない */}
 <div>{true}</div>            {/* 何も表示しない */}
@@ -602,6 +602,7 @@ const handleClick = () => console.log("clicked");
 <div>{""}</div>              {/* 何も表示しない */}
 <div>{"Hello"}</div>         {/* Hello が表示される */}
 <div>{123}</div>             {/* 123 が表示される */}
+```
 
 JSX では、条件に応じて要素を表示/非表示できます。
 
@@ -609,11 +610,12 @@ JSX では、条件に応じて要素を表示/非表示できます。
 
 **方法 1: 三項演算子**
 
-  isLoggedIn ? <UserMenu /> : <LoginButton />;
+isLoggedIn ? <UserMenu /> : <LoginButton />;
 }
-  isLoading && <LoadingSpinner />;
+isLoading && <LoadingSpinner />;
 }
-```jsx
+
+````jsx
   return null;
 }
 if (!isOpen || !product) {
@@ -663,26 +665,24 @@ const emptyProducts: Product[] = [];
 // 空配列の場合にメッセージを表示する
 {
 emptyProducts.length === 0 ? (
-
-````tsx
-    <p>商品がありません</p>
-  ) : (
-    emptyProducts.map((product) => (
-```tsx
-      <ProductTile key={product.id} product={product} />
-    ))
-  );
+<p>商品がありません</p>
+) : (
+emptyProducts.map((product) => (
+<ProductTile key={product.id} product={product} />
+))
+);
 }
 
 `key` prop は、React が要素を識別し、効率的に更新するために使用されます。
 
 {
-  products.map((product) => <ProductTile key={product.id} product={product} />);
+products.map((product) => <ProductTile key={product.id} product={product} />);
 }
 
 // 注意: インデックスは、リストの順序が変更されない場合のみ使用可能
 {
-  products.map((product, index) => (
+products.map((product, index) => (
+
 ```tsx
     <ProductTile key={index} product={product} />
   ));
@@ -690,7 +690,8 @@ emptyProducts.length === 0 ? (
 ```
 
 **理由（インデックス使用が可能な場合）**:
-- **シンプル**: データに一意のIDがない場合でも、簡単にkeyを設定できる
+
+- **シンプル**: データに一意の ID がない場合でも、簡単に key を設定できる
 - **順序が固定**: リストの順序が変更されない場合、パフォーマンスへの影響が小さい
 
 ```tsx
@@ -704,21 +705,21 @@ emptyProducts.length === 0 ? (
 ```
 
 **理由（インデックス使用が不適切な場合）**:
-- **状態の不整合**: 順序が変更されると、Reactが要素を正しく識別できず、コンポーネントの状態が間違った要素に紐づく
-- **パフォーマンス**: Reactが要素の変更を正しく検出できず、不要な再レンダリングが発生
+
+- **状態の不整合**: 順序が変更されると、React が要素を正しく識別できず、コンポーネントの状態が間違った要素に紐づく
+- **パフォーマンス**: React が要素の変更を正しく検出できず、不要な再レンダリングが発生
 - **バグの原因**: フォーム入力などの状態を持つコンポーネントで、値が間違った要素に表示される
 
-**良い例: 一意のIDを使用**
+**良い例: 一意の ID を使用**
 
 ```tsx
 {
-  products.map((product) => (
-    <ProductTile key={product.id} product={product} />
-  ));
+  products.map((product) => <ProductTile key={product.id} product={product} />);
 }
 ```
 
 **理由**:
+
 1. **効率的な更新**: React は `key` を使用して、どの要素が変更されたかを正確に判断します
 2. **状態の保持**: コンポーネントの状態が正しい要素に紐づき、順序が変更されても状態が保持されます
 3. **パフォーマンス**: 不要な再レンダリングを防ぎ、パフォーマンスが向上します
@@ -736,7 +737,7 @@ emptyProducts.length === 0 ? (
 
 **Server Component の例**:
 
-```tsx
+````tsx
 export default function Header() {
   return (
     <header className="sticky top-0 z-50 h-20 overflow-visible bg-white">

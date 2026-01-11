@@ -1282,8 +1282,6 @@ const user = await prisma.$queryRaw`
 - **保守性の低下**: SQL クエリがコードに直接記述され、読みにくく保守しにくいコードになる
 - **データベース依存**: データベース固有の構文が使用され、データベースを変更する際にコードの変更が必要
 
-```
-
 **理由**:
 
 - **SQL インジェクションリスク**: パラメータのエスケープを手動で行う必要があり、ミスが発生しやすい
@@ -1327,4 +1325,3 @@ const user = await prisma.$queryRaw`
 - [TypeScript Best Practices](https://www.typescriptlang.org/docs/handbook/declaration-files/do-s-and-don-ts.html)
 - [React Best Practices](https://react.dev/learn)
 - [React Server Components](https://react.dev/blog/2023/03/22/react-labs-what-we-have-been-working-on-march-2023#react-server-components)
-```
