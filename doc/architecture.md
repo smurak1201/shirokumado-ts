@@ -271,6 +271,8 @@ Client Component (状態更新)
 
 ## 設定管理
 
+**詳細**: 設定管理の詳細については、[ユーティリティ関数ガイド](./guides/utilities-guide.md#設定の一元管理-libconfigts)を参照してください。
+
 ### 一元管理
 
 すべての設定値を[`lib/config.ts`](../lib/config.ts) (行 7-105) に集約：

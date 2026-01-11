@@ -227,6 +227,8 @@
   - クライアントサイドで画像を圧縮（[`lib/image-compression.ts`](../lib/image-compression.ts)）してからアップロードし、ストレージ容量を最適化
   - 開発環境と本番環境で同じストレージサービスを使用し、環境の一貫性を確保
 
+  **詳細**: Blob Storage と画像圧縮の詳細については、[ユーティリティ関数ガイド](./guides/utilities-guide.md)を参照してください。
+
 - **@vercel/blob** `^2.0.0`
 
   Vercel Blob Storage の公式 SDK です。TypeScript で型安全にファイル操作を行えます。このアプリでは、画像アップロードと削除のロジックを [`lib/blob.ts`](../lib/blob.ts) に実装し、API Routes から呼び出しています。
