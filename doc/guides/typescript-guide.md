@@ -287,12 +287,12 @@ export interface Product {
 
 1. **`app/utils/format.ts`** - 価格フォーマット関数
 
+**参照**: [`app/utils/format.ts`](../../app/utils/format.ts)
+
 ```typescript
 export function formatPrice(price: number): string {
   return `¥${price.toLocaleString()}`;
 }
-**参照**: [`app/utils/format.ts`](../app/utils/format.ts)
-
 ```
 
 2. **[`app/hooks/useProductModal.ts`](../../app/hooks/useProductModal.ts)** - カスタムフックの戻り値の型
@@ -414,7 +414,7 @@ console.log(product.invalidField); // コンパイルエラー
 
 **参照**: [`lib/prisma.ts`](../../lib/prisma.ts)
 
-```
+````
 - **型安全性**: データベーススキーマと TypeScript の型が自動的に同期
 - **自動補完**: IDE で自動補完が利用可能
 - **リファクタリング**: スキーマ変更時に型エラーで影響範囲を把握
@@ -451,9 +451,9 @@ export const POST = withErrorHandling(async (request: NextRequest) => {
 
   return apiSuccess({ product });
 });
-**参照**: [`app/api/products/route.ts`](../app/api/products/route.ts)
+````
 
-```
+**参照**: [`app/api/products/route.ts`](../../app/api/products/route.ts)
 
 ### レスポンスの型定義
 
@@ -465,9 +465,9 @@ export const POST = withErrorHandling(async (request: NextRequest) => {
 export function apiSuccess<T>(data: T, status: number = 200): NextResponse {
   return NextResponse.json({ data }, { status });
 }
-**参照**: [`lib/api-helpers.ts`](../lib/api-helpers.ts)
-
 ```
+
+**参照**: [`lib/api-helpers.ts`](../../lib/api-helpers.ts)
 
 ## エラーハンドリングでの型安全性
 
@@ -493,15 +493,15 @@ export class NotFoundError extends Error {
     this.name = "NotFoundError";
   }
 }
-**参照**: [`lib/errors.ts`](../lib/errors.ts)
-
 ```
+
+**参照**: [`lib/errors.ts`](../../lib/errors.ts)
 
 if (!product) {
 throw new NotFoundError("商品");
 }
 
-```
+````
 - **エラーの種類を明確化**: エラーの種類を型で区別
 - **IDE サポート**: エラーの種類に応じた処理を自動補完
 - **一貫性**: 統一されたエラーハンドリングにより、コードの一貫性を確保
@@ -517,7 +517,7 @@ TypeScript は、型を明示的に指定しなくても、コンパイラが型
 ```typescript
 const products = await prisma.product.findMany();
 // products の型は Product[] と推論される
-```
+````
 
 **このアプリでの使用箇所**:
 
@@ -555,9 +555,9 @@ export interface Product {
   name: string;
   // ...
 }
-**参照**: [`app/types.ts`](../app/types.ts)
-
 ```
+
+**参照**: [`app/types.ts`](../../app/types.ts)
 
 - ユニオン型やインターセクション型を定義する場合
 - 型エイリアスを定義する場合
@@ -565,11 +565,14 @@ export interface Product {
 
 **このアプリでの使用箇所**:
 
-1. **文字列リテラル型のユニオン型**: [`app/dashboard/hooks/useTabState.ts`](../../app/dashboard/hooks/useTabState.ts)
+1. **文字列リテラル型のユニオン型**: `"list" | "layout"`
 
 **参照**: [`app/dashboard/hooks/useTabState.ts`](../../app/dashboard/hooks/useTabState.ts) (行 16-16)
 
 ```16:16
+type TabType = "list" | "layout";
+```
+
 **使用例**:
 
 **参照**: [`app/dashboard/hooks/useTabState.ts`](../../app/dashboard/hooks/useTabState.ts) (行 30-30)
