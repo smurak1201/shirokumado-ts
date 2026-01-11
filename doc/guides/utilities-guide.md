@@ -65,7 +65,7 @@
 
 日本時間の現在日時を取得します。
 
-[`lib/product-utils.ts`](../../lib/product-utils.ts) (行 8-13)
+[`lib/product-utils.ts`](../../lib/product-utils.ts) (`getJapanTime`関数)
 
 ```typescript
 export function getJapanTime(): Date {
@@ -96,7 +96,7 @@ console.log(japanTime); // 日本時間の現在日時
 
 公開日・終了日から公開情報を自動判定します。
 
-[`lib/product-utils.ts`](../../lib/product-utils.ts) (行 21-47)
+[`lib/product-utils.ts`](../../lib/product-utils.ts) (`calculatePublishedStatus`関数)
 
 ```typescript
 export function calculatePublishedStatus(
@@ -155,7 +155,7 @@ const activeProduct = calculatePublishedStatus(
 
 公開日・終了日が設定されているかどうかを判定します。
 
-[`lib/product-utils.ts`](../../lib/product-utils.ts) (行 55-57)
+[`lib/product-utils.ts`](../../lib/product-utils.ts) (`hasDateRange`関数)
 
 ```typescript
 export function hasDateRange(
@@ -180,7 +180,7 @@ if (hasDateRange(product.publishedAt, product.endedAt)) {
 
 数値をカンマ区切りの文字列に変換します。
 
-[`lib/product-utils.ts`](../../lib/product-utils.ts) (行 64-73)
+[`lib/product-utils.ts`](../../lib/product-utils.ts) (`formatPrice`関数)
 
 ```typescript
 export function formatPrice(value: string | number | null | undefined): string {
@@ -215,7 +215,7 @@ formatPrice(null); // ""
 
 カンマ区切りの文字列を数値に変換します。
 
-[`lib/product-utils.ts`](../../lib/product-utils.ts) (行 80-84)
+[`lib/product-utils.ts`](../../lib/product-utils.ts) (`parsePrice`関数)
 
 ```typescript
 export function parsePrice(value: string): string {
@@ -242,7 +242,7 @@ parsePrice("2,500円"); // "2500"
 
 キー入力が数字かどうかを判定します。
 
-[`lib/product-utils.ts`](../../lib/product-utils.ts) (行 91-118)
+[`lib/product-utils.ts`](../../lib/product-utils.ts) (`isNumericKey`関数)
 
 ```typescript
 export function isNumericKey(
@@ -312,7 +312,7 @@ import { isNumericKey } from "@/lib/product-utils";
 
 画像ファイルを圧縮・リサイズします。
 
-[`lib/image-compression.ts`](../../lib/image-compression.ts) (行 36-141)
+[`lib/image-compression.ts`](../../lib/image-compression.ts) (`compressImage`関数)
 
 ```typescript
 export async function compressImage(
@@ -374,7 +374,7 @@ Vercel Blob Storage へのファイルアップロード・管理を行うユー
 
 ファイルを Blob ストレージにアップロードします。
 
-[`lib/blob.ts`](../../lib/blob.ts) (行 24-56)
+[`lib/blob.ts`](../../lib/blob.ts) (`uploadFile`関数)
 
 ```typescript
 export async function uploadFile(
@@ -405,7 +405,7 @@ const blob = await uploadFile("products/image.jpg", buffer, {
 
 画像を Blob ストレージにアップロードします（画像専用のヘルパー関数）。
 
-[`lib/blob.ts`](../../lib/blob.ts) (行 65-75)
+[`lib/blob.ts`](../../lib/blob.ts) (`uploadImage`関数)
 
 ```typescript
 export async function uploadImage(
@@ -433,7 +433,7 @@ const blob = await uploadImage("products/image.jpg", buffer, "image/jpeg");
 
 Blob ストレージ内のファイル一覧を取得します。
 
-[`lib/blob.ts`](../../lib/blob.ts) (行 82-94)
+[`lib/blob.ts`](../../lib/blob.ts) (`listFiles`関数)
 
 ```typescript
 export async function listFiles(options?: {
@@ -458,7 +458,7 @@ const { blobs, cursor } = await listFiles({
 
 Blob のメタデータを取得します。
 
-[`lib/blob.ts`](../../lib/blob.ts) (行 101-112)
+[`lib/blob.ts`](../../lib/blob.ts) (`getBlobInfo`関数)
 
 ```typescript
 export async function getBlobInfo(url: string): Promise<Blob>;
@@ -477,7 +477,7 @@ console.log(blobInfo.size, blobInfo.uploadedAt);
 
 Blob ストレージからファイルを削除します。
 
-[`lib/blob.ts`](../../lib/blob.ts) (行 119-130)
+[`lib/blob.ts`](../../lib/blob.ts) (`deleteFile`関数)
 
 ```typescript
 export async function deleteFile(url: string): Promise<boolean>;
@@ -500,7 +500,7 @@ await deleteFile("https://...");
 
 複数の Blob を削除します。
 
-[`lib/blob.ts`](../../lib/blob.ts) (行 137-148)
+[`lib/blob.ts`](../../lib/blob.ts) (`deleteFiles`関数)
 
 ```typescript
 export async function deleteFiles(urls: string[]): Promise<boolean>;
@@ -527,7 +527,7 @@ await deleteFiles(["https://...", "https://..."]);
 
 ### 設定値の構成
 
-[`lib/config.ts`](../../lib/config.ts) (行 7-105)
+[`lib/config.ts`](../../lib/config.ts) (`config`オブジェクト)
 
 ```typescript
 export const config = {
@@ -593,7 +593,7 @@ export const config = {
 
 サーバーサイド環境変数を取得します（型安全）。
 
-[`lib/env.ts`](../../lib/env.ts) (行 37-63)
+[`lib/env.ts`](../../lib/env.ts) (`getServerEnv`関数)
 
 ```typescript
 export function getServerEnv(): ServerEnv {
@@ -639,7 +639,7 @@ const dbUrl = env.DATABASE_URL; // 型安全
 
 クライアントサイド環境変数を取得します（型安全）。
 
-[`lib/env.ts`](../../lib/env.ts) (行 69-75)
+[`lib/env.ts`](../../lib/env.ts) (`getClientEnv`関数)
 
 ```typescript
 export function getClientEnv(): ClientEnv {

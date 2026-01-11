@@ -143,9 +143,9 @@ Next.js の設定を管理するファイルです。画像最適化、実験的
 
 **設定内容**:
 
-[`next.config.ts`](../../next.config.ts) (行 1-30)
+[`next.config.ts`](../../next.config.ts) (`nextConfig`設定)
 
-```1:30
+```typescript
 const nextConfig: NextConfig = {
   // 画像最適化の設定
   images: {
@@ -224,9 +224,9 @@ Next.js は、`next/image` コンポーネントを使用して、画像の自�
 
 ### このアプリでの使用箇所
 
-1. **[`app/page.tsx`](../../app/page.tsx) (行 113-120)** - ヒーロー画像の最適化
+1. **[`app/page.tsx`](../../app/page.tsx) (ヒーロー画像セクション)** - ヒーロー画像の最適化
 
-```113:120
+```typescript
         <Image
           src="/hero.webp"
           alt="白熊堂"
@@ -237,9 +237,9 @@ Next.js は、`next/image` コンポーネントを使用して、画像の自�
         />
 ```
 
-2. **[`app/components/ProductTile.tsx`](../../app/components/ProductTile.tsx) (行 43-49)** - 商品画像の最適化
+2. **[`app/components/ProductTile.tsx`](../../app/components/ProductTile.tsx) (商品画像セクション)** - 商品画像の最適化
 
-```43:49
+```typescript
           <Image
             src={product.imageUrl}
             alt={product.name}
@@ -250,9 +250,9 @@ Next.js は、`next/image` コンポーネントを使用して、画像の自�
           />
 ```
 
-3. **[`app/components/ProductModal.tsx`](../../app/components/ProductModal.tsx) (行 71-78)** - モーダル内の商品画像
+3. **[`app/components/ProductModal.tsx`](../../app/components/ProductModal.tsx) (モーダル内の商品画像セクション)** - モーダル内の商品画像
 
-```71:78
+```typescript
             <Image
               src={product.imageUrl}
               alt={product.name}
@@ -267,9 +267,9 @@ Next.js は、`next/image` コンポーネントを使用して、画像の自�
 
 [`next.config.ts`](../../next.config.ts) で画像最適化の設定を行います：
 
-[`next.config.ts`](../../next.config.ts) (行 4-13)
+[`next.config.ts`](../../next.config.ts) (`images`設定)
 
-```4:13
+```typescript
   images: {
     formats: ['image/avif', 'image/webp'],
     remotePatterns: [
@@ -298,16 +298,16 @@ Next.js は、`next/font/google` を使用して、Google Fonts を最適化し�
 
 **[`app/layout.tsx`](../../app/layout.tsx)** - Noto Sans JP フォントの最適化
 
-[`app/layout.tsx`](../../app/layout.tsx) (行 6-10)
+[`app/layout.tsx`](../../app/layout.tsx) (`notoSansJP`フォント設定)
 
-```6:10
+```typescript
   variable: "--font-noto-sans-jp",
   subsets: ["latin"],
   weight: ["300", "400", "500", "700"],
 });
 ```
 
-[`app/layout.tsx`](../../app/layout.tsx) (行 31-31)
+[`app/layout.tsx`](../../app/layout.tsx) (`Analytics`コンポーネント)
 
 **フォント最適化のメリット**:
 
@@ -325,9 +325,9 @@ Next.js は、`metadata` オブジェクトを使用して、ページのメタ�
 
 **[`app/layout.tsx`](../../app/layout.tsx)** - ルートレイアウトのメタデータ
 
-[`app/layout.tsx`](../../app/layout.tsx) (行 12-22)
+[`app/layout.tsx`](../../app/layout.tsx) (`metadata`エクスポート)
 
-```12:22
+```typescript
   title: "白熊堂 | 本格かき氷のお店",
   description:
     "白熊堂は本格かき氷のお店です。ふわふわの氷とこだわりのシロップでお待ちしています。",

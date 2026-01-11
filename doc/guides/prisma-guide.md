@@ -143,9 +143,9 @@ const prisma = new PrismaClient({
 
 **実際の実装コード**:
 
-[`lib/prisma.ts`](../../lib/prisma.ts) (行 28-70)
+[`lib/prisma.ts`](../../lib/prisma.ts) (`createPrismaClient`関数)
 
-```28:70
+```typescript
   // Prisma 7では、Neonに接続するためにアダプターを使用します
   const rawConnectionString = process.env.DATABASE_URL || process.env.POSTGRES_URL;
 
@@ -202,9 +202,9 @@ const prisma = new PrismaClient({
 
 3. **WebSocket の設定**（Node.js 環境用）:
 
-[`lib/prisma.ts`](../../lib/prisma.ts) (行 19-22)
+[`lib/prisma.ts`](../../lib/prisma.ts) (WebSocket設定)
 
-```19:22
+```typescript
 if (typeof globalThis !== 'undefined' && !globalThis.WebSocket) {
   neonConfig.webSocketConstructor = ws;
 }
@@ -218,9 +218,9 @@ if (typeof globalThis !== 'undefined' && !globalThis.WebSocket) {
 
 5. **シングルトンインスタンスの管理**:
 
-[`lib/prisma.ts`](../../lib/prisma.ts) (行 72-77)
+[`lib/prisma.ts`](../../lib/prisma.ts) (`prisma`エクスポート)
 
-```72:77
+```typescript
   globalForPrisma.prisma ?? createPrismaClient();
 
 if (process.env.NODE_ENV !== 'production') {
@@ -590,7 +590,7 @@ npm run db:studio
 
 **シードファイルの構成**:
 
-[`prisma/seed.ts`](../../prisma/seed.ts) (行 1-40)
+[`prisma/seed.ts`](../../prisma/seed.ts) (`main`関数)
 
 ```typescript
 import { PrismaClient } from "@prisma/client";
@@ -671,18 +671,18 @@ export default defineConfig({
 
 **基本的な使い方**:
 
-1. **[`app/page.tsx`](../../app/page.tsx) (行 30-34)** - カテゴリー一覧の取得
+1. **[`app/page.tsx`](../../app/page.tsx) (カテゴリー取得処理)** - カテゴリー一覧の取得
 
-```30:34
+```typescript
       orderBy: {
         id: "asc",
       },
     }),
 ```
 
-[`app/page.tsx`](../../app/page.tsx) (行 36-46)
+[`app/page.tsx`](../../app/page.tsx) (商品取得処理)
 
-```36:46
+```typescript
       include: {
         category: true, // カテゴリー情報も一緒に取得（N+1問題を回避）
       },
@@ -695,18 +695,18 @@ export default defineConfig({
     }),
 ```
 
-[`app/dashboard/page.tsx`](../../app/dashboard/page.tsx) (行 21-25)
+[`app/dashboard/page.tsx`](../../app/dashboard/page.tsx) (カテゴリー取得処理)
 
-```21:25
+```typescript
       orderBy: {
         id: "asc",
       },
     }),
 ```
 
-[`app/dashboard/page.tsx`](../../app/dashboard/page.tsx) (行 27-34)
+[`app/dashboard/page.tsx`](../../app/dashboard/page.tsx) (商品取得処理)
 
-```27:34
+```typescript
       include: {
         category: true, // 関連するカテゴリー情報も一緒に取得
       },
@@ -716,9 +716,9 @@ export default defineConfig({
     }),
 ```
 
-[`app/api/products/route.ts`](../../app/api/products/route.ts) (行 29-40)
+[`app/api/products/route.ts`](../../app/api/products/route.ts) (`GET`エクスポート内の商品取得)
 
-```29:40
+```typescript
         include: {
           category: true, // 関連するカテゴリー情報も取得
         },
@@ -728,9 +728,9 @@ export default defineConfig({
       }),
 ```
 
-[`app/api/categories/route.ts`](../../app/api/categories/route.ts) (行 20-26)
+[`app/api/categories/route.ts`](../../app/api/categories/route.ts) (`GET`エクスポート内のカテゴリー取得)
 
-```20:26
+```typescript
       prisma.category.findMany({
         orderBy: {
           id: 'asc',
@@ -756,9 +756,9 @@ export default defineConfig({
 });
 ```
 
-1. **[`app/api/products/route.ts`](../../app/api/products/route.ts) (行 89-92)** - カテゴリーの存在確認（商品作成時）
+1. **[`app/api/products/route.ts`](../../app/api/products/route.ts) (`POST`エクスポート内のカテゴリー存在確認)** - カテゴリーの存在確認（商品作成時）
 
-```89:92
+```typescript
     'POST /api/products - category check'
   );
 ```
@@ -769,7 +769,7 @@ export default defineConfig({
         },
       }),
 
-```57:60:app/api/products/[id]/route.ts
+```typescript:app/api/products/[id]/route.ts
     `PUT /api/products/${id} - existence check`
   );
 ```
@@ -777,7 +777,7 @@ export default defineConfig({
       `PUT /api/products/${id} - category check`
     );
 
-```171:174:app/api/products/[id]/route.ts
+```typescript:app/api/products/[id]/route.ts
     `DELETE /api/products/${id} - existence check`
   );
 ```
@@ -801,9 +801,9 @@ export default defineConfig({
 });
 ```
 
-1. **[`app/api/products/route.ts`](../../app/api/products/route.ts) (行 117-135)** - 新規商品の作成
+1. **[`app/api/products/route.ts`](../../app/api/products/route.ts) (`POST`エクスポート内の商品作成)** - 新規商品の作成
 
-```117:135
+```typescript
       prisma.product.create({
         data: {
           name: body.name.trim(), // 前後の空白を削除
@@ -842,7 +842,7 @@ export default defineConfig({
 
 1. **`app/api/products/[id]/route.ts`** - 商品情報の更新
 
-```141:150:app/api/products/[id]/route.ts
+```typescript:app/api/products/[id]/route.ts
       prisma.product.update({
         where: { id: productId },
         data: updateData,
@@ -852,9 +852,9 @@ export default defineConfig({
       }),
 ```
 
-[`app/api/products/reorder/route.ts`](../../app/api/products/reorder/route.ts) (行 22-28)
+[`app/api/products/reorder/route.ts`](../../app/api/products/reorder/route.ts) (`POST`エクスポート内のトランザクション処理)
 
-```22:28
+```typescript
           prisma.product.update({
             where: { id: item.id },
             data: { displayOrder: item.displayOrder },
@@ -880,7 +880,7 @@ export default defineConfig({
 
 1. **`app/api/products/[id]/route.ts`** - 商品の削除
 
-```192:195:app/api/products/[id]/route.ts
+```typescript:app/api/products/[id]/route.ts
     `DELETE /api/products/${id}`
   );
 ```
@@ -899,9 +899,9 @@ export default defineConfig({
 ]);
 ```
 
-1. **[`app/api/products/reorder/route.ts`](../../app/api/products/reorder/route.ts) (行 19-31)** - 複数商品の表示順序を一括更新
+1. **[`app/api/products/reorder/route.ts`](../../app/api/products/reorder/route.ts) (`POST`エクスポート)** - 複数商品の表示順序を一括更新
 
-```19:31
+```typescript
     async () => {
       await prisma.$transaction(
         body.productOrders.map((item: { id: number; displayOrder: number }) =>
@@ -943,9 +943,9 @@ const products = await prisma.product.findMany({
 });
 ```
 
-1. **[`app/api/products/route.ts`](../../app/api/products/route.ts) (行 89-92)** - カテゴリーの存在確認（商品作成時）
+1. **[`app/api/products/route.ts`](../../app/api/products/route.ts) (`POST`エクスポート内のカテゴリー存在確認)** - カテゴリーの存在確認（商品作成時）
 
-```89:92
+```typescript
     'POST /api/products - category check'
   );
 ```
@@ -956,7 +956,7 @@ const products = await prisma.product.findMany({
         },
       }),
 
-```57:60:app/api/products/[id]/route.ts
+```typescript:app/api/products/[id]/route.ts
     `PUT /api/products/${id} - existence check`
   );
 ```
@@ -964,7 +964,7 @@ const products = await prisma.product.findMany({
       `PUT /api/products/${id} - category check`
     );
 
-```171:174:app/api/products/[id]/route.ts
+```typescript:app/api/products/[id]/route.ts
     `DELETE /api/products/${id} - existence check`
   );
 ```
@@ -977,14 +977,14 @@ const products = await prisma.product.findMany({
         },
       }),
 
-```192:195:app/api/products/[id]/route.ts
+```typescript:app/api/products/[id]/route.ts
     `DELETE /api/products/${id}`
   );
 ```
 
-[`app/api/products/reorder/route.ts`](../../app/api/products/reorder/route.ts) (行 22-28)
+[`app/api/products/reorder/route.ts`](../../app/api/products/reorder/route.ts) (`POST`エクスポート内のトランザクション処理)
 
-```22:28
+```typescript
           prisma.product.update({
             where: { id: item.id },
             data: { displayOrder: item.displayOrder },
@@ -1028,18 +1028,18 @@ const products = await prisma.product.findMany({
 });
 ```
 
-1. **[`app/page.tsx`](../../app/page.tsx) (行 30-34)** - カテゴリーを ID 順で取得
+1. **[`app/page.tsx`](../../app/page.tsx) (カテゴリー取得処理)** - カテゴリーを ID 順で取得
 
-```30:34
+```typescript
       orderBy: {
         id: "asc",
       },
     }),
 ```
 
-[`app/page.tsx`](../../app/page.tsx) (行 36-46)
+[`app/page.tsx`](../../app/page.tsx) (商品取得処理)
 
-```36:46
+```typescript
       include: {
         category: true, // カテゴリー情報も一緒に取得（N+1問題を回避）
       },
@@ -1052,18 +1052,18 @@ const products = await prisma.product.findMany({
     }),
 ```
 
-[`app/dashboard/page.tsx`](../../app/dashboard/page.tsx) (行 21-25)
+[`app/dashboard/page.tsx`](../../app/dashboard/page.tsx) (カテゴリー取得処理)
 
-```21:25
+```typescript
       orderBy: {
         id: "asc",
       },
     }),
 ```
 
-[`app/dashboard/page.tsx`](../../app/dashboard/page.tsx) (行 27-34)
+[`app/dashboard/page.tsx`](../../app/dashboard/page.tsx) (商品取得処理)
 
-```27:34
+```typescript
       include: {
         category: true, // 関連するカテゴリー情報も一緒に取得
       },
@@ -1073,9 +1073,9 @@ const products = await prisma.product.findMany({
     }),
 ```
 
-[`app/api/products/route.ts`](../../app/api/products/route.ts) (行 29-40)
+[`app/api/products/route.ts`](../../app/api/products/route.ts) (`GET`エクスポート内の商品取得)
 
-```29:40
+```typescript
         include: {
           category: true, // 関連するカテゴリー情報も取得
         },
@@ -1085,9 +1085,9 @@ const products = await prisma.product.findMany({
       }),
 ```
 
-[`app/api/categories/route.ts`](../../app/api/categories/route.ts) (行 20-26)
+[`app/api/categories/route.ts`](../../app/api/categories/route.ts) (`GET`エクスポート内のカテゴリー取得)
 
-```20:26
+```typescript
       prisma.category.findMany({
         orderBy: {
           id: 'asc',
@@ -1143,9 +1143,9 @@ const categories = await prisma.category.findMany({
 });
 ```
 
-1. **[`app/page.tsx`](../../app/page.tsx) (行 36-46)** - 商品とカテゴリーを一緒に取得
+1. **[`app/page.tsx`](../../app/page.tsx) (商品取得処理)** - 商品とカテゴリーを一緒に取得
 
-```36:46
+```typescript
       include: {
         category: true, // カテゴリー情報も一緒に取得（N+1問題を回避）
       },
@@ -1158,9 +1158,9 @@ const categories = await prisma.category.findMany({
     }),
 ```
 
-[`app/dashboard/page.tsx`](../../app/dashboard/page.tsx) (行 27-34)
+[`app/dashboard/page.tsx`](../../app/dashboard/page.tsx) (商品取得処理)
 
-```27:34
+```typescript
       include: {
         category: true, // 関連するカテゴリー情報も一緒に取得
       },
@@ -1170,9 +1170,9 @@ const categories = await prisma.category.findMany({
     }),
 ```
 
-[`app/api/products/route.ts`](../../app/api/products/route.ts) (行 29-40)
+[`app/api/products/route.ts`](../../app/api/products/route.ts) (`GET`エクスポート内の商品取得)
 
-```29:40
+```typescript
         include: {
           category: true, // 関連するカテゴリー情報も取得
         },
@@ -1182,9 +1182,9 @@ const categories = await prisma.category.findMany({
       }),
 ```
 
-[`app/api/products/route.ts`](../../app/api/products/route.ts) (行 115-133)
+[`app/api/products/route.ts`](../../app/api/products/route.ts) (`POST`エクスポート内の商品作成)
 
-```115:133
+```typescript
       prisma.product.create({
         data: {
           name: body.name.trim(), // 前後の空白を削除
@@ -1209,7 +1209,7 @@ const categories = await prisma.category.findMany({
         },
       }),
 
-```141:150:app/api/products/[id]/route.ts
+```typescript:app/api/products/[id]/route.ts
       prisma.product.update({
         where: { id: productId },
         data: updateData,

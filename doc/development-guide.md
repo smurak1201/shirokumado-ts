@@ -1270,7 +1270,7 @@ const user = await prisma.$queryRaw`
 
 <!-- 悪い例: 行番号で参照 -->
 
-[`lib/api-helpers.ts`](../lib/api-helpers.ts) (行 74-84)
+[`lib/api-helpers.ts`](../lib/api-helpers.ts) (`withErrorHandling`関数)
 ```
 
 **理由**:
@@ -1297,9 +1297,9 @@ export function apiSuccess<T>(data: T, status: number = 200): NextResponse {
 
 <!-- 悪い例: 行番号範囲を指定 -->
 
-[`lib/api-helpers.ts`](../lib/api-helpers.ts) (行 45-49)
+[`lib/api-helpers.ts`](../lib/api-helpers.ts) (`apiSuccess`関数)
 
-```45:49:lib/api-helpers.ts
+```typescript:lib/api-helpers.ts
 export function apiSuccess<T>(data: T, status: number = 200): NextResponse {
   const response = NextResponse.json(data, { status });
   response.headers.set('Content-Type', 'application/json; charset=utf-8');

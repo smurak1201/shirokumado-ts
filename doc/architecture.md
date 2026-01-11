@@ -158,7 +158,7 @@ DashboardPage (Server Component)
 
 ##### `useTabState`
 
-[`app/dashboard/hooks/useTabState.ts`](../app/dashboard/hooks/useTabState.ts) (`useTabState`関数)
+[`app/dashboard/hooks/useTabState.ts`](../app/dashboard/hooks/useTabState.ts) (`useTabState`フック)
 
 ```typescript
 // タブ状態をlocalStorageと同期
@@ -167,7 +167,7 @@ const { activeTab, setActiveTab } = useTabState();
 
 ##### `useCategoryTabState`
 
-[`app/dashboard/hooks/useTabState.ts`](../app/dashboard/hooks/useTabState.ts) (`useCategoryTabState`関数)
+[`app/dashboard/hooks/useTabState.ts`](../app/dashboard/hooks/useTabState.ts) (`useCategoryTabState`フック)
 
 ```typescript
 // カテゴリータブの状態管理
@@ -179,7 +179,7 @@ const { activeCategoryTab, setActiveCategoryTab } = useCategoryTabState(
 
 ##### `useProductReorder`
 
-[`app/dashboard/hooks/useProductReorder.ts`](../app/dashboard/hooks/useProductReorder.ts) (`useProductReorder`関数)
+[`app/dashboard/hooks/useProductReorder.ts`](../app/dashboard/hooks/useProductReorder.ts) (`useProductReorder`フック)
 
 ```typescript
 // 商品順序変更の楽観的UI更新
@@ -190,7 +190,7 @@ const { reorderProducts } = useProductReorder(setProducts, refreshProducts);
 
 ##### `useModal`
 
-[`app/hooks/useModal.ts`](../app/hooks/useModal.ts) (`useModal`関数)
+[`app/hooks/useModal.ts`](../app/hooks/useModal.ts) (`useModal`フック)
 
 ```typescript
 // モーダルの開閉状態とESCキー処理を管理
@@ -199,7 +199,7 @@ useModal(isOpen, onClose);
 
 ##### `useProductModal`
 
-[`app/hooks/useProductModal.ts`](../app/hooks/useProductModal.ts) (`useProductModal`関数)
+[`app/hooks/useProductModal.ts`](../app/hooks/useProductModal.ts) (`useProductModal`フック)
 
 ```typescript
 // 商品モーダルの状態管理
@@ -315,7 +315,7 @@ export const config = {
 
 機能内で使用する型を一元管理：
 
-[`app/dashboard/types.ts`](../app/dashboard/types.ts) (`Category`/`Product`インターフェース)
+[`app/dashboard/types.ts`](../app/dashboard/types.ts) (型定義)
 
 ```typescript
 export interface Category {

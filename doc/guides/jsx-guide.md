@@ -60,7 +60,7 @@ const element = jsx("h1", { children: "Hello, World!" });
 
 **このアプリでの実際の使用例**:
 
-[`app/components/ProductGrid.tsx`](../../app/components/ProductGrid.tsx) (行 50-83)
+[`app/components/ProductGrid.tsx`](../../app/components/ProductGrid.tsx) (`ProductGrid`コンポーネントのレンダリング部分)
 
 ```tsx
 // 開発者が書くコード（JSX構文）
@@ -112,7 +112,7 @@ HTML では `class` を使用しますが、JSX では JavaScript の予約語�
 
 **このアプリでの使用例**:
 
-[`app/components/ProductTile.tsx`](../../app/components/ProductTile.tsx) (行 29-62)
+[`app/components/ProductTile.tsx`](../../app/components/ProductTile.tsx) (`ProductTile`コンポーネント)
 
 ```tsx
 <button
@@ -147,7 +147,7 @@ HTML では小文字の属性名（`onclick`）を使用し、文字列で JavaS
 
 **JSX の例**:
 
-[`app/components/ProductTile.tsx`](../../app/components/ProductTile.tsx) (行 29-62)
+[`app/components/ProductTile.tsx`](../../app/components/ProductTile.tsx) (`ProductTile`コンポーネント)
 
 ```tsx
 <button
@@ -158,7 +158,7 @@ HTML では小文字の属性名（`onclick`）を使用し、文字列で JavaS
 
 **このアプリでの使用例**:
 
-[`app/components/ProductModal.tsx`](../../app/components/ProductModal.tsx) (行 50-54)
+[`app/components/ProductModal.tsx`](../../app/components/ProductModal.tsx) (`ProductModal`コンポーネントのイベントハンドラー)
 
 ```tsx
 <button
@@ -188,7 +188,7 @@ JSX では、子要素を持たない要素は必ず自己閉じタグ（`/>`）
 
 **このアプリでの使用例**:
 
-[`app/components/ProductTile.tsx`](../../app/components/ProductTile.tsx) (行 43-50)
+[`app/components/ProductTile.tsx`](../../app/components/ProductTile.tsx) (商品画像セクション)
 
 ```tsx
 <Image
@@ -241,7 +241,7 @@ HTML では `<!-- -->` を使用しますが、JSX では `{/* */}` を使用し
 
 **このアプリでの使用例**:
 
-[`app/components/ProductTile.tsx`](../../app/components/ProductTile.tsx) (行 33-62)
+[`app/components/ProductTile.tsx`](../../app/components/ProductTile.tsx) (`ProductTile`コンポーネント)
 
 ```tsx
 <button onClick={onClick}>
@@ -405,7 +405,7 @@ JSX では、HTML の属性と同様に props を指定できます。HTML と�
 <input type="checkbox" checked={isChecked} />
 ```
 
-[`app/components/ProductTile.tsx`](../../app/components/ProductTile.tsx) (行 38-46)
+[`app/components/ProductTile.tsx`](../../app/components/ProductTile.tsx) (商品画像セクション)
 
 ```tsx
 <button
@@ -448,7 +448,7 @@ function Container({ children }) {
 </Container>;
 ```
 
-[`app/layout.tsx`](../../app/layout.tsx) (行 24-37)
+[`app/layout.tsx`](../../app/layout.tsx) (`RootLayout`コンポーネント)
 
 ```tsx
 export default function RootLayout({
@@ -925,7 +925,7 @@ onClick={() => handleTileClick(product)}
 
 複数の要素を返す必要がある場合、フラグメント（`<>...</>` または `<React.Fragment>...</React.Fragment>`）を使用します。
 
-[`app/components/ProductGrid.tsx`](../../app/components/ProductGrid.tsx) (行 50-83)
+[`app/components/ProductGrid.tsx`](../../app/components/ProductGrid.tsx) (`ProductGrid`コンポーネントのレンダリング部分)
 
 ```tsx
 return (

@@ -41,7 +41,7 @@
 
 **データ取得**:
 
-[`app/page.tsx`](../../app/page.tsx) (行 28-47)
+[`app/page.tsx`](../../app/page.tsx) (`getPublishedProductsByCategory`関数)
 
 ```typescript
   // カテゴリーと商品を並列で取得
@@ -146,7 +146,7 @@
 
 **使用例**:
 
-[`app/hooks/useModal.ts`](../../app/hooks/useModal.ts) (行 15-49)
+[`app/hooks/useModal.ts`](../../app/hooks/useModal.ts) (`useModal`フック)
 
 ```typescript
 useModal(isOpen, onClose);
@@ -163,7 +163,7 @@ useModal(isOpen, onClose);
 
 **使用例**:
 
-[`app/hooks/useProductModal.ts`](../../app/hooks/useProductModal.ts) (行 14-71)
+[`app/hooks/useProductModal.ts`](../../app/hooks/useProductModal.ts) (`useProductModal`フック)
 
 ```typescript
 useProductModal();
@@ -173,7 +173,7 @@ useProductModal();
 
 価格をフォーマットして表示用の文字列を返す関数です。
 
-[`app/utils/format.ts`](../../app/utils/format.ts) (行 11-13)
+[`app/utils/format.ts`](../../app/utils/format.ts) (`formatPrice`関数)
 
 **機能**:
 
@@ -200,7 +200,7 @@ useProductModal();
 
 **実装例**:
 
-[`app/components/Header.tsx`](../../app/components/Header.tsx) (行 14-60)
+[`app/components/Header.tsx`](../../app/components/Header.tsx) (`Header`コンポーネント)
 
 ```typescript
   <div className="mx-auto flex h-full max-w-6xl items-center justify-between">
@@ -263,7 +263,7 @@ useProductModal();
 
 **実装例**:
 
-[`app/components/ProductGrid.tsx`](../../app/components/ProductGrid.tsx) (行 31-34)
+[`app/components/ProductGrid.tsx`](../../app/components/ProductGrid.tsx) (`ProductGrid`コンポーネント)
 
 ```typescript
 import { useProductModal } from "../hooks/useProductModal";

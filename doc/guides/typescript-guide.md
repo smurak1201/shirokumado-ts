@@ -89,7 +89,7 @@ TypeScript の設定を管理するファイルです。コンパイラオプシ
 
 [`tsconfig.json`](../../tsconfig.json) (設定ファイル全体)
 
-```1:40
+```typescript
   "compilerOptions": {
     "target": "ES2017",
     "lib": ["dom", "dom.iterable", "esnext"],
@@ -218,9 +218,9 @@ TypeScript の設定を管理するファイルです。コンパイラオプシ
 
 **型定義の内容**:
 
-[`app/types.ts`](../../app/types.ts) (`Category`/`Product`/`ProductTile`インターフェース)
+[`app/types.ts`](../../app/types.ts) (型定義)
 
-```1:44
+```typescript
  * フロントエンドで使用する共通型定義
  *
  * フロントエンドのコンポーネント間で共有される型定義を集約しています。
@@ -278,9 +278,9 @@ export interface ProductTile {
 
 **型定義の内容**:
 
-[`app/dashboard/types.ts`](../../app/dashboard/types.ts) (行 1-22)
+[`app/dashboard/types.ts`](../../app/dashboard/types.ts) (型定義)
 
-```1:22
+```typescript
  * ダッシュボードで使用する共通型定義
  */
 
@@ -313,17 +313,17 @@ export interface Product {
 
 **このアプリでの使用箇所**:
 
-1. **[`app/components/ProductGrid.tsx`](../../app/components/ProductGrid.tsx) (行 11-14)** - Props の型定義
+1. **[`app/components/ProductGrid.tsx`](../../app/components/ProductGrid.tsx) (`ProductGridProps`インターフェース)** - Props の型定義
 
-```11:14
+```typescript
   category: Category; // カテゴリー情報
   products: Product[]; // 商品一覧
 }
 ```
 
-2. **[`app/components/ProductModal.tsx`](../../app/components/ProductModal.tsx) (行 12-16)** - Props の型定義
+2. **[`app/components/ProductModal.tsx`](../../app/components/ProductModal.tsx) (`ProductModalProps`インターフェース)** - Props の型定義
 
-```12:16
+```typescript
   product: Product | null; // 表示する商品情報（nullの場合は非表示）
   isOpen: boolean; // モーダルの開閉状態
   onClose: () => void; // モーダルを閉じるコールバック関数
@@ -344,9 +344,9 @@ export function formatPrice(price: number): string {
 }
 ```
 
-2. **[`app/hooks/useProductModal.ts`](../../app/hooks/useProductModal.ts) (`useProductModal`関数)** - カスタムフックの戻り値の型
+2. **[`app/hooks/useProductModal.ts`](../../app/hooks/useProductModal.ts) (`useProductModal`フック)** - カスタムフックの戻り値の型
 
-```12:47
+```typescript
   // 選択された商品を管理（モーダル表示用）
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   // モーダルの開閉状態を管理
@@ -392,7 +392,7 @@ export function formatPrice(price: number): string {
 
 [`app/types.ts`](../../app/types.ts) (`Product`インターフェース)
 
-```24:31
+```typescript
   id: number; // 商品ID
   name: string; // 商品名
   description: string; // 商品説明
@@ -564,7 +564,7 @@ TypeScript は、型を明示的に指定しなくても、コンパイラが型
 
 **このアプリでの使用箇所**:
 
-[`lib/prisma.ts`](../../lib/prisma.ts) (`createPrismaClient`関数内)
+[`lib/prisma.ts`](../../lib/prisma.ts) (`createPrismaClient`関数)
 
 ```typescript
 const products = await prisma.product.findMany();
@@ -603,7 +603,7 @@ const categories = [
 
 **このアプリでの使用例**:
 
-[`app/types.ts`](../../app/types.ts) (`Product`インターフェース)
+[`app/types.ts`](../../app/types.ts) (型定義)
 
 ```typescript
 export interface Product {
@@ -621,23 +621,23 @@ export interface Product {
 
 1. **文字列リテラル型のユニオン型**: `"list" | "layout"`
 
-[`app/dashboard/hooks/useTabState.ts`](../../app/dashboard/hooks/useTabState.ts) (`TabType`型定義)
+[`app/dashboard/hooks/useTabState.ts`](../../app/dashboard/hooks/useTabState.ts) (`TabType`型)
 
-```16:16
+```typescript
 type TabType = "list" | "layout";
 ```
 
 **使用例**:
 
-[`app/dashboard/hooks/useTabState.ts`](../../app/dashboard/hooks/useTabState.ts) (`useState`の型パラメータ)
+[`app/dashboard/hooks/useTabState.ts`](../../app/dashboard/hooks/useTabState.ts) (`useTabState`フック)
 
-```30:30
+```typescript
   const [activeTab, setActiveTab] = useState<TabType>(() => {
 ```
 
-[`app/dashboard/components/ProductList.tsx`](../../app/dashboard/components/ProductList.tsx) (型推論の例)
+[`app/dashboard/components/ProductList.tsx`](../../app/dashboard/components/ProductList.tsx) (フィルタリング処理)
 
-```227:227
+```typescript
               onClick={() => setActiveTab("list")}
 ```
 

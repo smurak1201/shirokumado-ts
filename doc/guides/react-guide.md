@@ -117,24 +117,24 @@ React Hooks は、関数コンポーネントで状態管理や副作用を扱�
 
 **基本的な使い方**:
 
-1. **[`app/hooks/useProductModal.ts`](../../app/hooks/useProductModal.ts) (行 14-18)** - 商品モーダルの状態管理
+1. **[`app/hooks/useProductModal.ts`](../../app/hooks/useProductModal.ts) (`useProductModal`フック)** - 商品モーダルの状態管理
 
-```14:18
+```typescript
   // 選択された商品を管理（モーダル表示用）
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   // モーダルの開閉状態を管理
   const [isModalOpen, setIsModalOpen] = useState(false);
 ```
 
-2. **[`app/dashboard/components/DashboardContent.tsx`](../../app/dashboard/components/DashboardContent.tsx) (行 30-31)** - フォームの開閉状態管理
+2. **[`app/dashboard/components/DashboardContent.tsx`](../../app/dashboard/components/DashboardContent.tsx) (`DashboardContent`コンポーネント)** - フォームの開閉状態管理
 
-```30:31
+```typescript
   const [isFormOpen, setIsFormOpen] = useState(false);
 ```
 
-3. **[`app/dashboard/hooks/useTabState.ts`](../../app/dashboard/hooks/useTabState.ts) (行 30-40)** - タブ状態の管理（localStorage と同期）
+3. **[`app/dashboard/hooks/useTabState.ts`](../../app/dashboard/hooks/useTabState.ts) (`useTabState`フック)** - タブ状態の管理（localStorage と同期）
 
-```30:40
+```typescript
     if (typeof window !== "undefined") {
       const saved = localStorage.getItem(STORAGE_KEYS.ACTIVE_TAB);
       // 保存された値が有効なタブタイプか確認
@@ -202,9 +202,9 @@ React では、副作用を `useEffect` Hook を使用して処理します。`u
 }, [dependencies]);
 ```
 
-1. **[`app/hooks/useModal.ts`](../../app/hooks/useModal.ts) (行 15-49)** - ESC キー処理と背景スクロール無効化
+1. **[`app/hooks/useModal.ts`](../../app/hooks/useModal.ts) (`useModal`フック)** - ESC キー処理と背景スクロール無効化
 
-```15:49
+```typescript
   // onCloseの最新の参照を保持するref
   // これにより、onCloseが変更されてもuseEffectを再実行せずに最新の関数を呼び出せる
   const onCloseRef = useRef(onClose);
@@ -241,9 +241,9 @@ React では、副作用を `useEffect` Hook を使用して処理します。`u
 }
 ```
 
-2. **[`app/dashboard/hooks/useTabState.ts`](../../app/dashboard/hooks/useTabState.ts) (行 43-47)** - localStorage への保存
+2. **[`app/dashboard/hooks/useTabState.ts`](../../app/dashboard/hooks/useTabState.ts) (`useTabState`フック内の`useEffect`)** - localStorage への保存
 
-```43:47
+```typescript
   useEffect(() => {
     if (typeof window !== "undefined") {
       localStorage.setItem(STORAGE_KEYS.ACTIVE_TAB, activeTab);
@@ -269,9 +269,9 @@ React では、副作用を `useEffect` Hook を使用して処理します。`u
 }, [dependencies]);
 ```
 
-1. **[`app/dashboard/hooks/useTabState.ts`](../../app/dashboard/hooks/useTabState.ts) (行 75-101)** - 初期カテゴリータブの計算
+1. **[`app/dashboard/hooks/useTabState.ts`](../../app/dashboard/hooks/useTabState.ts) (`useCategoryTabState`フック内の`initialCategoryTab`)** - 初期カテゴリータブの計算
 
-```75:101
+```typescript
     // localStorage から保存されたカテゴリータブを読み込む
     if (typeof window !== "undefined") {
       const saved = localStorage.getItem(STORAGE_KEYS.ACTIVE_CATEGORY_TAB);
@@ -306,18 +306,18 @@ React では、副作用を `useEffect` Hook を使用して処理します。`u
 - **依存配列**: 依存配列の値が変更された時のみ、再計算が実行される
 - **使用タイミング**: 計算コストが高い処理や、参照の同一性が重要な場合に使用
 
-2. **[`app/dashboard/components/ProductList.tsx`](../../app/dashboard/components/ProductList.tsx) (行 169-171)** - 商品のフィルタリングとグループ化
+2. **[`app/dashboard/components/ProductList.tsx`](../../app/dashboard/components/ProductList.tsx) (`publishedProductsByCategory`の計算)** - 商品のフィルタリングとグループ化
 
-```169:171
+```typescript
   const publishedProductsByCategory = useMemo(
     () => groupProductsByCategory(products, categories),
     [products, categories]
   );
 ```
 
-[`app/dashboard/components/ProductList.tsx`](../../app/dashboard/components/ProductList.tsx) (行 230-234)
+[`app/dashboard/components/ProductList.tsx`](../../app/dashboard/components/ProductList.tsx) (`filteredProducts`の計算)
 
-```230:234
+```typescript
   const filteredProducts = useMemo(
     () =>
       filterProducts(products, searchName, searchPublished, searchCategoryId),
@@ -336,9 +336,9 @@ React では、副作用を `useEffect` Hook を使用して処理します。`u
 }, [dependencies]);
 ```
 
-1. **[`app/dashboard/components/CategoryTabs.tsx`](../../app/dashboard/components/CategoryTabs.tsx) (行 56-64)** - スクロール位置のチェック
+1. **[`app/dashboard/components/CategoryTabs.tsx`](../../app/dashboard/components/CategoryTabs.tsx) (`checkScrollPosition`関数)** - スクロール位置のチェック
 
-```56:64
+```typescript
   const checkScrollPosition = useCallback(() => {
     if (!scrollContainerRef.current) return;
     const { scrollLeft, scrollWidth, clientWidth } = scrollContainerRef.current;
@@ -350,18 +350,18 @@ React では、副作用を `useEffect` Hook を使用して処理します。`u
   }, []);
 ```
 
-2. **[`app/hooks/useProductModal.ts`](../../app/hooks/useProductModal.ts) (行 31-34)** - 商品モーダルの操作関数
+2. **[`app/hooks/useProductModal.ts`](../../app/hooks/useProductModal.ts) (`handleProductClick`関数)** - 商品モーダルの操作関数
 
-```31:34
+```typescript
   const handleProductClick = useCallback((product: Product) => {
     setSelectedProduct(product);
     setIsModalOpen(true);
   }, []);
 ```
 
-[`app/hooks/useProductModal.ts`](../../app/hooks/useProductModal.ts) (行 43-54)
+[`app/hooks/useProductModal.ts`](../../app/hooks/useProductModal.ts) (`handleCloseModal`関数)
 
-```43:54
+```typescript
   const handleCloseModal = useCallback(() => {
     setIsModalOpen(false);
     // 既存のタイマーをクリア（複数回呼ばれた場合に備える）
@@ -376,17 +376,17 @@ React では、副作用を `useEffect` Hook を使用して処理します。`u
   }, []);
 ```
 
-3. **[`app/dashboard/components/ProductList.tsx`](../../app/dashboard/components/ProductList.tsx) (行 89-89)** - 商品操作のコールバック関数
+3. **[`app/dashboard/components/ProductList.tsx`](../../app/dashboard/components/ProductList.tsx) (`handleEdit`関数)** - 商品操作のコールバック関数
 
-```89:89
+```typescript
   const handleEdit = useCallback((product: Product) => {
     setEditingProduct(product);
   }, []);
 ```
 
-[`app/dashboard/components/ProductList.tsx`](../../app/dashboard/components/ProductList.tsx) (行 99-123)
+[`app/dashboard/components/ProductList.tsx`](../../app/dashboard/components/ProductList.tsx) (`handleDelete`関数)
 
-```99:123
+```typescript
   const handleDelete = useCallback(
     async (productId: number) => {
       // ...
@@ -411,9 +411,9 @@ React では、副作用を `useEffect` Hook を使用して処理します。`u
 const MemoizedComponent = memo(Component);
 ```
 
-1. **[`app/components/ProductTile.tsx`](../../app/components/ProductTile.tsx) (行 33-64)** - 商品タイルコンポーネント
+1. **[`app/components/ProductTile.tsx`](../../app/components/ProductTile.tsx) (`ProductTile`コンポーネント)** - 商品タイルコンポーネント
 
-```33:64
+```typescript
 function ProductTile({ product, onClick }: ProductTileProps) {
   return (
     <button
@@ -465,16 +465,16 @@ export default memo(ProductTile);
 
 **基本的な使い方**:
 
-1. **[`app/dashboard/components/CategoryTabs.tsx`](../../app/dashboard/components/CategoryTabs.tsx) (行 39-41)** - DOM 要素への参照
+1. **[`app/dashboard/components/CategoryTabs.tsx`](../../app/dashboard/components/CategoryTabs.tsx) (`scrollContainerRef`)** - DOM 要素への参照
 
-```39:41
+```typescript
   // useRef を使用して DOM 要素に直接アクセスします
   const scrollContainerRef = useRef<HTMLDivElement>(null);
 ```
 
-2. **[`app/hooks/useProductModal.ts`](../../app/hooks/useProductModal.ts) (行 19-20)** - タイマー ID の保持
+2. **[`app/hooks/useProductModal.ts`](../../app/hooks/useProductModal.ts) (`timeoutRef`)** - タイマー ID の保持
 
-```19:20
+```typescript
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 ```
 
@@ -602,9 +602,9 @@ function ParentComponent() {
 
 **実装コード**:
 
-[`app/hooks/useModal.ts`](../../app/hooks/useModal.ts) (行 15-49)
+[`app/hooks/useModal.ts`](../../app/hooks/useModal.ts) (`useModal`フック)
 
-```15:49
+```typescript
 export function useModal(isOpen: boolean, onClose: () => void) {
   // onCloseの最新の参照を保持するref
   // これにより、onCloseが変更されてもuseEffectを再実行せずに最新の関数を呼び出せる
@@ -642,9 +642,9 @@ export function useModal(isOpen: boolean, onClose: () => void) {
 }
 ```
 
-[`app/components/ProductModal.tsx`](../../app/components/ProductModal.tsx) (行 41-42)
+[`app/components/ProductModal.tsx`](../../app/components/ProductModal.tsx) (`ProductModal`コンポーネント)
 
-```41:42
+```typescript
   // ESCキー処理と背景スクロール無効化を管理
   useModal(isOpen, onClose);
 ```
@@ -665,9 +665,9 @@ export function useModal(isOpen: boolean, onClose: () => void) {
 
 **実装コード**:
 
-[`app/hooks/useProductModal.ts`](../../app/hooks/useProductModal.ts) (行 14-71)
+[`app/hooks/useProductModal.ts`](../../app/hooks/useProductModal.ts) (`useProductModal`フック)
 
-```14:71
+```typescript
 export function useProductModal() {
   // 選択された商品を管理（モーダル表示用）
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
@@ -722,9 +722,9 @@ export function useProductModal() {
 }
 ```
 
-[`app/components/ProductGrid.tsx`](../../app/components/ProductGrid.tsx) (行 31-34)
+[`app/components/ProductGrid.tsx`](../../app/components/ProductGrid.tsx) (`ProductGrid`コンポーネント)
 
-```31:34
+```typescript
 export default function ProductGrid({ category, products }: ProductGridProps) {
   // モーダルの状態管理（カスタムフックで実装）
   const { selectedProduct, isModalOpen, handleProductClick, handleCloseModal } =
@@ -751,9 +751,9 @@ export default function ProductGrid({ category, products }: ProductGridProps) {
 
 **実装コード**:
 
-[`app/dashboard/hooks/useTabState.ts`](../../app/dashboard/hooks/useTabState.ts) (行 27-50)
+[`app/dashboard/hooks/useTabState.ts`](../../app/dashboard/hooks/useTabState.ts) (`useTabState`フック)
 
-```27:50
+```typescript
   // 初期値を localStorage から読み込む
   // サーバーサイドレンダリング時は window が存在しないため、typeof window チェックが必要
   const [activeTab, setActiveTab] = useState<TabType>(() => {
@@ -794,9 +794,9 @@ export default function ProductGrid({ category, products }: ProductGridProps) {
 
 **実装コード**:
 
-[`app/dashboard/hooks/useTabState.ts`](../../app/dashboard/hooks/useTabState.ts) (行 64-116)
+[`app/dashboard/hooks/useTabState.ts`](../../app/dashboard/hooks/useTabState.ts) (`useCategoryTabState`フック)
 
-```64:116
+```typescript
   products: Product[],
   categories: Category[]
 ) {
@@ -867,9 +867,9 @@ export default function ProductGrid({ category, products }: ProductGridProps) {
 
 **実装コード**:
 
-[`app/dashboard/hooks/useProductReorder.ts`](../../app/dashboard/hooks/useProductReorder.ts) (行 21-118)
+[`app/dashboard/hooks/useProductReorder.ts`](../../app/dashboard/hooks/useProductReorder.ts) (`useProductReorder`フック)
 
-```21:118
+```typescript
   setProducts: React.Dispatch<React.SetStateAction<Product[]>>,
   refreshProducts: () => Promise<void>
 ) {
@@ -1007,9 +1007,9 @@ export default function ProductGrid({ category, products }: ProductGridProps) {
 ├── CategoryTabs (Client Component)
 └── SortableProductItem (Client Component)
 
-1. **[`app/components/ProductGrid.tsx`](../../app/components/ProductGrid.tsx) (行 31-78)** - 商品グリッドコンポーネント
+1. **[`app/components/ProductGrid.tsx`](../../app/components/ProductGrid.tsx) (`ProductGrid`コンポーネント)** - 商品グリッドコンポーネント
 
-```31:78
+```typescript
 export default function ProductGrid({ category, products }: ProductGridProps) {
   // モーダルの状態管理（カスタムフックで実装）
   const {
@@ -1061,9 +1061,9 @@ export default function ProductGrid({ category, products }: ProductGridProps) {
 }
 ```
 
-2. **[`app/components/ProductModal.tsx`](../../app/components/ProductModal.tsx) (行 36-121)** - 商品モーダルコンポーネント
+2. **[`app/components/ProductModal.tsx`](../../app/components/ProductModal.tsx) (`ProductModal`コンポーネント)** - 商品モーダルコンポーネント
 
-```36:121
+```typescript
 export default function ProductModal({
   product,
   isOpen,
@@ -1200,9 +1200,9 @@ React では、イベントハンドラーを props として渡すことで、�
 
 ### イベントハンドリングの例
 
-1. **[`app/components/ProductTile.tsx`](../../app/components/ProductTile.tsx) (行 33-64)** - クリックイベントの処理
+1. **[`app/components/ProductTile.tsx`](../../app/components/ProductTile.tsx) (`ProductTile`コンポーネント)** - クリックイベントの処理
 
-```33:64
+```typescript
 function ProductTile({ product, onClick }: ProductTileProps) {
   return (
     <button
@@ -1239,9 +1239,9 @@ function ProductTile({ product, onClick }: ProductTileProps) {
 }
 ```
 
-2. **[`app/components/ProductModal.tsx`](../../app/components/ProductModal.tsx) (行 53-57)** - イベント伝播の制御
+2. **[`app/components/ProductModal.tsx`](../../app/components/ProductModal.tsx) (`ProductModal`コンポーネントのイベントハンドラー)** - イベント伝播の制御
 
-```53:57
+```typescript
       <div
         className="relative max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-lg bg-white shadow-2xl"
         onClick={(e) => e.stopPropagation()}

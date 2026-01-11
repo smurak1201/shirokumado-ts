@@ -114,7 +114,7 @@ DashboardContent (Client Component)
 
 **実装例**:
 
-[`app/dashboard/page.tsx`](../../app/dashboard/page.tsx) (行 58-70)
+[`app/dashboard/page.tsx`](../../app/dashboard/page.tsx) (`DashboardPage`コンポーネント)
 
 ```typescript
   const { categories, products } = await getDashboardData();
@@ -142,7 +142,7 @@ DashboardContent (Client Component)
 
 React のベストプラクティスに従い、共有状態（商品一覧）を親コンポーネントで管理しています。
 
-[`app/dashboard/components/DashboardContent.tsx`](../../app/dashboard/components/DashboardContent.tsx) (行 31-34)
+[`app/dashboard/components/DashboardContent.tsx`](../../app/dashboard/components/DashboardContent.tsx) (`DashboardContent`コンポーネント)
 
 ```typescript
 const [products, setProducts] = useState<Product[]>(initialProducts);

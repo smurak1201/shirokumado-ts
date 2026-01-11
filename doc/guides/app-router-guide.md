@@ -205,7 +205,7 @@ export default function Template({ children }: { children: React.ReactNode }) {
 
 1. **[`app/page.tsx`](../../app/page.tsx) (`Home`コンポーネント)** - ホームページ（Server Component）
 
-```102:141
+```typescript
   // カテゴリーごとにグループ化された公開商品を取得
   const categoriesWithProducts = await getPublishedProductsByCategory();
 
@@ -249,7 +249,7 @@ export default function Template({ children }: { children: React.ReactNode }) {
 
 2. **[`app/faq/page.tsx`](../../app/faq/page.tsx) (`FAQPage`コンポーネント)** - FAQ ページ（Server Component）
 
-```17:117
+```typescript
   /**
    * FAQデータ
    * 質問と回答のペアを配列で定義
@@ -300,7 +300,7 @@ export default function Template({ children }: { children: React.ReactNode }) {
 
 3. **[`app/dashboard/page.tsx`](../../app/dashboard/page.tsx) (`DashboardPage`コンポーネント)** - ダッシュボード（Server Component）
 
-```58:70
+```typescript
   const { categories, products } = await getDashboardData();
 
   return (
@@ -354,7 +354,7 @@ export default function Template({ children }: { children: React.ReactNode }) {
 
 1. **[`app/page.tsx`](../../app/page.tsx) (`getPublishedProductsByCategory`関数)** - 公開商品をカテゴリーごとに取得
 
-```26:86
+```typescript
   // カテゴリーと商品を並列で取得（パフォーマンス向上）
   const [categories, products] = await Promise.all([
     // カテゴリーをID順で取得
@@ -419,7 +419,7 @@ export default function Template({ children }: { children: React.ReactNode }) {
 
 2. **[`app/dashboard/page.tsx`](../../app/dashboard/page.tsx) (`getDashboardData`関数)** - ダッシュボードデータを取得
 
-```17:52
+```typescript
   // カテゴリーと商品を並列で取得（パフォーマンス向上）
   const [categories, products] = await Promise.all([
     // カテゴリーをID順で取得
@@ -484,7 +484,7 @@ export default function Template({ children }: { children: React.ReactNode }) {
 
 1. **[`app/dashboard/components/DashboardContent.tsx`](../../app/dashboard/components/DashboardContent.tsx) (`refreshProducts`関数)** - 商品一覧の更新
 
-```40:56
+```typescript
     try {
       // キャッシュを完全に無効化するためにタイムスタンプをクエリパラメータに追加
       // これにより、常に最新のデータを取得できます
@@ -507,7 +507,7 @@ export default function Template({ children }: { children: React.ReactNode }) {
 
 2. **[`app/dashboard/components/ProductList.tsx`](../../app/dashboard/components/ProductList.tsx) (`handleDelete`関数)** - 商品の削除
 
-```95:120
+```typescript
     // 削除前に確認ダイアログを表示
     if (!confirm("本当にこの商品を削除しますか？")) {
       return;
@@ -538,7 +538,7 @@ export default function Template({ children }: { children: React.ReactNode }) {
 
 3. **[`app/dashboard/hooks/useProductReorder.ts`](../../app/dashboard/hooks/useProductReorder.ts) (`reorderProducts`関数)** - 商品順序の変更
 
-```79:94
+```typescript
       // API を呼び出して商品の順序をサーバーに保存
       const response = await fetch("/api/products/reorder", {
         method: "POST",
@@ -559,9 +559,9 @@ export default function Template({ children }: { children: React.ReactNode }) {
 
 **画像アップロード（FormData を使用）**:
 
-[`app/dashboard/components/DashboardForm.tsx`](../../app/dashboard/components/DashboardForm.tsx) (`handleSubmit`関数 - 画像アップロード部分)
+[`app/dashboard/components/DashboardForm.tsx`](../../app/dashboard/components/DashboardForm.tsx) (画像アップロード処理)
 
-```107:134
+```typescript
           uploadFormData.append("file", formData.imageFile);
 
           const uploadResponse = await fetch("/api/products/upload", {
@@ -591,9 +591,9 @@ export default function Template({ children }: { children: React.ReactNode }) {
           imageUrl = uploadData.url;
 ```
 
-[`app/dashboard/components/DashboardForm.tsx`](../../app/dashboard/components/DashboardForm.tsx) (`handleSubmit`関数 - 商品登録部分)
+[`app/dashboard/components/DashboardForm.tsx`](../../app/dashboard/components/DashboardForm.tsx) (商品登録処理)
 
-```150:172
+```typescript
       const response = await fetch("/api/products", {
         method: "POST",
         headers: {
@@ -679,7 +679,7 @@ export default function Template({ children }: { children: React.ReactNode }) {
 
 1. **[`app/page.tsx`](../../app/page.tsx) (`dynamic`エクスポート)** - 動的レンダリングを強制
 
-```8:12
+```typescript
  * 動的レンダリングを強制
  * データベースから最新のデータを取得する必要があるため、常にサーバー側でレンダリングします
  */
@@ -688,7 +688,7 @@ export const dynamic = "force-dynamic";
 
 2. **[`app/dashboard/page.tsx`](../../app/dashboard/page.tsx) (`dynamic`エクスポート)** - 動的レンダリングを強制
 
-```4:9
+```typescript
  * 動的レンダリングを強制
  * データベースから最新のデータを取得する必要があるため、
  * このページは常にサーバー側でレンダリングされます
@@ -698,7 +698,7 @@ export const dynamic = "force-dynamic";
 
 3. **[`app/api/products/route.ts`](../../app/api/products/route.ts) (`dynamic`エクスポート)** - API Route での動的レンダリング
 
-```9:13
+```typescript
  * 動的レンダリングを強制
  * データベースから最新のデータを取得する必要があるため、常にサーバー側でレンダリングします
  */
@@ -713,7 +713,7 @@ export const dynamic = 'force-dynamic';
 
 - **`app/api/products/[id]/route.ts`**: 商品 ID に基づく動的ルーティング
 
-```12:39
+```typescript
   _request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) => {
@@ -757,7 +757,7 @@ export const dynamic = 'force-dynamic';
 
 1. **[`app/api/products/route.ts`](../../app/api/products/route.ts) (`GET`エクスポート)** - 商品一覧の取得と作成
 
-```26:53
+```typescript
   // データベースから商品を取得
   // include でカテゴリー情報も一緒に取得することで、N+1問題を回避します
   const products = await safePrismaOperation(
@@ -789,7 +789,7 @@ export const dynamic = 'force-dynamic';
 
 [`app/api/products/route.ts`](../../app/api/products/route.ts) (`POST`エクスポート)
 
-```68:140
+```typescript
   const body = await request.json();
 
   // ===== バリデーション =====
@@ -864,9 +864,9 @@ export const dynamic = 'force-dynamic';
 });
 ```
 
-2. **[`app/api/products/[id]/route.ts`](../../app/api/products/[id]/route.ts) (`PUT`/`DELETE`エクスポート)** - 個別商品の操作
+2. **[`app/api/products/[id]/route.ts`](../../app/api/products/[id]/route.ts) (`PUT`エクスポート)** - 個別商品の操作
 
-```44:154
+```typescript
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) => {
@@ -1058,9 +1058,9 @@ export default function ProductForm() {
 
 **このアプリでの使用箇所**:
 
-1. **[`app/page.tsx`](../../app/page.tsx) (`Image`コンポーネント - ヒーロー画像)** - ヒーロー画像の最適化
+1. **[`app/page.tsx`](../../app/page.tsx) (ヒーロー画像セクション)** - ヒーロー画像の最適化
 
-```112:123
+```typescript
       <section className="relative h-[30vh] min-h-[200px] w-full overflow-hidden md:h-[50vh] md:min-h-[400px] lg:h-[60vh] lg:min-h-[500px]">
         <Image
           src="/hero.webp"
@@ -1095,7 +1095,7 @@ export default function ProductForm() {
 
 [`app/layout.tsx`](../../app/layout.tsx) (`RootLayout`コンポーネント)
 
-```24:37
+```typescript
   children,
 }: Readonly<{
   children: React.ReactNode;
@@ -1119,7 +1119,7 @@ export default function ProductForm() {
 
 [`app/layout.tsx`](../../app/layout.tsx) (`metadata`エクスポート)
 
-```12:22
+```typescript
   title: "白熊堂 | 本格かき氷のお店",
   description:
     "白熊堂は本格かき氷のお店です。ふわふわの氷とこだわりのシロップでお待ちしています。",
@@ -1140,7 +1140,7 @@ export default function ProductForm() {
 
 [`app/layout.tsx`](../../app/layout.tsx) (`notoSansJP`フォント設定)
 
-```6:10
+```typescript
   variable: "--font-noto-sans-jp",
   subsets: ["latin"],
   weight: ["300", "400", "500", "700"],
