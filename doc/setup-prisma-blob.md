@@ -42,7 +42,7 @@
 
 ## 環境変数
 
-`.env`ファイルに以下の環境変数が設定されています：
+[`.env`](../.env)ファイルに以下の環境変数が設定されています：
 
 ```env
 # データベース接続（Neon）
@@ -59,7 +59,7 @@ BLOB_READ_WRITE_TOKEN=vercel_blob_rw_...
 
 ### Prisma Client のインポート
 
-`lib/prisma.ts`から Prisma Client をインポートして使用します。
+[`lib/prisma.ts`](../lib/prisma.ts)から Prisma Client をインポートして使用します。
 
 ```typescript
 import { prisma } from "@/lib/prisma";
@@ -109,7 +109,7 @@ await prisma.user.delete({
 
 ### スキーマの定義
 
-`prisma/schema.prisma`でデータベーススキーマを定義します。
+[`prisma/schema.prisma`](../prisma/schema.prisma)でデータベーススキーマを定義します。
 
 ```prisma
 model User {
@@ -214,7 +214,7 @@ const userWithOrdersAndItems = await prisma.user.findUnique({
 
 ### ファイルのアップロード
 
-`lib/blob.ts`から必要な関数をインポートして使用します。
+[`lib/blob.ts`](../lib/blob.ts)から必要な関数をインポートして使用します。
 
 ```typescript
 import { uploadFile, uploadImage } from "@/lib/blob";

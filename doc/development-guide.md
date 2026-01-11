@@ -268,7 +268,7 @@ if (isUser(data)) {
 
 #### 統一されたエラークラス
 
-**推奨**: `lib/errors.ts` のエラークラスを使用。
+**推奨**: [`lib/errors.ts`](../lib/errors.ts) のエラークラスを使用。
 
 ```typescript
 import { ValidationError, NotFoundError, DatabaseError } from "@/lib/errors";

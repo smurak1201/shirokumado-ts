@@ -147,12 +147,12 @@ app/api/
 
 **詳細については、[App Router ガイド](./guides/app-router-guide.md#api-routes) を参照してください。**
 
-#### `app/types.ts` - フロントエンド共通型定義
+#### [`app/types.ts`](../app/types.ts) - フロントエンド共通型定義
 
 フロントエンドで使用する型定義を一元管理します。
 
 ```
-app/types.ts
+[app/types.ts](../app/types.ts)
 ├── Category              # カテゴリー情報
 ├── Product               # 商品情報（詳細表示用）
 └── ProductTile          # 商品情報（タイル表示用）
@@ -170,8 +170,8 @@ app/types.ts
 
 ```
 app/hooks/
-├── useModal.ts          # モーダル管理フック（ESCキー、スクロール無効化）
-└── useProductModal.ts   # 商品モーダル管理フック（状態管理）
+├── [useModal.ts](../app/hooks/useModal.ts)          # モーダル管理フック（ESCキー、スクロール無効化）
+└── [useProductModal.ts](../app/hooks/useProductModal.ts)   # 商品モーダル管理フック（状態管理）
 ```
 
 **設計の特徴**:
@@ -186,7 +186,7 @@ app/hooks/
 
 ```
 app/utils/
-└── format.ts            # フォーマット関数（価格フォーマットなど）
+└── [format.ts](../app/utils/format.ts)            # フォーマット関数（価格フォーマットなど）
 ```
 
 **設計の特徴**:
@@ -202,12 +202,12 @@ app/utils/
 ```
 app/components/
 ├── icons/               # アイコンコンポーネント
-│   └── CloseIcon.tsx   # 閉じるアイコン
-├── Header.tsx           # ヘッダー（ロゴ、Instagramリンク、ナビゲーション）
-├── Footer.tsx           # フッター（店舗情報、地図、連絡先）
-├── ProductGrid.tsx      # カテゴリーごとの商品グリッド表示（Client Component）
-├── ProductTile.tsx      # 商品タイルコンポーネント
-└── ProductModal.tsx     # 商品詳細モーダルコンポーネント
+│   └── [CloseIcon.tsx](../app/components/icons/CloseIcon.tsx)   # 閉じるアイコン
+├── [Header.tsx](../app/components/Header.tsx)           # ヘッダー（ロゴ、Instagramリンク、ナビゲーション）
+├── [Footer.tsx](../app/components/Footer.tsx)           # フッター（店舗情報、地図、連絡先）
+├── [ProductGrid.tsx](../app/components/ProductGrid.tsx)      # カテゴリーごとの商品グリッド表示（Client Component）
+├── [ProductTile.tsx](../app/components/ProductTile.tsx)      # 商品タイルコンポーネント
+└── [ProductModal.tsx](../app/components/ProductModal.tsx)     # 商品詳細モーダルコンポーネント
 ```
 
 **設計の特徴**:
@@ -232,21 +232,21 @@ app/faq/
 
 ```
 app/dashboard/
-├── page.tsx              # ダッシュボードページ（Server Component）
-├── types.ts              # 共通型定義（Category, Product）
+├── [page.tsx](../app/dashboard/page.tsx)              # ダッシュボードページ（Server Component）
+├── [types.ts](../app/dashboard/types.ts)              # 共通型定義（Category, Product）
 ├── components/           # コンポーネント
-│   ├── DashboardContent.tsx      # メインコンテナ
-│   ├── DashboardForm.tsx         # 新規商品登録フォーム
-│   ├── DashboardFormWrapper.tsx  # フォームラッパー
-│   ├── ProductList.tsx           # 商品一覧・配置変更
-│   ├── ProductEditForm.tsx       # 商品編集フォーム
-│   ├── CategoryTabs.tsx          # カテゴリータブ
-│   └── SortableProductItem.tsx  # ドラッグ&ドロップ可能な商品アイテム
+│   ├── [DashboardContent.tsx](../app/dashboard/components/DashboardContent.tsx)      # メインコンテナ
+│   ├── [DashboardForm.tsx](../app/dashboard/components/DashboardForm.tsx)         # 新規商品登録フォーム
+│   ├── [DashboardFormWrapper.tsx](../app/dashboard/components/DashboardFormWrapper.tsx)  # フォームラッパー
+│   ├── [ProductList.tsx](../app/dashboard/components/ProductList.tsx)           # 商品一覧・配置変更
+│   ├── [ProductEditForm.tsx](../app/dashboard/components/ProductEditForm.tsx)       # 商品編集フォーム
+│   ├── [CategoryTabs.tsx](../app/dashboard/components/CategoryTabs.tsx)          # カテゴリータブ
+│   └── [SortableProductItem.tsx](../app/dashboard/components/SortableProductItem.tsx)  # ドラッグ&ドロップ可能な商品アイテム
 ├── hooks/                # カスタムフック
-│   ├── useTabState.ts            # タブ状態管理（localStorage連携）
-│   └── useProductReorder.ts      # 商品順序変更ロジック
+│   ├── [useTabState.ts](../app/dashboard/hooks/useTabState.ts)            # タブ状態管理（localStorage連携）
+│   └── [useProductReorder.ts](../app/dashboard/hooks/useProductReorder.ts)      # 商品順序変更ロジック
 └── utils/                # ユーティリティ関数
-    └── productUtils.ts           # 商品のグループ化・フィルタリング
+    └── [productUtils.ts](../app/dashboard/utils/productUtils.ts)           # 商品のグループ化・フィルタリング
 ```
 
 **設計の特徴**:
@@ -260,7 +260,7 @@ app/dashboard/
 
 再利用可能な関数やユーティリティを定義します。
 
-#### `lib/prisma.ts`
+#### [`lib/prisma.ts`](../lib/prisma.ts)
 
 Prisma Client のシングルトンインスタンスを管理します。
 
@@ -274,7 +274,7 @@ const users = await safePrismaOperation(
 );
 ```
 
-#### `lib/blob.ts`
+#### [`lib/blob.ts`](../lib/blob.ts)
 
 Vercel Blob Storage の操作を提供します。
 
@@ -285,7 +285,7 @@ import { uploadImage, deleteFile } from "@/lib/blob";
 const blob = await uploadImage("images/product.jpg", buffer, "image/jpeg");
 ```
 
-#### `lib/errors.ts`
+#### [`lib/errors.ts`](../lib/errors.ts)
 
 統一されたエラーハンドリングを提供します。
 
@@ -296,7 +296,7 @@ import { AppError, DatabaseError, ValidationError } from "@/lib/errors";
 throw new ValidationError("Invalid input");
 ```
 
-#### `lib/api-helpers.ts`
+#### [`lib/api-helpers.ts`](../lib/api-helpers.ts)
 
 API Routes 用のヘルパー関数を提供します。
 
@@ -313,12 +313,12 @@ export const GET = withErrorHandling(async () => {
 
 ```
 lib/
-├── config.ts              # アプリケーション設定（画像サイズ、キャッシュなど）
-├── image-compression.ts   # クライアントサイド画像圧縮
-└── product-utils.ts       # 商品関連ユーティリティ（公開状態計算など）
+├── [config.ts](../lib/config.ts)              # アプリケーション設定（画像サイズ、キャッシュなど）
+├── [image-compression.ts](../lib/image-compression.ts)   # クライアントサイド画像圧縮
+└── [product-utils.ts](../lib/product-utils.ts)       # 商品関連ユーティリティ（公開状態計算など）
 ```
 
-**設定の一元管理** (`lib/config.ts`):
+**設定の一元管理** ([`lib/config.ts`](../lib/config.ts)):
 
 - 画像アップロード設定（最大サイズ、圧縮品質など）
 - Blob Storage 設定（フォルダ名、キャッシュ期間など）
@@ -329,7 +329,7 @@ lib/
 
 データベーススキーマとマイグレーションを管理します。
 
-#### `prisma/schema.prisma`
+#### [`prisma/schema.prisma`](../prisma/schema.prisma)
 
 データベーススキーマを定義します。
 
@@ -391,29 +391,29 @@ public/
 
 ### 設定ファイル
 
-- **`next.config.ts`**: Next.js の設定（画像最適化、環境変数など）
-- **`tsconfig.json`**: TypeScript の設定
-- **`prisma.config.ts`**: Prisma 7 の設定（接続情報など）
-- **`eslint.config.mjs`**: ESLint の設定
+- **[`next.config.ts`](../next.config.ts)**: Next.js の設定（画像最適化、環境変数など）
+- **[`tsconfig.json`](../tsconfig.json)**: TypeScript の設定
+- **[`prisma.config.ts`](../prisma.config.ts)**: Prisma 7 の設定（接続情報など）
+- **[`eslint.config.mjs`](../eslint.config.mjs)**: ESLint の設定
 
 ### ドキュメント
 
-- **`README.md`**: プロジェクトの概要とセットアップ手順
-- **`doc/getting-started.md`**: コードリーディングガイド
-- **`doc/architecture.md`**: アーキテクチャと設計思想
-- **`doc/project-structure.md`**: プロジェクト構造（このファイル）
-- **`doc/tech-stack.md`**: 技術スタックの詳細
-- **`doc/guides/frontend-guide.md`**: フロントエンドガイド
-- **`doc/guides/dashboard-guide.md`**: ダッシュボードガイド
-- **`doc/development-guide.md`**: 開発ガイドライン
-- **`doc/guides/nextjs-guide.md`**: Next.js の詳細な使用方法
-- **`doc/guides/app-router-guide.md`**: Next.js App Router の詳細な使用方法
-- **`doc/guides/react-guide.md`**: React の詳細な使用方法
-- **`doc/guides/jsx-guide.md`**: JSX の構文と使用方法
-- **`doc/guides/typescript-guide.md`**: TypeScript の詳細な使用方法
-- **`doc/guides/prisma-guide.md`**: Prisma の詳細な使用方法
-- **`doc/setup-prisma-blob.md`**: Prisma と Blob のセットアップガイド
-- **`doc/deployment.md`**: デプロイメントガイド
+- **[`README.md`](../README.md)**: プロジェクトの概要とセットアップ手順
+- **[`doc/getting-started.md`](./getting-started.md)**: コードリーディングガイド
+- **[`doc/architecture.md`](./architecture.md)**: アーキテクチャと設計思想
+- **[`doc/project-structure.md`](./project-structure.md)**: プロジェクト構造（このファイル）
+- **[`doc/tech-stack.md`](./tech-stack.md)**: 技術スタックの詳細
+- **[`doc/guides/frontend-guide.md`](./guides/frontend-guide.md)**: フロントエンドガイド
+- **[`doc/guides/dashboard-guide.md`](./guides/dashboard-guide.md)**: ダッシュボードガイド
+- **[`doc/development-guide.md`](./development-guide.md)**: 開発ガイドライン
+- **[`doc/guides/nextjs-guide.md`](./guides/nextjs-guide.md)**: Next.js の詳細な使用方法
+- **[`doc/guides/app-router-guide.md`](./guides/app-router-guide.md)**: Next.js App Router の詳細な使用方法
+- **[`doc/guides/react-guide.md`](./guides/react-guide.md)**: React の詳細な使用方法
+- **[`doc/guides/jsx-guide.md`](./guides/jsx-guide.md)**: JSX の構文と使用方法
+- **[`doc/guides/typescript-guide.md`](./guides/typescript-guide.md)**: TypeScript の詳細な使用方法
+- **[`doc/guides/prisma-guide.md`](./guides/prisma-guide.md)**: Prisma の詳細な使用方法
+- **[`doc/setup-prisma-blob.md`](./setup-prisma-blob.md)**: Prisma と Blob のセットアップガイド
+- **[`doc/deployment.md`](./deployment.md)**: デプロイメントガイド
 
 ## ベストプラクティス
 

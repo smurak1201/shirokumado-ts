@@ -108,7 +108,7 @@ app/dashboard/
 
 ## コンポーネント構成
 
-### DashboardPage (`page.tsx`)
+### DashboardPage ([`page.tsx`](../../app/dashboard/page.tsx))
 
 ダッシュボードページのエントリーポイントです。Server Component として実装されています。
 
@@ -135,7 +135,7 @@ export default async function DashboardPage() {
 }
 ```
 
-### DashboardContent (`components/DashboardContent.tsx`)
+### DashboardContent ([`components/DashboardContent.tsx`](../../app/dashboard/components/DashboardContent.tsx))
 
 ダッシュボードのメインコンテナです。Client Component として実装されています。
 
@@ -172,7 +172,7 @@ const refreshProducts = async () => {
 - データフローが明確になり、コンポーネント間の結合が緩くなる
 - 子コンポーネント（`ProductList`）に`products`、`setProducts`、`refreshProducts`を props で渡す
 
-### DashboardForm (`components/DashboardForm.tsx`)
+### DashboardForm ([`components/DashboardForm.tsx`](../../app/dashboard/components/DashboardForm.tsx))
 
 新規商品登録フォームです。
 
@@ -195,7 +195,7 @@ const refreshProducts = async () => {
 - 公開日（自動設定の場合）
 - 終了日（自動設定の場合）
 
-### ProductList (`components/ProductList.tsx`)
+### ProductList ([`components/ProductList.tsx`](../../app/dashboard/components/ProductList.tsx))
 
 商品一覧の表示と配置変更機能を実装しています。
 
@@ -227,7 +227,7 @@ interface ProductListProps {
 - 楽観的 UI 更新
 - タブ状態の localStorage 連携
 
-### CategoryTabs (`components/CategoryTabs.tsx`)
+### CategoryTabs ([`components/CategoryTabs.tsx`](../../app/dashboard/components/CategoryTabs.tsx))
 
 カテゴリータブの UI コンポーネントです。
 
@@ -237,7 +237,7 @@ interface ProductListProps {
 - アクティブタブのハイライト
 - スクロール可能なタブ
 
-### SortableProductItem (`components/SortableProductItem.tsx`)
+### SortableProductItem ([`components/SortableProductItem.tsx`](../../app/dashboard/components/SortableProductItem.tsx))
 
 ドラッグ&ドロップ可能な商品アイテムコンポーネントです。
 
@@ -336,7 +336,7 @@ React のベストプラクティスに従い、共有状態は親コンポー�
 
 ### カスタムフック
 
-#### useTabState (`hooks/useTabState.ts`)
+#### useTabState ([`hooks/useTabState.ts`](../../app/dashboard/hooks/useTabState.ts))
 
 タブ状態を localStorage と同期するカスタムフックです。
 
@@ -351,7 +351,7 @@ React のベストプラクティスに従い、共有状態は親コンポー�
 const { activeTab, setActiveTab } = useTabState();
 ```
 
-#### useProductReorder (`hooks/useProductReorder.ts`)
+#### useProductReorder ([`hooks/useProductReorder.ts`](../../app/dashboard/hooks/useProductReorder.ts))
 
 商品順序変更のロジックを実装したカスタムフックです。
 
@@ -435,7 +435,7 @@ file: [画像ファイル]
 
 ### 新しい機能の追加
 
-1. **型定義の追加**: `app/dashboard/types.ts`に追加
+1. **型定義の追加**: [`app/dashboard/types.ts`](../../app/dashboard/types.ts)に追加
 2. **コンポーネントの作成**: `app/dashboard/components/`に追加
 3. **カスタムフックの作成**: `app/dashboard/hooks/`に追加（必要に応じて）
 4. **API Route の作成**: `app/api/`に追加（必要に応じて）
@@ -458,8 +458,8 @@ file: [画像ファイル]
 
 エラーハンドリングは統一されています：
 
-- **API Routes**: `lib/api-helpers.ts`の`withErrorHandling`を使用
-- **エラークラス**: `lib/errors.ts`で定義
+- **API Routes**: [`lib/api-helpers.ts`](../../lib/api-helpers.ts)の`withErrorHandling`を使用
+- **エラークラス**: [`lib/errors.ts`](../../lib/errors.ts)で定義
 - **クライアントサイド**: try-catch でエラーをキャッチし、ユーザーに通知
 
 ### テスト
@@ -485,13 +485,13 @@ file: [画像ファイル]
 ### データフェッチング
 
 - Server Component でデータを取得 - **このアプリで使用中**
-  - `app/dashboard/page.tsx`: Prisma を使用してデータベースから直接データを取得
+  - [`app/dashboard/page.tsx`](../../app/dashboard/page.tsx): Prisma を使用してデータベースから直接データを取得
 - Client Component で API Routes にアクセス - **このアプリで使用中**
-  - `app/dashboard/components/DashboardContent.tsx`: `fetch` API を使用して `/api/products` にアクセス
-  - `app/dashboard/components/DashboardForm.tsx`: `fetch` API を使用して `/api/products` に POST リクエスト
-  - `app/dashboard/components/ProductEditForm.tsx`: `fetch` API を使用して `/api/products/[id]` に PUT リクエスト
-  - `app/dashboard/components/ProductList.tsx`: `fetch` API を使用して `/api/products/[id]` に DELETE リクエスト
-  - `app/dashboard/hooks/useProductReorder.ts`: `fetch` API を使用して `/api/products/reorder` に POST リクエスト
+  - [`app/dashboard/components/DashboardContent.tsx`](../../app/dashboard/components/DashboardContent.tsx): `fetch` API を使用して `/api/products` にアクセス
+  - [`app/dashboard/components/DashboardForm.tsx`](../../app/dashboard/components/DashboardForm.tsx): `fetch` API を使用して `/api/products` に POST リクエスト
+  - [`app/dashboard/components/ProductEditForm.tsx`](../../app/dashboard/components/ProductEditForm.tsx): `fetch` API を使用して `/api/products/[id]` に PUT リクエスト
+  - [`app/dashboard/components/ProductList.tsx`](../../app/dashboard/components/ProductList.tsx): `fetch` API を使用して `/api/products/[id]` に DELETE リクエスト
+  - [`app/dashboard/hooks/useProductReorder.ts`](../../app/dashboard/hooks/useProductReorder.ts): `fetch` API を使用して `/api/products/reorder` に POST リクエスト
 - 必要なデータのみを取得（Prisma の`select`を使用） - **このアプリでは未使用**
 - 並列データ取得（`Promise.all`を使用） - **このアプリで使用中**
 

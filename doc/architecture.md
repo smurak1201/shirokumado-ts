@@ -44,7 +44,7 @@ app/
 
 **設計思想**:
 
-- **`types.ts`**: フロントエンドで使用する型を一元管理（重複を防止）
+- **[`types.ts`](../app/types.ts)**: フロントエンドで使用する型を一元管理（重複を防止）
 - **`hooks/`**: 状態管理や副作用をカスタムフックに分離（再利用可能）
 - **`utils/`**: 純粋関数として実装可能なビジネスロジック（テストしやすい）
 - **`components/`**: UI コンポーネントのみを配置（見た目とレイアウト）
@@ -64,7 +64,7 @@ app/dashboard/
 
 **設計思想**:
 
-- **`types.ts`**: その機能で使用する型を一元管理
+- **[`types.ts`](../app/dashboard/types.ts)**: その機能で使用する型を一元管理
 - **`components/`**: UI コンポーネントのみを配置
 - **`hooks/`**: 状態管理や副作用をカスタムフックに分離
 - **`utils/`**: 純粋関数として実装可能なビジネスロジック
@@ -135,12 +135,12 @@ DashboardPage (Server Component)
 
 **After** (分割後):
 
-- `ProductList.tsx`: メインロジック（約 490 行）
-- `CategoryTabs.tsx`: カテゴリータブ UI
-- `SortableProductItem.tsx`: ドラッグ&ドロップ可能な商品アイテム
-- `useTabState.ts`: タブ状態管理フック
-- `useProductReorder.ts`: 商品順序変更フック
-- `productUtils.ts`: 商品のグループ化・フィルタリング関数
+- [`ProductList.tsx`](../app/dashboard/components/ProductList.tsx): メインロジック（約 490 行）
+- [`CategoryTabs.tsx`](../app/dashboard/components/CategoryTabs.tsx): カテゴリータブ UI
+- [`SortableProductItem.tsx`](../app/dashboard/components/SortableProductItem.tsx): ドラッグ&ドロップ可能な商品アイテム
+- [`useTabState.ts`](../app/dashboard/hooks/useTabState.ts): タブ状態管理フック
+- [`useProductReorder.ts`](../app/dashboard/hooks/useProductReorder.ts): 商品順序変更フック
+- [`productUtils.ts`](../app/dashboard/utils/productUtils.ts): 商品のグループ化・フィルタリング関数
 
 ## 状態管理
 
@@ -257,9 +257,9 @@ Client Component (状態更新)
 
 ## 設定管理
 
-### 一元管理 (`lib/config.ts`)
+### 一元管理 ([`lib/config.ts`](../lib/config.ts))
 
-すべての設定値を`lib/config.ts`に集約：
+すべての設定値を[`lib/config.ts`](../lib/config.ts)に集約：
 
 ```typescript
 export const config = {
@@ -295,7 +295,7 @@ export const config = {
 
 ## 型定義の管理
 
-### 共通型定義 (`app/dashboard/types.ts`)
+### 共通型定義 ([`app/dashboard/types.ts`](../app/dashboard/types.ts))
 
 機能内で使用する型を一元管理：
 
@@ -320,7 +320,7 @@ export interface Product {
 
 ## エラーハンドリング
 
-### 統一されたエラークラス (`lib/errors.ts`)
+### 統一されたエラークラス ([`lib/errors.ts`](../lib/errors.ts))
 
 ```typescript
 // 使用例
@@ -344,7 +344,7 @@ export const GET = withErrorHandling(async () => {
 
 ### 画像最適化
 
-- **クライアントサイド圧縮**: `lib/image-compression.ts`
+- **クライアントサイド圧縮**: [`lib/image-compression.ts`](../lib/image-compression.ts)
 - **WebP 形式**: デフォルトで WebP 形式に変換
 - **サイズ制限**: 4MB 以下に制限
 
@@ -365,7 +365,7 @@ export const GET = withErrorHandling(async () => {
 ### 環境変数
 
 - **機密情報**: 環境変数で管理
-- **型安全性**: `lib/env.ts`で型定義
+- **型安全性**: [`lib/env.ts`](../lib/env.ts)で型定義
 
 ## 参考リンク
 

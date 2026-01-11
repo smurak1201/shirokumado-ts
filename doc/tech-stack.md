@@ -138,7 +138,7 @@
 
   **このアプリでの使われ方**:
 
-  - `app/layout.tsx` で Google Fonts から読み込み、デフォルトフォントとして設定
+  - [`app/layout.tsx`](../app/layout.tsx) で Google Fonts から読み込み、デフォルトフォントとして設定
   - 日本語コンテンツ（商品名、説明、店舗情報など）の表示に使用
   - フォントの読み込みを最適化し、パフォーマンスへの影響を最小化
 
@@ -223,13 +223,13 @@
   **このアプリでの使われ方**:
 
   - 商品画像をアップロード・保存し、CDN 経由で配信
-  - `lib/blob.ts` にユーティリティ関数を実装し、画像アップロードと削除を簡潔に処理
-  - クライアントサイドで画像を圧縮（`lib/image-compression.ts`）してからアップロードし、ストレージ容量を最適化
+  - [`lib/blob.ts`](../lib/blob.ts) にユーティリティ関数を実装し、画像アップロードと削除を簡潔に処理
+  - クライアントサイドで画像を圧縮（[`lib/image-compression.ts`](../lib/image-compression.ts)）してからアップロードし、ストレージ容量を最適化
   - 開発環境と本番環境で同じストレージサービスを使用し、環境の一貫性を確保
 
 - **@vercel/blob** `^2.0.0`
 
-  Vercel Blob Storage の公式 SDK です。TypeScript で型安全にファイル操作を行えます。このアプリでは、画像アップロードと削除のロジックを `lib/blob.ts` に実装し、API Routes から呼び出しています。
+  Vercel Blob Storage の公式 SDK です。TypeScript で型安全にファイル操作を行えます。このアプリでは、画像アップロードと削除のロジックを [`lib/blob.ts`](../lib/blob.ts) に実装し、API Routes から呼び出しています。
 
 ## 言語・型システム
 
@@ -395,9 +395,9 @@ shirokumado-ts/
 
 ### ページ構成
 
-- **ホームページ** (`app/page.tsx`): カテゴリーごとの商品表示
-- **FAQ ページ** (`app/faq/page.tsx`): よくある質問ページ
-- **ダッシュボード** (`app/dashboard/page.tsx`): 商品管理画面
+- **ホームページ** ([`app/page.tsx`](../app/page.tsx)): カテゴリーごとの商品表示
+- **FAQ ページ** ([`app/faq/page.tsx`](../app/faq/page.tsx)): よくある質問ページ
+- **ダッシュボード** ([`app/dashboard/page.tsx`](../app/dashboard/page.tsx)): 商品管理画面
 
 ### 共通コンポーネント
 
@@ -410,7 +410,7 @@ shirokumado-ts/
 ### 画像最適化
 
 - **Next.js Image**: 自動的な画像最適化と WebP 変換
-- **クライアントサイド圧縮**: `lib/image-compression.ts`で実装
+- **クライアントサイド圧縮**: [`lib/image-compression.ts`](../lib/image-compression.ts)で実装
 
 ## 今後の追加予定
 

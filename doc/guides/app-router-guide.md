@@ -208,7 +208,7 @@ export default function Template({ children }: { children: React.ReactNode }) {
 
 **このアプリでの使用箇所**:
 
-1. **`app/page.tsx`** - ホームページ（Server Component）
+1. **[`app/page.tsx`](../../app/page.tsx)** - ホームページ（Server Component）
 
 ```102:141:app/page.tsx
 export default async function Home() {
@@ -255,7 +255,7 @@ export default async function Home() {
 
 **説明**: ホームページは Server Component として実装されており、サーバーサイドでデータベースから直接データを取得してレンダリングします。
 
-2. **`app/faq/page.tsx`** - FAQ ページ（Server Component）
+2. **[`app/faq/page.tsx`](../../app/faq/page.tsx)** - FAQ ページ（Server Component）
 
 ```17:117:app/faq/page.tsx
 export default function FAQPage() {
@@ -309,7 +309,7 @@ export default function FAQPage() {
 
 **説明**: FAQ ページも Server Component として実装されており、静的なコンテンツを表示します。
 
-3. **`app/dashboard/page.tsx`** - ダッシュボード（Server Component）
+3. **[`app/dashboard/page.tsx`](../../app/dashboard/page.tsx)** - ダッシュボード（Server Component）
 
 ```58:70:app/dashboard/page.tsx
 export default async function DashboardPage() {
@@ -342,9 +342,9 @@ export default async function DashboardPage() {
 
 **このアプリでの使用箇所**:
 
-- `app/components/ProductGrid.tsx`: 商品グリッド（モーダル表示などのインタラクティブ機能）
-- `app/components/ProductModal.tsx`: 商品詳細モーダル（開閉状態の管理）
-- `app/dashboard/components/DashboardContent.tsx`: ダッシュボードコンテンツ（フォーム送信、状態管理）
+- [`app/components/ProductGrid.tsx`](../../app/components/ProductGrid.tsx): 商品グリッド（モーダル表示などのインタラクティブ機能）
+- [`app/components/ProductModal.tsx`](../../app/components/ProductModal.tsx): 商品詳細モーダル（開閉状態の管理）
+- [`app/dashboard/components/DashboardContent.tsx`](../../app/dashboard/components/DashboardContent.tsx): ダッシュボードコンテンツ（フォーム送信、状態管理）
 
 **Server Components と Client Components の使い分け**:
 
@@ -366,7 +366,7 @@ export default async function DashboardPage() {
 
 **このアプリでの使用箇所**:
 
-1. **`app/page.tsx`** - 公開商品をカテゴリーごとに取得
+1. **[`app/page.tsx`](../../app/page.tsx)** - 公開商品をカテゴリーごとに取得
 
 ```26:86:app/page.tsx
 async function getPublishedProductsByCategory() {
@@ -434,7 +434,7 @@ async function getPublishedProductsByCategory() {
 
 **説明**: `Promise.all` を使用してカテゴリーと商品を並列で取得し、パフォーマンスを向上させています。
 
-2. **`app/dashboard/page.tsx`** - ダッシュボードデータを取得
+2. **[`app/dashboard/page.tsx`](../../app/dashboard/page.tsx)** - ダッシュボードデータを取得
 
 ```17:52:app/dashboard/page.tsx
 async function getDashboardData() {
@@ -580,7 +580,7 @@ async function getDashboardData() {
 
 **説明**: ドラッグ&ドロップで商品の順序を変更した後、サーバーに保存するために `fetch` を使用しています。楽観的 UI 更新を実装しており、API 呼び出し前に UI を更新しています。
 
-4. **`app/dashboard/components/DashboardForm.tsx`** - 商品の作成と画像アップロード
+4. **[`app/dashboard/components/DashboardForm.tsx`](../../app/dashboard/components/DashboardForm.tsx)** - 商品の作成と画像アップロード
 
 **画像アップロード（FormData を使用）**:
 
@@ -732,7 +732,7 @@ export const dynamic = "force-dynamic";
 
 **説明**: ダッシュボードページでも、最新のデータを表示するために動的レンダリングを強制しています。
 
-3. **`app/api/products/route.ts`** - API Route での動的レンダリング
+3. **[`app/api/products/route.ts`](../../app/api/products/route.ts)** - API Route での動的レンダリング
 
 ```9:13:app/api/products/route.ts
 /**
@@ -797,7 +797,7 @@ export const GET = withErrorHandling(async (
 
 **このアプリでの使用箇所**:
 
-1. **`app/api/products/route.ts`** - 商品一覧の取得と作成
+1. **[`app/api/products/route.ts`](../../app/api/products/route.ts)** - 商品一覧の取得と作成
 
 ```26:51:app/api/products/route.ts
 export const GET = withErrorHandling(async () => {
@@ -1103,7 +1103,7 @@ export default function ProductForm() {
 
 **このアプリでの使用箇所**:
 
-1. **`app/page.tsx`** - ヒーロー画像の最適化
+1. **[`app/page.tsx`](../../app/page.tsx)** - ヒーロー画像の最適化
 
 ```112:123:app/page.tsx
       {/* ヒーローバナー */}
@@ -1137,7 +1137,7 @@ export default function ProductForm() {
 
 ### ルートレイアウト
 
-**説明**: `app/layout.tsx` は、すべてのページに適用されるルートレイアウトです。メタデータ、フォント、グローバルスタイルなどを設定します。
+**説明**: [`app/layout.tsx`](../../app/layout.tsx) は、すべてのページに適用されるルートレイアウトです。メタデータ、フォント、グローバルスタイルなどを設定します。
 
 **このアプリでの使用箇所**:
 
@@ -1213,7 +1213,7 @@ const notoSansJP = Noto_Sans_JP({
    - Server Component
    - 静的なコンテンツを表示
 
-3. **ダッシュボード** (`app/dashboard/page.tsx`)
+3. **ダッシュボード** ([`app/dashboard/page.tsx`](../../app/dashboard/page.tsx))
    - Server Component
    - データベースから商品とカテゴリーを取得
    - Client Component にデータを渡す

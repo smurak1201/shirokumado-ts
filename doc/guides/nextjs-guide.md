@@ -131,7 +131,7 @@ Next.js 13 以降で導入された新しいルーティングシステムです
 
 このアプリでは、App Router を使用して以下のページと API を実装しています：
 
-- **ページ**: `app/page.tsx`（ホームページ）、`app/faq/page.tsx`（FAQ ページ）、`app/dashboard/page.tsx`（ダッシュボード）
+- **ページ**: [`app/page.tsx`](../../app/page.tsx)（ホームページ）、[`app/faq/page.tsx`](../../app/faq/page.tsx)（FAQ ページ）、[`app/dashboard/page.tsx`](../../app/dashboard/page.tsx)（ダッシュボード）
 - **API Routes**: `app/api/products/`、`app/api/categories/`
 
 ## 設定ファイル
@@ -142,7 +142,7 @@ Next.js の設定を管理するファイルです。画像最適化、実験的
 
 **このアプリでの使用箇所**:
 
-- `next.config.ts`: Next.js の設定ファイル
+- [`next.config.ts`](../../next.config.ts): Next.js の設定ファイル
 
 **設定内容**:
 
@@ -256,7 +256,7 @@ Next.js は、`next/image` コンポーネントを使用して、画像の自�
 
 ### 画像最適化の設定
 
-`next.config.ts` で画像最適化の設定を行います：
+[`next.config.ts`](../../next.config.ts) で画像最適化の設定を行います：
 
 ```4:13:next.config.ts
   // 画像最適化の設定
@@ -288,7 +288,7 @@ Next.js は、`next/font/google` を使用して、Google Fonts を最適化し�
 
 ### このアプリでの使用箇所
 
-**`app/layout.tsx`** - Noto Sans JP フォントの最適化
+**[`app/layout.tsx`](../../app/layout.tsx)** - Noto Sans JP フォントの最適化
 
 ```6:10:app/layout.tsx
 const notoSansJP = Noto_Sans_JP({
@@ -320,7 +320,7 @@ Next.js は、`metadata` オブジェクトを使用して、ページのメタ�
 
 **このアプリでの使用箇所**:
 
-**`app/layout.tsx`** - ルートレイアウトのメタデータ
+**[`app/layout.tsx`](../../app/layout.tsx)** - ルートレイアウトのメタデータ
 
 ```12:22:app/layout.tsx
 export const metadata: Metadata = {
@@ -411,9 +411,9 @@ Server Components により、クライアントサイドの JavaScript を最�
 
 **このアプリでの使用例**:
 
-- `app/page.tsx`: ホームページ（Server Component）
-- `app/faq/page.tsx`: FAQ ページ（Server Component）
-- `app/dashboard/page.tsx`: ダッシュボードページ（Server Component）
+- [`app/page.tsx`](../../app/page.tsx): ホームページ（Server Component）
+- [`app/faq/page.tsx`](../../app/faq/page.tsx): FAQ ページ（Server Component）
+- [`app/dashboard/page.tsx`](../../app/dashboard/page.tsx): ダッシュボードページ（Server Component）
 
 ## このアプリでの Next.js の使用例まとめ
 
@@ -423,13 +423,13 @@ Server Components により、クライアントサイドの JavaScript を最�
 
 このアプリでは、以下のページと API を実装しています：
 
-- **ページ**: `app/page.tsx`（ホームページ）、`app/faq/page.tsx`（FAQ ページ）、`app/dashboard/page.tsx`（ダッシュボード）
+- **ページ**: [`app/page.tsx`](../../app/page.tsx)（ホームページ）、[`app/faq/page.tsx`](../../app/faq/page.tsx)（FAQ ページ）、[`app/dashboard/page.tsx`](../../app/dashboard/page.tsx)（ダッシュボード）
 - **API Routes**: `app/api/products/`、`app/api/categories/`
 
 ### 設定ファイル
 
-- **`next.config.ts`**: 画像最適化、実験的な機能、TypeScript の設定
-- **`app/layout.tsx`**: メタデータ、フォント、グローバルスタイルの設定
+- **[`next.config.ts`](../../next.config.ts)**: 画像最適化、実験的な機能、TypeScript の設定
+- **[`app/layout.tsx`](../../app/layout.tsx)**: メタデータ、フォント、グローバルスタイルの設定
 
 ### 最適化機能
 

@@ -50,7 +50,7 @@ Prisma 7 は、モダンなアプリケーション開発のための次世代 O
   - `app/page.tsx`: ホームページで商品データを取得
   - `app/dashboard/page.tsx`: ダッシュボードページで商品データを取得
   - `app/api/products/route.ts`: 商品一覧の取得・作成
-  - `app/api/products/[id]/route.ts`: 個別商品の取得・更新・削除
+  - [`app/api/products/[id]/route.ts`](../../app/api/products/[id]/route.ts): 個別商品の取得・更新・削除
   - `app/api/products/reorder/route.ts`: 商品の並び替え（`$transaction` を使用）
   - `app/api/categories/route.ts`: カテゴリー一覧の取得
 - **フロントエンド（Client Components）**: Prisma は使用していない。代わりに `fetch` API を使用して API Routes にアクセス
@@ -71,7 +71,7 @@ Prisma 7 は、モダンなアプリケーション開発のための次世代 O
 
 **このアプリでの使用箇所**:
 
-- `prisma.config.ts`: Prisma の設定ファイル
+- [`prisma.config.ts`](../../prisma.config.ts): Prisma の設定ファイル
 
 **設定ファイルの構成**:
 
@@ -96,7 +96,7 @@ export default defineConfig({
 
 **Prisma 7 での変更点**:
 
-- 設定ファイルが `prisma.config.ts` に分離された
+- 設定ファイルが [`prisma.config.ts`](../../prisma.config.ts) に分離された
 - `defineConfig` 関数を使用して設定を定義
 - マイグレーションの設定（パス、シード）を設定ファイルで管理
 
@@ -141,7 +141,7 @@ const prisma = new PrismaClient({
 
 **このアプリでの使用箇所**:
 
-- `lib/prisma.ts`: Prisma Client の初期化とエクスポート
+- [`lib/prisma.ts`](../../lib/prisma.ts): Prisma Client の初期化とエクスポート
 - すべての Server Components と API Routes で `import { prisma } from '@/lib/prisma'` として使用
 
 **実際の実装コード**:
@@ -261,7 +261,7 @@ POSTGRES_URL_NON_POOLING=postgresql://user:password@host/database
 
 ### データベーススキーマ定義
 
-**説明**: Prisma では、`prisma/schema.prisma` ファイルでデータベーススキーマを定義します。このファイルは、データベースのテーブル構造、フィールド、リレーション、制約などを宣言的に記述します。
+**説明**: Prisma では、[`prisma/schema.prisma`](../../prisma/schema.prisma) ファイルでデータベーススキーマを定義します。このファイルは、データベースのテーブル構造、フィールド、リレーション、制約などを宣言的に記述します。
 
 **Prisma 7 でのスキーマ定義**:
 
@@ -269,7 +269,7 @@ Prisma 7 では、スキーマファイルの基本的な構造は Prisma 6 と�
 
 **このアプリでの使用箇所**:
 
-- `prisma/schema.prisma`: データベーススキーマの定義
+- [`prisma/schema.prisma`](../../prisma/schema.prisma): データベーススキーマの定義
 
 **スキーマファイルの構成**:
 
@@ -390,7 +390,7 @@ const product: Product = await prisma.product.findUnique({
 
 **このアプリでの使用箇所**:
 
-- `prisma/schema.prisma`: リレーションの定義
+- [`prisma/schema.prisma`](../../prisma/schema.prisma): リレーションの定義
 
 **1 対多のリレーション**:
 
@@ -439,9 +439,9 @@ const categories = await prisma.category.findMany({
 
 **使用箇所**:
 
-- `app/page.tsx`: 商品とカテゴリーを一緒に取得
-- `app/dashboard/page.tsx`: 商品とカテゴリーを一緒に取得
-- `app/api/products/route.ts`: 商品とカテゴリーを一緒に取得
+- [`app/page.tsx`](../../app/page.tsx): 商品とカテゴリーを一緒に取得
+- [`app/dashboard/page.tsx`](../../app/dashboard/page.tsx): 商品とカテゴリーを一緒に取得
+- [`app/api/products/route.ts`](../../app/api/products/route.ts): 商品とカテゴリーを一緒に取得
 
 ### マイグレーション
 
@@ -449,8 +449,8 @@ const categories = await prisma.category.findMany({
 
 **このアプリでの使用箇所**:
 
-- `prisma/migrations/`: マイグレーションファイルの保存場所
-- `prisma.config.ts`: マイグレーションの設定（パス、シードファイル）
+- **`prisma/migrations/`**: マイグレーションファイルの保存場所
+- [`prisma.config.ts`](../../prisma.config.ts): マイグレーションの設定（パス、シードファイル）
 
 **Prisma 7 でのマイグレーション**:
 
@@ -478,7 +478,7 @@ npm run db:migrate:deploy
 
 **Prisma 7 での変更点**:
 
-- マイグレーションの設定が `prisma.config.ts` で管理される
+- マイグレーションの設定が [`prisma.config.ts`](../../prisma.config.ts) で管理される
 - シードファイルのパスを設定ファイルで指定可能
 
 **このアプリでのマイグレーション例**:
@@ -653,7 +653,7 @@ const products = await prisma.product.findMany();
 
 **このアプリでの使用箇所**:
 
-1. **`app/page.tsx`** - カテゴリー一覧の取得
+1. **[`app/page.tsx`](../../app/page.tsx)** - カテゴリー一覧の取得
 
 ```30:34:app/page.tsx
     prisma.category.findMany({
@@ -663,7 +663,7 @@ const products = await prisma.product.findMany();
     }),
 ```
 
-2. **`app/page.tsx`** - 商品一覧の取得（カテゴリー情報を含む）
+2. **[`app/page.tsx`](../../app/page.tsx)** - 商品一覧の取得（カテゴリー情報を含む）
 
 ```36:46:app/page.tsx
     prisma.product.findMany({
@@ -679,7 +679,7 @@ const products = await prisma.product.findMany();
     }),
 ```
 
-3. **`app/dashboard/page.tsx`** - カテゴリー一覧の取得
+3. **[`app/dashboard/page.tsx`](../../app/dashboard/page.tsx)** - カテゴリー一覧の取得
 
 ```21:25:app/dashboard/page.tsx
     prisma.category.findMany({
@@ -689,7 +689,7 @@ const products = await prisma.product.findMany();
     }),
 ```
 
-4. **`app/dashboard/page.tsx`** - 商品一覧の取得（カテゴリー情報を含む）
+4. **[`app/dashboard/page.tsx`](../../app/dashboard/page.tsx)** - 商品一覧の取得（カテゴリー情報を含む）
 
 ```27:34:app/dashboard/page.tsx
     prisma.product.findMany({
@@ -702,7 +702,7 @@ const products = await prisma.product.findMany();
     }),
 ```
 
-5. **`app/api/products/route.ts`** - 商品一覧の取得（API エンドポイント）
+5. **[`app/api/products/route.ts`](../../app/api/products/route.ts)** - 商品一覧の取得（API エンドポイント）
 
 ```31:38:app/api/products/route.ts
       prisma.product.findMany({
@@ -715,7 +715,7 @@ const products = await prisma.product.findMany();
       }),
 ```
 
-6. **`app/api/categories/route.ts`** - カテゴリー一覧の取得（API エンドポイント）
+6. **[`app/api/categories/route.ts`](../../app/api/categories/route.ts)** - カテゴリー一覧の取得（API エンドポイント）
 
 ```16:20:app/api/categories/route.ts
       prisma.category.findMany({
@@ -748,7 +748,7 @@ const product = await prisma.product.findUnique({
 
 **このアプリでの使用箇所**:
 
-1. **`app/api/products/route.ts`** - カテゴリーの存在確認（商品作成時）
+1. **[`app/api/products/route.ts`](../../app/api/products/route.ts)** - カテゴリーの存在確認（商品作成時）
 
 ```87:90:app/api/products/route.ts
     () => prisma.category.findUnique({ where: { id: body.categoryId } }),
@@ -815,7 +815,7 @@ const product = await prisma.product.create({
 
 **このアプリでの使用箇所**:
 
-1. **`app/api/products/route.ts`** - 新規商品の作成
+1. **[`app/api/products/route.ts`](../../app/api/products/route.ts)** - 新規商品の作成
 
 ```115:133:app/api/products/route.ts
     () =>
@@ -873,7 +873,7 @@ const product = await prisma.product.update({
       }),
 ```
 
-2. **`app/api/products/reorder/route.ts`** - 商品の表示順序の更新（トランザクション内）
+2. **[`app/api/products/reorder/route.ts`](../../app/api/products/reorder/route.ts)** - 商品の表示順序の更新（トランザクション内）
 
 ```23:26:app/api/products/reorder/route.ts
           prisma.product.update({
@@ -930,7 +930,7 @@ await prisma.$transaction([
 
 **このアプリでの使用箇所**:
 
-1. **`app/api/products/reorder/route.ts`** - 複数商品の表示順序を一括更新
+1. **[`app/api/products/reorder/route.ts`](../../app/api/products/reorder/route.ts)** - 複数商品の表示順序を一括更新
 
 ```19:29:app/api/products/reorder/route.ts
     async () => {
@@ -978,7 +978,7 @@ const products = await prisma.product.findMany({
 
 **このアプリでの使用箇所**:
 
-1. **`app/api/products/route.ts`** - カテゴリーの存在確認（商品作成時）
+1. **[`app/api/products/route.ts`](../../app/api/products/route.ts)** - カテゴリーの存在確認（商品作成時）
 
 ```87:90:app/api/products/route.ts
     () => prisma.category.findUnique({ where: { id: body.categoryId } }),
@@ -1260,7 +1260,7 @@ const categories = await prisma.category.findMany({
       }),
 ```
 
-4. **`app/api/products/route.ts`** - 商品作成時にカテゴリー情報も含める
+4. **[`app/api/products/route.ts`](../../app/api/products/route.ts)** - 商品作成時にカテゴリー情報も含める
 
 ```115:133:app/api/products/route.ts
     () =>
@@ -1405,10 +1405,10 @@ for (const product of products) {
 
 **使用箇所**:
 
-- `app/page.tsx`: 商品一覧の取得時にカテゴリー情報も一緒に取得
-- `app/dashboard/page.tsx`: 商品一覧の取得時にカテゴリー情報も一緒に取得
-- `app/api/products/route.ts`: API エンドポイントで商品一覧を返す際にカテゴリー情報も一緒に取得
-- `app/api/products/[id]/route.ts`: 単一商品取得時にもカテゴリー情報を一緒に取得
+- [`app/page.tsx`](../../app/page.tsx): 商品一覧の取得時にカテゴリー情報も一緒に取得
+- [`app/dashboard/page.tsx`](../../app/dashboard/page.tsx): 商品一覧の取得時にカテゴリー情報も一緒に取得
+- [`app/api/products/route.ts`](../../app/api/products/route.ts): API エンドポイントで商品一覧を返す際にカテゴリー情報も一緒に取得
+- [`app/api/products/[id]/route.ts`](../../app/api/products/[id]/route.ts): 単一商品取得時にもカテゴリー情報を一緒に取得
 
 **ベストプラクティス**:
 
@@ -1553,7 +1553,7 @@ async function getProducts(page: number = 1, pageSize: number = 20) {
 
 **このアプリでの使用箇所**:
 
-- `lib/prisma.ts`: `safePrismaOperation` 関数の定義
+- [`lib/prisma.ts`](../../lib/prisma.ts): `safePrismaOperation` 関数の定義
 - すべての API Routes で使用（`app/api/**/*.ts`）
 
 **使用例**:
@@ -1625,11 +1625,11 @@ npm run db:push           # スキーマを直接プッシュ（開発環境の�
 
 ### 設定ファイルの管理
 
-**説明**: Prisma 7 では、`prisma.config.ts` で設定を管理します。これにより、スキーマファイルと設定を分離し、より柔軟な設定が可能になります。
+**説明**: Prisma 7 では、[`prisma.config.ts`](../../prisma.config.ts) で設定を管理します。これにより、スキーマファイルと設定を分離し、より柔軟な設定が可能になります。
 
 **このアプリでの実装**:
 
-- `prisma.config.ts`: スキーマパス、マイグレーションパス、シードファイルを設定
+- [`prisma.config.ts`](../../prisma.config.ts): スキーマパス、マイグレーションパス、シードファイルを設定
 - 環境変数から自動的に接続情報を読み込み
 
 ### パフォーマンスの最適化
@@ -1653,7 +1653,7 @@ npm run db:push           # スキーマを直接プッシュ（開発環境の�
 **Prisma 7 の特徴を活用**:
 
 - **アダプターシステム**: `@prisma/adapter-neon` を使用して Neon に接続
-- **設定ファイル**: `prisma.config.ts` で設定を管理
+- **設定ファイル**: [`prisma.config.ts`](../../prisma.config.ts) で設定を管理
 - **PostgreSQL 拡張機能**: `orderBy` での `nulls` オプションを使用
 - **パフォーマンス**: アダプターによる接続管理の最適化
 

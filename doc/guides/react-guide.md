@@ -92,8 +92,8 @@ Next.js App Router では、React コンポーネントはデフォルトで Ser
 
 **このアプリでの使い分け**:
 
-- **Server Components**: `app/page.tsx`（ホームページ）、`app/faq/page.tsx`（FAQ ページ）、`app/dashboard/page.tsx`（ダッシュボードページ）
-- **Client Components**: `app/components/ProductGrid.tsx`、`app/components/ProductModal.tsx`、`app/dashboard/components/DashboardContent.tsx`
+- **Server Components**: [`app/page.tsx`](../../app/page.tsx)（ホームページ）、[`app/faq/page.tsx`](../../app/faq/page.tsx)（FAQ ページ）、[`app/dashboard/page.tsx`](../../app/dashboard/page.tsx)（ダッシュボードページ）
+- **Client Components**: [`app/components/ProductGrid.tsx`](../../app/components/ProductGrid.tsx)、[`app/components/ProductModal.tsx`](../../app/components/ProductModal.tsx)、[`app/dashboard/components/DashboardContent.tsx`](../../app/dashboard/components/DashboardContent.tsx)
 
 ## React Hooks
 
@@ -102,13 +102,13 @@ React Hooks は、関数コンポーネントで状態管理や副作用を扱�
 **このアプリでの使用箇所**:
 
 - **フロントエンド（Client Components）**: React Hooks を使用して状態管理や副作用を実装
-  - `app/components/ProductGrid.tsx`: `useProductModal` カスタムフックを使用
-  - `app/components/ProductModal.tsx`: `useModal` カスタムフックを使用
-  - `app/dashboard/components/DashboardContent.tsx`: `useState` を使用
-  - `app/dashboard/components/DashboardForm.tsx`: `useState`、`useEffect` を使用
-  - `app/dashboard/hooks/useTabState.ts`: `useState`、`useEffect`、`localStorage` を使用
-  - `app/hooks/useModal.ts`: `useEffect`、`useRef` を使用
-  - `app/hooks/useProductModal.ts`: `useState`、`useRef` を使用
+  - [`app/components/ProductGrid.tsx`](../../app/components/ProductGrid.tsx): `useProductModal` カスタムフックを使用
+  - [`app/components/ProductModal.tsx`](../../app/components/ProductModal.tsx): `useModal` カスタムフックを使用
+  - [`app/dashboard/components/DashboardContent.tsx`](../../app/dashboard/components/DashboardContent.tsx): `useState` を使用
+  - [`app/dashboard/components/DashboardForm.tsx`](../../app/dashboard/components/DashboardForm.tsx): `useState`、`useEffect` を使用
+  - [`app/dashboard/hooks/useTabState.ts`](../../app/dashboard/hooks/useTabState.ts): `useState`、`useEffect`、`localStorage` を使用
+  - [`app/hooks/useModal.ts`](../../app/hooks/useModal.ts): `useEffect`、`useRef` を使用
+  - [`app/hooks/useProductModal.ts`](../../app/hooks/useProductModal.ts): `useState`、`useRef` を使用
 - **バックエンド（Server Components、API Routes）**: React Hooks は使用していない。サーバーサイドで実行されるため、状態管理は不要
 
 ### useState
@@ -620,8 +620,8 @@ function ParentComponent() {
 
 **このアプリでの使用箇所**:
 
-- `app/hooks/useModal.ts`: フックの実装
-- `app/components/ProductModal.tsx`: 商品モーダルで使用
+- [`app/hooks/useModal.ts`](../../app/hooks/useModal.ts): フックの実装
+- [`app/components/ProductModal.tsx`](../../app/components/ProductModal.tsx): 商品モーダルで使用
 
 **実装コード**:
 
@@ -683,8 +683,8 @@ export function useModal(isOpen: boolean, onClose: () => void) {
 
 **このアプリでの使用箇所**:
 
-- `app/hooks/useProductModal.ts`: フックの実装
-- `app/components/ProductGrid.tsx`: 商品グリッドで使用
+- [`app/hooks/useProductModal.ts`](../../app/hooks/useProductModal.ts): フックの実装
+- [`app/components/ProductGrid.tsx`](../../app/components/ProductGrid.tsx): 商品グリッドで使用
 
 **実装コード**:
 
@@ -772,8 +772,8 @@ export function useProductModal() {
 
 **このアプリでの使用箇所**:
 
-- `app/dashboard/hooks/useTabState.ts`: フックの実装
-- `app/dashboard/components/ProductList.tsx`: 商品一覧で使用
+- [`app/dashboard/hooks/useTabState.ts`](../../app/dashboard/hooks/useTabState.ts): フックの実装
+- [`app/dashboard/components/ProductList.tsx`](../../app/dashboard/components/ProductList.tsx): 商品一覧で使用
 
 **実装コード**:
 
@@ -816,8 +816,8 @@ export function useTabState() {
 
 **このアプリでの使用箇所**:
 
-- `app/dashboard/hooks/useTabState.ts`: フックの実装
-- `app/dashboard/components/ProductList.tsx`: 商品一覧で使用
+- [`app/dashboard/hooks/useTabState.ts`](../../app/dashboard/hooks/useTabState.ts): フックの実装
+- [`app/dashboard/components/ProductList.tsx`](../../app/dashboard/components/ProductList.tsx): 商品一覧で使用
 
 **実装コード**:
 
@@ -890,8 +890,8 @@ export function useCategoryTabState(
 
 **このアプリでの使用箇所**:
 
-- `app/dashboard/hooks/useProductReorder.ts`: フックの実装
-- `app/dashboard/components/ProductList.tsx`: 商品一覧で使用
+- [`app/dashboard/hooks/useProductReorder.ts`](../../app/dashboard/hooks/useProductReorder.ts): フックの実装
+- [`app/dashboard/components/ProductList.tsx`](../../app/dashboard/components/ProductList.tsx): 商品一覧で使用
 
 **実装コード**:
 
@@ -1044,7 +1044,7 @@ app/dashboard/page.tsx (Server Component)
 
 ### コンポーネントの実装例
 
-1. **`app/components/ProductGrid.tsx`** - 商品グリッドコンポーネント
+1. **[`app/components/ProductGrid.tsx`](../../app/components/ProductGrid.tsx)** - 商品グリッドコンポーネント
 
 ```30:78:app/components/ProductGrid.tsx
 export default function ProductGrid({ category, products }: ProductGridProps) {
@@ -1100,7 +1100,7 @@ export default function ProductGrid({ category, products }: ProductGridProps) {
 
 **説明**: `useProductModal` フックを使用してモーダルの状態を管理し、`ProductTile` と `ProductModal` コンポーネントを組み合わせて商品グリッドを実装しています。
 
-2. **`app/components/ProductModal.tsx`** - 商品モーダルコンポーネント
+2. **[`app/components/ProductModal.tsx`](../../app/components/ProductModal.tsx)** - 商品モーダルコンポーネント
 
 ```35:119:app/components/ProductModal.tsx
 export default function ProductModal({
@@ -1301,30 +1301,30 @@ export default function ProductTile({ product, onClick }: ProductTileProps) {
 
 1. **フロントエンドコンポーネント** (`app/components/`)
 
-   - `ProductGrid.tsx`: 商品グリッド（モーダル表示などのインタラクティブ機能）
-   - `ProductTile.tsx`: 商品タイル（クリックイベント処理）
-   - `ProductModal.tsx`: 商品詳細モーダル（ESC キー処理、背景スクロール無効化）
-   - `Header.tsx`: ヘッダー（Server Component）
-   - `Footer.tsx`: フッター（Server Component）
+   - [`ProductGrid.tsx`](../../app/components/ProductGrid.tsx): 商品グリッド（モーダル表示などのインタラクティブ機能）
+   - [`ProductTile.tsx`](../../app/components/ProductTile.tsx): 商品タイル（クリックイベント処理）
+   - [`ProductModal.tsx`](../../app/components/ProductModal.tsx): 商品詳細モーダル（ESC キー処理、背景スクロール無効化）
+   - [`Header.tsx`](../../app/components/Header.tsx): ヘッダー（Server Component）
+   - [`Footer.tsx`](../../app/components/Footer.tsx): フッター（Server Component）
 
 2. **ダッシュボードコンポーネント** (`app/dashboard/components/`)
 
-   - `DashboardContent.tsx`: ダッシュボードコンテンツ（フォーム送信、状態管理）
-   - `ProductList.tsx`: 商品一覧（タブ切り替え、ドラッグ&ドロップ）
-   - `CategoryTabs.tsx`: カテゴリータブ（タブ切り替え UI）
-   - `SortableProductItem.tsx`: ドラッグ&ドロップ可能な商品アイテム
+   - [`DashboardContent.tsx`](../../app/dashboard/components/DashboardContent.tsx): ダッシュボードコンテンツ（フォーム送信、状態管理）
+   - [`ProductList.tsx`](../../app/dashboard/components/ProductList.tsx): 商品一覧（タブ切り替え、ドラッグ&ドロップ）
+   - [`CategoryTabs.tsx`](../../app/dashboard/components/CategoryTabs.tsx): カテゴリータブ（タブ切り替え UI）
+   - [`SortableProductItem.tsx`](../../app/dashboard/components/SortableProductItem.tsx): ドラッグ&ドロップ可能な商品アイテム
 
 ### カスタムフック構成
 
 1. **フロントエンド用フック** (`app/hooks/`)
 
-   - `useModal.ts`: モーダルの開閉状態と ESC キー処理を管理
-   - `useProductModal.ts`: 商品モーダルの状態管理
+   - [`useModal.ts`](../../app/hooks/useModal.ts): モーダルの開閉状態と ESC キー処理を管理
+   - [`useProductModal.ts`](../../app/hooks/useProductModal.ts): 商品モーダルの状態管理
 
 2. **ダッシュボード用フック** (`app/dashboard/hooks/`)
 
-   - `useTabState.ts`: タブ状態管理（localStorage との連携）
-   - `useProductReorder.ts`: 商品順序変更ロジック（楽観的 UI 更新）
+   - [`useTabState.ts`](../../app/dashboard/hooks/useTabState.ts): タブ状態管理（localStorage との連携）
+   - [`useProductReorder.ts`](../../app/dashboard/hooks/useProductReorder.ts): 商品順序変更ロジック（楽観的 UI 更新）
 
 ### 状態管理のパターン
 
@@ -1441,7 +1441,7 @@ export default memo(ProductTile);
 - 子コンポーネントで発生したエラーをキャッチし、エラー UI を表示
 - 開発環境ではエラー詳細を表示し、本番環境ではユーザーフレンドリーなメッセージを表示
 
-**例**: `app/components/ErrorBoundary.tsx`
+**例**: [`app/components/ErrorBoundary.tsx`](../../app/components/ErrorBoundary.tsx)
 
 ```tsx
 <ErrorBoundary>

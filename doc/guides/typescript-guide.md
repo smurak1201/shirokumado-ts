@@ -70,7 +70,7 @@ TypeScript は、JavaScript に静的型付けを追加したプログラミン�
 **このアプリでの使われ方**:
 
 - フロントエンドとバックエンドの両方で TypeScript を使用し、型安全性を確保
-- `app/types.ts` と `app/dashboard/types.ts` で型定義を一元管理
+- [`app/types.ts`](../../app/types.ts) と [`app/dashboard/types.ts`](../../app/dashboard/types.ts) で型定義を一元管理
 - Prisma の型生成機能と統合し、データベーススキーマから自動的に型を生成
 - API Routes のリクエスト・レスポンスの型を定義し、エンドポイント間の型安全性を確保
 - カスタムフックやユーティリティ関数にも型を適用し、コードの品質を向上
@@ -83,7 +83,7 @@ TypeScript の設定を管理するファイルです。コンパイラオプシ
 
 **このアプリでの使用箇所**:
 
-- `tsconfig.json`: TypeScript の設定ファイル
+- [`tsconfig.json`](../../tsconfig.json): TypeScript の設定ファイル
 
 **設定内容**:
 
@@ -162,7 +162,7 @@ TypeScript の設定を管理するファイルです。コンパイラオプシ
 
 **このアプリでの使用箇所**:
 
-- `app/types.ts`: フロントエンド共通型定義
+- [`app/types.ts`](../../app/types.ts): フロントエンド共通型定義
 
 **型定義の内容**:
 
@@ -223,7 +223,7 @@ export interface ProductTile {
 
 **このアプリでの使用箇所**:
 
-- `app/dashboard/types.ts`: ダッシュボード共通型定義
+- [`app/dashboard/types.ts`](../../app/dashboard/types.ts): ダッシュボード共通型定義
 
 **型定義の内容**:
 
@@ -274,7 +274,7 @@ interface ProductGridProps {
 
 **説明**: `ProductGrid` コンポーネントの Props に型を定義しています。
 
-2. **`app/components/ProductModal.tsx`** - Props の型定義
+2. **[`app/components/ProductModal.tsx`](../../app/components/ProductModal.tsx)** - Props の型定義
 
 ```12:16:app/components/ProductModal.tsx
 interface ProductModalProps {
@@ -301,7 +301,7 @@ export function formatPrice(price: number): string {
 
 **説明**: 関数の引数と戻り値に型を指定しています。
 
-2. **`app/hooks/useProductModal.ts`** - カスタムフックの戻り値の型
+2. **[`app/hooks/useProductModal.ts`](../../app/hooks/useProductModal.ts)** - カスタムフックの戻り値の型
 
 ```12:47:app/hooks/useProductModal.ts
 export function useProductModal() {
@@ -387,7 +387,7 @@ Prisma は、データベーススキーマから TypeScript の型定義を自�
 
 ### 型生成
 
-**説明**: Prisma は、`prisma/schema.prisma` から TypeScript の型定義を自動生成します。
+**説明**: Prisma は、[`prisma/schema.prisma`](../../prisma/schema.prisma) から TypeScript の型定義を自動生成します。
 
 **型生成コマンド**:
 
@@ -438,7 +438,7 @@ API Routes では、リクエストとレスポンスの型を定義すること
 
 **このアプリでの使用箇所**:
 
-**`app/api/products/route.ts`** - POST リクエストの型
+**[`app/api/products/route.ts`](../../app/api/products/route.ts)** - POST リクエストの型
 
 ```typescript
 // app/api/products/route.ts
@@ -469,7 +469,7 @@ export const POST = withErrorHandling(async (request: NextRequest) => {
 
 **このアプリでの使用箇所**:
 
-**`lib/api-helpers.ts`** - API レスポンスの型
+**[`lib/api-helpers.ts`](../../lib/api-helpers.ts)** - API レスポンスの型
 
 ```typescript
 // lib/api-helpers.ts
@@ -486,7 +486,7 @@ export function apiSuccess<T>(data: T, status: number = 200): NextResponse {
 
 **このアプリでの使用箇所**:
 
-- `lib/errors.ts`: エラークラスの定義
+- [`lib/errors.ts`](../../lib/errors.ts): エラークラスの定義
 
 **エラークラスの例**:
 
@@ -591,7 +591,7 @@ export interface Product {
 
 **このアプリでの使用箇所**:
 
-1. **文字列リテラル型のユニオン型**: `app/dashboard/hooks/useTabState.ts`
+1. **文字列リテラル型のユニオン型**: [`app/dashboard/hooks/useTabState.ts`](../../app/dashboard/hooks/useTabState.ts)
 
 ```16:16:app/dashboard/hooks/useTabState.ts
 type TabType = "list" | "layout";
@@ -643,8 +643,8 @@ type ReadonlyProduct = Readonly<Product>;
 
 **このアプリでの使用例**:
 
-- **`Product`**: 詳細表示用の型（`app/types.ts`）
-- **`ProductTile`**: タイル表示用の型（`app/types.ts`）
+- **`Product`**: 詳細表示用の型（[`app/types.ts`](../../app/types.ts)）
+- **`ProductTile`**: タイル表示用の型（[`app/types.ts`](../../app/types.ts)）
 
 **型を分離するメリット**:
 
@@ -658,7 +658,7 @@ type ReadonlyProduct = Readonly<Product>;
 
 **原則**: 型定義を `types.ts` ファイルに集約し、重複を防ぐ
 
-**例**: `app/types.ts`、`app/dashboard/types.ts` で型定義を一元管理
+**例**: [`app/types.ts`](../../app/types.ts)、[`app/dashboard/types.ts`](../../app/dashboard/types.ts) で型定義を一元管理
 
 ### 2. null 許容型の明示
 
@@ -674,7 +674,7 @@ type ReadonlyProduct = Readonly<Product>;
 
 ### 4. 厳格な型チェック
 
-**原則**: `tsconfig.json` で厳格な型チェックを有効化
+**原則**: [`tsconfig.json`](../../tsconfig.json) で厳格な型チェックを有効化
 
 **例**: `strict: true`、`noUnusedLocals: true`、`noUncheckedIndexedAccess: true`
 
@@ -694,18 +694,18 @@ type ReadonlyProduct = Readonly<Product>;
 
 ### 型定義の構成
 
-1. **フロントエンドの型定義** (`app/types.ts`)
+1. **フロントエンドの型定義** ([`app/types.ts`](../../app/types.ts))
 
    - `Category`: カテゴリー情報
    - `Product`: 商品情報（詳細表示用）
    - `ProductTile`: 商品情報（タイル表示用）
 
-2. **ダッシュボードの型定義** (`app/dashboard/types.ts`)
+2. **ダッシュボードの型定義** ([`app/dashboard/types.ts`](../../app/dashboard/types.ts))
 
    - `Category`: カテゴリー情報（カテゴリーオブジェクトを含む）
    - `Product`: 商品情報（公開状態、日付情報を含む）
 
-3. **型エイリアス** (`app/dashboard/hooks/useTabState.ts`)
+3. **型エイリアス** ([`app/dashboard/hooks/useTabState.ts`](../../app/dashboard/hooks/useTabState.ts))
    - `TabType`: 文字列リテラル型のユニオン型（`"list" | "layout"`）
 
 ### 型安全性の実装
@@ -723,18 +723,18 @@ type ReadonlyProduct = Readonly<Product>;
 
 ### 設定ファイル
 
-- **`tsconfig.json`**: 厳格な型チェックを有効化
+- **[`tsconfig.json`](../../tsconfig.json)**: 厳格な型チェックを有効化
 - **パスエイリアス**: `@/` でプロジェクトルートを参照
 
 ## まとめ
 
 このアプリケーションでは、**TypeScript 5** を使用して以下の機能を実装しています：
 
-1. **型定義の一元管理**: `app/types.ts` と `app/dashboard/types.ts` で型定義を集約
+1. **型定義の一元管理**: [`app/types.ts`](../../app/types.ts) と [`app/dashboard/types.ts`](../../app/dashboard/types.ts) で型定義を集約
 2. **型安全性**: すべてのコンポーネント、関数、API Routes に型を適用
 3. **型エイリアス**: 文字列リテラル型のユニオン型など、`type` キーワードを使用した型定義
 4. **Prisma との統合**: データベーススキーマから自動的に型を生成
-5. **厳格な型チェック**: `tsconfig.json` で厳格な型チェックを有効化
+5. **厳格な型チェック**: [`tsconfig.json`](../../tsconfig.json) で厳格な型チェックを有効化
 6. **エラーハンドリング**: 統一されたエラークラスを使用し、型安全なエラーハンドリングを実現
 
 すべてのコードは型安全に実装され、コンパイル時に型エラーを検出できます。これにより、実行時エラーを事前に防止し、コードの品質を向上させています。

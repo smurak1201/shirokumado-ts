@@ -29,7 +29,7 @@
 
 ## ページ構成
 
-### ホームページ (`app/page.tsx`)
+### ホームページ ([`app/page.tsx`](../../app/page.tsx))
 
 トップページでは、カテゴリーごとに公開されている商品を表示します。
 
@@ -69,7 +69,7 @@ async function getPublishedProductsByCategory() {
 3. **メインコンテンツ**: カテゴリーごとの商品グリッド
 4. **フッター**: 店舗情報、地図、連絡先
 
-### FAQ ページ (`app/faq/page.tsx`)
+### FAQ ページ ([`app/faq/page.tsx`](../../app/faq/page.tsx))
 
 よくある質問ページです。静的なコンテンツを表示します。
 
@@ -122,7 +122,7 @@ app/
 
 ## コンポーネント構成
 
-### 共通型定義 (`app/types.ts`)
+### 共通型定義 ([`app/types.ts`](../../app/types.ts))
 
 フロントエンドで使用する型定義を一元管理します。
 
@@ -444,7 +444,7 @@ className = "grid grid-cols-1 md:grid-cols-3";
   - `app/page.tsx`: Prisma を使用して商品データを取得
   - `app/dashboard/page.tsx`: Prisma を使用して商品データを取得
   - `app/api/products/route.ts`: Prisma を使用して商品の CRUD 操作を実行
-  - `app/api/products/[id]/route.ts`: Prisma を使用して個別商品の操作を実行
+  - [`app/api/products/[id]/route.ts`](../../app/api/products/[id]/route.ts): Prisma を使用して個別商品の操作を実行
   - `app/api/products/reorder/route.ts`: Prisma の `$transaction` を使用して並び替えを実行
   - `app/api/categories/route.ts`: Prisma を使用してカテゴリー一覧を取得
 - **`safePrismaOperation`**: Prisma 操作のエラーハンドリング
@@ -599,8 +599,8 @@ function App() {
 
 **使用箇所**:
 
-- `app/dashboard/components/DashboardForm.tsx`: `config`モジュールの動的インポート（Client Component）
-- `app/dashboard/components/ProductEditForm.tsx`: `config`モジュールの動的インポート（Client Component）
+- [`app/dashboard/components/DashboardForm.tsx`](../../app/dashboard/components/DashboardForm.tsx): `config`モジュールの動的インポート（Client Component）
+- [`app/dashboard/components/ProductEditForm.tsx`](../../app/dashboard/components/ProductEditForm.tsx): `config`モジュールの動的インポート（Client Component）
 
 **注意**: これらは Client Components（`'use client'`）内で使用されているため、フロントエンドで実行されます。バックエンド（Server Components、API Routes）では使用されていません。
 

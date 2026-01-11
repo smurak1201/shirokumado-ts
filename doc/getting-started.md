@@ -42,125 +42,125 @@
 
 ### 1. まず理解すべきファイル
 
-#### `README.md`
+#### [`README.md`](../README.md)
 
 プロジェクトの概要、セットアップ方法、基本的な使い方を確認します。
 
-#### `doc/architecture.md`
+#### [`doc/architecture.md`](./architecture.md)
 
 アーキテクチャの全体像と設計思想を理解します。
 
-#### `doc/project-structure.md`
+#### [`doc/project-structure.md`](./project-structure.md)
 
 ディレクトリ構造と各ファイルの役割を把握します。
 
 ### 2. 設定ファイル
 
-#### `package.json`
+#### [`package.json`](../package.json)
 
 使用しているライブラリと依存関係を確認します。
 
-#### `tsconfig.json`
+#### [`tsconfig.json`](../tsconfig.json)
 
 TypeScript の設定を確認します。
 
-#### `next.config.ts`
+#### [`next.config.ts`](../next.config.ts)
 
 Next.js の設定を確認します。
 
 ### 3. 共通ライブラリ (`lib/`)
 
-#### `lib/config.ts` (重要)
+#### [`lib/config.ts`](../lib/config.ts) (重要)
 
 アプリケーション全体の設定値が集約されています。画像サイズ、キャッシュ期間、表示設定など、すべての設定がここにあります。
 
-#### `lib/errors.ts`
+#### [`lib/errors.ts`](../lib/errors.ts)
 
 エラーハンドリングの統一された方法を理解します。
 
-#### `lib/api-helpers.ts`
+#### [`lib/api-helpers.ts`](../lib/api-helpers.ts)
 
 API Routes で使用する共通のヘルパー関数を確認します。
 
-#### `lib/prisma.ts`
+#### [`lib/prisma.ts`](../lib/prisma.ts)
 
 データベース接続の設定と使用方法を理解します。
 
-#### `lib/blob.ts`
+#### [`lib/blob.ts`](../lib/blob.ts)
 
 画像アップロードの仕組みを理解します。
 
 ### 4. データベーススキーマ
 
-#### `prisma/schema.prisma`
+#### [`prisma/schema.prisma`](../prisma/schema.prisma)
 
 データベースの構造を理解します。どのようなテーブルがあり、どのような関係があるかを確認します。
 
 ### 5. API Routes (`app/api/`)
 
-#### `app/api/products/route.ts`
+#### [`app/api/products/route.ts`](../app/api/products/route.ts)
 
 商品一覧の取得と作成の API を確認します。
 
-#### `app/api/products/[id]/route.ts`
+#### [`app/api/products/[id]/route.ts`](../app/api/products/[id]/route.ts)
 
 個別商品の取得、更新、削除の API を確認します。
 
-#### `app/api/products/upload/route.ts`
+#### [`app/api/products/upload/route.ts`](../app/api/products/upload/route.ts)
 
 画像アップロードの API を確認します。
 
-#### `app/api/products/reorder/route.ts`
+#### [`app/api/products/reorder/route.ts`](../app/api/products/reorder/route.ts)
 
 商品の順序変更の API を確認します。
 
-#### `app/api/categories/route.ts`
+#### [`app/api/categories/route.ts`](../app/api/categories/route.ts)
 
 カテゴリー一覧の取得 API を確認します。
 
 ### 6. ダッシュボード機能 (`app/dashboard/`)
 
-#### `app/dashboard/types.ts` (重要)
+#### [`app/dashboard/types.ts`](../app/dashboard/types.ts) (重要)
 
 ダッシュボードで使用する型定義を確認します。`Category`と`Product`の構造を理解します。
 
-#### `app/dashboard/page.tsx`
+#### [`app/dashboard/page.tsx`](../app/dashboard/page.tsx)
 
 ダッシュボードページのエントリーポイントです。Server Component としてデータを取得し、Client Component に渡します。
 
-#### `app/dashboard/components/DashboardContent.tsx`
+#### [`app/dashboard/components/DashboardContent.tsx`](../app/dashboard/components/DashboardContent.tsx)
 
 ダッシュボードのメインコンテナです。商品一覧とフォームの状態を管理します。
 
-#### `app/dashboard/components/ProductList.tsx`
+#### [`app/dashboard/components/ProductList.tsx`](../app/dashboard/components/ProductList.tsx)
 
 商品一覧の表示と配置変更機能を実装しています。タブ切り替え、検索、ドラッグ&ドロップのロジックが含まれます。
 
-#### `app/dashboard/components/DashboardForm.tsx`
+#### [`app/dashboard/components/DashboardForm.tsx`](../app/dashboard/components/DashboardForm.tsx)
 
 新規商品登録フォームです。画像アップロード、バリデーション、フォーム送信の処理を確認します。
 
-#### `app/dashboard/components/ProductEditForm.tsx`
+#### [`app/dashboard/components/ProductEditForm.tsx`](../app/dashboard/components/ProductEditForm.tsx)
 
 商品編集フォームです。既存商品の更新処理を確認します。
 
-#### `app/dashboard/components/CategoryTabs.tsx`
+#### [`app/dashboard/components/CategoryTabs.tsx`](../app/dashboard/components/CategoryTabs.tsx)
 
 カテゴリータブの UI コンポーネントです。スクロール可能なタブの実装を確認します。
 
-#### `app/dashboard/components/SortableProductItem.tsx`
+#### [`app/dashboard/components/SortableProductItem.tsx`](../app/dashboard/components/SortableProductItem.tsx)
 
 ドラッグ&ドロップ可能な商品アイテムコンポーネントです。
 
-#### `app/dashboard/hooks/useTabState.ts`
+#### [`app/dashboard/hooks/useTabState.ts`](../app/dashboard/hooks/useTabState.ts)
 
 タブ状態管理のカスタムフックです。localStorage との連携方法を確認します。
 
-#### `app/dashboard/hooks/useProductReorder.ts`
+#### [`app/dashboard/hooks/useProductReorder.ts`](../app/dashboard/hooks/useProductReorder.ts)
 
 商品順序変更のロジックを実装したカスタムフックです。楽観的 UI 更新の実装を確認します。
 
-#### `app/dashboard/utils/productUtils.ts`
+#### [`app/dashboard/utils/productUtils.ts`](../app/dashboard/utils/productUtils.ts)
 
 商品のグループ化やフィルタリングなどのユーティリティ関数です。
 
@@ -228,15 +228,15 @@ app/dashboard/
 - **`hooks/`**: 状態管理や副作用をカスタムフックに分離（再利用可能）
 - **`utils/`**: 純粋関数として実装可能なビジネスロジック（テストしやすい）
 
-#### `app/page.tsx` - ホームページ
+#### [`app/page.tsx`](../app/page.tsx) - ホームページ
 
 トップページのコンポーネントです。Server Component として実装されています。カテゴリーごとに公開されている商品を表示します。
 
-#### `app/faq/page.tsx` - FAQ ページ
+#### [`app/faq/page.tsx`](../app/faq/page.tsx) - FAQ ページ
 
 よくある質問ページです。Server Component として実装されています。
 
-#### `app/types.ts` - フロントエンド共通型定義
+#### [`app/types.ts`](../app/types.ts) - フロントエンド共通型定義
 
 フロントエンドで使用する型定義を一元管理します。
 
@@ -252,8 +252,8 @@ app/dashboard/
 
 **主要なフック**:
 
-- **`useModal.ts`**: モーダルの開閉状態と ESC キー処理を管理
-- **`useProductModal.ts`**: 商品モーダルの状態管理
+- **[`useModal.ts`](../app/hooks/useModal.ts)**: モーダルの開閉状態と ESC キー処理を管理
+- **[`useProductModal.ts`](../app/hooks/useProductModal.ts)**: 商品モーダルの状態管理
 
 #### `app/utils/` - ユーティリティ関数
 
@@ -261,7 +261,7 @@ app/dashboard/
 
 **主要な関数**:
 
-- **`format.ts`**: フォーマット関数（価格フォーマットなど）
+- **[`format.ts`](../app/utils/format.ts)**: フォーマット関数（価格フォーマットなど）
 
 #### `app/components/` - フロントエンド共通コンポーネント
 
@@ -269,17 +269,17 @@ app/dashboard/
 
 **主要なコンポーネント**:
 
-- **`Header.tsx`**: ヘッダーコンポーネント（ロゴ、Instagram リンク、ナビゲーション）
-- **`Footer.tsx`**: フッターコンポーネント（店舗情報、地図、連絡先）
-- **`ProductGrid.tsx`**: カテゴリーごとの商品グリッド表示（Client Component）
-- **`ProductTile.tsx`**: 商品タイルコンポーネント（個別商品の表示）
-- **`ProductModal.tsx`**: 商品詳細モーダルコンポーネント
+- **[`Header.tsx`](../app/components/Header.tsx)**: ヘッダーコンポーネント（ロゴ、Instagram リンク、ナビゲーション）
+- **[`Footer.tsx`](../app/components/Footer.tsx)**: フッターコンポーネント（店舗情報、地図、連絡先）
+- **[`ProductGrid.tsx`](../app/components/ProductGrid.tsx)**: カテゴリーごとの商品グリッド表示（Client Component）
+- **[`ProductTile.tsx`](../app/components/ProductTile.tsx)**: 商品タイルコンポーネント（個別商品の表示）
+- **[`ProductModal.tsx`](../app/components/ProductModal.tsx)**: 商品詳細モーダルコンポーネント
 
 **アイコンコンポーネント** (`components/icons/`):
 
-- **`CloseIcon.tsx`**: 閉じるアイコンコンポーネント
+- **[`CloseIcon.tsx`](../app/components/icons/CloseIcon.tsx)**: 閉じるアイコンコンポーネント
 
-#### `app/layout.tsx` - ルートレイアウト
+#### [`app/layout.tsx`](../app/layout.tsx) - ルートレイアウト
 
 全ページ共通のレイアウトです。メタデータやフォントの設定など、全ページで共通の要素を定義します。
 
@@ -289,17 +289,17 @@ app/dashboard/
 
 **主要なファイル**:
 
-- **`config.ts`**: アプリケーション設定の一元管理
+- **[`config.ts`](../lib/config.ts)**: アプリケーション設定の一元管理
   - 画像サイズ、圧縮設定
   - Blob Storage 設定
   - API キャッシュ設定
   - UI 表示設定
-- **`prisma.ts`**: データベース接続とエラーハンドリング
-- **`blob.ts`**: Vercel Blob Storage への画像アップロード・削除
-- **`errors.ts`**: 統一されたエラークラス（ValidationError, NotFoundError など）
-- **`api-helpers.ts`**: API Routes 用ヘルパー（`withErrorHandling`, `apiSuccess` など）
-- **`image-compression.ts`**: クライアントサイドでの画像圧縮（Canvas API を使用）
-- **`product-utils.ts`**: 商品関連ユーティリティ（公開状態の計算など）
+- **[`prisma.ts`](../lib/prisma.ts)**: データベース接続とエラーハンドリング
+- **[`blob.ts`](../lib/blob.ts)**: Vercel Blob Storage への画像アップロード・削除
+- **[`errors.ts`](../lib/errors.ts)**: 統一されたエラークラス（ValidationError, NotFoundError など）
+- **[`api-helpers.ts`](../lib/api-helpers.ts)**: API Routes 用ヘルパー（`withErrorHandling`, `apiSuccess` など）
+- **[`image-compression.ts`](../lib/image-compression.ts)**: クライアントサイドでの画像圧縮（Canvas API を使用）
+- **[`product-utils.ts`](../lib/product-utils.ts)**: 商品関連ユーティリティ（公開状態の計算など）
 
 **設計思想**:
 
@@ -311,7 +311,7 @@ app/dashboard/
 
 Prisma の設定とスキーマを管理します。
 
-- **`schema.prisma`**: データベーススキーマ定義
+- **[`schema.prisma`](../prisma/schema.prisma)**: データベーススキーマ定義
   - テーブル構造
   - リレーション
   - インデックス
@@ -332,17 +332,17 @@ Prisma の設定とスキーマを管理します。
 
 プロジェクトのドキュメントを配置します。
 
-- **`getting-started.md`**: コードリーディングガイド（このファイル）
-- **`architecture.md`**: アーキテクチャと設計思想
-- **`project-structure.md`**: プロジェクト構造の詳細
-- **`development-guide.md`**: 開発ガイドライン（コーディング標準とベストプラクティスを含む）
-- **`tech-stack.md`**: 技術スタックの詳細
-- **`guides/frontend-guide.md`**: フロントエンドガイド
-- **`guides/dashboard-guide.md`**: ダッシュボードガイド
-- **`guides/prisma-guide.md`**: Prisma ガイド
-- **`guides/app-router-guide.md`**: App Router ガイド
-- **`setup-prisma-blob.md`**: Prisma & Blob セットアップガイド
-- **`deployment.md`**: デプロイメントガイド
+- **[`getting-started.md`](./getting-started.md)**: コードリーディングガイド（このファイル）
+- **[`architecture.md`](./architecture.md)**: アーキテクチャと設計思想
+- **[`project-structure.md`](./project-structure.md)**: プロジェクト構造の詳細
+- **[`development-guide.md`](./development-guide.md)**: 開発ガイドライン（コーディング標準とベストプラクティスを含む）
+- **[`tech-stack.md`](./tech-stack.md)**: 技術スタックの詳細
+- **[`guides/frontend-guide.md`](./guides/frontend-guide.md)**: フロントエンドガイド
+- **[`guides/dashboard-guide.md`](./guides/dashboard-guide.md)**: ダッシュボードガイド
+- **[`guides/prisma-guide.md`](./guides/prisma-guide.md)**: Prisma ガイド
+- **[`guides/app-router-guide.md`](./guides/app-router-guide.md)**: App Router ガイド
+- **[`setup-prisma-blob.md`](./setup-prisma-blob.md)**: Prisma & Blob セットアップガイド
+- **[`deployment.md`](./deployment.md)**: デプロイメントガイド
 
 ## コードの読み方
 
@@ -354,7 +354,7 @@ Prisma の設定とスキーマを管理します。
 - データベースへの直接アクセスが可能
 - `'use client'`ディレクティブがない
 
-**例**: `app/dashboard/page.tsx`
+**例**: [`app/dashboard/page.tsx`](../app/dashboard/page.tsx)
 
 ```typescript
 // Server Component
@@ -370,7 +370,7 @@ export default async function DashboardPage() {
 - インタラクティブな機能（useState、useEffect など）が必要な場合に使用
 - `'use client'`ディレクティブが必要
 
-**例**: `app/dashboard/components/ProductList.tsx`
+**例**: [`app/dashboard/components/ProductList.tsx`](../app/dashboard/components/ProductList.tsx)
 
 ```typescript
 "use client"; // Client Component
@@ -391,39 +391,39 @@ export default function ProductList() {
 
 型定義は以下の場所にあります：
 
-- **共通型**: `app/dashboard/types.ts`
-- **Prisma 型**: `prisma/schema.prisma`から自動生成
+- **共通型**: [`app/dashboard/types.ts`](../app/dashboard/types.ts)
+- **Prisma 型**: [`prisma/schema.prisma`](../prisma/schema.prisma)から自動生成
 - **関数の型**: 各ファイル内で定義
 
 ### エラーハンドリングの確認
 
 エラーハンドリングは統一されています：
 
-- **API Routes**: `lib/api-helpers.ts`の`withErrorHandling`を使用
-- **エラークラス**: `lib/errors.ts`で定義
-- **データベース操作**: `lib/prisma.ts`の`safePrismaOperation`を使用
+- **API Routes**: [`lib/api-helpers.ts`](../lib/api-helpers.ts)の`withErrorHandling`を使用
+- **エラークラス**: [`lib/errors.ts`](../lib/errors.ts)で定義
+- **データベース操作**: [`lib/prisma.ts`](../lib/prisma.ts)の`safePrismaOperation`を使用
 
 ## 理解を深めるためのヒント
 
 ### 1. 設定値の確認
 
-`lib/config.ts`を確認すると、アプリケーション全体の設定が一覧できます。
+[`lib/config.ts`](../lib/config.ts)を確認すると、アプリケーション全体の設定が一覧できます。
 
 ### 2. 型定義の追跡
 
-`app/dashboard/types.ts`から始めて、各コンポーネントでどのように型が使用されているかを追跡します。
+[`app/dashboard/types.ts`](../app/dashboard/types.ts)から始めて、各コンポーネントでどのように型が使用されているかを追跡します。
 
 ### 3. データフローの追跡
 
-1. `app/dashboard/page.tsx`でデータ取得
-2. `app/dashboard/components/DashboardContent.tsx`で状態管理
+1. [`app/dashboard/page.tsx`](../app/dashboard/page.tsx)でデータ取得
+2. [`app/dashboard/components/DashboardContent.tsx`](../app/dashboard/components/DashboardContent.tsx)で状態管理
 3. 各子コンポーネントで表示
 
 ### 4. API 呼び出しの追跡
 
 1. Client Component で`fetch`を呼び出す
 2. `app/api/`の対応する`route.ts`で処理
-3. `lib/prisma.ts`でデータベース操作
+3. [`lib/prisma.ts`](../lib/prisma.ts)でデータベース操作
 
 ## 参考リンク
 
