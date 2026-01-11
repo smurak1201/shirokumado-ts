@@ -25,19 +25,21 @@
 
 ### Next.js App Router
 
-#### Server Components を優先
+#### Server Components を優先し、直接データフェッチ
 
-**推奨**: デフォルトで Server Components を使用します。
+**推奨**: デフォルトで Server Components を使用し、データベースに直接アクセスしてデータを取得します。
 
 ```typescript
-// 良い例: Server Component
+// 良い例: Server Componentで直接データフェッチ
 export default async function ProductPage({
   params,
 }: {
   params: { id: string };
 }) {
+  // データベースに直接アクセス
   const product = await prisma.product.findUnique({
     where: { id: params.id },
+    include: { category: true },
   });
 
   if (!product) {
@@ -50,80 +52,47 @@ export default async function ProductPage({
 
 **理由**:
 
-- **パフォーマンス**: サーバーサイドでレンダリングされるため、初期 HTML が生成され、SEO に有利
+- **パフォーマンス**: サーバーサイドでレンダリングされ、初期 HTML が生成されるため、SEO に有利。データベースに直接アクセスでき、API 経由のオーバーヘッドがない
 - **バンドルサイズ**: クライアント側の JavaScript が不要なため、バンドルサイズが削減される
-- **データフェッチ**: データベースに直接アクセスでき、API 経由の不要なネットワークリクエストを回避
+- **初期レンダリング**: データが含まれた HTML が最初から生成され、ローディング時間が短縮
+- **シンプルなコード**: `useState`や`useEffect`が不要で、コードが簡潔になる
+- **型安全性**: Prisma の型推論を直接活用でき、型安全性が向上
 - **セキュリティ**: 機密情報をクライアントに送信せずに済む
 
-**避ける**: 不要な Client Components。
+**避ける**: 不要な Client Components とクライアントサイドでのデータフェッチ。
 
 ```typescript
-// 悪い例: 不要なClient Component
+// 悪い例: 不要なClient ComponentでAPI経由のフェッチ
 "use client";
 export default function ProductPage({ params }: { params: { id: string } }) {
   const [product, setProduct] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     fetch(`/api/products/${params.id}`)
       .then((res) => res.json())
-      .then(setProduct);
+      .then((data) => {
+        setProduct(data);
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.error(error);
+        setLoading(false);
+      });
   }, [params.id]);
 
-  return product ? <ProductDetails product={product} /> : <Loading />;
+  if (loading) return <Loading />;
+  if (!product) return <NotFound />;
+
+  return <ProductDetails product={product} />;
 }
 ```
 
 **理由**:
 
-- **パフォーマンス**: クライアント側でデータフェッチが発生し、ローディング時間が増加
+- **パフォーマンス**: クライアント側でデータフェッチが発生し、API 経由の追加リクエストによりレイテンシが増加
 - **SEO**: 初期 HTML にコンテンツが含まれないため、検索エンジンでの評価が低下
-- **バンドルサイズ**: 不要な JavaScript がクライアントに送信され、バンドルサイズが増加
-- **ネットワーク**: API 経由の追加リクエストが発生し、レイテンシが増加
-
-#### データフェッチング
-
-**推奨**: Server Components で直接データフェッチ。
-
-```typescript
-// 良い例: Server Componentで直接フェッチ
-export default async function ProductsPage() {
-  const products = await prisma.product.findMany({
-    where: { published: true },
-    orderBy: { createdAt: "desc" },
-  });
-
-  return <ProductList products={products} />;
-}
-```
-
-**理由**:
-
-- **パフォーマンス**: データベースに直接アクセスでき、API 経由のオーバーヘッドがない
-- **初期レンダリング**: データが含まれた HTML が最初から生成され、ローディング時間が短縮
-- **シンプルなコード**: `useState`や`useEffect`が不要で、コードが簡潔になる
-- **型安全性**: Prisma の型推論を直接活用でき、型安全性が向上
-
-**避ける**: クライアントサイドでの不要なフェッチ。
-
-```typescript
-// 悪い例: クライアントサイドでフェッチ
-"use client";
-export default function ProductsPage() {
-  const [products, setProducts] = useState([]);
-
-  useEffect(() => {
-    fetch("/api/products")
-      .then((res) => res.json())
-      .then(setProducts);
-  }, []);
-
-  return <ProductList products={products} />;
-}
-```
-
-**理由**:
-
-- **パフォーマンス**: API 経由の追加リクエストが発生し、レイテンシが増加
+- **バンドルサイズ**: 不要な JavaScript（`useState`、`useEffect`など）がクライアントに送信され、バンドルサイズが増加
 - **ローディング状態**: 初期レンダリング時にデータがなく、ローディング状態の管理が必要
 - **複雑なコード**: `useState`、`useEffect`、エラーハンドリングなどのコードが増加
 - **型安全性**: API レスポンスの型定義が必要で、型安全性の確保が複雑になる
