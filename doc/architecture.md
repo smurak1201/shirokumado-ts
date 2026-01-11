@@ -267,7 +267,7 @@ Client Component (状態更新)
 
 ## 設定管理
 
-### 一元管理 ([`lib/config.ts`](../lib/config.ts))
+### 一元管理
 
 すべての設定値を[`lib/config.ts`](../lib/config.ts) (行 7-105) に集約：
 
@@ -305,7 +305,7 @@ export const config = {
 
 ## 型定義の管理
 
-### 共通型定義 ([`app/dashboard/types.ts`](../app/dashboard/types.ts))
+### 共通型定義
 
 機能内で使用する型を一元管理：
 
@@ -332,7 +332,7 @@ export interface Product {
 
 ## エラーハンドリング
 
-### 統一されたエラークラス ([`lib/errors.ts`](../lib/errors.ts))
+### 統一されたエラークラス
 
 [`lib/errors.ts`](../lib/errors.ts) (行 45-57)
 
