@@ -391,19 +391,20 @@ JSX では、HTML の属性と同様に props を指定できます。HTML と�
 <input type="checkbox" checked={isChecked} />
 ```
 
-**参照**: [`app/components/ProductTile.ts`](../../app/components/ProductTile.ts)
+**参照**: [`app/components/ProductTile.tsx`](../../app/components/ProductTile.tsx) (行 38-46)
+
+```tsx
 <button
-onClick={onClick}
-className="group w-full overflow-hidden rounded-lg border border-gray-100 bg-white shadow-sm"
-aria-label={`${product.name}の詳細を見る`}
-
-> {/_ ... _/}
-
-````tsx
+  onClick={onClick}
+  className="group w-full overflow-hidden rounded-lg border border-gray-100 bg-white shadow-sm"
+  aria-label={`${product.name}の詳細を見る`}
+>
+  {/* ... */}
 </button>
-
+```
 
 **参照**: [`app/components/ProductTile.ts`](../../app/components/ProductTile.ts)
+
 ### 子要素
 
 JSX では、要素の中に他の要素やテキストを配置できます。
@@ -431,32 +432,30 @@ function Container({ children }) {
   <h1>Title</h1>
   <p>Description</p>
 </Container>;
-````
+```
 
-**参照**: [`app/layout.ts`](../../app/layout.ts)
-export default function RootLayout({
-children,
-}: Readonly<{
-children: React.ReactNode;
-}>) {
-return (
+**参照**: [`app/layout.tsx`](../../app/layout.tsx) (行 24-37)
 
-````tsx
-    <html lang="ja">
 ```tsx
+export default function RootLayout({
+  children,
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
+  return (
+    <html lang="ja">
       <body className={`${notoSansJP.variable} antialiased`}>
         {children}
-```tsx
         <Analytics />
-```tsx
       </body>
-```tsx
     </html>
   );
 }
+```
 
+**参照**: [`app/components/ErrorBoundary.tsx`](../../app/components/ErrorBoundary.tsx)
 
-**参照**: [`app/layout.ts`](../../app/layout.ts)
+```tsx
 interface ErrorBoundaryProps {
   children: ReactNode; // エラーバウンダリーで囲む子コンポーネント
   fallback?: ReactNode; // エラー発生時に表示するフォールバックUI（オプション）
@@ -476,7 +475,7 @@ export default class ErrorBoundary extends Component<
 
 
 **参照**: [`app/components/ErrorBoundary.ts`](../../app/components/ErrorBoundary.ts)
-````
+```
 
 **重要なポイント**:
 
@@ -498,13 +497,13 @@ const element = <h1>1 + 1 = {1 + 1}</h1>;
 
 **参照**: [`app/components/ProductGrid.ts`](../../app/components/ProductGrid.ts)
 
-````
 **JSX 式の制限**:
 
 JSX では、以下のような値は直接レンダリングできません：
 
 const user = { name: "John", age: 30 };
-```tsx
+
+````tsx
 <div>{user}</div> // エラー: Objects are not valid as a React child
 
 // 正しい: オブジェクトのプロパティをレンダリング
@@ -577,14 +576,12 @@ JSX では、配列をマップしてリストをレンダリングできます�
 ```tsx
 <ul>
   {items.map((item, index) => (
-```tsx
     <li key={index}>{item}</li>
   ))}
-```tsx
 </ul>
 ````
 
-**参照**: [`app/components/ProductGrid.ts`](../../app/components/ProductGrid.ts)
+**参照**: [`app/components/ProductGrid.tsx`](../../app/components/ProductGrid.tsx)
 {
 products.map((product) => <ProductTile key={product.id} product={product} />);
 }
@@ -596,21 +593,21 @@ products.map((product) => <ProductTile key={product.id} product={product} />);
 
 空配列は何も表示しませんが、エラーにはなりません。
 
-````jsx
+```jsx
 // 何も表示されない（エラーにはならない）
-```tsx
+const emptyProducts: Product[] = [];
 <div>
   {emptyProducts.map((product) => (
-```tsx
     <ProductTile key={product.id} product={product} />
   ))}
-```tsx
 </div>;
+```
 
 // 空配列の場合にメッセージを表示する
 {
-  emptyProducts.length === 0 ? (
-```tsx
+emptyProducts.length === 0 ? (
+
+````tsx
     <p>商品がありません</p>
   ) : (
     emptyProducts.map((product) => (
@@ -715,7 +712,7 @@ function ProductTile({ product, onClick }: ProductTileProps) {
 }
 
 
-**参照**: [`app/components/ProductTile.ts`](../../app/components/ProductTile.ts)
+**参照**: [`app/components/ProductTile.tsx`](../../app/components/ProductTile.tsx)
 
 ````
 
@@ -735,26 +732,21 @@ return <section className="mb-8 md:mb-16 lg:mb-12">{/_ ... _/}</section>;
 **参照**: [`app/components/ProductGrid.ts`](../../app/components/ProductGrid.ts)
 **三項演算子**:
 
-**参照**: [`app/components/ProductTile.ts`](../../app/components/ProductTile.ts)
+**参照**: [`app/components/ProductTile.tsx`](../../app/components/ProductTile.tsx)
 
+```tsx
 {
-product.imageUrl ? (
-
-````tsx
-<div className="relative aspect-square w-full">
-```tsx
-<Image src={product.imageUrl} alt={product.name} fill />
-```tsx
-</div>
-) : (
-```tsx
-<div className="aspect-square w-full bg-gray-100" />
-);
+  product.imageUrl ? (
+    <div className="relative aspect-square w-full">
+      <Image src={product.imageUrl} alt={product.name} fill />
+    </div>
+  ) : (
+    <div className="aspect-square w-full bg-gray-100" />
+  );
 }
+```
 
-**参照**: [`app/components/ProductTile.ts`](../../app/components/ProductTile.ts)
-
-````
+**参照**: [`app/components/ProductTile.tsx`](../../app/components/ProductTile.tsx)
 
 **論理 AND 演算子**:
 
@@ -792,10 +784,11 @@ L: {formatPrice(product.priceL)}
 
 ### リストのレンダリング
 
-````tsx
+**参照**: [`app/components/ProductGrid.tsx`](../../app/components/ProductGrid.tsx)
+
+```tsx
 <div className="grid grid-cols-3 gap-3 md:gap-8 lg:gap-6">
   {products.map((product) => (
-```tsx
     <ProductTile
       key={product.id}
       product={{
@@ -806,11 +799,8 @@ L: {formatPrice(product.priceL)}
       onClick={() => handleTileClick(product)}
     />
   ))}
-```tsx
 </div>
-
-
-**参照**: [`app/components/ProductGrid.ts`](../../app/components/ProductGrid.ts)
+```
 
 **重要なポイント**:
 
@@ -825,11 +815,11 @@ L: {formatPrice(product.priceL)}
 ```tsx
 <button onClick={onClick} className="group w-full overflow-hidden rounded-lg">
   {/* ... */}
-```tsx
 </button>
+```
 
+**参照**: [`app/components/ProductTile.tsx`](../../app/components/ProductTile.tsx)
 
-**参照**: [`app/components/ProductTile.ts`](../../app/components/ProductTile.ts)
 ````
 
 **インライン関数**:
@@ -853,46 +843,34 @@ onClick={() => handleTileClick(product)}
 
 複数の要素を返す必要がある場合、フラグメント（`<>...</>` または `<React.Fragment>...</React.Fragment>`）を使用します。
 
-````tsx
+**参照**: [`app/components/ProductGrid.tsx`](../../app/components/ProductGrid.tsx) (行 50-83)
+
+```tsx
 return (
-```tsx
   <>
-```tsx
     <section className="mb-8 md:mb-16 lg:mb-12">
       {/* カテゴリータイトル */}
-```tsx
       <div className="mb-4 border-b border-gray-200 pb-2">
-```tsx
         <h2>{category.name}</h2>
-```tsx
       </div>
 
       {/* 商品グリッド */}
-```tsx
       <div className="grid grid-cols-3 gap-3">
         {products.map((product) => (
-```tsx
           <ProductTile key={product.id} product={product} onClick={...} />
         ))}
-```tsx
       </div>
-```tsx
     </section>
 
     {/* モーダルウィンドウ */}
-```tsx
     <ProductModal
       product={selectedProduct}
       isOpen={isModalOpen}
       onClose={handleCloseModal}
     />
-```tsx
   </>
 );
-
-
-
-**参照**: [`app/components/ProductGrid.ts`](../../app/components/ProductGrid.ts)
+````
 
 **フラグメントの利点**:
 
@@ -905,46 +883,38 @@ return (
 JSX では、`{/* ... */}` の形式でコメントを記述します。
 
 return (
-```tsx
-  <>
-```tsx
-    <section className="mb-8 md:mb-16 lg:mb-12">
-      {/* カテゴリータイトル */}
-```tsx
-      <div className="mb-4 border-b border-gray-200 pb-2">
-```tsx
-        <h2>{category.name}</h2>
-```tsx
-      </div>
+<>
+<section className="mb-8 md:mb-16 lg:mb-12">
+{/_ カテゴリータイトル _/}
+<div className="mb-4 border-b border-gray-200 pb-2">
+<h2>{category.name}</h2>
+</div>
 
       {/* 商品グリッド（常に3列） */}
-```tsx
       <div className="grid grid-cols-3 gap-3">
         {products.map((product) => (
-```tsx
           <ProductTile key={product.id} product={product} onClick={...} />
         ))}
-```tsx
       </div>
-```tsx
     </section>
 
     {/* モーダルウィンドウ */}
-```tsx
     <ProductModal
       product={selectedProduct}
       isOpen={isModalOpen}
       onClose={handleCloseModal}
     />
-```tsx
-  </>
+
+</>
 );
 
+```
 
 
-**参照**: [`app/components/ProductGrid.ts`](../../app/components/ProductGrid.ts)
 
-````
+**参照**: [`app/components/ProductGrid.tsx`](../../app/components/ProductGrid.tsx)
+
+```
 
 ## JSX のベストプラクティス
 
@@ -1034,9 +1004,9 @@ function ProductTile({ product, onClick }: ProductTileProps) {
 
 **間違い**:
 
+```tsx
+// 悪い例: 複雑な条件分岐
 ````
-
-**間違い**:
 
 ### 4. 条件付きレンダリングでの `false` の扱い
 
@@ -1062,7 +1032,7 @@ count && <div>Count: {count}</div>;
 count > 0 && <div>Count: {count}</div>;
 }
 {
-/_ count が 0 の場合、何も表示されない _/
+// count が 0 の場合、何も表示されない
 }
 
 ````
@@ -1072,26 +1042,24 @@ JSX では、`null` と `undefined` は何も表示しませんが、エラー�
 
 ```tsx
 <div>{null}</div>
-```tsx
 <div>{undefined}</div>
-```tsx
 <div>{null && <div>Content</div>}</div>
+````
 
 // コンポーネントから null を返すことで、何も表示しない
 function ConditionalComponent({ isVisible }: { isVisible: boolean }) {
-  if (!isVisible) {
-    return null; // 何も表示しない
-  }
-  return <div>Content</div>;
+if (!isVisible) {
+return null; // 何も表示しない
+}
+return <div>Content</div>;
 }
 if (!isOpen || !product) {
-  return null; // モーダルを表示しない
+return null; // モーダルを表示しない
 }
 
 if (products.length === 0) {
-  return null; // 商品がない場合は何も表示しない
+return null; // 商品がない場合は何も表示しない
 }
-
 
 **参照**: [`app/components/ProductGrid.ts`](../../app/components/ProductGrid.ts)
 
@@ -1121,4 +1089,4 @@ const handleClick = () => console.log("clicked");
 
   <ProductTile product={product} />  {/* key がない */}
 ))}
-````
+```

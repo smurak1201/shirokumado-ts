@@ -449,15 +449,13 @@ export const POST = withErrorHandling(async (request: NextRequest) => {
 
 **このアプリでの使用箇所**:
 
-**[`lib/api-helpers.ts`](../../lib/api-helpers.ts)** - API レスポンスの型
+**参照**: [`lib/api-helpers.ts`](../../lib/api-helpers.ts)
 
 ```typescript
 export function apiSuccess<T>(data: T, status: number = 200): NextResponse {
   return NextResponse.json({ data }, { status });
 }
 ```
-
-**参照**: [`lib/api-helpers.ts`](../../lib/api-helpers.ts)
 
 ## エラーハンドリングでの型安全性
 
@@ -487,11 +485,12 @@ export class NotFoundError extends Error {
 
 **参照**: [`lib/errors.ts`](../../lib/errors.ts)
 
+```typescript
 if (!product) {
-throw new NotFoundError("商品");
+  throw new NotFoundError("商品");
 }
+```
 
-````
 - **エラーの種類を明確化**: エラーの種類を型で区別
 - **IDE サポート**: エラーの種類に応じた処理を自動補完
 - **一貫性**: 統一されたエラーハンドリングにより、コードの一貫性を確保
@@ -507,7 +506,7 @@ TypeScript は、型を明示的に指定しなくても、コンパイラが型
 ```typescript
 const products = await prisma.product.findMany();
 // products の型は Product[] と推論される
-````
+```
 
 **このアプリでの使用箇所**:
 
