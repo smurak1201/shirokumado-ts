@@ -28,6 +28,8 @@ export const GET = withErrorHandling(async () => {
   );
 
   const response = NextResponse.json({ categories }, { status: 200 });
+  // Content-Typeヘッダーを設定（日本語を含むJSONの文字化けを防ぐ）
+  response.headers.set('Content-Type', 'application/json; charset=utf-8');
   // キャッシュヘッダーを設定（設定ファイルから読み込み）
   response.headers.set(
     'Cache-Control',

@@ -40,6 +40,8 @@ export const GET = withErrorHandling(async () => {
   );
 
   const response = NextResponse.json({ products }, { status: 200 });
+  // Content-Typeヘッダーを設定（日本語を含むJSONの文字化けを防ぐ）
+  response.headers.set('Content-Type', 'application/json; charset=utf-8');
   // キャッシュヘッダーを設定
   // s-maxage: CDNでのキャッシュ期間
   // stale-while-revalidate: キャッシュが古くなっても、再検証中は古いデータを返す
