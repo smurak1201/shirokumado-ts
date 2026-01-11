@@ -749,7 +749,7 @@ export function ProductPage({ product }: { product: Product }) {
 - **Props 型**: `ComponentNameProps`（例: `UserProfileProps`）
 
 ```typescript
-// ✅ 良い例
+// 良い例
 interface UserProfileProps {
   userId: number;
   showEmail?: boolean;
