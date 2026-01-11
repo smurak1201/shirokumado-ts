@@ -1299,6 +1299,7 @@ export function apiSuccess<T>(data: T, status: number = 200): NextResponse {
 
 [`lib/api-helpers.ts`](../lib/api-helpers.ts) (行 45-49)
 
+````text
 ```45:49:lib/api-helpers.ts
 export function apiSuccess<T>(data: T, status: number = 200): NextResponse {
   const response = NextResponse.json(data, { status });
@@ -1306,6 +1307,7 @@ export function apiSuccess<T>(data: T, status: number = 200): NextResponse {
   return response;
 }
 ```
+````
 
 **理由**:
 
