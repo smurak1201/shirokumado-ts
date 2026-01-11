@@ -64,6 +64,7 @@ const element = jsx("h1", { children: "Hello, World!" });
 - このアプリでは、TypeScript の設定（`tsconfig.json`）で `jsx: "react-jsx"` を指定しており、React 19 の新しい JSX 変換を使用しています
 
 **このアプリでの実際の使用例**:
+**参照**: [`app/components/ProductGrid.tsx`](../../app/components/ProductGrid.tsx)
 
 ```tsx
 // app/components/ProductGrid.tsx
@@ -83,8 +84,6 @@ return (
   </>
 );
 ```
-
-**参照**: [`app/components/ProductGrid.tsx`](../../app/components/ProductGrid.tsx)
 
 上記のコードは、TypeScript コンパイラによって自動的に`jsx`関数呼び出しに変換されますが、開発者は JSX 構文のままコードを書きます。
 
