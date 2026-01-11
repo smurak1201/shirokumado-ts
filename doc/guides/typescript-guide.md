@@ -260,9 +260,7 @@ export interface Product {
 
 **このアプリでの使用箇所**:
 
-1. **`app/components/ProductGrid.tsx`** - Props の型定義
-
-**参照**: [`app/components/ProductGrid.tsx`](../../app/components/ProductGrid.tsx) (行 11-14)
+1. **[`app/components/ProductGrid.tsx`](../../app/components/ProductGrid.tsx) (行 11-14)** - Props の型定義
 
 ```11:14
   category: Category; // カテゴリー情報
@@ -270,9 +268,7 @@ export interface Product {
 }
 ```
 
-2. **`app/components/ProductModal.tsx`** - Props の型定義
-
-**参照**: [`app/components/ProductModal.tsx`](../../app/components/ProductModal.tsx) (行 12-16)
+2. **[`app/components/ProductModal.tsx`](../../app/components/ProductModal.tsx) (行 12-16)** - Props の型定義
 
 ```12:16
   product: Product | null; // 表示する商品情報（nullの場合は非表示）
@@ -285,9 +281,7 @@ export interface Product {
 
 **このアプリでの使用箇所**:
 
-1. **`app/utils/format.ts`** - 価格フォーマット関数
-
-**参照**: [`app/utils/format.ts`](../../app/utils/format.ts)
+1. **[`app/utils/format.ts`](../../app/utils/format.ts)** - 価格フォーマット関数
 
 ```typescript
 export function formatPrice(price: number): string {
@@ -295,9 +289,7 @@ export function formatPrice(price: number): string {
 }
 ```
 
-2. **`app/hooks/useProductModal.ts`** - カスタムフックの戻り値の型
-
-**参照**: [`app/hooks/useProductModal.ts`](../../app/hooks/useProductModal.ts) (行 12-47)
+2. **[`app/hooks/useProductModal.ts`](../../app/hooks/useProductModal.ts) (行 12-47)** - カスタムフックの戻り値の型
 
 ```12:47
   // 選択された商品を管理（モーダル表示用）

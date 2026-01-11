@@ -118,9 +118,7 @@ React Hooks は、関数コンポーネントで状態管理や副作用を扱�
 **基本的な使い方**:
 
 ```
-1. **`app/hooks/useProductModal.ts`** - 商品モーダルの状態管理
-
-**参照**: [`app/hooks/useProductModal.ts`](../../app/hooks/useProductModal.ts) (行 12-16)
+1. **[`app/hooks/useProductModal.ts`](../../app/hooks/useProductModal.ts) (行 12-16)** - 商品モーダルの状態管理
 
 ```12:16
   // 選択された商品を管理（モーダル表示用）
@@ -129,17 +127,13 @@ React Hooks は、関数コンポーネントで状態管理や副作用を扱�
   const [isModalOpen, setIsModalOpen] = useState(false);
 ```
 
-2. **`app/dashboard/components/DashboardContent.tsx`** - フォームの開閉状態管理
-
-**参照**: [`app/dashboard/components/DashboardContent.tsx`](../../app/dashboard/components/DashboardContent.tsx) (行 30-31)
+2. **[`app/dashboard/components/DashboardContent.tsx`](../../app/dashboard/components/DashboardContent.tsx) (行 30-31)** - フォームの開閉状態管理
 
 ```30:31
   const [isFormOpen, setIsFormOpen] = useState(false);
 ```
 
-3. **`app/dashboard/hooks/useTabState.ts`** - タブ状態の管理（localStorage と同期）
-
-**参照**: [`app/dashboard/hooks/useTabState.ts`](../../app/dashboard/hooks/useTabState.ts) (行 30-40)
+3. **[`app/dashboard/hooks/useTabState.ts`](../../app/dashboard/hooks/useTabState.ts) (行 30-40)** - タブ状態の管理（localStorage と同期）
 
 ```30:40
     if (typeof window !== "undefined") {
@@ -209,9 +203,7 @@ React では、副作用を `useEffect` Hook を使用して処理します。`u
 }, [dependencies]);
 ```
 
-1. **`app/hooks/useModal.ts`** - ESC キー処理と背景スクロール無効化
-
-**参照**: [`app/hooks/useModal.ts`](../../app/hooks/useModal.ts) (行 12-48)
+1. **[`app/hooks/useModal.ts`](../../app/hooks/useModal.ts) (行 12-48)** - ESC キー処理と背景スクロール無効化
 
 ```12:48
   // onCloseの最新の参照を保持するref
@@ -250,9 +242,7 @@ React では、副作用を `useEffect` Hook を使用して処理します。`u
 }
 ```
 
-2. **`app/dashboard/hooks/useTabState.ts`** - localStorage への保存
-
-**参照**: [`app/dashboard/hooks/useTabState.ts`](../../app/dashboard/hooks/useTabState.ts) (行 42-47)
+2. **[`app/dashboard/hooks/useTabState.ts`](../../app/dashboard/hooks/useTabState.ts) (行 42-47)** - localStorage への保存
 
 ```42:47
   useEffect(() => {
@@ -280,9 +270,7 @@ React では、副作用を `useEffect` Hook を使用して処理します。`u
 }, [dependencies]);
 ```
 
-1. **`app/dashboard/hooks/useTabState.ts`** - 初期カテゴリータブの計算
-
-**参照**: [`app/dashboard/hooks/useTabState.ts`](../../app/dashboard/hooks/useTabState.ts) (行 75-101)
+1. **[`app/dashboard/hooks/useTabState.ts`](../../app/dashboard/hooks/useTabState.ts) (行 75-101)** - 初期カテゴリータブの計算
 
 ```75:101
     // localStorage から保存されたカテゴリータブを読み込む
@@ -319,9 +307,7 @@ React では、副作用を `useEffect` Hook を使用して処理します。`u
 - **依存配列**: 依存配列の値が変更された時のみ、再計算が実行される
 - **使用タイミング**: 計算コストが高い処理や、参照の同一性が重要な場合に使用
 
-2. **`app/dashboard/components/ProductList.tsx`** - 商品のフィルタリングとグループ化
-
-**参照**: [`app/dashboard/components/ProductList.tsx`](../../app/dashboard/components/ProductList.tsx) (行 158-163)
+2. **[`app/dashboard/components/ProductList.tsx`](../../app/dashboard/components/ProductList.tsx) (行 158-163)** - 商品のフィルタリングとグループ化
 
 ```158:163
     () => groupProductsByCategory(products, categories),
@@ -349,18 +335,14 @@ React では、副作用を `useEffect` Hook を使用して処理します。`u
 }, [dependencies]);
 ```
 
-1. **`app/dashboard/components/CategoryTabs.tsx`** - スクロール位置のチェック
-
-**参照**: [`app/dashboard/components/CategoryTabs.tsx`](../../app/dashboard/components/CategoryTabs.tsx) (行 54-72)
+1. **[`app/dashboard/components/CategoryTabs.tsx`](../../app/dashboard/components/CategoryTabs.tsx) (行 54-72)** - スクロール位置のチェック
 
 ```54:72
     // ...
   }, []);
 ```
 
-2. **`app/hooks/useProductModal.ts`** - 商品モーダルの操作関数
-
-**参照**: [`app/hooks/useProductModal.ts`](../../app/hooks/useProductModal.ts) (行 28-31)
+2. **[`app/hooks/useProductModal.ts`](../../app/hooks/useProductModal.ts) (行 28-31)** - 商品モーダルの操作関数
 
 ```28:31
     setSelectedProduct(product);
@@ -376,9 +358,7 @@ React では、副作用を `useEffect` Hook を使用して処理します。`u
   }, []);
 ```
 
-3. **`app/dashboard/components/ProductList.tsx`** - 商品操作のコールバック関数
-
-**参照**: [`app/dashboard/components/ProductList.tsx`](../../app/dashboard/components/ProductList.tsx) (行 87-89)
+3. **[`app/dashboard/components/ProductList.tsx`](../../app/dashboard/components/ProductList.tsx) (行 87-89)** - 商品操作のコールバック関数
 
 ```87:89
     setEditingProduct(product);
@@ -411,9 +391,7 @@ React では、副作用を `useEffect` Hook を使用して処理します。`u
 const MemoizedComponent = memo(Component);
 ```
 
-1. **`app/components/ProductTile.tsx`** - 商品タイルコンポーネント
-
-**参照**: [`app/components/ProductTile.tsx`](../../app/components/ProductTile.tsx) (行 29-62)
+1. **[`app/components/ProductTile.tsx`](../../app/components/ProductTile.tsx) (行 29-62)** - 商品タイルコンポーネント
 
 ```29:62
   // ...
@@ -436,18 +414,14 @@ export default memo(ProductTile);
 **基本的な使い方**:
 
 ```typescript
-1. **`app/dashboard/components/CategoryTabs.tsx`** - DOM 要素への参照
-
-**参照**: [`app/dashboard/components/CategoryTabs.tsx`](../../app/dashboard/components/CategoryTabs.tsx) (行 39-41)
+1. **[`app/dashboard/components/CategoryTabs.tsx`](../../app/dashboard/components/CategoryTabs.tsx) (行 39-41)** - DOM 要素への参照
 
 ```39:41
   // useRef を使用して DOM 要素に直接アクセスします
   const scrollContainerRef = useRef<HTMLDivElement>(null);
 ```
 
-2. **`app/hooks/useProductModal.ts`** - タイマー ID の保持
-
-**参照**: [`app/hooks/useProductModal.ts`](../../app/hooks/useProductModal.ts) (行 19-20)
+2. **[`app/hooks/useProductModal.ts`](../../app/hooks/useProductModal.ts) (行 19-20)** - タイマー ID の保持
 
 ```19:20
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -982,9 +956,7 @@ function ParentComponent() {
 └── SortableProductItem (Client Component)
 
 ```
-1. **`app/components/ProductGrid.tsx`** - 商品グリッドコンポーネント
-
-**参照**: [`app/components/ProductGrid.tsx`](../../app/components/ProductGrid.tsx) (行 30-78)
+1. **[`app/components/ProductGrid.tsx`](../../app/components/ProductGrid.tsx) (行 30-78)** - 商品グリッドコンポーネント
 
 ```30:78
   // モーダルの状態管理（カスタムフックで実装）
@@ -1037,9 +1009,7 @@ function ParentComponent() {
 }
 ```
 
-2. **`app/components/ProductModal.tsx`** - 商品モーダルコンポーネント
-
-**参照**: [`app/components/ProductModal.tsx`](../../app/components/ProductModal.tsx) (行 35-119)
+2. **[`app/components/ProductModal.tsx`](../../app/components/ProductModal.tsx) (行 35-119)** - 商品モーダルコンポーネント
 
 ```35:119
   product,
@@ -1177,9 +1147,7 @@ React では、イベントハンドラーを props として渡すことで、�
 
 ### イベントハンドリングの例
 
-1. **`app/components/ProductTile.tsx`** - クリックイベントの処理
-
-**参照**: [`app/components/ProductTile.tsx`](../../app/components/ProductTile.tsx) (行 29-62)
+1. **[`app/components/ProductTile.tsx`](../../app/components/ProductTile.tsx) (行 29-62)** - クリックイベントの処理
 
 ```29:62
   return (
@@ -1217,9 +1185,7 @@ React では、イベントハンドラーを props として渡すことで、�
 }
 ```
 
-2. **`app/components/ProductModal.tsx`** - イベント伝播の制御
-
-**参照**: [`app/components/ProductModal.tsx`](../../app/components/ProductModal.tsx) (行 50-54)
+2. **[`app/components/ProductModal.tsx`](../../app/components/ProductModal.tsx) (行 50-54)** - イベント伝播の制御
 
 ```50:54
         className="relative max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-lg bg-white shadow-2xl"

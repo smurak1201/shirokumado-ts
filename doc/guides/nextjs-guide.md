@@ -199,9 +199,7 @@ Next.js は、`next/image` コンポーネントを使用して、画像の自�
 
 ### このアプリでの使用箇所
 
-1. **`app/page.tsx`** - ヒーロー画像の最適化
-
-**参照**: [`app/page.tsx`](../../app/page.tsx) (行 90-98)
+1. **[`app/page.tsx`](../../app/page.tsx) (行 90-98)** - ヒーロー画像の最適化
 
 ```90:98
         <Image
@@ -213,9 +211,7 @@ Next.js は、`next/image` コンポーネントを使用して、画像の自�
           sizes="100vw"
         />
 ```
-2. **`app/components/ProductTile.tsx`** - 商品画像の最適化
-
-**参照**: [`app/components/ProductTile.tsx`](../../app/components/ProductTile.tsx) (行 39-46)
+2. **[`app/components/ProductTile.tsx`](../../app/components/ProductTile.tsx) (行 39-46)** - 商品画像の最適化
 
 ```39:46
           <Image
@@ -227,9 +223,7 @@ Next.js は、`next/image` コンポーネントを使用して、画像の自�
             loading="lazy"
           />
 ```
-3. **`app/components/ProductModal.tsx`** - モーダル内の商品画像
-
-**参照**: [`app/components/ProductModal.tsx`](../../app/components/ProductModal.tsx) (行 68-75)
+3. **[`app/components/ProductModal.tsx`](../../app/components/ProductModal.tsx) (行 68-75)** - モーダル内の商品画像
 
 ```68:75
             <Image
