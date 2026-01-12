@@ -74,12 +74,18 @@ async function getPublishedProductsByCategory(): Promise<
       ),
     ]);
 
+    // デバッグ用ログ（本番環境でも確認できるように）
+    console.log("Categories fetched:", categoriesList?.length || 0);
+    console.log("Products fetched:", productsList?.length || 0);
+
     // データが存在しない場合は空配列を返す
     if (!categoriesList || categoriesList.length === 0) {
+      console.warn("No categories found in database");
       return [];
     }
 
     if (!productsList || productsList.length === 0) {
+      console.warn("No products found in database");
       return [];
     }
 
@@ -93,20 +99,34 @@ async function getPublishedProductsByCategory(): Promise<
       } => {
         // カテゴリーが存在しない商品は除外
         if (!product.category) {
+          console.warn(`Product ${product.id} (${product.name}) has no category`);
           return false;
         }
 
         // 公開日・終了日が設定されている場合は自動判定
         if (product.publishedAt || product.endedAt) {
-          return calculatePublishedStatus(
+          const isPublished = calculatePublishedStatus(
             product.publishedAt, // Drizzleから取得したDateオブジェクトをそのまま渡す
             product.endedAt // Drizzleから取得したDateオブジェクトをそのまま渡す
           );
+          if (!isPublished) {
+            console.log(
+              `Product ${product.id} (${product.name}) is not published due to date range`
+            );
+          }
+          return isPublished;
         }
         // 公開日・終了日が設定されていない場合は手動設定値を使用
+        if (!product.published) {
+          console.log(
+            `Product ${product.id} (${product.name}) is not published (published=false)`
+          );
+        }
         return product.published;
       }
     );
+
+    console.log("Published products after filtering:", publishedProducts.length);
 
     // カテゴリーごとにグループ化（Mapを使用してパフォーマンス向上）
     const categoryOrder = categoriesList.map((c) => c.name);
@@ -161,6 +181,7 @@ async function getPublishedProductsByCategory(): Promise<
       });
     }
 
+    console.log("Final result categories:", result.length);
     return result;
   } catch (error) {
     // エラーが発生した場合は詳細なログを記録してから再スロー
@@ -172,6 +193,8 @@ async function getPublishedProductsByCategory(): Promise<
       message: errorMessage,
       stack: errorStack,
       error,
+      // エラーの詳細を確認するため、エラーオブジェクト全体をログに記録
+      errorString: String(error),
     });
 
     // エラーを再スローしてNext.jsのエラーハンドリングに委譲

@@ -68,14 +68,23 @@ export function logError(error: unknown, context?: string): void {
       statusCode: error.statusCode,
       code: error.code,
       stack: process.env.NODE_ENV === 'development' ? error.stack : undefined,
+      cause: error.cause,
     });
   } else if (error instanceof Error) {
     console.error(`${prefix} Error:`, {
       message: error.message,
-      stack: process.env.NODE_ENV === 'development' ? error.stack : undefined,
+      name: error.name,
+      stack: error.stack,
+      cause: error.cause,
+      // エラーオブジェクトの全てのプロパティを記録
+      ...(error as any),
     });
   } else {
-    console.error(`${prefix} Unknown error:`, error);
+    console.error(`${prefix} Unknown error:`, {
+      error,
+      errorType: typeof error,
+      errorString: String(error),
+    });
   }
 }
 

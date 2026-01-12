@@ -103,7 +103,19 @@ export async function safeDbOperation<T>(
   try {
     return await operation();
   } catch (error) {
+    // 詳細なエラー情報をログに記録
+    const errorDetails = {
+      context: context || "unknown",
+      errorType: error instanceof Error ? error.constructor.name : typeof error,
+      errorMessage: error instanceof Error ? error.message : String(error),
+      errorStack: error instanceof Error ? error.stack : undefined,
+      errorString: String(error),
+      errorObject: error,
+    };
+
+    console.error("Database operation failed:", errorDetails);
     logError(error, context);
+    
     throw new DatabaseError(
       `Failed to execute database operation${context ? ` in ${context}` : ""}`,
       error
