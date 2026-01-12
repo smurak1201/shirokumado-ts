@@ -373,52 +373,24 @@ export default async function Page() {
 
 ### Edge Runtime と Node.js Runtime
 
-**説明**: Next.js App Router では、API Routes と Server Components で使用する Runtime を選択できます。Edge Runtime と Node.js Runtime にはそれぞれ特徴があります。
+**説明**: Next.js App Router では、API Routes と Server Components で使用する Runtime を選択できます。このアプリでは、すべての API Routes と Server Components で Edge Runtime（デフォルト）を使用しています。Prisma Accelerate により、Edge Runtime でも Prisma Client が正常に動作します。
 
 **このアプリでの使用箇所**:
 
 - すべての API Routes: Edge Runtime（デフォルト、Prisma Accelerate により動作可能）
 - すべての Server Components: Edge Runtime（デフォルト、Prisma Accelerate により動作可能）
 
-**Edge Runtime と Node.js Runtime の比較**:
+**Edge Runtime と Node.js Runtime の主な違い**:
 
 | 項目                     | Edge Runtime                         | Node.js Runtime                    |
 | ------------------------ | ------------------------------------ | ---------------------------------- |
 | **起動速度**             | 非常に高速（コールドスタートが速い） | やや遅い（コールドスタートが遅い） |
 | **Prisma Accelerate**    | サポート（推奨）                     | サポート                           |
 | **通常の Prisma Client** | サポートされない                     | サポート                           |
-| **トランザクション**     | サポート（Prisma Accelerate 使用時） | サポート                           |
-| **Node.js API**          | 制限あり（一部の API が使用不可）    | すべて使用可能                     |
-| **ファイルシステム**     | アクセス不可                         | アクセス可能                       |
 | **パフォーマンス**       | 高い（低レイテンシー）               | 中程度                             |
 | **グローバル配信**       | 可能（エッジネットワーク）           | リージョン単位                     |
 
-**推奨**: Edge Runtime を使用（Prisma Accelerate と組み合わせ）。
-
-```typescript
-// Edge Runtime（デフォルト、明示的な指定は不要）
-export const POST = withErrorHandling(async (request: NextRequest) => {
-  // Prisma Accelerateを使用してデータベースにアクセス
-  const products = await prisma.product.findMany();
-  return apiSuccess({ products });
-});
-```
-
-**理由**:
-
-- **高速な起動**: コールドスタートが速く、レスポンス時間が短縮される
-- **グローバル配信**: エッジネットワーク経由で配信され、ユーザーに近い場所から実行される
-- **スケーラビリティ**: 自動的にスケールし、トラフィックの増加に対応できる
-- **コスト効率**: リクエスト単位で課金され、使用量に応じたコストが発生
-
-**このアプリでの実装**:
-
-このアプリでは、すべての API Routes と Server Components で Edge Runtime（デフォルト）を使用しています。Prisma Accelerate により、Edge Runtime でも Prisma Client が正常に動作します。
-
-**詳細な情報**:
-
-- **[Edge Runtime ガイド](./edge-runtime-guide.md)**: Edge Runtime と Node.js Runtime の詳細な比較と使用方法
-- **[Next.js 公式ドキュメント - Runtime](https://nextjs.org/docs/app/api-reference/route-segment-config#runtime)**: Next.js の Runtime 設定の詳細
+**詳細な比較と使用方法については、[Edge Runtime ガイド](./edge-runtime-guide.md) を参照してください。**
 
 ## ORM としての機能
 

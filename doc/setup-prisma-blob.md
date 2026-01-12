@@ -69,7 +69,6 @@ BLOB_READ_WRITE_TOKEN=vercel_blob_rw_...
 **環境変数の設定**:
 
 - **`DATABASE_URL_ACCELERATE`** (必須): Prisma Accelerate の URL（アプリケーション用、Edge Runtime で使用）
-
   - 形式: `prisma://accelerate.prisma-data.net/?api_key=YOUR_API_KEY`
   - [Prisma Accelerate Console](https://console.prisma.io/accelerate) から取得できます
 
@@ -88,7 +87,7 @@ BLOB_READ_WRITE_TOKEN=vercel_blob_rw_...
 
 **詳細な情報**:
 
-- [Prisma ガイド - Prisma Accelerate](./guides/prisma-guide.md#prisma-accelerate): Prisma Accelerate の詳細な説明
+- [Prisma ガイド - Prisma Accelerate](./guides/prisma-guide.md#prisma-accelerate): Prisma Accelerate の詳細な説明と仕組み
 - [Edge Runtime ガイド](./guides/edge-runtime-guide.md): Edge Runtime と Node.js Runtime の詳細な比較と使用方法
 
 ### 環境変数の型安全な管理

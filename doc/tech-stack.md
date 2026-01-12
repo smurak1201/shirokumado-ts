@@ -150,13 +150,6 @@
 
   Edge Runtime は、Next.js が提供する軽量な JavaScript ランタイムです。Vercel Edge Network などのエッジ環境で実行されます。Node.js Runtime よりも軽量で、起動時間が短く、グローバルに配信できます。
 
-  **主な特徴**:
-
-  - **高速な起動**: コールドスタートが速く、レスポンス時間が短縮される
-  - **グローバル配信**: エッジネットワーク経由で配信され、ユーザーに近い場所から実行される
-  - **自動スケーリング**: トラフィックの増加に自動的に対応
-  - **コスト効率**: リクエスト単位で課金され、使用量に応じたコストが発生
-
   **このアプリでの使われ方**:
 
   - すべての API Routes と Server Components で Edge Runtime（デフォルト）を使用
@@ -229,14 +222,6 @@
 - **Prisma Accelerate**
 
   Prisma Accelerate は、Edge Runtime 対応のためのグローバル接続プーリングとキャッシングレイヤーです。HTTP ベースの接続を使用するため、Edge Runtime でも動作します。
-
-  **主な特徴**:
-
-  - **Edge Runtime 対応**: HTTP ベースの接続により、Edge Runtime でも動作
-  - **グローバル接続プーリング**: 効率的な接続管理により、パフォーマンスが向上
-  - **キャッシング**: クエリ結果のキャッシングにより、レイテンシーが削減
-  - **グローバル配信**: エッジネットワーク経由で配信され、ユーザーに近い場所から実行される
-  - **トランザクションサポート**: 配列形式とインタラクティブトランザクションの両方をサポート
 
   **このアプリでの使われ方**:
 
@@ -384,76 +369,23 @@
 
 ## プロジェクト構造
 
-```
-shirokumado-ts/
-├── app/              # Next.js App Router
-│   ├── api/         # API Routes
-│   ├── components/  # フロントエンド共通コンポーネント
-│   ├── dashboard/  # 商品管理ダッシュボード
-│   ├── faq/        # FAQページ
-│   ├── layout.tsx  # ルートレイアウト
-│   ├── page.tsx    # ホームページ
-│   └── globals.css # グローバルスタイル
-├── lib/              # ユーティリティ・ライブラリ
-│   ├── prisma.ts    # Prisma Clientインスタンス
-│   ├── blob.ts      # Blobストレージユーティリティ
-│   ├── env.ts       # 環境変数管理
-│   ├── errors.ts    # 統一されたエラーハンドリング
-│   ├── api-helpers.ts # API Routes用ヘルパー
-│   ├── config.ts    # アプリケーション設定
-│   ├── image-compression.ts # 画像圧縮
-│   └── product-utils.ts # 商品関連ユーティリティ
-├── prisma/           # Prisma設定
-│   ├── schema.prisma # データベーススキーマ定義
-│   └── migrations/  # マイグレーションファイル
-├── public/          # 静的ファイル
-│   ├── logo.webp    # ロゴ画像
-│   ├── hero.webp    # ヒーロー画像
-│   └── logo-instagram.svg # Instagramアイコン
-├── doc/             # ドキュメント
-│   ├── getting-started.md      # コードリーディングガイド
-│   ├── architecture.md         # アーキテクチャと設計思想
-│   ├── project-structure.md    # プロジェクト構造
-│   ├── tech-stack.md           # 技術スタック
-│   ├── development-guide.md    # 開発ガイドライン
-│   ├── setup-prisma-blob.md    # Prisma & Blob セットアップガイド
-│   ├── deployment.md           # デプロイメントガイド
-│   └── guides/                 # ガイド系ドキュメント
-│       ├── frontend-guide.md       # フロントエンドガイド
-│       ├── dashboard-guide.md      # ダッシュボードガイド
-│       ├── nextjs-guide.md         # Next.js ガイド
-│       ├── app-router-guide.md     # App Router ガイド
-│       ├── react-guide.md          # React ガイド
-│       ├── jsx-guide.md            # JSX ガイド
-│       ├── typescript-guide.md     # TypeScript ガイド
-│       ├── prisma-guide.md         # Prisma ガイド
-│       └── edge-runtime-guide.md   # Edge Runtime ガイド
-├── package.json     # 依存関係
-├── tsconfig.json    # TypeScript設定
-├── next.config.ts   # Next.js設定
-└── eslint.config.mjs # ESLint設定
-```
+プロジェクトのディレクトリ構造の詳細については、[プロジェクト構造ドキュメント](./project-structure.md) を参照してください。
+
+主要なディレクトリ:
+
+- **`app/`**: Next.js App Router（ページ、API Routes、コンポーネント）
+- **`lib/`**: ユーティリティ・ライブラリ（Prisma Client、Blob Storage、エラーハンドリングなど）
+- **`prisma/`**: Prisma 設定（スキーマ、マイグレーション）
+- **`public/`**: 静的ファイル（画像、アイコン）
+- **`doc/`**: ドキュメント
 
 ## フロントエンド実装
 
-### ページ構成
+フロントエンド実装の詳細については、以下のガイドを参照してください：
 
-- **ホームページ** ([`app/page.tsx`](../app/page.tsx)): カテゴリーごとの商品表示
-- **FAQ ページ** ([`app/faq/page.tsx`](../app/faq/page.tsx)): よくある質問ページ
-- **ダッシュボード** ([`app/dashboard/page.tsx`](../app/dashboard/page.tsx)): 商品管理画面
-
-### 共通コンポーネント
-
-- **Header**: ヘッダー（ロゴ、Instagram リンク、ナビゲーション）
-- **Footer**: フッター（店舗情報、地図、連絡先）
-- **ProductGrid**: カテゴリーごとの商品グリッド表示
-- **ProductTile**: 商品タイルコンポーネント
-- **ProductModal**: 商品詳細モーダル
-
-### 画像最適化
-
-- **Next.js Image**: 自動的な画像最適化と WebP 変換
-- **クライアントサイド圧縮**: [`lib/image-compression.ts`](../lib/image-compression.ts)で実装
+- **[フロントエンドガイド](./guides/frontend-guide.md)**: ページ構成、コンポーネント、データフローなどの詳細
+- **[ダッシュボードガイド](./guides/dashboard-guide.md)**: ダッシュボード機能の詳細
+- **[Next.js ガイド](./guides/nextjs-guide.md)**: 画像最適化などの詳細
 
 ## 今後の追加予定
 
@@ -464,25 +396,15 @@ shirokumado-ts/
 
 ## 開発コマンド
 
-```bash
-# 開発サーバー起動
-npm run dev
+開発コマンドの詳細については、[README.md](../README.md#開発コマンド) を参照してください。
 
-# プロダクションビルド
-npm run build
+主要なコマンド:
 
-# プロダクションサーバー起動
-npm start
-
-# リンター実行
-npm run lint
-
-# Prisma関連
-npm run db:generate    # Prisma Clientを生成
-npm run db:push        # スキーマをデータベースにプッシュ
-npm run db:migrate     # マイグレーションを作成・適用
-npm run db:studio      # Prisma Studioを起動
-```
+- `npm run dev`: 開発サーバー起動
+- `npm run build`: プロダクションビルド
+- `npm run lint`: リンター実行
+- `npm run db:generate`: Prisma Client を生成
+- `npm run db:migrate`: マイグレーションを作成・適用
 
 ## 参考リンク
 
