@@ -1,11 +1,11 @@
 /**
  * マイグレーション実行スクリプト
- * 
+ *
  * このスクリプトは既存のデータを保持しながらマイグレーションを実行します。
- * 
+ *
  * 使用方法:
  *   tsx scripts/run-migrations.ts
- * 
+ *
  * または、Vercelの環境で実行する場合:
  *   npx prisma migrate deploy
  */
