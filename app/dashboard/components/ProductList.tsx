@@ -144,7 +144,9 @@ export default function ProductList({
    * KeyboardSensor: キーボード操作を検知（アクセシビリティ対応）
    *
    * activationConstraint: タッチデバイスでのドラッグ開始の制約を設定
-   * - distance: 5px以上移動したらドラッグ開始（誤タッチを防ぐ）
+   * - distance: 8px以上移動したらドラッグ開始（誤タッチを防ぐ）
+   * - delay: タッチ開始から250ms待機（スクロールとの競合を防ぐ）
+   * - tolerance: 移動の許容範囲を設定（水平・垂直方向の両方を検出）
    */
   const sensors = useSensors(
     useSensor(PointerSensor, {
@@ -154,7 +156,8 @@ export default function ProductList({
     }),
     useSensor(TouchSensor, {
       activationConstraint: {
-        distance: 5, // 5px以上移動したらドラッグ開始
+        delay: 250, // 250ms待機してからドラッグ開始（スクロールとの競合を防ぐ）
+        tolerance: 8, // 8pxの許容範囲（水平・垂直方向の両方を検出）
       },
     }),
     useSensor(KeyboardSensor, {
