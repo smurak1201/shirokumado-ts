@@ -64,6 +64,21 @@ export default function ProductEditForm({
       return;
     }
 
+    // ファイルサイズの事前チェック（推奨サイズを超える場合は警告）
+    const fileSizeMB = file.size / 1024 / 1024;
+    if (fileSizeMB > 10) {
+      const proceed = confirm(
+        `選択された画像は${fileSizeMB.toFixed(2)}MBです。\n` +
+          `推奨サイズは10MB以下です。\n` +
+          `処理に時間がかかるか、失敗する可能性があります。\n\n` +
+          `続行しますか？`
+      );
+      if (!proceed) {
+        e.target.value = ""; // ファイル選択をリセット
+        return;
+      }
+    }
+
     // すべての画像を圧縮（ファイルサイズを確実に小さくするため）
     let processedFile = file;
     setCompressing(true);

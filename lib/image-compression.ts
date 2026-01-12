@@ -185,7 +185,8 @@ export async function compressImage(
 
     // 大きなファイルの場合は、createImageBitmapを使用（より効率的）
     // サポートされていない場合は、Blob URLを使用
-    const useCreateImageBitmap = typeof window !== 'undefined' && typeof window.createImageBitmap !== 'undefined' && file.size > 10 * 1024 * 1024; // 10MB以上
+    // 5MB以上でcreateImageBitmapを使用することで、メモリ効率を向上させ、大きな画像の読み込みエラーを防ぐ
+    const useCreateImageBitmap = typeof window !== 'undefined' && typeof window.createImageBitmap !== 'undefined' && file.size > 5 * 1024 * 1024; // 5MB以上
 
     if (useCreateImageBitmap) {
       // createImageBitmapを使用（大きな画像に適している）
@@ -411,8 +412,8 @@ function loadImageWithBlobURL(
 
       // ファイルサイズが大きい場合の特別なメッセージ
       const fileSizeMB = file.size / 1024 / 1024;
-      if (fileSizeMB > 15) {
-        reject(new Error(`画像の読み込みに失敗しました。ファイルサイズが大きすぎる可能性があります（${fileSizeMB.toFixed(2)}MB）。別の画像を選択するか、画像を小さくしてから再度お試しください。`));
+      if (fileSizeMB > 10) {
+        reject(new Error(`画像の読み込みに失敗しました。ファイルサイズが大きすぎる可能性があります（${fileSizeMB.toFixed(2)}MB）。推奨サイズは10MB以下です。別の画像を選択するか、画像を小さくしてから再度お試しください。`));
       } else {
         reject(new Error(`画像の読み込みに失敗しました。ファイル形式（${file.type || '不明'}）がサポートされていない可能性があります。`));
       }
