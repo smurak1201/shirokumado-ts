@@ -86,13 +86,18 @@ Edge Runtime 対応のため、Vercel Edge Functions で動作する Drizzle ORM
 
 #### 3.3 サーバーコンポーネントの移行
 
-**対象**: `app/dashboard/page.tsx`
+**対象**:
+
+- `app/dashboard/page.tsx`
+- `app/page.tsx` (ホームページ)
 
 **作業内容**:
 
 1. Prisma クエリを Drizzle クエリに書き換え
 2. 型定義の更新
 3. 動作確認
+
+**注意**: `app/page.tsx`では`orderBy`に`nulls: "last"`オプションを使用しているため、Drizzle の`ascNullsLast`を使用する必要があります。
 
 ### Phase 4: 完全移行後のクリーンアップ
 
@@ -240,16 +245,17 @@ Edge Runtime 対応のため、Vercel Edge Functions で動作する Drizzle ORM
 - [x] スキーマ定義の作成 (`lib/db/schema.ts`)
 - [x] Drizzle クライアントの作成 (`lib/db/index.ts`)
 
-### Phase 3: 段階的移行
+### Phase 3: 段階的移行 ✅
 
-- [ ] `/api/categories` の移行
-- [ ] `/api/products` (GET) の移行
-- [ ] `/api/products` (POST) の移行
-- [ ] `/api/products/[id]` (GET) の移行
-- [ ] `/api/products/[id]` (PUT) の移行
-- [ ] `/api/products/[id]` (DELETE) の移行
-- [ ] `/api/products/reorder` の移行
-- [ ] `app/dashboard/page.tsx` の移行
+- [x] `/api/categories` の移行
+- [x] `/api/products` (GET) の移行
+- [x] `/api/products` (POST) の移行
+- [x] `/api/products/[id]` (GET) の移行
+- [x] `/api/products/[id]` (PUT) の移行
+- [x] `/api/products/[id]` (DELETE) の移行
+- [x] `/api/products/reorder` の移行
+- [x] `app/dashboard/page.tsx` の移行
+- [ ] `app/page.tsx` の移行
 
 ### Phase 4: クリーンアップ
 
