@@ -52,8 +52,8 @@ export default function DashboardForm({
       return;
     }
 
-    // ファイルタイプの検証
-    if (!file.type.startsWith("image/")) {
+    // ファイルタイプの検証（HEIC形式も含む）
+    if (!isImageFile(file)) {
       alert("画像ファイルのみ選択可能です");
       return;
     }
