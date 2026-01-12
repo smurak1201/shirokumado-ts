@@ -88,8 +88,8 @@ export function useProductReorder(
 
       // レスポンスがエラーの場合は例外を投げる
       if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.error || "順序の更新に失敗しました");
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.error || "順序の更新に失敗しました");
       }
 
       /**
@@ -100,13 +100,15 @@ export function useProductReorder(
        */
       await refreshProducts();
     } catch (error) {
-      // エラーをコンソールに出力（デバッグ用）
-      console.error("順序更新エラー:", error);
       /**
        * エラーが発生した場合は、元の状態に戻すために再取得
        *
        * 楽観的更新で変更した UI を、サーバーの実際の状態に戻します。
        * これにより、エラーが発生しても UI とサーバーの状態が一致します。
+       *
+       * 注意: Neon HTTPドライバーではトランザクションがサポートされていないため、
+       * 一部の更新が成功している可能性があります。サーバーから最新の状態を取得して
+       * UIを同期することで、データの不整合を防ぎます。
        */
       await refreshProducts();
       // エラーを再スローして、呼び出し元でエラーハンドリングできるようにする

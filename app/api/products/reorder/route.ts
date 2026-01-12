@@ -16,22 +16,18 @@ export const POST = withErrorHandling(async (request: NextRequest) => {
   }
 
   // 一括更新（Neon HTTPドライバーではトランザクションがサポートされていないため、個別に更新）
-  // Promise.allを使用して並列実行することでパフォーマンスを向上
-  // エラーが発生した場合は、最初のエラーを返す
+  // エラーが発生した場合にデータの不整合を防ぐため、順次実行します
+  // エラーが発生した場合は、即座に停止してエラーを返します
   await safeDbOperation(
     async () => {
-      // 各商品のdisplayOrderを更新
-      const updatePromises = body.productOrders.map(
-        async (item: { id: number; displayOrder: number }) => {
-          await db
-            .update(products)
-            .set({ displayOrder: item.displayOrder })
-            .where(eq(products.id, item.id));
-        }
-      );
-
-      // すべての更新を並列実行
-      await Promise.all(updatePromises);
+      // 各商品のdisplayOrderを順次更新
+      // エラーが発生した場合は、それ以降の更新を実行せずにエラーを返します
+      for (const item of body.productOrders) {
+        await db
+          .update(products)
+          .set({ displayOrder: item.displayOrder })
+          .where(eq(products.id, item.id));
+      }
     },
     'POST /api/products/reorder'
   );
