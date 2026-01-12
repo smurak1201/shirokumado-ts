@@ -29,7 +29,7 @@ export default function Footer() {
               width={120}
               height={45}
               className="h-auto w-auto"
-              style={{ maxHeight: "6rem", maxWidth: "180px" }}
+              style={{ maxWidth: "120px", maxHeight: "45px" }}
               quality={100}
             />
           </Link>
