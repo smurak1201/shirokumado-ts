@@ -76,141 +76,210 @@ export async function compressImage(
       return;
     }
 
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      if (!e.target?.result) {
-        reject(new Error('ファイルの読み込みに失敗しました'));
-        return;
-      }
+    // 大きなファイルの場合は、createImageBitmapを使用（より効率的）
+    // サポートされていない場合は、Blob URLを使用
+    const useCreateImageBitmap = typeof window !== 'undefined' && typeof window.createImageBitmap !== 'undefined' && file.size > 10 * 1024 * 1024; // 10MB以上
 
-      const dataUrl = e.target.result as string;
+    if (useCreateImageBitmap) {
+      // createImageBitmapを使用（大きな画像に適している）
+      window.createImageBitmap(file)
+        .then((imageBitmap) => {
+          try {
+            // 画像のサイズを計算
+            let width = imageBitmap.width;
+            let height = imageBitmap.height;
 
-      // DataURLの形式を確認
-      if (!dataUrl.startsWith('data:image/')) {
-        reject(new Error(`無効な画像データです: ${file.type || '不明'}`));
-        return;
-      }
-
-      const img = new Image();
-
-      // 画像読み込みのタイムアウトを設定（30秒）
-      const timeoutId = setTimeout(() => {
-        reject(new Error('画像の読み込みがタイムアウトしました（30秒）'));
-      }, 30000);
-
-      img.onload = () => {
-        clearTimeout(timeoutId);
-        try {
-          // 画像のサイズを計算
-          let width = img.width;
-          let height = img.height;
-
-          // 画像サイズが0の場合はエラー
-          if (width === 0 || height === 0) {
-            reject(new Error('画像のサイズが無効です'));
-            return;
-          }
-
-          // アスペクト比を保ちながらリサイズ
-          if (width > maxWidth || height > maxHeight) {
-            const aspectRatio = width / height;
-            if (width > height) {
-              width = Math.min(width, maxWidth);
-              height = width / aspectRatio;
-            } else {
-              height = Math.min(height, maxHeight);
-              width = height * aspectRatio;
+            // 画像サイズが0の場合はエラー
+            if (width === 0 || height === 0) {
+              reject(new Error('画像のサイズが無効です'));
+              return;
             }
+
+            // アスペクト比を保ちながらリサイズ
+            if (width > maxWidth || height > maxHeight) {
+              const aspectRatio = width / height;
+              if (width > height) {
+                width = Math.min(width, maxWidth);
+                height = width / aspectRatio;
+              } else {
+                height = Math.min(height, maxHeight);
+                width = height * aspectRatio;
+              }
+            }
+
+            // Canvasを作成して画像を描画
+            const canvas = document.createElement("canvas");
+            canvas.width = width;
+            canvas.height = height;
+            const ctx = canvas.getContext("2d");
+            if (!ctx) {
+              reject(new Error("Canvas context could not be created"));
+              return;
+            }
+
+            // 画像を描画
+            ctx.drawImage(imageBitmap, 0, 0, width, height);
+            imageBitmap.close(); // メモリを解放
+
+            // WebP形式（またはJPEG形式）で圧縮
+            compressCanvasToFile(canvas, outputFormat, quality, maxSizeMB, file.name, outputExtension)
+              .then(resolve)
+              .catch(reject);
+          } catch (error) {
+            reject(new Error(`画像処理中にエラーが発生しました: ${error instanceof Error ? error.message : String(error)}`));
           }
-
-          // Canvasを作成して画像を描画
-          const canvas = document.createElement("canvas");
-          canvas.width = width;
-          canvas.height = height;
-          const ctx = canvas.getContext("2d");
-          if (!ctx) {
-            reject(new Error("Canvas context could not be created"));
-            return;
-          }
-
-          // 画像を描画
-          ctx.drawImage(img, 0, 0, width, height);
-
-          // WebP形式（またはJPEG形式）で圧縮（品質を段階的に下げながら目標サイズに近づける）
-          const compressWithQuality = (q: number): Promise<File> => {
-            return new Promise((resolveCompress, rejectCompress) => {
-              canvas.toBlob(
-                (blob) => {
-                  if (!blob) {
-                    rejectCompress(new Error(`画像の圧縮に失敗しました（品質: ${q}）`));
-                    return;
-                  }
-
-                  const sizeMB = blob.size / (1024 * 1024);
-                  // 目標サイズより大きい場合、品質を下げて再試行
-                  // 最小品質は 0.5 に設定（それ以下だと画質が著しく低下するため）
-                  const MIN_QUALITY = 0.5;
-                  const QUALITY_STEP = 0.1; // 品質を下げる際のステップ
-                  if (sizeMB > maxSizeMB && q > MIN_QUALITY) {
-                    resolveCompress(
-                      compressWithQuality(
-                        Math.max(q - QUALITY_STEP, MIN_QUALITY)
-                      )
-                    );
-                  } else {
-                    const compressedFile = new File(
-                      [blob],
-                      file.name.replace(/\.[^/.]+$/, outputExtension),
-                      {
-                        type: outputFormat,
-                        lastModified: Date.now(),
-                      }
-                    );
-                    resolveCompress(compressedFile);
-                  }
-                },
-                outputFormat,
-                q
-              );
-            });
-          };
-
-          compressWithQuality(quality)
-            .then((compressedFile) => {
-              resolve(compressedFile);
-            })
+        })
+        .catch((error) => {
+          console.error('createImageBitmapエラー:', error);
+          // createImageBitmapが失敗した場合は、Blob URL方式にフォールバック
+          loadImageWithBlobURL(file, maxWidth, maxHeight, outputFormat, quality, maxSizeMB, outputExtension)
+            .then(resolve)
             .catch(reject);
-        } catch (error) {
-          clearTimeout(timeoutId);
-          reject(new Error(`画像処理中にエラーが発生しました: ${error instanceof Error ? error.message : String(error)}`));
-        }
-      };
-
-      img.onerror = (event) => {
-        clearTimeout(timeoutId);
-        console.error('画像読み込みエラー:', {
-          fileType: file.type,
-          fileName: file.name,
-          fileSize: file.size,
-          event: event,
         });
-        reject(new Error(`画像の読み込みに失敗しました。ファイル形式（${file.type || '不明'}）がサポートされていない可能性があります。`));
-      };
+    } else {
+      // 小さなファイルの場合は、Blob URLを使用（DataURLよりも効率的）
+      loadImageWithBlobURL(file, maxWidth, maxHeight, outputFormat, quality, maxSizeMB, outputExtension)
+        .then(resolve)
+        .catch(reject);
+    }
+  });
+}
 
-      img.src = dataUrl;
+/**
+ * Canvasを圧縮してFileに変換するヘルパー関数
+ */
+function compressCanvasToFile(
+  canvas: HTMLCanvasElement,
+  outputFormat: string,
+  quality: number,
+  maxSizeMB: number,
+  originalFileName: string,
+  outputExtension: string
+): Promise<File> {
+  return new Promise((resolve, reject) => {
+    const compressWithQuality = (q: number): Promise<File> => {
+      return new Promise((resolveCompress, rejectCompress) => {
+        canvas.toBlob(
+          (blob) => {
+            if (!blob) {
+              rejectCompress(new Error(`画像の圧縮に失敗しました（品質: ${q}）`));
+              return;
+            }
+
+            const sizeMB = blob.size / (1024 * 1024);
+            // 目標サイズより大きい場合、品質を下げて再試行
+            const MIN_QUALITY = 0.5;
+            const QUALITY_STEP = 0.1;
+            if (sizeMB > maxSizeMB && q > MIN_QUALITY) {
+              resolveCompress(
+                compressWithQuality(Math.max(q - QUALITY_STEP, MIN_QUALITY))
+              );
+            } else {
+              const compressedFile = new File(
+                [blob],
+                originalFileName.replace(/\.[^/.]+$/, outputExtension),
+                {
+                  type: outputFormat,
+                  lastModified: Date.now(),
+                }
+              );
+              resolveCompress(compressedFile);
+            }
+          },
+          outputFormat,
+          q
+        );
+      });
     };
 
-    reader.onerror = (event) => {
-      console.error('FileReaderエラー:', {
+    compressWithQuality(quality).then(resolve).catch(reject);
+  });
+}
+
+/**
+ * Blob URLを使用して画像を読み込むヘルパー関数
+ */
+function loadImageWithBlobURL(
+  file: File,
+  maxWidth: number,
+  maxHeight: number,
+  outputFormat: string,
+  quality: number,
+  maxSizeMB: number,
+  outputExtension: string
+): Promise<File> {
+  return new Promise((resolve, reject) => {
+    const blobUrl = URL.createObjectURL(file);
+    const img = new Image();
+
+    // 画像読み込みのタイムアウトを設定（30秒）
+    const timeoutId = setTimeout(() => {
+      URL.revokeObjectURL(blobUrl);
+      reject(new Error('画像の読み込みがタイムアウトしました（30秒）'));
+    }, 30000);
+
+    img.onload = () => {
+      clearTimeout(timeoutId);
+      URL.revokeObjectURL(blobUrl); // メモリを解放
+
+      try {
+        // 画像のサイズを計算
+        let width = img.width;
+        let height = img.height;
+
+        // 画像サイズが0の場合はエラー
+        if (width === 0 || height === 0) {
+          reject(new Error('画像のサイズが無効です'));
+          return;
+        }
+
+        // アスペクト比を保ちながらリサイズ
+        if (width > maxWidth || height > maxHeight) {
+          const aspectRatio = width / height;
+          if (width > height) {
+            width = Math.min(width, maxWidth);
+            height = width / aspectRatio;
+          } else {
+            height = Math.min(height, maxHeight);
+            width = height * aspectRatio;
+          }
+        }
+
+        // Canvasを作成して画像を描画
+        const canvas = document.createElement("canvas");
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext("2d");
+        if (!ctx) {
+          reject(new Error("Canvas context could not be created"));
+          return;
+        }
+
+        // 画像を描画
+        ctx.drawImage(img, 0, 0, width, height);
+
+        // WebP形式（またはJPEG形式）で圧縮
+        compressCanvasToFile(canvas, outputFormat, quality, maxSizeMB, file.name, outputExtension)
+          .then(resolve)
+          .catch(reject);
+      } catch (error) {
+        reject(new Error(`画像処理中にエラーが発生しました: ${error instanceof Error ? error.message : String(error)}`));
+      }
+    };
+
+    img.onerror = (event) => {
+      clearTimeout(timeoutId);
+      URL.revokeObjectURL(blobUrl);
+      console.error('画像読み込みエラー:', {
         fileType: file.type,
         fileName: file.name,
         fileSize: file.size,
         event: event,
       });
-      reject(new Error(`ファイルの読み込みに失敗しました。ファイルが破損している可能性があります。`));
+      reject(new Error(`画像の読み込みに失敗しました。ファイル形式（${file.type || '不明'}）がサポートされていない可能性があります。`));
     };
 
-    reader.readAsDataURL(file);
+    img.src = blobUrl;
   });
 }
 
