@@ -465,5 +465,4 @@ export default function ProductList() {
 - [Next.js App Router](https://nextjs.org/docs/app)
 - [React Server Components](https://react.dev/blog/2023/03/22/react-labs-what-we-have-been-working-on-march-2023#react-server-components)
 - [Prisma Documentation](https://www.prisma.io/docs)
-- [Edge Runtime Documentation](https://nextjs.org/docs/app/api-reference/route-segment-config#runtime)
 - [TypeScript Handbook](https://www.typescriptlang.org/docs/handbook/intro.html)

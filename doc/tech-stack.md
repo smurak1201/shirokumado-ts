@@ -146,14 +146,6 @@
 
 ### ランタイム
 
-- **Edge Runtime** (Next.js)
-
-  Edge Runtime は、Next.js が提供する軽量な JavaScript ランタイムです。Vercel Edge Network などのエッジ環境で実行されます。Node.js Runtime よりも軽量で、起動時間が短く、グローバルに配信できます。
-
-  **このアプリでの使われ方**:
-
-  - このアプリでは Node.js Runtime を使用しています
-
 - **Node.js** `>=24.0.0` (LTS: Krypton)
 
   Node.js は、Chrome の V8 JavaScript エンジン上で動作する JavaScript ランタイムです。サーバーサイドで JavaScript を実行でき、Web アプリケーションのバックエンド開発に広く使用されています。
@@ -167,11 +159,10 @@
 
   **このアプリでの使われ方**:
 
-  - マイグレーション実行時など、一部の処理で Node.js Runtime を使用
+  - すべての API Routes と Server Components で Node.js Runtime（デフォルト）を使用
+  - マイグレーション実行時など、Prisma 関連の処理で Node.js Runtime を使用
   - Prisma Studio などの開発ツールで Node.js Runtime を使用
   - `.nvmrc` ファイルで Node.js のバージョンを固定し、開発環境の一貫性を確保
-
-  **注意**: このアプリでは、通常の API Routes や Server Components では Edge Runtime を使用しています。Node.js Runtime が必要な場合は明示的に指定します。
 
 ### データベース
 
@@ -397,6 +388,5 @@
 - [Vercel Neon Documentation](https://neon.tech/docs)
 - [Vercel Blob Documentation](https://vercel.com/docs/storage/vercel-blob)
 - [Prisma Documentation](https://www.prisma.io/docs)
-- [Edge Runtime Documentation](https://nextjs.org/docs/app/api-reference/route-segment-config#runtime)
 - [Tailwind CSS Documentation](https://tailwindcss.com/docs)
 - [TypeScript Documentation](https://www.typescriptlang.org/docs/)

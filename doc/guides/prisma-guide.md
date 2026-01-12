@@ -7,8 +7,8 @@
   - [prisma.config.ts](#prismaconfigts)
 - [データベースへの接続](#データベースへの接続)
   - [Prisma 7 でのデータベース接続の概要](#prisma-7-でのデータベース接続の概要)
-  - [Edge Runtime と Node.js Runtime](#edge-runtime-と-nodejs-runtime)
   - [このアプリでの PostgreSQL（Neon）への接続](#このアプリでの-postgresqlneonへの接続)
+  - [Runtime の選択](#runtime-の選択)
 - [ORM としての機能](#orm-としての機能)
   - [データベーススキーマ定義](#データベーススキーマ定義)
   - [リレーション（関連）](#リレーション関連)
@@ -104,22 +104,28 @@ export default defineConfig({
 
 ### Prisma 7 でのデータベース接続の概要
 
-**説明**: Prisma 7 では、通常のデータベース接続文字列を使用してデータベースに接続します。このアプリでは、PostgreSQL（Vercel Neon）に接続しています。
+**説明**: Prisma 7 では、Vercel + Neon 環境で使用する場合、`engineType = "client"` を使用し、Neon アダプターが必要です。このアプリでは、PostgreSQL（Vercel Neon）に接続しています。
 
 **このアプリでの接続方法**:
 
-- **アプリケーション用**: `DATABASE_URL` 環境変数から PostgreSQL 接続文字列を取得（[`lib/prisma.ts`](../../lib/prisma.ts)で使用）
+- **アプリケーション用**: `DATABASE_URL` 環境変数から PostgreSQL 接続文字列を取得し、Neon アダプターを使用（[`lib/prisma.ts`](../../lib/prisma.ts)で使用）
 - **マイグレーション用**: `DATABASE_URL_UNPOOLED` が設定されている場合は優先的に使用、なければ `DATABASE_URL` を使用（[`prisma.config.ts`](../../prisma.config.ts)で使用）
-- **接続管理**: Prisma Client が接続を管理
+- **接続管理**: Prisma Client と Neon アダプターが接続を管理
 - **型安全性**: Prisma Client の型安全性を維持
 
 ### このアプリでの PostgreSQL（Neon）への接続
 
-このアプリケーションでは、通常の PostgreSQL 接続文字列を使用して PostgreSQL（Vercel Neon）に接続しています。
+このアプリケーションでは、Prisma v7 の `engineType = "client"` を使用し、`@prisma/adapter-neon` と `@neondatabase/serverless` を使用して PostgreSQL（Vercel Neon）に接続しています。
+
+**必要なパッケージ**:
+
+- `@prisma/adapter-neon`: Prisma v7 用の Neon アダプター
+- `@neondatabase/serverless`: Neon のサーバーレスデータベースドライバー
+- `ws`: WebSocket 接続用（Neon アダプターが内部的に使用）
 
 **このアプリでの使用箇所**:
 
-- [`lib/prisma.ts`](../../lib/prisma.ts): Prisma Client の初期化とエクスポート
+- [`lib/prisma.ts`](../../lib/prisma.ts): Prisma Client の初期化とエクスポート（Neon アダプターを使用）
 - すべての Server Components と API Routes で `import { prisma } from '@/lib/prisma'` として使用
 
 **実際の実装コード**:
@@ -127,6 +133,10 @@ export default defineConfig({
 [`lib/prisma.ts`](../../lib/prisma.ts) (`createPrismaClient`関数)
 
 ```typescript
+import { PrismaClient } from "@prisma/client";
+import { PrismaNeon } from "@prisma/adapter-neon";
+import { Pool } from "@neondatabase/serverless";
+
 const createPrismaClient = (): PrismaClient => {
   // DATABASE_URLを取得
   const databaseUrl = process.env.DATABASE_URL;
@@ -135,8 +145,13 @@ const createPrismaClient = (): PrismaClient => {
     throw new Error("DATABASE_URL environment variable is not set.");
   }
 
-  // Prisma Clientを作成
+  // Neonアダプターを使用してPrisma Clientを作成
+  // Vercel + Neon環境では、engineType = "client" を使用するため、アダプターが必要です
+  const pool = new Pool({ connectionString: databaseUrl });
+  const adapter = new PrismaNeon(pool);
+
   return new PrismaClient({
+    adapter,
     log:
       process.env.NODE_ENV === "development"
         ? ["query", "error", "warn"]
@@ -150,13 +165,18 @@ const createPrismaClient = (): PrismaClient => {
    - `DATABASE_URL` から PostgreSQL 接続文字列を取得
    - 接続文字列が設定されているか確認
 
-2. **Prisma Client の作成**:
+2. **Neon アダプターの設定**:
 
-   - `PrismaClient` のコンストラクタで接続文字列を使用（環境変数から自動的に読み込まれる）
+   - `@neondatabase/serverless` の `Pool` を使用して接続プールを作成
+   - `@prisma/adapter-neon` の `PrismaNeon` を使用してアダプターを作成
+
+3. **Prisma Client の作成**:
+
+   - `PrismaClient` のコンストラクタに `adapter` を渡す
    - 開発環境ではクエリログを有効化（`['query', 'error', 'warn']`）
    - 本番環境ではエラーログのみ（`['error']`）
 
-3. **シングルトンインスタンスの管理**:
+4. **シングルトンインスタンスの管理**:
 
 [`lib/prisma.ts`](../../lib/prisma.ts) (`prisma`エクスポート)
 
@@ -182,7 +202,7 @@ DATABASE_URL_UNPOOLED=postgresql://user:password@host:port/database
 - `DATABASE_URL`: PostgreSQL 接続文字列（アプリケーション用・マイグレーション用）
 - `DATABASE_URL_UNPOOLED`: プールされていない接続（マイグレーション用、オプション）。設定されている場合、`prisma.config.ts`でマイグレーション時に優先的に使用されます
 
-### Edge Runtime と Node.js Runtime
+### Runtime の選択
 
 **説明**: Next.js App Router では、API Routes と Server Components で使用する Runtime を選択できます。このアプリでは、すべての API Routes と Server Components で Node.js Runtime（デフォルト）を使用しています。
 
@@ -191,14 +211,11 @@ DATABASE_URL_UNPOOLED=postgresql://user:password@host:port/database
 - すべての API Routes: Node.js Runtime（デフォルト）
 - すべての Server Components: Node.js Runtime（デフォルト）
 
-**Edge Runtime と Node.js Runtime の主な違い**:
+**Node.js Runtime を選択した理由**:
 
-| 項目                     | Edge Runtime                         | Node.js Runtime                    |
-| ------------------------ | ------------------------------------ | ---------------------------------- |
-| **起動速度**             | 非常に高速（コールドスタートが速い） | やや遅い（コールドスタートが遅い） |
-| **通常の Prisma Client** | サポートされない                     | サポート                           |
-| **パフォーマンス**       | 高い（低レイテンシー）               | 中程度                             |
-| **グローバル配信**       | 可能（エッジネットワーク）           | リージョン単位                     |
+- Prisma Client と Neon アダプターが Node.js Runtime で動作するため
+- データベース接続の管理が容易
+- 開発ツール（Prisma Studio など）との互換性が高い
 
 ## ORM としての機能
 
@@ -219,7 +236,8 @@ Prisma 7 では、スキーマファイルの基本的な構造は Prisma 6 と�
 ```prisma
 // Generator: Prisma Client の生成設定
 generator client {
-  provider = "prisma-client-js"
+  provider   = "prisma-client-js"
+  engineType = "client"  // Vercel + Neon環境では、clientエンジンを使用
 }
 
 // Datasource: データベース接続設定
