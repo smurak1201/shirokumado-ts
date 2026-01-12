@@ -1,4 +1,4 @@
-import { db, safeDbOperation } from "@/lib/db";
+import { prisma, safePrismaOperation } from "@/lib/prisma";
 import DashboardContent from "./components/DashboardContent";
 import type { Category, Product } from "./types";
 
@@ -23,21 +23,25 @@ async function getDashboardData(): Promise<{
     // カテゴリーと商品を並列で取得（パフォーマンス向上）
     const [categoriesList, productsList] = await Promise.all([
       // カテゴリーをID順で取得
-      safeDbOperation(
+      safePrismaOperation(
         () =>
-          db.query.categories.findMany({
-            orderBy: (categories, { asc }) => [asc(categories.id)],
+          prisma.category.findMany({
+            orderBy: {
+              id: "asc",
+            },
           }),
         "getDashboardData - categories"
       ),
       // 商品をカテゴリー情報を含めて取得（N+1問題を回避）
-      safeDbOperation(
+      safePrismaOperation(
         () =>
-          db.query.products.findMany({
-            with: {
+          prisma.product.findMany({
+            include: {
               category: true, // 関連するカテゴリー情報も一緒に取得
             },
-            orderBy: (products, { desc }) => [desc(products.createdAt)], // 作成日時の降順でソート
+            orderBy: {
+              createdAt: "desc", // 作成日時の降順でソート
+            },
           }),
         "getDashboardData - products"
       ),
@@ -58,7 +62,7 @@ async function getDashboardData(): Promise<{
           name: product.name,
           description: product.description,
           imageUrl: product.imageUrl,
-          // Decimal型をNumber型に変換（DrizzleのDecimal型は文字列として扱われるため）
+          // Decimal型をNumber型に変換
           priceS: product.priceS ? Number(product.priceS) : null,
           priceL: product.priceL ? Number(product.priceL) : null,
           category: {

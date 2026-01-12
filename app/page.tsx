@@ -1,10 +1,11 @@
 import Image from "next/image";
-import { db, safeDbOperation } from "@/lib/db";
+import { prisma, safePrismaOperation } from "@/lib/prisma";
 import { calculatePublishedStatus } from "@/lib/product-utils";
 import ProductGrid from "./components/ProductGrid";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 import type { Category, Product } from "./types";
+import { Prisma } from "@prisma/client";
 
 /**
  * 動的レンダリングを強制
@@ -13,11 +14,11 @@ import type { Category, Product } from "./types";
 export const dynamic = "force-dynamic";
 
 /**
- * 価格を文字列から数値に変換するヘルパー関数
- * Drizzleのdecimal型は文字列として扱われるため、数値に変換します
+ * 価格をDecimal型から数値に変換するヘルパー関数
+ * PrismaのDecimal型を数値に変換します
  */
-function convertPrice(price: string | null | undefined): number | null {
-  if (price === null || price === undefined || price === "") {
+function convertPrice(price: Prisma.Decimal | null | undefined): number | null {
+  if (price === null || price === undefined) {
     return null;
   }
   const num = Number(price);
@@ -52,22 +53,29 @@ async function getPublishedProductsByCategory(): Promise<
     // カテゴリーと商品を並列で取得（パフォーマンス向上）
     const [categoriesList, productsList] = await Promise.all([
       // カテゴリーをID順で取得
-      safeDbOperation(
+      safePrismaOperation(
         () =>
-          db.query.categories.findMany({
-            orderBy: (categories, { asc }) => [asc(categories.id)],
+          prisma.category.findMany({
+            orderBy: {
+              id: "asc",
+            },
           }),
         "getPublishedProductsByCategory - categories"
       ),
       // 商品をカテゴリー情報を含めて取得
-      safeDbOperation(
+      safePrismaOperation(
         () =>
-          db.query.products.findMany({
-            with: {
+          prisma.product.findMany({
+            include: {
               category: true, // カテゴリー情報も一緒に取得（N+1問題を回避）
             },
-            orderBy: (products, { sql }) => [
-              sql`${products.displayOrder} ASC NULLS LAST`, // displayOrderがnullの商品は最後に
+            orderBy: [
+              {
+                displayOrder: {
+                  sort: "asc",
+                  nulls: "last", // displayOrderがnullの商品は最後に
+                },
+              },
             ],
           }),
         "getPublishedProductsByCategory - products"
@@ -99,8 +107,8 @@ async function getPublishedProductsByCategory(): Promise<
         // 公開日・終了日が設定されている場合は自動判定
         if (product.publishedAt || product.endedAt) {
           return calculatePublishedStatus(
-            product.publishedAt, // Drizzleから取得したDateオブジェクトをそのまま渡す
-            product.endedAt // Drizzleから取得したDateオブジェクトをそのまま渡す
+            product.publishedAt, // Prismaから取得したDateオブジェクトをそのまま渡す
+            product.endedAt // Prismaから取得したDateオブジェクトをそのまま渡す
           );
         }
         // 公開日・終了日が設定されていない場合は手動設定値を使用
@@ -149,7 +157,7 @@ async function getPublishedProductsByCategory(): Promise<
           name: product.name,
           description: product.description,
           imageUrl: product.imageUrl,
-          // Decimal型をNumber型に変換（DrizzleのDecimal型は文字列として扱われるため）
+          // Decimal型をNumber型に変換
           priceS: convertPrice(product.priceS),
           priceL: convertPrice(product.priceL),
         })

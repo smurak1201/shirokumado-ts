@@ -1,10 +1,9 @@
 import { withErrorHandling, apiSuccess } from '@/lib/api-helpers';
-import { db, safeDbOperation, products, categories } from '@/lib/db';
+import { prisma, safePrismaOperation } from '@/lib/prisma';
 import { ValidationError, NotFoundError } from '@/lib/errors';
 import { NextRequest } from 'next/server';
 import { calculatePublishedStatus } from '@/lib/product-utils';
 import { deleteFile } from '@/lib/blob';
-import { eq } from 'drizzle-orm';
 
 /**
  * 商品を取得
@@ -23,11 +22,11 @@ export const GET = withErrorHandling(async (
     throw new ValidationError('無効な商品IDです');
   }
 
-  const product = await safeDbOperation(
+  const product = await safePrismaOperation(
     () =>
-      db.query.products.findFirst({
-        where: eq(products.id, productId),
-        with: {
+      prisma.product.findUnique({
+        where: { id: productId },
+        include: {
           category: true,
         },
       }),
@@ -57,8 +56,8 @@ export const PUT = withErrorHandling(async (
   }
 
   // 商品の存在確認
-  const existingProduct = await safeDbOperation(
-    () => db.query.products.findFirst({ where: eq(products.id, productId) }),
+  const existingProduct = await safePrismaOperation(
+    () => prisma.product.findUnique({ where: { id: productId } }),
     `PUT /api/products/${id} - existence check`
   );
 
@@ -85,8 +84,8 @@ export const PUT = withErrorHandling(async (
       throw new ValidationError('カテゴリーIDは数値である必要があります');
     }
 
-    const category = await safeDbOperation(
-      () => db.query.categories.findFirst({ where: eq(categories.id, body.categoryId) }),
+    const category = await safePrismaOperation(
+      () => prisma.category.findUnique({ where: { id: body.categoryId } }),
       `PUT /api/products/${id} - category check`
     );
 
@@ -134,28 +133,23 @@ export const PUT = withErrorHandling(async (
   if (body.name !== undefined) updateData.name = body.name.trim();
   if (body.description !== undefined) updateData.description = body.description.trim();
   if (body.imageUrl !== undefined) updateData.imageUrl = body.imageUrl || null;
-  if (body.priceS !== undefined) updateData.priceS = body.priceS ? String(parseFloat(body.priceS)) : null;
-  if (body.priceL !== undefined) updateData.priceL = body.priceL ? String(parseFloat(body.priceL)) : null;
+  if (body.priceS !== undefined) updateData.priceS = body.priceS ? parseFloat(body.priceS) : null;
+  if (body.priceL !== undefined) updateData.priceL = body.priceL ? parseFloat(body.priceL) : null;
   if (body.categoryId !== undefined) updateData.categoryId = body.categoryId;
   updateData.published = published;
   if (body.publishedAt !== undefined) updateData.publishedAt = publishedAt;
   if (body.endedAt !== undefined) updateData.endedAt = endedAt;
 
-  await safeDbOperation(
-    () => db.update(products).set(updateData).where(eq(products.id, productId)),
-    `PUT /api/products/${id}`
-  );
-
-  // 更新された商品にカテゴリー情報も含めて取得
-  const product = await safeDbOperation(
+  const product = await safePrismaOperation(
     () =>
-      db.query.products.findFirst({
-        where: eq(products.id, productId),
-        with: {
+      prisma.product.update({
+        where: { id: productId },
+        data: updateData,
+        include: {
           category: true,
         },
       }),
-    `PUT /api/products/${id} - fetch with category`
+    `PUT /api/products/${id}`
   );
 
   if (!product) {
@@ -180,8 +174,8 @@ export const DELETE = withErrorHandling(async (
   }
 
   // 商品の存在確認
-  const existingProduct = await safeDbOperation(
-    () => db.query.products.findFirst({ where: eq(products.id, productId) }),
+  const existingProduct = await safePrismaOperation(
+    () => prisma.product.findUnique({ where: { id: productId } }),
     `DELETE /api/products/${id} - existence check`
   );
 
@@ -201,8 +195,8 @@ export const DELETE = withErrorHandling(async (
   }
 
   // 商品を削除
-  await safeDbOperation(
-    () => db.delete(products).where(eq(products.id, productId)),
+  await safePrismaOperation(
+    () => prisma.product.delete({ where: { id: productId } }),
     `DELETE /api/products/${id}`
   );
 

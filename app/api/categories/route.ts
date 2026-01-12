@@ -1,5 +1,5 @@
 import { withErrorHandling } from '@/lib/api-helpers';
-import { db, safeDbOperation } from '@/lib/db';
+import { prisma, safePrismaOperation } from '@/lib/prisma';
 import { config } from '@/lib/config';
 import { NextResponse } from 'next/server';
 
@@ -16,10 +16,12 @@ import { NextResponse } from 'next/server';
 export const dynamic = 'force-dynamic'; // 動的レンダリング（キャッシュはクライアント側で制御）
 
 export const GET = withErrorHandling(async () => {
-  const categoriesList = await safeDbOperation(
+  const categoriesList = await safePrismaOperation(
     () =>
-      db.query.categories.findMany({
-        orderBy: (categories, { asc }) => [asc(categories.id)],
+      prisma.category.findMany({
+        orderBy: {
+          id: 'asc',
+        },
       }),
     'GET /api/categories'
   );

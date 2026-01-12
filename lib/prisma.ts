@@ -1,72 +1,48 @@
 import { PrismaClient } from '@prisma/client';
-import { neon, neonConfig } from '@neondatabase/serverless';
-import { PrismaNeon } from '@prisma/adapter-neon';
-import ws from 'ws';
 import { DatabaseError, logError } from './errors';
 
 /**
  * Prisma Client シングルトンインスタンス
  *
+ * Edge Runtime対応のため、Prisma Accelerateを使用します。
+ *
  * Next.js App Routerでのベストプラクティス:
  * - 開発環境ではホットリロード時に新しいインスタンスが作成されないように、
  *   グローバル変数に保存します
  * - 本番環境では各リクエストで新しいインスタンスを使用しますが、
- *   接続プールにより効率的に管理されます
+ *   Prisma Accelerateが効率的に接続を管理します
  *
- * Prisma 7では、Neon（PostgreSQL）に接続するために@prisma/adapter-neonを使用します
+ * Prisma Accelerateを使用することで、Edge Runtimeでも動作します。
+ * 環境変数PRISMA_ACCELERATE_URLが設定されている場合はAccelerateを使用し、
+ * 設定されていない場合は通常のPrisma Clientを使用します。
  */
-
-// WebSocketの設定（Node.js環境用）
-if (typeof globalThis !== 'undefined' && !globalThis.WebSocket) {
-  neonConfig.webSocketConstructor = ws;
-}
 
 const globalForPrisma = globalThis as unknown as {
   prisma: PrismaClient | undefined;
 };
 
 const createPrismaClient = (): PrismaClient => {
-  // Prisma 7では、Neonに接続するためにアダプターを使用します
-  const rawConnectionString = process.env.DATABASE_URL || process.env.POSTGRES_URL;
+  // Prisma Accelerate URLが設定されている場合はAccelerateを使用
+  const accelerateUrl = process.env.PRISMA_ACCELERATE_URL;
 
-  if (!rawConnectionString) {
-    throw new Error('DATABASE_URL or POSTGRES_URL environment variable is not set');
-  }
-
-  // 接続文字列を確実に文字列に変換
-  // process.envの値は常にstring | undefinedなので、String()で変換
-  const connectionString = String(rawConnectionString).trim();
-
-  // 接続文字列が空でないことを確認
-  if (!connectionString || connectionString.length === 0) {
-    throw new Error('DATABASE_URL must be a non-empty string');
-  }
-
-  // 接続文字列が正しい形式であることを確認
-  if (!connectionString.startsWith('postgresql://') && !connectionString.startsWith('postgres://')) {
-    throw new Error('DATABASE_URL must be a valid PostgreSQL connection string');
-  }
-
-  try {
-    // neon関数を使用してアダプターを作成
-    // これにより、Vercelの本番環境でも正しく動作します
-    const sql = neon(connectionString);
-    const adapter = new PrismaNeon(sql as any);
-
+  if (accelerateUrl) {
+    // Prisma Accelerateを使用（Edge Runtime対応）
     return new PrismaClient({
-      adapter,
+      datasourceUrl: accelerateUrl,
       log:
         process.env.NODE_ENV === 'development'
           ? ['query', 'error', 'warn']
           : ['error'],
     });
-  } catch (error) {
-    console.error('Failed to create Prisma Client:', error);
-    console.error('Connection string type:', typeof connectionString);
-    console.error('Connection string length:', connectionString.length);
-    console.error('Connection string preview:', connectionString.substring(0, 20) + '...');
-    throw error;
   }
+
+  // 通常のPrisma Clientを使用
+  return new PrismaClient({
+    log:
+      process.env.NODE_ENV === 'development'
+        ? ['query', 'error', 'warn']
+        : ['error'],
+  });
 };
 
 export const prisma =
