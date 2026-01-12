@@ -24,9 +24,33 @@ export const POST = withErrorHandling(async (request: NextRequest) => {
     throw new ValidationError('ファイルが指定されていません');
   }
 
-  // ファイルタイプの検証
-  if (!file.type.startsWith('image/')) {
-    throw new ValidationError('画像ファイルのみアップロード可能です');
+  // ファイルタイプの検証（HEIC形式も含む、拡張子でも判定）
+  const isImageFile = (file: File): boolean => {
+    // ファイルタイプがimage/で始まる場合
+    if (file.type && file.type.startsWith('image/')) {
+      return true;
+    }
+
+    // HEIC形式の場合
+    const heicTypes = ['image/heic', 'image/heif', 'image/heic-sequence', 'image/heif-sequence'];
+    if (file.type && heicTypes.includes(file.type.toLowerCase())) {
+      return true;
+    }
+    if (/\.(heic|heif)$/i.test(file.name)) {
+      return true;
+    }
+
+    // ファイルタイプが空の場合、拡張子で判定
+    if (!file.type || file.type === 'application/octet-stream') {
+      const imageExtensions = /\.(jpg|jpeg|png|gif|webp|bmp|svg|heic|heif)$/i;
+      return imageExtensions.test(file.name);
+    }
+
+    return false;
+  };
+
+  if (!isImageFile(file)) {
+    throw new ValidationError(`画像ファイルのみアップロード可能です。ファイル形式: ${file.type || '不明'}, ファイル名: ${file.name}`);
   }
 
   // ファイルサイズの検証（設定ファイルから読み込み）
