@@ -14,7 +14,12 @@ import { DatabaseError, logError } from './errors';
  *
  * Prisma Accelerateを使用するには、環境変数DATABASE_URLに
  * Prisma AccelerateのURLを設定してください。
- * Prisma AccelerateのURLは、Prisma Accelerate Consoleから取得できます。
+ *
+ * Prisma AccelerateのURL形式:
+ * prisma://accelerate.prisma-data.net/?api_key=YOUR_API_KEY
+ *
+ * Prisma Accelerate Consoleから取得できます:
+ * https://console.prisma.io/accelerate
  */
 
 const globalForPrisma = globalThis as unknown as {
@@ -23,9 +28,9 @@ const globalForPrisma = globalThis as unknown as {
 
 const createPrismaClient = (): PrismaClient => {
   // Prisma Clientを作成
-  // Prisma Accelerateを使用する場合は、環境変数DATABASE_URLに
-  // Prisma AccelerateのURLを設定してください
-  // 通常のデータベース接続を使用する場合は、通常のDATABASE_URLを設定してください
+  // Prisma Accelerateを使用する場合、環境変数DATABASE_URLに
+  // Prisma AccelerateのURL（prisma://accelerate.prisma-data.net/?api_key=...）を設定してください
+  // Prisma Clientは自動的にPrisma Accelerate経由でデータベースに接続します
   return new PrismaClient({
     log:
       process.env.NODE_ENV === 'development'
