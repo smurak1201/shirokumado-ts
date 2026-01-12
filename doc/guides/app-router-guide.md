@@ -539,20 +539,20 @@ export default function Template({ children }: { children: React.ReactNode }) {
 3. **[`app/dashboard/hooks/useProductReorder.ts`](../../app/dashboard/hooks/useProductReorder.ts) (`reorderProducts`関数)** - 商品順序の変更
 
 ```typescript
-      // API を呼び出して商品の順序をサーバーに保存
-      const response = await fetch("/api/products/reorder", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ productOrders }),
-      });
+// API を呼び出して商品の順序をサーバーに保存
+const response = await fetch("/api/products/reorder", {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json",
+  },
+  body: JSON.stringify({ productOrders }),
+});
 
-      // レスポンスがエラーの場合は例外を投げる
-      if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.error || "順序の更新に失敗しました");
-      }
+// レスポンスがエラーの場合は例外を投げる
+if (!response.ok) {
+  const error = await response.json();
+  throw new Error(error.error || "順序の更新に失敗しました");
+}
 ```
 
 4. **`app/dashboard/components/DashboardForm.tsx`** - 商品の作成と画像アップロード
@@ -562,60 +562,60 @@ export default function Template({ children }: { children: React.ReactNode }) {
 [`app/dashboard/components/DashboardForm.tsx`](../../app/dashboard/components/DashboardForm.tsx) (画像アップロード処理)
 
 ```typescript
-          uploadFormData.append("file", formData.imageFile);
+uploadFormData.append("file", formData.imageFile);
 
-          const uploadResponse = await fetch("/api/products/upload", {
-            method: "POST",
-            body: uploadFormData,
-          });
+const uploadResponse = await fetch("/api/products/upload", {
+  method: "POST",
+  body: uploadFormData,
+});
 
-          if (!uploadResponse.ok) {
-            let errorMessage = "画像のアップロードに失敗しました";
-            try {
-              const contentType = uploadResponse.headers.get("content-type");
-              if (contentType && contentType.includes("application/json")) {
-                const error = await uploadResponse.json();
-                errorMessage = error.error || errorMessage;
-              } else {
-                const text = await uploadResponse.text();
-                errorMessage = text || errorMessage;
-              }
-            } catch (parseError) {
-              // JSONパースエラーの場合はデフォルトメッセージを使用
-              errorMessage = `画像のアップロードに失敗しました (${uploadResponse.status})`;
-            }
-            throw new Error(errorMessage);
-          }
+if (!uploadResponse.ok) {
+  let errorMessage = "画像のアップロードに失敗しました";
+  try {
+    const contentType = uploadResponse.headers.get("content-type");
+    if (contentType && contentType.includes("application/json")) {
+      const error = await uploadResponse.json();
+      errorMessage = error.error || errorMessage;
+    } else {
+      const text = await uploadResponse.text();
+      errorMessage = text || errorMessage;
+    }
+  } catch (parseError) {
+    // JSONパースエラーの場合はデフォルトメッセージを使用
+    errorMessage = `画像のアップロードに失敗しました (${uploadResponse.status})`;
+  }
+  throw new Error(errorMessage);
+}
 
-          const uploadData = await uploadResponse.json();
-          imageUrl = uploadData.url;
+const uploadData = await uploadResponse.json();
+imageUrl = uploadData.url;
 ```
 
 [`app/dashboard/components/DashboardForm.tsx`](../../app/dashboard/components/DashboardForm.tsx) (商品登録処理)
 
 ```typescript
-      const response = await fetch("/api/products", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          name: formData.name,
-          description: formData.description,
-          imageUrl,
-          categoryId: parseInt(formData.categoryId),
-          priceS: formData.priceS ? parseFloat(formData.priceS) : null,
-          priceL: formData.priceL ? parseFloat(formData.priceL) : null,
-          published: formData.published,
-          publishedAt: formData.publishedAt || null,
-          endedAt: formData.endedAt || null,
-        }),
-      });
+const response = await fetch("/api/products", {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json",
+  },
+  body: JSON.stringify({
+    name: formData.name,
+    description: formData.description,
+    imageUrl,
+    categoryId: parseInt(formData.categoryId),
+    priceS: formData.priceS ? parseFloat(formData.priceS) : null,
+    priceL: formData.priceL ? parseFloat(formData.priceL) : null,
+    published: formData.published,
+    publishedAt: formData.publishedAt || null,
+    endedAt: formData.endedAt || null,
+  }),
+});
 
-      if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.error || "登録に失敗しました");
-      }
+if (!response.ok) {
+  const error = await response.json();
+  throw new Error(error.error || "登録に失敗しました");
+}
 ```
 
 **fetch の使用パターン**:
@@ -675,13 +675,50 @@ export default function Template({ children }: { children: React.ReactNode }) {
 
 **説明**: `export const dynamic = "force-dynamic"` を使用して、ページを常に動的にレンダリングするように設定できます。
 
+**このアプリで動的レンダリングを強制している理由**:
+
+1. **公開状態の自動判定**: `calculatePublishedStatus()` 関数が現在時刻を使用して、公開日・終了日に基づいて公開状態を自動判定しています。静的生成（SSG）や ISR を使用すると、ビルド時や再生成時の時刻で公開状態が固定されてしまい、公開日・終了日に基づく自動判定が正しく動作しません。
+
+2. **商品情報の頻繁な更新**: 商品情報は頻繁に更新される可能性があり、常に最新のデータを表示する必要があります。
+
+3. **データベースから最新のデータを取得**: データベースから常に最新のデータを取得する必要があります。
+
+**公開状態の自動判定の例**:
+
+```typescript
+// lib/product-utils.ts
+export function calculatePublishedStatus(
+  publishedAt: Date | null,
+  endedAt: Date | null
+): boolean {
+  const now = getJapanTime(); // 現在時刻を使用（リクエストごとに異なる）
+
+  // 公開日が未来の場合は非公開
+  if (publishedAt && new Date(publishedAt) > now) {
+    return false;
+  }
+  // 終了日が過去の場合は非公開
+  if (endedAt && new Date(endedAt) < now) {
+    return false;
+  }
+  return true;
+}
+```
+
+この関数は、リクエストごとに現在時刻を取得して公開状態を判定するため、動的レンダリングが必要です。
+
 **このアプリでの使用箇所**:
 
 1. **[`app/page.tsx`](../../app/page.tsx) (`dynamic`エクスポート)** - 動的レンダリングを強制
 
 ```typescript
+/**
  * 動的レンダリングを強制
- * データベースから最新のデータを取得する必要があるため、常にサーバー側でレンダリングします
+ *
+ * 理由:
+ * 1. 公開状態の自動判定: calculatePublishedStatus() が現在時刻を使用するため
+ * 2. 商品情報の頻繁な更新: 常に最新のデータを表示する必要がある
+ * 3. データベースから最新のデータを取得: 常に最新のデータを取得する必要がある
  */
 export const dynamic = "force-dynamic";
 ```
@@ -689,9 +726,13 @@ export const dynamic = "force-dynamic";
 2. **[`app/dashboard/page.tsx`](../../app/dashboard/page.tsx) (`dynamic`エクスポート)** - 動的レンダリングを強制
 
 ```typescript
+/**
  * 動的レンダリングを強制
- * データベースから最新のデータを取得する必要があるため、
- * このページは常にサーバー側でレンダリングされます
+ *
+ * 理由:
+ * 1. 商品情報の頻繁な更新: ダッシュボードでは商品情報を頻繁に更新する可能性がある
+ * 2. データベースから最新のデータを取得: 常に最新のデータを取得する必要がある
+ * 3. 公開状態の確認: 公開日・終了日に基づく公開状態を正確に表示する必要がある
  */
 export const dynamic = "force-dynamic";
 ```
@@ -699,10 +740,15 @@ export const dynamic = "force-dynamic";
 3. **[`app/api/products/route.ts`](../../app/api/products/route.ts) (`dynamic`エクスポート)** - API Route での動的レンダリング
 
 ```typescript
+/**
  * 動的レンダリングを強制
- * データベースから最新のデータを取得する必要があるため、常にサーバー側でレンダリングします
+ *
+ * 理由:
+ * 1. 商品情報の頻繁な更新: 常に最新のデータを返す必要がある
+ * 2. 公開状態の自動判定: 公開日・終了日に基づく公開状態の自動判定が正しく動作するため
+ * 3. データベースから最新のデータを取得: 常に最新のデータを取得する必要がある
  */
-export const dynamic = 'force-dynamic';
+export const dynamic = "force-dynamic";
 ```
 
 ## 動的ルーティング
@@ -1061,18 +1107,18 @@ export default function ProductForm() {
 1. **[`app/page.tsx`](../../app/page.tsx) (ヒーロー画像セクション)** - ヒーロー画像の最適化
 
 ```typescript
-      <section className="relative h-[30vh] min-h-[200px] w-full overflow-hidden md:h-[50vh] md:min-h-[400px] lg:h-[60vh] lg:min-h-[500px]">
-        <Image
-          src="/hero.webp"
-          alt="白熊堂"
-          fill
-          priority
-          className="object-cover"
-          sizes="100vw"
-        />
-        {/* オーバーレイ */}
-        <div className="absolute inset-0 bg-linear-to-b from-white/20 via-white/8 to-white/25" />
-      </section>
+<section className="relative h-[30vh] min-h-[200px] w-full overflow-hidden md:h-[50vh] md:min-h-[400px] lg:h-[60vh] lg:min-h-[500px]">
+  <Image
+    src="/hero.webp"
+    alt="白熊堂"
+    fill
+    priority
+    className="object-cover"
+    sizes="100vw"
+  />
+  {/* オーバーレイ */}
+  <div className="absolute inset-0 bg-linear-to-b from-white/20 via-white/8 to-white/25" />
+</section>
 ```
 
 **Image コンポーネントの主なプロパティ**:
@@ -1190,7 +1236,7 @@ export default function ProductForm() {
    - **Server Components**: 初期データの取得は Prisma で直接データベースにアクセス
    - **Client Components**: ユーザーの操作に応じた動的なデータ取得は `fetch` API で API Routes を呼び出し
 4. **並列データフェッチング**: `Promise.all` を使用して複数のデータを並列で取得
-5. **動的レンダリングの適切な使用**: 最新のデータが必要な場合は `export const dynamic = "force-dynamic"` を設定
+5. **動的レンダリングの適切な使用**: 最新のデータが必要な場合や、時刻に依存する処理（公開状態の自動判定など）がある場合は `export const dynamic = "force-dynamic"` を設定
 6. **キャッシュの制御**: Client Components で最新データを取得する場合は、タイムスタンプと `cache: "no-store"` を使用
 7. **画像最適化**: `Image` コンポーネントを使用して画像を最適化
 8. **エラーハンドリング**: API Routes では `withErrorHandling` を使用して統一されたエラーハンドリングを実装

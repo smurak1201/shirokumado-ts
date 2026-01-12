@@ -99,8 +99,34 @@ export default async function ProductPage({
 
 **このアプリで使用しない理由**:
 
-- 商品情報は頻繁に更新される可能性があるため、常に最新のデータを表示する必要がある
-- 動的レンダリングにより、データベースから常に最新のデータを取得できる
+1. **公開状態の自動判定**: `calculatePublishedStatus()` 関数が現在時刻を使用して、公開日・終了日に基づいて公開状態を自動判定しています。静的生成（SSG）や ISR を使用すると、ビルド時や再生成時の時刻で公開状態が固定されてしまい、公開日・終了日に基づく自動判定が正しく動作しません。
+
+2. **商品情報の頻繁な更新**: 商品情報は頻繁に更新される可能性があり、常に最新のデータを表示する必要があります。
+
+3. **データベースから最新のデータを取得**: データベースから常に最新のデータを取得する必要があります。
+
+**具体例**:
+
+```typescript
+// calculatePublishedStatus() は現在時刻を使用
+export function calculatePublishedStatus(
+  publishedAt: Date | null,
+  endedAt: Date | null
+): boolean {
+  const now = getJapanTime(); // 現在時刻を使用
+  // 公開日が未来の場合は非公開
+  if (publishedAt && new Date(publishedAt) > now) {
+    return false;
+  }
+  // 終了日が過去の場合は非公開
+  if (endedAt && new Date(endedAt) < now) {
+    return false;
+  }
+  return true;
+}
+```
+
+この関数は、リクエストごとに現在時刻を取得して公開状態を判定するため、動的レンダリングが必要です。
 
 **詳細な説明は [Next.js 公式ドキュメント](https://nextjs.org/docs) を参照してください。**
 
