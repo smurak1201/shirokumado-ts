@@ -1,6 +1,5 @@
 import { withErrorHandling } from '@/lib/api-helpers';
-import { db, safeDbOperation, categories } from '@/lib/db';
-import { asc } from 'drizzle-orm';
+import { db, safeDbOperation } from '@/lib/db';
 import { config } from '@/lib/config';
 import { NextResponse } from 'next/server';
 
@@ -18,7 +17,10 @@ export const dynamic = 'force-dynamic'; // 動的レンダリング（キャッ�
 
 export const GET = withErrorHandling(async () => {
   const categoriesList = await safeDbOperation(
-    () => db.select().from(categories).orderBy(asc(categories.id)),
+    () =>
+      db.query.categories.findMany({
+        orderBy: (categories, { asc }) => [asc(categories.id)],
+      }),
     'GET /api/categories'
   );
 
