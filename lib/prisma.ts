@@ -4,24 +4,15 @@ import { DatabaseError, logError } from './errors';
 /**
  * Prisma Client シングルトンインスタンス
  *
- * Edge Runtime対応のため、Prisma Accelerateを使用します。
- *
  * Next.js App Routerでのベストプラクティス:
  * - 開発環境ではホットリロード時に新しいインスタンスが作成されないように、
  *   グローバル変数に保存します
  * - 本番環境では各リクエストで新しいインスタンスを使用しますが、
- *   Prisma Accelerateが効率的に接続を管理します
- *
- * 注意: このPrisma ClientはPrisma Accelerate専用です。
- * マイグレーションやPrisma Studioを使用する場合は、通常のデータベース接続文字列が必要です。
+ *   Prisma Clientが効率的に接続を管理します
  *
  * 環境変数の設定:
- * - DATABASE_URL_ACCELERATE: Prisma AccelerateのURL（必須）
- *   prisma://accelerate.prisma-data.net/?api_key=YOUR_API_KEY
- * - POSTGRES_URL: 通常のデータベース接続文字列（マイグレーション用、必須）
- *
- * Prisma Accelerate Consoleから取得できます:
- * https://console.prisma.io/accelerate
+ * - DATABASE_URL: PostgreSQL接続文字列（必須）
+ *   postgresql://user:password@host:port/database
  */
 
 const globalForPrisma = globalThis as unknown as {
@@ -29,36 +20,20 @@ const globalForPrisma = globalThis as unknown as {
 };
 
 const createPrismaClient = (): PrismaClient => {
-  // Prisma AccelerateのURLを取得
-  const accelerateUrl = process.env.DATABASE_URL_ACCELERATE;
+  // DATABASE_URLを取得
+  const databaseUrl = process.env.DATABASE_URL;
 
-  if (!accelerateUrl) {
+  if (!databaseUrl) {
     throw new Error(
-      'DATABASE_URL_ACCELERATE environment variable is not set.\n' +
-      'Please set DATABASE_URL_ACCELERATE to your Prisma Accelerate URL in Vercel environment variables.\n' +
-      'Format: prisma://accelerate.prisma-data.net/?api_key=YOUR_API_KEY\n' +
-      'Get your Accelerate URL from: https://console.prisma.io/accelerate\n\n' +
-      'Note: POSTGRES_URL should be set separately for migrations (prisma migrate deploy).'
+      'DATABASE_URL environment variable is not set.\n' +
+      'Please set DATABASE_URL to your PostgreSQL connection string.\n' +
+      'Format: postgresql://user:password@host:port/database\n\n' +
+      'For Vercel deployments, set DATABASE_URL in your project environment variables.'
     );
   }
 
-  // Prisma AccelerateのURL形式を確認
-  if (!accelerateUrl.startsWith('prisma://')) {
-    throw new Error(
-      'DATABASE_URL_ACCELERATE must be a Prisma Accelerate URL (starting with prisma://).\n' +
-      `Current value starts with: ${accelerateUrl.substring(0, 20)}...\n\n` +
-      'Please set DATABASE_URL_ACCELERATE to your Prisma Accelerate URL in Vercel:\n' +
-      '1. Go to your Vercel project settings\n' +
-      '2. Navigate to Environment Variables\n' +
-      '3. Set DATABASE_URL_ACCELERATE to: prisma://accelerate.prisma-data.net/?api_key=YOUR_API_KEY\n' +
-      '4. Get your Accelerate URL from: https://console.prisma.io/accelerate\n\n' +
-      'Note: POSTGRES_URL should be set separately for migrations (normal PostgreSQL connection string).'
-    );
-  }
-
-  // Prisma Clientを作成（Prisma Accelerateを使用）
+  // Prisma Clientを作成
   return new PrismaClient({
-    accelerateUrl,
     log:
       process.env.NODE_ENV === 'development'
         ? ['query', 'error', 'warn']
@@ -95,9 +70,8 @@ export async function safePrismaOperation<T>(
 /**
  * データベース接続を切断します
  *
- * 注意: Prisma Accelerate を使用している場合、接続のクリーンアップは
- * Prisma Accelerate 側で自動的に管理されるため、通常は明示的な切断は不要です。
  * この関数は、マイグレーション実行時や開発ツール（Prisma Studio など）で使用されます。
+ * 通常のアプリケーション実行では、Prisma Client が自動的に接続を管理します。
  */
 export async function disconnectPrisma(): Promise<void> {
   try {
@@ -107,16 +81,3 @@ export async function disconnectPrisma(): Promise<void> {
     // 切断エラーは無視（既に切断されている可能性がある）
   }
 }
-
-/**
- * 注意: アプリケーション終了時の接続クリーンアップについて
- *
- * Edge Runtime では Node.js API (process.on) が使用できないため、
- * アプリケーション終了時の接続クリーンアップコードは実装していません。
- *
- * Prisma Accelerate を使用している場合、接続のクリーンアップは Prisma Accelerate 側で
- * 自動的に管理されるため、明示的なクリーンアップは不要です。
- *
- * マイグレーション実行時や開発ツール（Prisma Studio など）では Node.js Runtime が使用され、
- * これらのツールは独自に接続を管理するため、問題ありません。
- */

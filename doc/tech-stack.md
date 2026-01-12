@@ -152,12 +152,7 @@
 
   **このアプリでの使われ方**:
 
-  - すべての API Routes で Edge Runtime を明示的に指定（`export const runtime = 'edge'`）
-  - Server Components では Edge Runtime（デフォルト）を使用
-  - Prisma Accelerate により、Edge Runtime でも Prisma Client が正常に動作
-  - 高速な起動時間とグローバル配信により、優れたユーザー体験を提供
-
-  **詳細な使用方法については、[Edge Runtime ガイド](./guides/edge-runtime-guide.md) を参照してください。**
+  - このアプリでは Node.js Runtime を使用しています
 
 - **Node.js** `>=24.0.0` (LTS: Krypton)
 
@@ -219,18 +214,6 @@
   - N+1 問題を回避するためのクエリ最適化
 
   **詳細な使用方法については、[Prisma ガイド](./guides/prisma-guide.md) を参照してください。**
-
-- **Prisma Accelerate**
-
-  Prisma Accelerate は、Edge Runtime 対応のためのグローバル接続プーリングとキャッシングレイヤーです。HTTP ベースの接続を使用するため、Edge Runtime でも動作します。
-
-  **このアプリでの使われ方**:
-
-  - Edge Runtime で Prisma Client を使用するために Prisma Accelerate を採用
-  - [`lib/prisma.ts`](../lib/prisma.ts) で Prisma Accelerate を使用した Prisma Client を初期化
-  - すべての API Routes と Server Components で Edge Runtime 対応の Prisma Client を使用
-
-  **詳細な使用方法については、[Prisma ガイド - Prisma Accelerate](./guides/prisma-guide.md#prisma-accelerate) と [Edge Runtime ガイド](./guides/edge-runtime-guide.md) を参照してください。**
 
 ### ストレージ
 
@@ -414,8 +397,6 @@
 - [Vercel Neon Documentation](https://neon.tech/docs)
 - [Vercel Blob Documentation](https://vercel.com/docs/storage/vercel-blob)
 - [Prisma Documentation](https://www.prisma.io/docs)
-- [Prisma Accelerate Documentation](https://www.prisma.io/docs/accelerate)
-- [Prisma Accelerate Console](https://console.prisma.io/accelerate)
 - [Edge Runtime Documentation](https://nextjs.org/docs/app/api-reference/route-segment-config#runtime)
 - [Tailwind CSS Documentation](https://tailwindcss.com/docs)
 - [TypeScript Documentation](https://www.typescriptlang.org/docs/)

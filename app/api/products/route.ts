@@ -6,12 +6,6 @@ import { NextRequest, NextResponse } from 'next/server';
 import { calculatePublishedStatus } from '@/lib/product-utils';
 
 /**
- * Edge Runtime を使用
- * Prisma Accelerate を使用しているため、Edge Runtime で動作します
- */
-export const runtime = 'edge';
-
-/**
  * 動的レンダリングを強制
  *
  * 理由:

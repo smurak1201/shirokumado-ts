@@ -45,50 +45,38 @@
 [`.env`](../.env)ファイルに以下の環境変数が設定されています：
 
 ```env
-# Prisma Accelerate（アプリケーション用、必須）
-# Edge Runtime対応のため、Prisma Accelerateを使用します
-DATABASE_URL_ACCELERATE=prisma://accelerate.prisma-data.net/?api_key=YOUR_API_KEY
-
-# データベース接続（マイグレーション用、必須）
-# Prisma Accelerateはマイグレーションには使用できません
-POSTGRES_URL=postgresql://...
+# データベース接続（必須）
+DATABASE_URL=postgresql://user:password@host:port/database
 
 # 以下の環境変数はオプションです（Neon の接続プール設定など）
-DATABASE_URL=postgresql://...
 DATABASE_URL_UNPOOLED=postgresql://...
 POSTGRES_URL_NON_POOLING=postgresql://...
 
-# Blob Storage
+# Blob Storage（必須）
 BLOB_READ_WRITE_TOKEN=vercel_blob_rw_...
 ```
 
-### Prisma Accelerate の設定
+### データベース接続の設定
 
-**説明**: このアプリでは、Edge Runtime 対応のため、Prisma Accelerate を使用しています。Prisma Accelerate は HTTP ベースの接続を使用するため、Edge Runtime でも動作します。
+**説明**: このアプリでは、通常の PostgreSQL 接続を使用しています。`DATABASE_URL` 環境変数に PostgreSQL 接続文字列を設定してください。
 
 **環境変数の設定**:
 
-- **`DATABASE_URL_ACCELERATE`** (必須): Prisma Accelerate の URL（アプリケーション用、Edge Runtime で使用）
-  - 形式: `prisma://accelerate.prisma-data.net/?api_key=YOUR_API_KEY`
-  - [Prisma Accelerate Console](https://console.prisma.io/accelerate) から取得できます
+- **`DATABASE_URL`** (必須): PostgreSQL 接続文字列
+  - 形式: `postgresql://user:password@host:port/database`
+  - Vercel Neon などのサーバーレスデータベースサービスから取得できます
 
-- **`POSTGRES_URL`** (必須): 通常の PostgreSQL 接続文字列（マイグレーション用、Node.js Runtime で使用）
-  - Prisma Accelerate はマイグレーションには使用できません
-  - Prisma Studio も通常のデータベース接続文字列が必要です
+**Vercel Neon での取得方法**:
 
-**Prisma Accelerate の取得方法**:
-
-1. [Prisma Accelerate Console](https://console.prisma.io/accelerate) にアクセス
-2. プロジェクトを作成または選択
-3. Accelerate を有効化
-4. API キーを生成
-5. Prisma Accelerate の URL を取得（`prisma://accelerate.prisma-data.net/?api_key=...` 形式）
-6. Vercel の環境変数に `DATABASE_URL_ACCELERATE` として設定
+1. [Vercel Dashboard](https://vercel.com/dashboard) にアクセス
+2. プロジェクトの Settings > Environment Variables に移動
+3. Neon データベースを作成または既存のデータベースを選択
+4. 接続文字列をコピーして `DATABASE_URL` として設定
 
 **詳細な情報**:
 
-- [Prisma ガイド - Prisma Accelerate](./guides/prisma-guide.md#prisma-accelerate): Prisma Accelerate の詳細な説明と仕組み
-- [Edge Runtime ガイド](./guides/edge-runtime-guide.md): Edge Runtime と Node.js Runtime の詳細な比較と使用方法
+- [Prisma ガイド](./guides/prisma-guide.md): Prisma の詳細な使用方法
+- [Vercel Neon Documentation](https://vercel.com/docs/storage/vercel-postgres): Vercel Neon の公式ドキュメント
 
 ### 環境変数の型安全な管理
 
@@ -527,7 +515,7 @@ npm run db:studio
 
 4. **型安全性**: Prisma Client は自動的に型を生成するため、TypeScript の型チェックを活用してください。
 
-5. **Prisma Accelerate**: Edge Runtime 対応のため、Prisma Accelerate を使用します。`DATABASE_URL_ACCELERATE` を設定し、アプリケーションでは Prisma Accelerate を使用します。マイグレーション実行時は `POSTGRES_URL` を使用します。
+5. **データベース接続**: `DATABASE_URL` 環境変数に PostgreSQL 接続文字列を設定してください。アプリケーションとマイグレーションの両方で同じ接続文字列を使用します。
 
 6. **エラーハンドリング**: すべての Prisma 操作で適切なエラーハンドリングを実装してください。
 
@@ -551,9 +539,7 @@ npm run db:studio
 
 - **Prisma Client が見つからない**: `npm run db:generate`を実行して Prisma Client を生成してください。
 
-- **接続エラー**: 環境変数`DATABASE_URL_ACCELERATE`（アプリケーション用）と`POSTGRES_URL`（マイグレーション用）が正しく設定されているか確認してください。
-
-- **Prisma Accelerate エラー**: `DATABASE_URL_ACCELERATE` が `prisma://` で始まる正しい形式か確認してください。
+- **接続エラー**: 環境変数`DATABASE_URL`が正しく設定されているか確認してください。PostgreSQL 接続文字列の形式が正しいか確認してください。
 
 ### Blob Storage 関連
 
@@ -565,9 +551,7 @@ npm run db:studio
 
 - [Prisma Documentation](https://www.prisma.io/docs)
 - [Prisma Client API Reference](https://www.prisma.io/docs/reference/api-reference/prisma-client-reference)
-- [Prisma Accelerate Documentation](https://www.prisma.io/docs/accelerate)
-- [Prisma Accelerate Console](https://console.prisma.io/accelerate)
-- [Edge Runtime ガイド](./guides/edge-runtime-guide.md)
+- [Prisma ガイド](./guides/prisma-guide.md): Prisma の詳細な使用方法
 - [Vercel Blob Documentation](https://vercel.com/docs/storage/vercel-blob)
 - [Neon Documentation](https://neon.tech/docs)
 - [Prisma with Neon](https://www.prisma.io/docs/guides/deployment/deployment-guides/deploying-to-vercel)

@@ -15,7 +15,7 @@ function validateEnvironmentVariables(): void {
       console.error('❌ 環境変数の検証に失敗しました:');
       console.error(error);
       console.error('\n必要な環境変数:');
-      console.error('- DATABASE_URL_ACCELERATE: Prisma Accelerate の URL');
+      console.error('- DATABASE_URL: PostgreSQL 接続文字列');
       console.error('- BLOB_READ_WRITE_TOKEN: Vercel Blob Storage の認証トークン');
     }
     // 本番環境ではエラーをスローしてアプリケーションを起動しない
@@ -31,9 +31,7 @@ validateEnvironmentVariables();
  * リクエストごとに実行されます
  *
  * 注意: Next.js 16 では `middleware` が非推奨となり、`proxy` への移行が推奨されています。
- * しかし、`proxy` は Node.js Runtime でのみ動作し、Edge Runtime をサポートしていません。
- * このアプリは Edge Runtime を使用しているため、現時点では `middleware` を継続使用しています。
- * 将来的に `proxy` が Edge Runtime をサポートした場合、移行を検討します。
+ * このアプリは Node.js Runtime を使用しているため、将来的に `proxy` への移行を検討します。
  *
  * 参考: https://nextjs.org/docs/messages/middleware-to-proxy
  */

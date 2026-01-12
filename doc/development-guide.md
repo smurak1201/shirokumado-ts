@@ -1192,14 +1192,13 @@ export default function Page() {
 import { getServerEnv } from "@/lib/env";
 
 const env = getServerEnv();
-const accelerateUrl = env.DATABASE_URL_ACCELERATE; // Prisma AccelerateのURL
+const databaseUrl = env.DATABASE_URL; // PostgreSQL接続文字列
 ```
 
 または、直接環境変数にアクセスする場合：
 
 ```typescript
-// 注意: このアプリでは、Prisma Accelerateを使用しているため、DATABASE_URL_ACCELERATEを使用
-const accelerateUrl = process.env.DATABASE_URL_ACCELERATE;
+const databaseUrl = process.env.DATABASE_URL;
 ```
 
 **理由**:
@@ -1409,7 +1408,6 @@ export function apiSuccess<T>(data: T, status: number = 200): NextResponse {
 - **[TypeScript ガイド](./guides/typescript-guide.md)**: TypeScript の使用方法
 - **[Next.js ガイド](./guides/nextjs-guide.md)**: Next.js の使用方法
 - **[App Router ガイド](./guides/app-router-guide.md)**: App Router の使用方法
-- **[Edge Runtime ガイド](./guides/edge-runtime-guide.md)**: Edge Runtime の使用方法
 
 ### 外部ドキュメント
 

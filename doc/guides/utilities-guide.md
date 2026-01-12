@@ -803,23 +803,13 @@ export const config = {
 
 ```typescript
 export function getServerEnv(): ServerEnv {
-  // アプリケーション用: Prisma AccelerateのURL
-  const accelerateUrl = process.env.DATABASE_URL_ACCELERATE;
+  const databaseUrl = process.env.DATABASE_URL;
   const blobToken = process.env.BLOB_READ_WRITE_TOKEN;
 
-  if (!accelerateUrl) {
+  if (!databaseUrl) {
     throw new Error(
-      "DATABASE_URL_ACCELERATE is not set. " +
-        "Please set it to your Prisma Accelerate URL (prisma://accelerate.prisma-data.net/?api_key=...). " +
-        "Get your Accelerate URL from https://console.prisma.io/accelerate"
-    );
-  }
-
-  // Prisma AccelerateのURL形式を確認
-  if (!accelerateUrl.startsWith("prisma://")) {
-    throw new Error(
-      "DATABASE_URL_ACCELERATE must be a Prisma Accelerate URL (starting with prisma://). " +
-        "Get your Accelerate URL from https://console.prisma.io/accelerate"
+      "DATABASE_URL is not set. " +
+        "Please set it to your PostgreSQL connection string (postgresql://user:password@host:port/database)."
     );
   }
 
@@ -831,8 +821,7 @@ export function getServerEnv(): ServerEnv {
   }
 
   return {
-    DATABASE_URL_ACCELERATE: accelerateUrl,
-    POSTGRES_URL: process.env.POSTGRES_URL,
+    DATABASE_URL: databaseUrl,
     POSTGRES_URL_NON_POOLING: process.env.POSTGRES_URL_NON_POOLING,
     DATABASE_URL_UNPOOLED: process.env.DATABASE_URL_UNPOOLED,
     BLOB_READ_WRITE_TOKEN: blobToken,
@@ -848,11 +837,11 @@ import { getServerEnv } from "@/lib/env";
 
 // Server Component や API Route で使用
 const env = getServerEnv();
-const accelerateUrl = env.DATABASE_URL_ACCELERATE; // 型安全
+const databaseUrl = env.DATABASE_URL; // 型安全
 const blobToken = env.BLOB_READ_WRITE_TOKEN; // 型安全
 ```
 
-**注意**: このアプリでは、Prisma Accelerate を使用しているため、`DATABASE_URL_ACCELERATE` が必須です。`POSTGRES_URL` はマイグレーション用に推奨されますが、アプリケーション実行時には必須ではありません。
+**注意**: このアプリでは、`DATABASE_URL` が必須です。
 
 **理由**:
 
