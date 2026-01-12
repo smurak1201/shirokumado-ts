@@ -23,8 +23,9 @@ import { relations } from "drizzle-orm";
 export const categories = pgTable("categories", {
   id: serial("id").primaryKey(),
   name: text("name").notNull().unique(),
-  createdAt: timestamp("created_at").notNull().defaultNow(),
-  updatedAt: timestamp("updated_at").notNull().$onUpdate(() => new Date()),
+  // データベースの実際のカラム名はキャメルケース（createdAt, updatedAt）
+  createdAt: timestamp("createdAt").notNull().defaultNow(),
+  updatedAt: timestamp("updatedAt").notNull().$onUpdate(() => new Date()),
 });
 
 /**
