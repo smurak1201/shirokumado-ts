@@ -140,15 +140,18 @@ function calculateResizedDimensions(
   }
 
   const aspectRatio = width / height;
+  let newWidth = width;
+  let newHeight = height;
+
   if (width > height) {
-    width = Math.min(width, maxWidth);
-    height = width / aspectRatio;
+    newWidth = Math.min(width, maxWidth);
+    newHeight = newWidth / aspectRatio;
   } else {
-    height = Math.min(height, maxHeight);
-    width = height * aspectRatio;
+    newHeight = Math.min(height, maxHeight);
+    newWidth = newHeight * aspectRatio;
   }
 
-  return { width, height };
+  return { width: newWidth, height: newHeight };
 }
 
 /**
@@ -164,7 +167,7 @@ function drawImageToCanvas(
   canvas.height = height;
   const ctx = canvas.getContext('2d');
   if (!ctx) {
-    throw new Error('Canvas context could not be created');
+    throw new Error('Canvas contextの作成に失敗しました');
   }
   ctx.drawImage(imageSource, 0, 0, width, height);
   return canvas;
@@ -283,9 +286,13 @@ export async function compressImage(
         .catch((error) => {
           console.error('createImageBitmapエラー:', {
             error,
-            fileName: processedFile.name,
-            fileSize: processedFile.size,
-            fileType: processedFile.type,
+            fileName: file.name,
+            fileSize: file.size,
+            fileSizeMB: getFileSizeMB(file.size).toFixed(2),
+            fileType: file.type,
+            processedFileName: processedFile.name,
+            processedFileSize: processedFile.size,
+            processedFileType: processedFile.type,
           });
           // createImageBitmapが失敗した場合は、Blob URL方式にフォールバック
           loadImageWithBlobURL(processedFile, maxWidth, maxHeight, outputFormat, quality, maxSizeMB, outputExtension)
