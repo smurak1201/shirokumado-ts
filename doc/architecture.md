@@ -404,7 +404,7 @@ export const GET = withErrorHandling(async () => {
 
 - **機密情報**: 環境変数で管理
 - **型安全性**: [`lib/env.ts`](../lib/env.ts)で型定義
-- **起動時検証**: [`middleware.ts`](../middleware.ts)で起動時に環境変数を検証
+- **使用時検証**: [`lib/env.ts`](../lib/env.ts)の`getServerEnv()`や[`lib/prisma.ts`](../lib/prisma.ts)で使用時に環境変数を検証
 
 ### セキュリティヘッダー
 

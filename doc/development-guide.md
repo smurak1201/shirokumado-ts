@@ -1280,45 +1280,43 @@ const user = await prisma.$queryRaw`
 - **自動適用**: すべてのレスポンスに自動的に適用される
 - **設定の一元管理**: `next.config.ts` で一元管理できる
 
-### 環境変数の起動時検証
+### 環境変数の検証
 
-**推奨**: アプリケーション起動時に環境変数を検証します。
+**実装**: 環境変数は使用時に検証されます。
 
-**実装**: [`middleware.ts`](../middleware.ts) で起動時に環境変数を検証しています。
+**実装箇所**:
 
-**注意**: Next.js 16 では `middleware` が非推奨となり、`proxy` への移行が推奨されています。しかし、`proxy` は Node.js Runtime でのみ動作し、Edge Runtime をサポートしていないため、このアプリでは現時点で `middleware` を継続使用しています。将来的に `proxy` が Edge Runtime をサポートした場合、移行を検討します。
+- [`lib/env.ts`](../lib/env.ts): `getServerEnv()` 関数で環境変数を検証
+- [`lib/prisma.ts`](../lib/prisma.ts): Prisma Client 作成時に `DATABASE_URL` を検証
+- [`lib/blob.ts`](../lib/blob.ts): Vercel Blob Storage 使用時に環境変数を検証
 
 ```typescript
-// middleware.ts
-import { getServerEnv } from "@/lib/env";
+// lib/env.ts
+export function getServerEnv(): ServerEnv {
+  const databaseUrl = process.env.DATABASE_URL;
+  const blobToken = process.env.BLOB_READ_WRITE_TOKEN;
 
-function validateEnvironmentVariables(): void {
-  try {
-    getServerEnv();
-  } catch (error) {
-    // 開発環境では詳細なエラーメッセージを表示
-    if (process.env.NODE_ENV === "development") {
-      console.error("❌ 環境変数の検証に失敗しました:");
-      console.error(error);
-    }
-    // 本番環境ではエラーをスローしてアプリケーションを起動しない
-    throw error;
+  if (!databaseUrl) {
+    throw new Error("DATABASE_URL is not set.");
   }
-}
 
-// 起動時に環境変数を検証
-validateEnvironmentVariables();
+  if (!blobToken) {
+    throw new Error("BLOB_READ_WRITE_TOKEN is not set.");
+  }
+
+  return { DATABASE_URL: databaseUrl, BLOB_READ_WRITE_TOKEN: blobToken };
+}
 ```
 
 **理由**:
 
-- **早期エラー検出**: 本番環境で環境変数が不足している場合、起動時にエラーを検出できる
-- **デバッグの容易さ**: 開発環境では詳細なエラーメッセージを表示し、問題の特定が容易
-- **運用の安全性**: 環境変数が不足している状態でアプリケーションが起動しないため、予期しないエラーを防止
+- **使用時検証**: 環境変数が実際に使用される際に検証されるため、必要な箇所でのみエラーが発生
+- **明確なエラーメッセージ**: どの環境変数が不足しているか明確に分かる
+- **シンプルな実装**: 起動時検証のためのミドルウェアが不要
 
 ### ベストプラクティス
 
-1. **環境変数**: 機密情報は環境変数で管理し、起動時に検証
+1. **環境変数**: 機密情報は環境変数で管理し、使用時に検証
 2. **入力検証**: すべてのユーザー入力を検証
 3. **SQL インジェクション**: Prisma を使用して回避
 4. **XSS 対策**: React の自動エスケープを活用
