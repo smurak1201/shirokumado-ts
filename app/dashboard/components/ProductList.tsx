@@ -4,6 +4,7 @@ import { useState, useMemo, useEffect, useCallback } from "react";
 import {
   DndContext,
   closestCenter,
+  closestCorners,
   KeyboardSensor,
   PointerSensor,
   TouchSensor,
@@ -144,9 +145,9 @@ export default function ProductList({
    * KeyboardSensor: キーボード操作を検知（アクセシビリティ対応）
    *
    * activationConstraint: タッチデバイスでのドラッグ開始の制約を設定
-   * - distance: 8px以上移動したらドラッグ開始（誤タッチを防ぐ）
-   * - delay: タッチ開始から250ms待機（スクロールとの競合を防ぐ）
+   * - delay: タッチ開始から200ms待機（スクロールとの競合を防ぐ）
    * - tolerance: 移動の許容範囲を設定（水平・垂直方向の両方を検出）
+   *   注意: distanceではなくtoleranceを使用することで、垂直方向の移動も検出できます
    */
   const sensors = useSensors(
     useSensor(PointerSensor, {
@@ -156,8 +157,8 @@ export default function ProductList({
     }),
     useSensor(TouchSensor, {
       activationConstraint: {
-        delay: 250, // 250ms待機してからドラッグ開始（スクロールとの競合を防ぐ）
-        tolerance: 8, // 8pxの許容範囲（水平・垂直方向の両方を検出）
+        delay: 200, // 200ms待機してからドラッグ開始（スクロールとの競合を防ぐ）
+        tolerance: 5, // 5pxの許容範囲（水平・垂直方向の両方を検出）
       },
     }),
     useSensor(KeyboardSensor, {
@@ -507,7 +508,7 @@ export default function ProductList({
                 return (
                   <DndContext
                     sensors={sensors}
-                    collisionDetection={closestCenter}
+                    collisionDetection={closestCorners}
                     onDragEnd={(event) =>
                       handleDragEnd(event, activeCategoryTab)
                     }

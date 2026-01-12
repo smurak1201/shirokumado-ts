@@ -63,7 +63,10 @@ export default function SortableProductItem({
   return (
     <div
       ref={setNodeRef}
-      style={style}
+      style={{
+        ...style,
+        touchAction: "none", // スマホでのタッチ操作を制御（スクロールとの競合を防ぐ）
+      }}
       className={`flex flex-col rounded-lg border border-gray-200 p-1 sm:p-2 md:p-4 bg-white cursor-move ${
         isDragging ? "shadow-lg" : ""
       }`}
@@ -87,8 +90,8 @@ export default function SortableProductItem({
         {/* 商品名 */}
         <div className="mb-1 flex h-[3em] items-center justify-center sm:mb-2 sm:h-[3em] md:h-[3.5em]">
           <h3 className="line-clamp-2 whitespace-pre-wrap text-center text-[10px] font-semibold leading-tight sm:text-xs md:text-lg">
-          {product.name}
-        </h3>
+            {product.name}
+          </h3>
         </div>
 
         {/* 価格 */}
