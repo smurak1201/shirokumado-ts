@@ -12,9 +12,9 @@ import { DatabaseError, logError } from './errors';
  * - 本番環境では各リクエストで新しいインスタンスを使用しますが、
  *   Prisma Accelerateが効率的に接続を管理します
  *
- * Prisma Accelerateを使用することで、Edge Runtimeでも動作します。
- * 環境変数PRISMA_ACCELERATE_URLが設定されている場合はAccelerateを使用し、
- * 設定されていない場合は通常のPrisma Clientを使用します。
+ * Prisma Accelerateを使用するには、環境変数DATABASE_URLに
+ * Prisma AccelerateのURLを設定してください。
+ * Prisma AccelerateのURLは、Prisma Accelerate Consoleから取得できます。
  */
 
 const globalForPrisma = globalThis as unknown as {
@@ -22,21 +22,10 @@ const globalForPrisma = globalThis as unknown as {
 };
 
 const createPrismaClient = (): PrismaClient => {
-  // Prisma Accelerate URLが設定されている場合はAccelerateを使用
-  const accelerateUrl = process.env.PRISMA_ACCELERATE_URL;
-
-  if (accelerateUrl) {
-    // Prisma Accelerateを使用（Edge Runtime対応）
-    return new PrismaClient({
-      datasourceUrl: accelerateUrl,
-      log:
-        process.env.NODE_ENV === 'development'
-          ? ['query', 'error', 'warn']
-          : ['error'],
-    });
-  }
-
-  // 通常のPrisma Clientを使用
+  // Prisma Clientを作成
+  // Prisma Accelerateを使用する場合は、環境変数DATABASE_URLに
+  // Prisma AccelerateのURLを設定してください
+  // 通常のデータベース接続を使用する場合は、通常のDATABASE_URLを設定してください
   return new PrismaClient({
     log:
       process.env.NODE_ENV === 'development'
