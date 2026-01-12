@@ -128,6 +128,11 @@ export const POST = withErrorHandling(async (request: NextRequest) => {
     'POST /api/products'
   );
 
+  // 商品の作成が失敗した場合のエラーハンドリング
+  if (!createdProduct) {
+    throw new ValidationError('商品の作成に失敗しました');
+  }
+
   // 作成された商品にカテゴリー情報も含めて取得
   const product = await safeDbOperation(
     () =>
