@@ -19,14 +19,34 @@ export async function GET() {
       'test-db - connection test'
     );
 
-    // カテゴリーテーブルの存在確認
-    const categoriesTest = await safeDbOperation(
-      () =>
-        db.query.categories.findMany({
-          limit: 1,
-        }),
-      'test-db - categories test'
+    // テーブル一覧を確認
+    const tablesResult = await safeDbOperation(
+      async () => {
+        const result = await db.execute(`
+          SELECT table_name
+          FROM information_schema.tables
+          WHERE table_schema = 'public'
+          AND table_type = 'BASE TABLE'
+          ORDER BY table_name
+        `);
+        return result;
+      },
+      'test-db - list tables'
     );
+
+    // カテゴリーテーブルの存在確認
+    let categoriesTest: unknown[] = [];
+    try {
+      categoriesTest = await safeDbOperation(
+        () =>
+          db.query.categories.findMany({
+            limit: 1,
+          }),
+        'test-db - categories test'
+      );
+    } catch (categoriesError) {
+      console.error('Categories query failed:', categoriesError);
+    }
 
     // 商品テーブルの存在確認
     const productsTest = await safeDbOperation(
@@ -40,7 +60,8 @@ export async function GET() {
     return NextResponse.json({
       success: true,
       connection: 'OK',
-      categoriesCount: categoriesTest?.length || 0,
+      tables: tablesResult,
+      categoriesCount: Array.isArray(categoriesTest) ? categoriesTest.length : 0,
       productsCount: productsTest?.length || 0,
       databaseUrl: process.env.DATABASE_URL
         ? `${process.env.DATABASE_URL.substring(0, 20)}...`

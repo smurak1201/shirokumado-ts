@@ -104,20 +104,35 @@ export async function safeDbOperation<T>(
     return await operation();
   } catch (error) {
     // 詳細なエラー情報をログに記録
-    const errorDetails = {
+    const errorDetails: Record<string, unknown> = {
       context: context || "unknown",
       errorType: error instanceof Error ? error.constructor.name : typeof error,
       errorMessage: error instanceof Error ? error.message : String(error),
       errorStack: error instanceof Error ? error.stack : undefined,
       errorString: String(error),
-      errorObject: error,
     };
 
-    console.error("Database operation failed:", errorDetails);
+    // エラーオブジェクトの全てのプロパティを記録
+    if (error instanceof Error) {
+      // エラーオブジェクトの全てのプロパティを取得
+      Object.getOwnPropertyNames(error).forEach((key) => {
+        try {
+          errorDetails[key] = (error as any)[key];
+        } catch {
+          // プロパティの取得に失敗した場合は無視
+        }
+      });
+    } else {
+      errorDetails.errorObject = error;
+    }
+
+    console.error("Database operation failed:", JSON.stringify(errorDetails, null, 2));
     logError(error, context);
 
+    // 元のエラーメッセージを含めて再スロー
+    const originalMessage = error instanceof Error ? error.message : String(error);
     throw new DatabaseError(
-      `Failed to execute database operation${context ? ` in ${context}` : ""}`,
+      `Failed to execute database operation${context ? ` in ${context}` : ""}: ${originalMessage}`,
       error
     );
   }
