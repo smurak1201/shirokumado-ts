@@ -115,7 +115,7 @@ export async function safeDbOperation<T>(
 
     console.error("Database operation failed:", errorDetails);
     logError(error, context);
-    
+
     throw new DatabaseError(
       `Failed to execute database operation${context ? ` in ${context}` : ""}`,
       error

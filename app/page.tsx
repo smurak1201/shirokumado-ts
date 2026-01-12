@@ -99,7 +99,9 @@ async function getPublishedProductsByCategory(): Promise<
       } => {
         // カテゴリーが存在しない商品は除外
         if (!product.category) {
-          console.warn(`Product ${product.id} (${product.name}) has no category`);
+          console.warn(
+            `Product ${product.id} (${product.name}) has no category`
+          );
           return false;
         }
 
@@ -126,7 +128,10 @@ async function getPublishedProductsByCategory(): Promise<
       }
     );
 
-    console.log("Published products after filtering:", publishedProducts.length);
+    console.log(
+      "Published products after filtering:",
+      publishedProducts.length
+    );
 
     // カテゴリーごとにグループ化（Mapを使用してパフォーマンス向上）
     const categoryOrder = categoriesList.map((c) => c.name);
