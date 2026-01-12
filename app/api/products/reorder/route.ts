@@ -15,18 +15,23 @@ export const POST = withErrorHandling(async (request: NextRequest) => {
     throw new ValidationError('商品順序の配列が必要です');
   }
 
-  // トランザクションで一括更新
+  // 一括更新（Neon HTTPドライバーではトランザクションがサポートされていないため、個別に更新）
+  // Promise.allを使用して並列実行することでパフォーマンスを向上
+  // エラーが発生した場合は、最初のエラーを返す
   await safeDbOperation(
     async () => {
-      await db.transaction(async (tx) => {
-        await Promise.all(
-          body.productOrders.map((item: { id: number; displayOrder: number }) =>
-            tx.update(products)
-              .set({ displayOrder: item.displayOrder })
-              .where(eq(products.id, item.id))
-          )
-        );
-      });
+      // 各商品のdisplayOrderを更新
+      const updatePromises = body.productOrders.map(
+        async (item: { id: number; displayOrder: number }) => {
+          await db
+            .update(products)
+            .set({ displayOrder: item.displayOrder })
+            .where(eq(products.id, item.id));
+        }
+      );
+
+      // すべての更新を並列実行
+      await Promise.all(updatePromises);
     },
     'POST /api/products/reorder'
   );
