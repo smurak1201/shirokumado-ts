@@ -3,6 +3,16 @@
 import "dotenv/config";
 import { defineConfig } from "prisma/config";
 
+/**
+ * Prisma設定ファイル
+ *
+ * マイグレーション実行時は、通常のデータベース接続文字列が必要です。
+ * Prisma Accelerateはマイグレーションには使用できません。
+ *
+ * 環境変数の設定:
+ * - DATABASE_URL: Prisma AccelerateのURL（アプリケーション用）
+ * - POSTGRES_URL または DATABASE_URL_UNPOOLED: 通常のデータベース接続文字列（マイグレーション用）
+ */
 export default defineConfig({
   schema: "prisma/schema.prisma",
   migrations: {
@@ -10,8 +20,9 @@ export default defineConfig({
     seed: "tsx prisma/seed.ts",
   },
   datasource: {
-    url: process.env["DATABASE_URL"],
-    // Prisma 7では、directUrlは環境変数から自動的に読み込まれます
-    // DATABASE_URL_UNPOOLED または POSTGRES_URL_NON_POOLING を設定してください
+    // マイグレーション用の接続文字列（通常のPostgreSQL接続）
+    // POSTGRES_URL または DATABASE_URL_UNPOOLED を優先的に使用
+    url: process.env["POSTGRES_URL"] || process.env["DATABASE_URL_UNPOOLED"] || process.env["DATABASE_URL"],
+    // directUrlは自動的にurlと同じ値が使用されます
   },
 });
