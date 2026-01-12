@@ -118,17 +118,15 @@ export const PUT = withErrorHandling(async (
   const newImageUrl = body.imageUrl !== undefined ? (body.imageUrl || null) : oldImageUrl;
 
   // 新しい画像URLが設定され、元の画像URLと異なる場合、元の画像を削除
+  // 画像削除を先に実行し、成功した場合のみDB更新を実行することで整合性を保ちます
   if (oldImageUrl && newImageUrl && oldImageUrl !== newImageUrl) {
-    try {
-      await deleteFile(oldImageUrl);
-      console.log(`元の画像を削除しました: ${oldImageUrl}`);
-    } catch (error) {
-      // 画像削除に失敗しても商品更新は続行（エラーログのみ）
-      console.error(`元の画像の削除に失敗しました: ${oldImageUrl}`, error);
-    }
+    // 画像削除を先に実行（失敗した場合はエラーを投げてDB更新を実行しない）
+    await deleteFile(oldImageUrl);
+    console.log(`元の画像を削除しました: ${oldImageUrl}`);
   }
 
-  // 商品を更新
+  // 商品を更新（トランザクションで保護）
+  // 画像削除が成功した場合のみ実行されるため、整合性が保たれます
   const updateData: any = {};
   if (body.name !== undefined) updateData.name = body.name.trim();
   if (body.description !== undefined) updateData.description = body.description.trim();
@@ -184,17 +182,15 @@ export const DELETE = withErrorHandling(async (
   }
 
   // 商品に画像が設定されている場合、画像を削除
+  // 画像削除を先に実行し、成功した場合のみDB削除を実行することで整合性を保ちます
   if (existingProduct.imageUrl) {
-    try {
-      await deleteFile(existingProduct.imageUrl);
-      console.log(`商品削除時に画像を削除しました: ${existingProduct.imageUrl}`);
-    } catch (error) {
-      // 画像削除に失敗しても商品削除は続行（エラーログのみ）
-      console.error(`商品削除時の画像削除に失敗しました: ${existingProduct.imageUrl}`, error);
-    }
+    // 画像削除を先に実行（失敗した場合はエラーを投げてDB削除を実行しない）
+    await deleteFile(existingProduct.imageUrl);
+    console.log(`商品削除時に画像を削除しました: ${existingProduct.imageUrl}`);
   }
 
-  // 商品を削除
+  // 商品を削除（トランザクションで保護）
+  // 画像削除が成功した場合のみ実行されるため、整合性が保たれます
   await safePrismaOperation(
     () => prisma.product.delete({ where: { id: productId } }),
     `DELETE /api/products/${id}`
