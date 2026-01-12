@@ -62,11 +62,9 @@ Edge Runtime 対応のため、Vercel Edge Functions で動作する Drizzle ORM
 
 #### 3.1 最初の API ルートの移行（テスト）
 
-**対象**: `/api/products/upload` (Prisma 未使用のため、この段階ではスキップ)
+**注意**: `/api/products/upload` は Prisma 未使用のため、ソースコードの変更は不要です。
 
-または
-
-**対象**: `/api/categories` (シンプルな GET のみ)
+**最初の移行対象**: `/api/categories` (シンプルな GET のみ)
 
 **作業内容**:
 
@@ -235,12 +233,12 @@ Edge Runtime 対応のため、Vercel Edge Functions で動作する Drizzle ORM
 - [x] Prisma 使用状況の記録 (`prisma-current-state.md`)
 - [x] Prisma → Drizzle マッピングの作成 (`prisma-to-drizzle-mapping.md`)
 
-### Phase 2: Drizzle セットアップ
+### Phase 2: Drizzle セットアップ ✅
 
-- [ ] Drizzle のインストール
-- [ ] Drizzle 設定ファイルの作成
-- [ ] スキーマ定義の作成
-- [ ] Drizzle クライアントの作成
+- [x] Drizzle のインストール（既にインストール済み）
+- [x] Drizzle 設定ファイルの作成 (`drizzle.config.ts`)
+- [x] スキーマ定義の作成 (`lib/db/schema.ts`)
+- [x] Drizzle クライアントの作成 (`lib/db/index.ts`)
 
 ### Phase 3: 段階的移行
 
