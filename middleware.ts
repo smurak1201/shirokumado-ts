@@ -30,7 +30,7 @@ validateEnvironmentVariables();
  * Next.js ミドルウェア
  * リクエストごとに実行されます
  */
-export function middleware(request: NextRequest) {
+export function middleware(_request: NextRequest) {
   // 現在は環境変数の検証のみを行います
   // 将来的に認証やレート制限などを追加する可能性があります
   return NextResponse.next();
