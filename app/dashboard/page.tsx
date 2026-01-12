@@ -1,5 +1,4 @@
-import { db, categories, products } from "@/lib/db";
-import { asc, desc } from "drizzle-orm";
+import { db } from "@/lib/db";
 import DashboardContent from "./components/DashboardContent";
 
 /**

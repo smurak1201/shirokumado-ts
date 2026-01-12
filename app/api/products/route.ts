@@ -4,7 +4,7 @@ import { ValidationError } from '@/lib/errors';
 import { config } from '@/lib/config';
 import { NextRequest, NextResponse } from 'next/server';
 import { calculatePublishedStatus } from '@/lib/product-utils';
-import { desc, eq } from 'drizzle-orm';
+import { eq } from 'drizzle-orm';
 
 /**
  * 動的レンダリングを強制
