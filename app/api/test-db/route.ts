@@ -11,11 +11,10 @@ export const dynamic = 'force-dynamic';
 export async function GET() {
   try {
     // データベース接続をテスト
-    const connectionTest = await safeDbOperation(
+    await safeDbOperation(
       async () => {
         // シンプルなクエリで接続をテスト
-        const result = await db.execute('SELECT 1 as test');
-        return result;
+        await db.execute('SELECT 1 as test');
       },
       'test-db - connection test'
     );
