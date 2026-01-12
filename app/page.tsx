@@ -1,10 +1,10 @@
 import Image from "next/image";
-import { db, categories, products } from "@/lib/db";
+import { db } from "@/lib/db";
 import { calculatePublishedStatus } from "@/lib/product-utils";
 import ProductGrid from "./components/ProductGrid";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
-import { ascNullsLast } from "drizzle-orm";
+import { sql } from "drizzle-orm";
 
 /**
  * 動的レンダリングを強制
@@ -36,9 +36,9 @@ async function getPublishedProductsByCategory() {
       with: {
         category: true, // カテゴリー情報も一緒に取得（N+1問題を回避）
       },
-      orderBy: (products, { ascNullsLast }) => [
-        ascNullsLast(products.displayOrder),
-      ], // displayOrderがnullの商品は最後に
+      orderBy: (products) => [
+        sql`${products.displayOrder} ASC NULLS LAST`, // displayOrderがnullの商品は最後に
+      ],
     }),
   ]);
 
