@@ -4,9 +4,68 @@
  * スマホで撮影した大きな画像を、アップロード前に自動的に圧縮・リサイズします。
  * Canvas APIを使用してブラウザ側で処理を行います。
  * WebP形式で圧縮することで、JPEGよりも約25-35%小さなファイルサイズを実現します。
+ * HEIC形式（iPhoneのデフォルト形式）にも対応しています。
  */
 
 import { config } from './config';
+
+// heic2anyを動的インポート（コード分割のため）
+// @ts-ignore - heic2anyには型定義がないため
+let heic2any: any = null;
+async function getHeic2Any() {
+  if (!heic2any && typeof window !== 'undefined') {
+    try {
+      // @ts-ignore - heic2anyには型定義がないため
+      const heic2anyModule = await import('heic2any');
+      heic2any = heic2anyModule.default || heic2anyModule;
+    } catch (error) {
+      console.warn('heic2anyの読み込みに失敗しました:', error);
+    }
+  }
+  return heic2any;
+}
+
+/**
+ * HEIC形式のファイルかどうかを判定します
+ * @param file 画像ファイル
+ * @returns HEIC形式の場合true
+ */
+function isHeicFile(file: File): boolean {
+  const heicTypes = ['image/heic', 'image/heif', 'image/heic-sequence', 'image/heif-sequence'];
+  return heicTypes.includes(file.type.toLowerCase()) ||
+         /\.heic$/i.test(file.name) ||
+         /\.heif$/i.test(file.name);
+}
+
+/**
+ * HEIC形式のファイルをJPEGに変換します
+ * @param file HEIC形式のファイル
+ * @returns JPEG形式のBlob
+ */
+async function convertHeicToJpeg(file: File): Promise<Blob> {
+  const heic2anyLib = await getHeic2Any();
+  if (!heic2anyLib) {
+    throw new Error('HEIC形式の変換ライブラリが読み込めませんでした');
+  }
+
+  try {
+    const result = await heic2anyLib({
+      blob: file,
+      toType: 'image/jpeg',
+      quality: 0.92, // 高品質を維持
+    });
+
+    // heic2anyは配列を返すことがあるので、最初の要素を取得
+    const blob = Array.isArray(result) ? result[0] : result;
+    if (!(blob instanceof Blob)) {
+      throw new Error('HEIC変換の結果が無効です');
+    }
+
+    return blob;
+  } catch (error) {
+    throw new Error(`HEIC形式の変換に失敗しました: ${error instanceof Error ? error.message : String(error)}`);
+  }
+}
 
 interface CompressionOptions {
   maxWidth?: number;
@@ -51,23 +110,45 @@ export async function compressImage(
     format = 'webp', // デフォルトでWebP形式を使用
   } = options;
 
+  // ブラウザ環境のチェック
+  if (typeof window === 'undefined' || typeof document === 'undefined') {
+    throw new Error('画像圧縮はブラウザ環境でのみ実行できます');
+  }
+
+  // ファイル形式の検証
+  if (!file.type.startsWith('image/') && !isHeicFile(file)) {
+    throw new Error(`サポートされていないファイル形式です: ${file.type || '不明'}`);
+  }
+
+  // HEIC形式の場合は、まずJPEGに変換
+  // 注意: HEIC形式はブラウザで直接処理できないため、一度JPEGに変換する必要があります
+  // heic2anyライブラリはHEIC → JPEG/PNGの変換のみサポートしており、
+  // 直接WebPに変換することはできません
+  // そのため、HEIC → JPEG（高品質）→ WebP（圧縮）という2段階の変換になります
+  let processedFile = file;
+  if (isHeicFile(file)) {
+    try {
+      // HEIC → JPEG変換（高品質0.92で変換して画質劣化を最小限に）
+      const jpegBlob = await convertHeicToJpeg(file);
+      // BlobをFileに変換（元のファイル名の拡張子を.jpgに変更）
+      const jpegFileName = file.name.replace(/\.(heic|heif)$/i, '.jpg');
+      processedFile = new File([jpegBlob], jpegFileName, {
+        type: 'image/jpeg',
+        lastModified: Date.now(),
+      });
+      // この時点ではJPEGですが、次のステップでWebPに変換されます（formatオプションが'webp'の場合）
+    } catch (error) {
+      throw new Error(`HEIC形式の変換に失敗しました: ${error instanceof Error ? error.message : String(error)}`);
+    }
+  }
+
   // WebP形式が指定されているが、ブラウザがサポートしていない場合はJPEGにフォールバック
+  // HEIC形式の場合は、既にJPEGに変換されているので、そのままWebPに変換されます
   const useWebP = format === 'webp' && supportsWebP();
   const outputFormat = useWebP ? 'image/webp' : 'image/jpeg';
   const outputExtension = useWebP ? '.webp' : '.jpg';
 
   return new Promise((resolve, reject) => {
-    // ブラウザ環境のチェック
-    if (typeof window === 'undefined' || typeof document === 'undefined') {
-      reject(new Error('画像圧縮はブラウザ環境でのみ実行できます'));
-      return;
-    }
-
-    // ファイル形式の検証
-    if (!file.type.startsWith('image/')) {
-      reject(new Error(`サポートされていないファイル形式です: ${file.type || '不明'}`));
-      return;
-    }
 
     // ファイルサイズの検証（大きすぎるファイルは処理を避ける）
     const MAX_INPUT_SIZE = 50 * 1024 * 1024; // 50MB
@@ -132,13 +213,13 @@ export async function compressImage(
         .catch((error) => {
           console.error('createImageBitmapエラー:', error);
           // createImageBitmapが失敗した場合は、Blob URL方式にフォールバック
-          loadImageWithBlobURL(file, maxWidth, maxHeight, outputFormat, quality, maxSizeMB, outputExtension)
+          loadImageWithBlobURL(processedFile, maxWidth, maxHeight, outputFormat, quality, maxSizeMB, outputExtension)
             .then(resolve)
             .catch(reject);
         });
     } else {
       // 小さなファイルの場合は、Blob URLを使用（DataURLよりも効率的）
-      loadImageWithBlobURL(file, maxWidth, maxHeight, outputFormat, quality, maxSizeMB, outputExtension)
+      loadImageWithBlobURL(processedFile, maxWidth, maxHeight, outputFormat, quality, maxSizeMB, outputExtension)
         .then(resolve)
         .catch(reject);
     }
