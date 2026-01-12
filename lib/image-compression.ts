@@ -211,7 +211,12 @@ export async function compressImage(
           }
         })
         .catch((error) => {
-          console.error('createImageBitmapエラー:', error);
+          console.error('createImageBitmapエラー:', {
+            error,
+            fileName: processedFile.name,
+            fileSize: processedFile.size,
+            fileType: processedFile.type,
+          });
           // createImageBitmapが失敗した場合は、Blob URL方式にフォールバック
           loadImageWithBlobURL(processedFile, maxWidth, maxHeight, outputFormat, quality, maxSizeMB, outputExtension)
             .then(resolve)
@@ -290,18 +295,30 @@ function loadImageWithBlobURL(
   outputExtension: string
 ): Promise<File> {
   return new Promise((resolve, reject) => {
-    const blobUrl = URL.createObjectURL(file);
+    let blobUrl: string | null = null;
+
+    try {
+      blobUrl = URL.createObjectURL(file);
+    } catch (error) {
+      reject(new Error(`Blob URLの作成に失敗しました: ${error instanceof Error ? error.message : String(error)}`));
+      return;
+    }
+
     const img = new Image();
 
-    // 画像読み込みのタイムアウトを設定（30秒）
+    // 画像読み込みのタイムアウトを設定（60秒に延長 - 大きなファイル用）
     const timeoutId = setTimeout(() => {
-      URL.revokeObjectURL(blobUrl);
-      reject(new Error('画像の読み込みがタイムアウトしました（30秒）'));
-    }, 30000);
+      if (blobUrl) {
+        URL.revokeObjectURL(blobUrl);
+      }
+      reject(new Error(`画像の読み込みがタイムアウトしました（60秒）。ファイルサイズが大きすぎる可能性があります（${(file.size / 1024 / 1024).toFixed(2)}MB）。`));
+    }, 60000);
 
     img.onload = () => {
       clearTimeout(timeoutId);
-      URL.revokeObjectURL(blobUrl); // メモリを解放
+      if (blobUrl) {
+        URL.revokeObjectURL(blobUrl); // メモリを解放
+      }
 
       try {
         // 画像のサイズを計算
@@ -314,6 +331,8 @@ function loadImageWithBlobURL(
           return;
         }
 
+        console.log(`画像読み込み成功: ${width}x${height}, ファイルサイズ: ${(file.size / 1024 / 1024).toFixed(2)}MB`);
+
         // アスペクト比を保ちながらリサイズ
         if (width > maxWidth || height > maxHeight) {
           const aspectRatio = width / height;
@@ -324,6 +343,7 @@ function loadImageWithBlobURL(
             height = Math.min(height, maxHeight);
             width = height * aspectRatio;
           }
+          console.log(`リサイズ: ${width}x${height}`);
         }
 
         // Canvasを作成して画像を描画
@@ -350,17 +370,38 @@ function loadImageWithBlobURL(
 
     img.onerror = (event) => {
       clearTimeout(timeoutId);
-      URL.revokeObjectURL(blobUrl);
+      if (blobUrl) {
+        URL.revokeObjectURL(blobUrl);
+      }
       console.error('画像読み込みエラー:', {
         fileType: file.type,
         fileName: file.name,
         fileSize: file.size,
+        fileSizeMB: (file.size / 1024 / 1024).toFixed(2),
+        blobUrl: blobUrl ? '作成済み' : '作成失敗',
         event: event,
+        error: event instanceof ErrorEvent ? event.error : null,
       });
-      reject(new Error(`画像の読み込みに失敗しました。ファイル形式（${file.type || '不明'}）がサポートされていない可能性があります。`));
+
+      // ファイルサイズが大きい場合の特別なメッセージ
+      const fileSizeMB = file.size / 1024 / 1024;
+      if (fileSizeMB > 15) {
+        reject(new Error(`画像の読み込みに失敗しました。ファイルサイズが大きすぎる可能性があります（${fileSizeMB.toFixed(2)}MB）。別の画像を選択するか、画像を小さくしてから再度お試しください。`));
+      } else {
+        reject(new Error(`画像の読み込みに失敗しました。ファイル形式（${file.type || '不明'}）がサポートされていない可能性があります。`));
+      }
     };
 
-    img.src = blobUrl;
+    // 画像の読み込みを開始
+    try {
+      img.src = blobUrl;
+    } catch (error) {
+      clearTimeout(timeoutId);
+      if (blobUrl) {
+        URL.revokeObjectURL(blobUrl);
+      }
+      reject(new Error(`画像の読み込み開始に失敗しました: ${error instanceof Error ? error.message : String(error)}`));
+    }
   });
 }
 
