@@ -57,14 +57,15 @@ export const GET = withErrorHandling(async () => {
 
   // デバッグ用ログ
   console.log('API: Products fetched:', products?.length || 0);
-  if (products && products.length > 0) {
+  if (products && products.length > 0 && products[0]) {
+    const firstProduct = products[0];
     console.log('API: Sample product:', {
-      id: products[0].id,
-      name: products[0].name,
-      published: products[0].published,
-      publishedAt: products[0].publishedAt,
-      endedAt: products[0].endedAt,
-      hasCategory: !!products[0].category,
+      id: firstProduct.id,
+      name: firstProduct.name,
+      published: firstProduct.published,
+      publishedAt: firstProduct.publishedAt,
+      endedAt: firstProduct.endedAt,
+      hasCategory: !!firstProduct.category,
     });
   }
 
