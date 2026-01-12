@@ -24,50 +24,18 @@ export const dynamic = 'force-dynamic';
  * @returns 商品一覧を含む JSON レスポンス
  */
 export const GET = withErrorHandling(async () => {
-  // データベース接続を確認
-  console.log('GET /api/products: Starting database query');
-  console.log('Database URL exists:', !!process.env.DATABASE_URL || !!process.env.POSTGRES_URL);
-
   // データベースから商品を取得
   // with でカテゴリー情報も一緒に取得することで、N+1問題を回避します
   const products = await safeDbOperation(
-    async () => {
-      console.log('GET /api/products: Executing query');
-      try {
-        const result = await db.query.products.findMany({
-          with: {
-            category: true, // 関連するカテゴリー情報も取得
-          },
-          orderBy: (products, { desc }) => [desc(products.createdAt)], // 作成日時の降順でソート（新しい順）
-        });
-        console.log('GET /api/products: Query successful, found', result.length, 'products');
-        return result;
-      } catch (queryError) {
-        console.error('GET /api/products: Query error:', {
-          error: queryError,
-          errorType: queryError instanceof Error ? queryError.constructor.name : typeof queryError,
-          errorMessage: queryError instanceof Error ? queryError.message : String(queryError),
-          errorStack: queryError instanceof Error ? queryError.stack : undefined,
-        });
-        throw queryError;
-      }
-    },
+    () =>
+      db.query.products.findMany({
+        with: {
+          category: true, // 関連するカテゴリー情報も取得
+        },
+        orderBy: (products, { desc }) => [desc(products.createdAt)], // 作成日時の降順でソート（新しい順）
+      }),
     'GET /api/products'
   );
-
-  // デバッグ用ログ
-  console.log('API: Products fetched:', products?.length || 0);
-  if (products && products.length > 0 && products[0]) {
-    const firstProduct = products[0];
-    console.log('API: Sample product:', {
-      id: firstProduct.id,
-      name: firstProduct.name,
-      published: firstProduct.published,
-      publishedAt: firstProduct.publishedAt,
-      endedAt: firstProduct.endedAt,
-      hasCategory: !!firstProduct.category,
-    });
-  }
 
   const response = NextResponse.json({ products }, { status: 200 });
   // Content-Typeヘッダーを設定（日本語を含むJSONの文字化けを防ぐ）

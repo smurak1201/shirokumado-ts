@@ -78,17 +78,8 @@ async function getDashboardData(): Promise<{
       products,
     };
   } catch (error) {
-    // エラーが発生した場合は詳細なログを記録してから再スロー
-    const errorMessage = error instanceof Error ? error.message : String(error);
-    const errorStack = error instanceof Error ? error.stack : undefined;
-
-    console.error("Error fetching dashboard data:", {
-      message: errorMessage,
-      stack: errorStack,
-      error,
-    });
-
-    // エラーを再スローしてNext.jsのエラーハンドリングに委譲
+    // エラーが発生した場合はログを記録してから再スロー
+    console.error("Error fetching dashboard data:", error);
     throw error;
   }
 }
@@ -107,7 +98,7 @@ export default async function DashboardPage() {
     products = data.products;
   } catch (error) {
     // エラーが発生した場合は空配列を使用（error.tsxでエラーUIが表示される）
-    console.error("Failed to load dashboard data:", error);
+    // エラーログはgetDashboardData内で記録される
   }
 
   return (
