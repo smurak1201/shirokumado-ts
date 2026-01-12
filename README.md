@@ -48,12 +48,6 @@
 
 - **Vercel** - ホスティングプラットフォーム
 
-### アーキテクチャの特徴
-
-- **Server Components**: デフォルトでサーバーサイドでレンダリング。Prisma を使用してデータベースに直接アクセスし、初期 HTML を生成
-- **Client Components**: インタラクティブな機能（状態管理、イベントハンドラーなど）を実装。必要に応じて `fetch` API を使用して API Routes にアクセス
-- **API Routes**: Client Components からのリクエストを処理。Prisma を使用してデータベース操作を実行し、RESTful API として機能
-
 詳細は [技術スタックドキュメント](./doc/tech-stack.md) を参照してください。
 
 ## 前提条件
@@ -79,32 +73,15 @@ npm install
 
 ### 3. 環境変数の設定
 
-`.env`ファイルを作成し、以下の環境変数を設定してください：
+`.env`ファイルを作成し、必要な環境変数を設定してください。
 
-```env
-# Prisma Accelerate（アプリケーション用、必須）
-# Edge Runtime対応のため、Prisma Accelerateを使用します
-DATABASE_URL_ACCELERATE=prisma://accelerate.prisma-data.net/?api_key=YOUR_API_KEY
+**必須の環境変数**:
 
-# データベース接続（マイグレーション用、必須）
-# Prisma Accelerateはマイグレーションには使用できません
-POSTGRES_URL=postgresql://...
+- `DATABASE_URL_ACCELERATE`: Prisma Accelerate の URL（アプリケーション用）
+- `POSTGRES_URL`: PostgreSQL 接続文字列（マイグレーション用）
+- `BLOB_READ_WRITE_TOKEN`: Vercel Blob Storage のトークン
 
-# 以下の環境変数はオプションです（Neon の接続プール設定など）
-DATABASE_URL=postgresql://...
-DATABASE_URL_UNPOOLED=postgresql://...
-POSTGRES_URL_NON_POOLING=postgresql://...
-
-# Blob Storage（必須）
-BLOB_READ_WRITE_TOKEN=vercel_blob_rw_...
-```
-
-**重要**:
-
-- `DATABASE_URL_ACCELERATE`: Prisma Accelerate の URL（アプリケーション用、Edge Runtime で使用）
-- `POSTGRES_URL`: 通常の PostgreSQL 接続文字列（マイグレーション用、Node.js Runtime で使用）
-
-詳細は [Prisma & Blob セットアップガイド](./doc/setup-prisma-blob.md) を参照してください。
+詳細な設定方法は [Prisma & Blob セットアップガイド](./doc/setup-prisma-blob.md) を参照してください。
 
 ### 4. データベースのセットアップ
 
