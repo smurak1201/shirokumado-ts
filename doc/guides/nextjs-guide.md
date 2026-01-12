@@ -177,6 +177,10 @@ Next.js の設定を管理するファイルです。画像最適化、実験的
 const nextConfig: NextConfig = {
   // 画像最適化の設定
   images: {
+    // 画像最適化を無効化（Edge Requestを削減するため）
+    // 理由: 画像は既にクライアントサイドで圧縮・WebP形式に変換されているため、
+    // Next.jsのサーバーサイド最適化は不要。遅延読み込みなどの機能は引き続き機能する。
+    unoptimized: true,
     formats: ["image/avif", "image/webp"],
     remotePatterns: [
       {
@@ -208,10 +212,11 @@ export default nextConfig;
 
 1. **画像最適化** (`images`):
 
-   - `formats: ['image/avif', 'image/webp']`: AVIF と WebP 形式を優先的に使用
-     - AVIF は最新の画像形式で、JPEG よりも約 50% 小さなファイルサイズを実現
-     - WebP は広くサポートされており、JPEG よりも約 25-35% 小さなファイルサイズを実現
-     - ブラウザがサポートしていない場合は、元の形式にフォールバック
+   - `unoptimized: true`: 画像最適化を無効化
+     - **理由**: 画像は既にクライアントサイドで圧縮・WebP 形式に変換されているため、Next.js のサーバーサイド最適化は不要です
+     - **効果**: Vercel の Edge Request を大幅に削減できます（各画像の最適化リクエストが Edge Request としてカウントされるため）
+     - **注意**: `unoptimized: true`を設定しても、遅延読み込み（`loading="lazy"`）や`priority`属性などの機能は引き続き機能します
+   - `formats: ['image/avif', 'image/webp']`: AVIF と WebP 形式を優先的に使用（設定は残していますが、`unoptimized: true`により実際には使用されません）
    - `remotePatterns`: 外部ドメインからの画像読み込みを許可
      - `protocol: 'https'`: HTTPS プロトコルのみ許可（セキュリティ）
      - `hostname: '*.public.blob.vercel-storage.com'`: Vercel Blob Storage からの画像読み込みを許可
@@ -235,7 +240,8 @@ export default nextConfig;
 
 **理由**:
 
-- **パフォーマンス**: 画像最適化により、ページの読み込み速度が向上
+- **Edge Request の削減**: `unoptimized: true`により、Vercel の Edge Request を大幅に削減できます。画像は既にクライアントサイドで最適化されているため、サーバーサイドでの再処理は不要です
+- **パフォーマンス**: 画像は既にクライアントサイドで圧縮・WebP 形式に変換されているため、追加の最適化は不要です。遅延読み込みなどの機能は引き続き機能します
 - **セキュリティ**: `remotePatterns` により、許可されたドメインからのみ画像を読み込む
 - **型安全性**: TypeScript の設定により、型エラーを早期に検出
 
@@ -243,12 +249,19 @@ export default nextConfig;
 
 Next.js は、`next/image` コンポーネントを使用して、画像の自動最適化を提供します。
 
+**注意**: このアプリでは、`unoptimized: true`を設定しているため、Next.js のサーバーサイド画像最適化は無効化されています。画像は既にクライアントサイドで圧縮・WebP 形式に変換されているため、追加の最適化は不要です。
+
 ### Image コンポーネントの特徴
 
-- **自動的な画像最適化**: 画像を自動的に最適化し、WebP や AVIF 形式に変換
-- **レスポンシブ画像**: `sizes` 属性を使用して、デバイスに応じた画像サイズを提供
-- **遅延読み込み**: `loading="lazy"` により、必要な時だけ画像を読み込む
-- **優先読み込み**: `priority` 属性により、重要な画像を優先的に読み込む
+- **遅延読み込み**: `loading="lazy"` により、必要な時だけ画像を読み込む（`unoptimized: true`でも機能します）
+- **優先読み込み**: `priority` 属性により、重要な画像を優先的に読み込む（`unoptimized: true`でも機能します）
+- **レスポンシブ画像**: `sizes` 属性を使用して、デバイスに応じた画像サイズを提供（ブラウザのネイティブ機能として機能します）
+- **レイアウトシフトの防止**: `width`、`height`、`fill`属性により、画像読み込み時のレイアウトシフトを防止
+
+**このアプリでの画像処理フロー**:
+
+1. **アップロード時（クライアントサイド）**: 画像を最大 1920x1920px にリサイズし、WebP 形式に圧縮（品質 0.85）
+2. **表示時**: `next/image`コンポーネントで表示（サーバーサイド最適化は無効化されているため、Edge Request は発生しません）
 
 ### このアプリでの使用箇所
 
@@ -299,6 +312,8 @@ Next.js は、`next/image` コンポーネントを使用して、画像の自�
 
 ```typescript
   images: {
+    // 画像最適化を無効化（Edge Requestを削減するため）
+    unoptimized: true,
     formats: ['image/avif', 'image/webp'],
     remotePatterns: [
       {
@@ -309,7 +324,11 @@ Next.js は、`next/image` コンポーネントを使用して、画像の自�
   },
 ```
 
-- `formats`: AVIF と WebP 形式を優先的に使用（ブラウザがサポートしている場合）
+- `unoptimized: true`: 画像最適化を無効化
+  - **理由**: 画像は既にクライアントサイドで圧縮・WebP 形式に変換されているため、Next.js のサーバーサイド最適化は不要です
+  - **効果**: Vercel の Edge Request を大幅に削減できます
+  - **注意**: 遅延読み込み（`loading="lazy"`）や`priority`属性などの機能は引き続き機能します
+- `formats`: AVIF と WebP 形式を優先的に使用（設定は残していますが、`unoptimized: true`により実際には使用されません）
 - `remotePatterns`: Vercel Blob Storage からの画像読み込みを許可
 
 ## フォント最適化
@@ -470,7 +489,7 @@ Server Components により、クライアントサイドの JavaScript を最�
 このアプリで実践している主なベストプラクティス：
 
 1. **Server Components を優先**: デフォルトで Server Components を使用し、インタラクティブな機能が必要な場合のみ Client Components を使用
-2. **画像最適化**: `next/image` コンポーネントを使用して画像を最適化
+2. **画像最適化**: クライアントサイドで画像を圧縮・WebP形式に変換し、`next/image`コンポーネントで表示（Edge Requestを削減するため、`unoptimized: true`を設定）
 3. **フォント最適化**: `next/font/google` を使用してフォントを最適化
 4. **メタデータの設定**: 適切なメタデータを設定して SEO を最適化
 5. **型安全性**: TypeScript を使用して、型安全な開発を行う
@@ -483,7 +502,7 @@ Server Components により、クライアントサイドの JavaScript を最�
 このアプリケーションでは、**Next.js 16.1.1** を使用して以下の機能を実装しています：
 
 1. **App Router**: ファイルベースのルーティングシステムで、直感的なページ構造を実現
-2. **画像最適化**: Next.js Image コンポーネントで画像を自動最適化
+2. **画像最適化**: クライアントサイドで画像を圧縮・WebP形式に変換し、`next/image`コンポーネントで表示（Edge Requestを削減するため、サーバーサイド最適化は無効化）
 3. **フォント最適化**: Google Fonts を最適化して読み込み
 4. **メタデータと SEO**: 適切なメタデータを設定して SEO を最適化
 5. **パフォーマンス最適化**: 自動的な最適化機能を活用し、パフォーマンスを向上
