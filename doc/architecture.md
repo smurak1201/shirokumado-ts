@@ -388,6 +388,13 @@ export const GET = withErrorHandling(async () => {
 
 - **機密情報**: 環境変数で管理
 - **型安全性**: [`lib/env.ts`](../lib/env.ts)で型定義
+- **起動時検証**: [`middleware.ts`](../middleware.ts)で起動時に環境変数を検証
+
+### セキュリティヘッダー
+
+- **設定**: [`next.config.ts`](../next.config.ts)でセキュリティヘッダーを設定
+- **適用**: すべてのレスポンスに自動的に適用される
+- **ヘッダー**: `X-Frame-Options`, `X-Content-Type-Options`, `Referrer-Policy`, `X-XSS-Protection`, `Permissions-Policy`
 
 ## 参考リンク
 

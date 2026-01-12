@@ -20,6 +20,15 @@
   - [getBlobInfo](#getblobinfo)
   - [deleteFile](#deletefile)
   - [deleteFiles](#deletefiles)
+- [エラーハンドリング (`lib/errors.ts`)](#エラーハンドリング-liberrorsts)
+  - [エラーコードの定数定義](#エラーコードの定数定義)
+  - [エラークラス](#エラークラス)
+- [API レスポンスの型定義 (`lib/api-types.ts`)](#api-レスポンスの型定義-libapi-typests)
+  - [型定義の一覧](#型定義の一覧)
+  - [使用例](#使用例)
+- [構造化ログ (`lib/logger.ts`)](#構造化ログ-libloggerts)
+  - [ログレベルの種類](#ログレベルの種類)
+  - [使用例](#使用例-1)
 - [設定の一元管理 (`lib/config.ts`)](#設定の一元管理-libconfigts)
   - [設定値の構成](#設定値の構成)
   - [設定値の変更方法](#設定値の変更方法)
@@ -47,6 +56,9 @@
 - **商品関連ユーティリティ**: 商品の公開状態判定、価格フォーマットなど
 - **画像圧縮**: クライアントサイドでの画像圧縮・リサイズ
 - **Blob Storage**: 画像のアップロード・削除・管理
+- **エラーハンドリング**: 統一されたエラークラスとエラーコードの定数定義
+- **API レスポンスの型定義**: クライアント側での型安全性を確保
+- **構造化ログ**: JSON 形式の構造化ログ出力（本番環境）
 - **設定管理**: アプリケーション全体の設定値を一元管理
 - **環境変数**: 型安全な環境変数の取得
 
@@ -513,6 +525,200 @@ import { deleteFiles } from "@/lib/blob";
 
 await deleteFiles(["https://...", "https://..."]);
 ```
+
+## エラーハンドリング (`lib/errors.ts`)
+
+統一されたエラーハンドリングとエラーコードの定数定義を提供します。
+
+**このアプリでの使用箇所**:
+
+- すべての API Routes: エラーハンドリングとエラーコードの使用
+- [`lib/api-helpers.ts`](../../lib/api-helpers.ts): エラーレスポンスの生成
+
+### エラーコードの定数定義
+
+[`lib/errors.ts`](../../lib/errors.ts) (`ErrorCodes`定数)
+
+```typescript
+export const ErrorCodes = {
+  VALIDATION_ERROR: "VALIDATION_ERROR",
+  DATABASE_ERROR: "DATABASE_ERROR",
+  BLOB_STORAGE_ERROR: "BLOB_STORAGE_ERROR",
+  NOT_FOUND: "NOT_FOUND",
+  UNAUTHORIZED: "UNAUTHORIZED",
+  FORBIDDEN: "FORBIDDEN",
+  INTERNAL_SERVER_ERROR: "INTERNAL_SERVER_ERROR",
+} as const;
+
+export type ErrorCode = (typeof ErrorCodes)[keyof typeof ErrorCodes];
+```
+
+**使用例**:
+
+```typescript
+import { ErrorCodes } from "@/lib/errors";
+
+// エラーコードを参照
+if (error.code === ErrorCodes.VALIDATION_ERROR) {
+  // バリデーションエラーの処理
+}
+```
+
+**理由**:
+
+- **一元管理**: エラーコードを一箇所で管理し、変更が容易
+- **型安全性**: TypeScript で型定義され、タイポを防止
+- **一貫性**: プロジェクト全体で統一されたエラーコードを使用
+
+### エラークラス
+
+[`lib/errors.ts`](../../lib/errors.ts) では、以下のエラークラスを提供しています。
+
+- `AppError`: 基底エラークラス
+- `DatabaseError`: データベースエラー（`ErrorCodes.DATABASE_ERROR` を使用）
+- `BlobStorageError`: Blob Storage エラー（`ErrorCodes.BLOB_STORAGE_ERROR` を使用）
+- `ValidationError`: バリデーションエラー（`ErrorCodes.VALIDATION_ERROR` を使用）
+- `NotFoundError`: リソースが見つからないエラー（`ErrorCodes.NOT_FOUND` を使用）
+
+**使用例**:
+
+```typescript
+import { ValidationError, NotFoundError } from "@/lib/errors";
+
+// バリデーションエラー
+if (!name || name.trim().length === 0) {
+  throw new ValidationError("商品名は必須です");
+}
+
+// リソースが見つからないエラー
+if (!product) {
+  throw new NotFoundError("商品");
+}
+```
+
+**理由**:
+
+- **統一されたエラーハンドリング**: すべてのエラーが同じ形式で処理される
+- **適切な HTTP ステータスコード**: エラーの種類に応じた適切なステータスコードが設定される
+- **エラーコードの自動設定**: エラークラスを使用すると、適切なエラーコードが自動的に設定される
+
+## API レスポンスの型定義 (`lib/api-types.ts`)
+
+API レスポンスの型定義を提供します。クライアント側での型安全性を確保します。
+
+**このアプリでの使用箇所**:
+
+- クライアント側での API 呼び出し: 型安全なレスポンスの処理
+
+### 型定義の一覧
+
+[`lib/api-types.ts`](../../lib/api-types.ts) では、以下の型定義を提供しています。
+
+- `GetProductsResponse`: 商品一覧取得 API のレスポンス
+- `PostProductResponse`: 商品作成 API のレスポンス
+- `PutProductResponse`: 商品更新 API のレスポンス
+- `DeleteProductResponse`: 商品削除 API のレスポンス
+- `GetProductResponse`: 商品取得 API のレスポンス
+- `PostProductReorderResponse`: 商品順序更新 API のレスポンス
+- `PostProductUploadResponse`: 画像アップロード API のレスポンス
+- `GetCategoriesResponse`: カテゴリー一覧取得 API のレスポンス
+
+### 使用例
+
+```typescript
+import type { GetProductsResponse, PostProductResponse } from "@/lib/api-types";
+
+// 商品一覧の取得
+const response = await fetch("/api/products");
+const data: GetProductsResponse = await response.json();
+// data.products は Product[] 型として推論される
+
+// 商品の作成
+const createResponse = await fetch("/api/products", {
+  method: "POST",
+  body: JSON.stringify(productData),
+});
+const created: PostProductResponse = await createResponse.json();
+// created.product は Product 型として推論される
+```
+
+**理由**:
+
+- **型安全性**: クライアント側での型安全性を確保
+- **API の契約**: API のレスポンス形式が明確になる
+- **IDE サポート**: 自動補完や型チェックが機能する
+
+## 構造化ログ (`lib/logger.ts`)
+
+構造化ログユーティリティを提供します。本番環境では JSON 形式で出力し、開発環境では読みやすい形式で出力します。
+
+**このアプリでの使用箇所**:
+
+- エラーログの出力: 構造化されたエラーログ
+- デバッグ情報の出力: 構造化されたデバッグログ
+
+### ログレベルの種類
+
+[`lib/logger.ts`](../../lib/logger.ts) では、以下のログレベルを提供しています。
+
+- `log.debug()`: デバッグ情報
+- `log.info()`: 情報
+- `log.warn()`: 警告
+- `log.error()`: エラー
+
+### 使用例
+
+```typescript
+import { log } from "@/lib/logger";
+
+// 情報レベルのログ
+log.info("User logged in", {
+  context: "authentication",
+  userId: user.id,
+});
+
+// エラーレベルのログ
+log.error("Database operation failed", {
+  context: "getProducts",
+  error: error,
+  metadata: {
+    query: "findMany",
+    table: "products",
+  },
+});
+```
+
+**本番環境での出力形式**:
+
+```json
+{
+  "level": "error",
+  "message": "Database operation failed",
+  "timestamp": "2025-01-01T00:00:00.000Z",
+  "context": "getProducts",
+  "error": {
+    "name": "DatabaseError",
+    "message": "Connection timeout",
+    "stack": "..."
+  },
+  "metadata": {
+    "query": "findMany",
+    "table": "products"
+  }
+}
+```
+
+**開発環境での出力形式**:
+
+```
+ERROR [getProducts] Database operation failed
+```
+
+**理由**:
+
+- **ログ分析ツールとの統合**: JSON 形式により、ログ分析ツールとの統合が容易
+- **デバッグの容易さ**: 開発環境では読みやすい形式で出力
+- **構造化された情報**: メタデータを含む構造化されたログにより、トラブルシューティングが容易
 
 ## 設定の一元管理 (`lib/config.ts`)
 

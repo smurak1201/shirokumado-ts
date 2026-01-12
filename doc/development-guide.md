@@ -1259,13 +1259,66 @@ const user = await prisma.$queryRaw`
 - **保守性の低下**: SQL クエリがコードに直接記述され、読みにくく保守しにくいコードになる
 - **データベース依存**: データベース固有の構文が使用され、データベースを変更する際にコードの変更が必要
 
+### セキュリティヘッダー
+
+**推奨**: `next.config.ts` でセキュリティヘッダーを設定します。
+
+**実装**: [`next.config.ts`](../next.config.ts) で以下のセキュリティヘッダーを設定しています。
+
+- `X-Frame-Options: DENY` - クリックジャッキング攻撃を防止
+- `X-Content-Type-Options: nosniff` - MIME タイプスニッフィングを防止
+- `Referrer-Policy: strict-origin-when-cross-origin` - リファラー情報の漏洩を制限
+- `X-XSS-Protection: 1; mode=block` - XSS 攻撃の緩和
+- `Permissions-Policy: camera=(), microphone=(), geolocation=()` - 不要な権限を無効化
+
+**理由**:
+
+- **セキュリティの向上**: 一般的な Web 攻撃から保護
+- **自動適用**: すべてのレスポンスに自動的に適用される
+- **設定の一元管理**: `next.config.ts` で一元管理できる
+
+### 環境変数の起動時検証
+
+**推奨**: アプリケーション起動時に環境変数を検証します。
+
+**実装**: [`middleware.ts`](../middleware.ts) で起動時に環境変数を検証しています。
+
+```typescript
+// middleware.ts
+import { getServerEnv } from "@/lib/env";
+
+function validateEnvironmentVariables(): void {
+  try {
+    getServerEnv();
+  } catch (error) {
+    // 開発環境では詳細なエラーメッセージを表示
+    if (process.env.NODE_ENV === "development") {
+      console.error("❌ 環境変数の検証に失敗しました:");
+      console.error(error);
+    }
+    // 本番環境ではエラーをスローしてアプリケーションを起動しない
+    throw error;
+  }
+}
+
+// 起動時に環境変数を検証
+validateEnvironmentVariables();
+```
+
+**理由**:
+
+- **早期エラー検出**: 本番環境で環境変数が不足している場合、起動時にエラーを検出できる
+- **デバッグの容易さ**: 開発環境では詳細なエラーメッセージを表示し、問題の特定が容易
+- **運用の安全性**: 環境変数が不足している状態でアプリケーションが起動しないため、予期しないエラーを防止
+
 ### ベストプラクティス
 
-1. **環境変数**: 機密情報は環境変数で管理
+1. **環境変数**: 機密情報は環境変数で管理し、起動時に検証
 2. **入力検証**: すべてのユーザー入力を検証
 3. **SQL インジェクション**: Prisma を使用して回避
 4. **XSS 対策**: React の自動エスケープを活用
 5. **CSRF 対策**: Next.js の CSRF 保護を活用
+6. **セキュリティヘッダー**: `next.config.ts` で適切なセキュリティヘッダーを設定
 
 ## ドキュメントの記述方法
 

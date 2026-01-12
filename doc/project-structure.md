@@ -77,9 +77,11 @@ shirokumado-ts/
 │   ├── prisma.ts         # Prisma Clientインスタンス
 │   ├── blob.ts           # Blobストレージユーティリティ
 │   ├── env.ts            # 環境変数管理
-│   ├── errors.ts         # 統一されたエラーハンドリング
+│   ├── errors.ts         # 統一されたエラーハンドリング（エラーコード定数含む）
 │   ├── api-helpers.ts     # API Routes用ヘルパー
+│   ├── api-types.ts      # API レスポンスの型定義
 │   ├── config.ts         # アプリケーション設定
+│   ├── logger.ts         # 構造化ログユーティリティ
 │   ├── image-compression.ts # 画像圧縮ユーティリティ
 │   └── product-utils.ts  # 商品関連ユーティリティ
 │
@@ -114,7 +116,8 @@ shirokumado-ts/
 ├── .env                    # 環境変数（.gitignoreに含まれる）
 ├── .gitignore            # Git除外設定
 ├── eslint.config.mjs      # ESLint設定
-├── next.config.ts         # Next.js設定
+├── middleware.ts          # Next.js ミドルウェア（環境変数検証など）
+├── next.config.ts         # Next.js設定（セキュリティヘッダーなど）
 ├── package.json           # 依存関係
 ├── prisma.config.ts       # Prisma設定（Prisma 7）
 ├── tsconfig.json          # TypeScript設定
@@ -293,15 +296,29 @@ const blob = await uploadImage("images/product.jpg", buffer, "image/jpeg");
 
 #### [`lib/errors.ts`](../lib/errors.ts)
 
-統一されたエラーハンドリングを提供します。
+統一されたエラーハンドリングを提供します。エラーコードの定数定義も含まれます。
 
-[`lib/errors.ts`](../lib/errors.ts) (`ValidationError`クラス)
+[`lib/errors.ts`](../lib/errors.ts) (`ValidationError`クラス、`ErrorCodes`定数)
 
 ```typescript
-import { AppError, DatabaseError, ValidationError } from "@/lib/errors";
+import {
+  AppError,
+  DatabaseError,
+  ValidationError,
+  ErrorCodes,
+} from "@/lib/errors";
 
 // 使用例
-throw new ValidationError("Invalid input");
+throw new ValidationError("Invalid input"); // ErrorCodes.VALIDATION_ERROR が自動的に設定される
+
+// エラーコードの定数
+export const ErrorCodes = {
+  VALIDATION_ERROR: "VALIDATION_ERROR",
+  DATABASE_ERROR: "DATABASE_ERROR",
+  BLOB_STORAGE_ERROR: "BLOB_STORAGE_ERROR",
+  NOT_FOUND: "NOT_FOUND",
+  // ...
+} as const;
 ```
 
 #### [`lib/api-helpers.ts`](../lib/api-helpers.ts)
@@ -317,6 +334,31 @@ export const GET = withErrorHandling(async () => {
   const data = await fetchData();
   return apiSuccess({ data });
 });
+```
+
+#### [`lib/api-types.ts`](../lib/api-types.ts)
+
+API レスポンスの型定義を提供します。クライアント側での型安全性を確保します。
+
+```typescript
+import type { GetProductsResponse, PostProductResponse } from "@/lib/api-types";
+
+// 使用例（クライアント側）
+const response: GetProductsResponse = await fetch("/api/products").then((r) =>
+  r.json()
+);
+```
+
+#### [`lib/logger.ts`](../lib/logger.ts)
+
+構造化ログユーティリティを提供します。本番環境では JSON 形式で出力し、開発環境では読みやすい形式で出力します。
+
+```typescript
+import { log } from "@/lib/logger";
+
+// 使用例
+log.info("User logged in", { userId: user.id });
+log.error("Database operation failed", { context: "getProducts", error });
 ```
 
 #### `lib/` - その他のユーティリティ
@@ -403,7 +445,8 @@ public/
 
 ### 設定ファイル
 
-- **[`next.config.ts`](../next.config.ts)**: Next.js の設定（画像最適化、環境変数など）
+- **[`next.config.ts`](../next.config.ts)**: Next.js の設定（画像最適化、セキュリティヘッダーなど）
+- **[`middleware.ts`](../middleware.ts)**: Next.js ミドルウェア（環境変数の起動時検証など）
 - **[`tsconfig.json`](../tsconfig.json)**: TypeScript の設定
 - **[`prisma.config.ts`](../prisma.config.ts)**: Prisma 7 の設定（接続情報など）
 - **[`eslint.config.mjs`](../eslint.config.mjs)**: ESLint の設定

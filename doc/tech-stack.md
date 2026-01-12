@@ -152,7 +152,8 @@
 
   **このアプリでの使われ方**:
 
-  - すべての API Routes と Server Components で Edge Runtime（デフォルト）を使用
+  - すべての API Routes で Edge Runtime を明示的に指定（`export const runtime = 'edge'`）
+  - Server Components では Edge Runtime（デフォルト）を使用
   - Prisma Accelerate により、Edge Runtime でも Prisma Client が正常に動作
   - 高速な起動時間とグローバル配信により、優れたユーザー体験を提供
 

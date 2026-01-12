@@ -24,7 +24,7 @@ Next.js App Router では、API Routes と Server Components で使用する Run
 
 **このアプリでの使用箇所**:
 
-- すべての API Routes: Edge Runtime（デフォルト、Prisma Accelerate により動作可能）
+- すべての API Routes: Edge Runtime を明示的に指定（`export const runtime = 'edge'`）
 - すべての Server Components: Edge Runtime（デフォルト、Prisma Accelerate により動作可能）
 
 **Edge Runtime の主な特徴**:
@@ -117,7 +117,7 @@ Next.js App Router では、API Routes と Server Components で使用する Run
 
 ### API Routes での使用
 
-**説明**: このアプリでは、すべての API Routes で Edge Runtime（デフォルト）を使用しています。明示的な指定は不要ですが、Prisma Accelerate により、Edge Runtime でも Prisma Client が正常に動作します。
+**説明**: このアプリでは、すべての API Routes で Edge Runtime を明示的に指定しています。`export const runtime = 'edge'` を追加することで、意図が明確になり、将来的なデフォルト変更の影響を受けません。Prisma Accelerate により、Edge Runtime でも Prisma Client が正常に動作します。
 
 **このアプリでの使用箇所**:
 
@@ -130,7 +130,10 @@ Next.js App Router では、API Routes と Server Components で使用する Run
 **実装例**:
 
 ```typescript
-// Edge Runtime（デフォルト、明示的な指定は不要）
+// Edge Runtime を明示的に指定
+export const runtime = "edge";
+export const dynamic = "force-dynamic";
+
 export const GET = withErrorHandling(async (request: NextRequest) => {
   // Prisma Accelerateを使用してデータベースにアクセス
   const products = await prisma.product.findMany({
@@ -141,6 +144,12 @@ export const GET = withErrorHandling(async (request: NextRequest) => {
   return apiSuccess({ products });
 });
 ```
+
+**明示的に指定する理由**:
+
+- **意図の明確化**: Edge Runtime を使用することが明確になる
+- **将来の変更への対応**: Next.js のデフォルトが変更されても影響を受けない
+- **チーム内の理解**: コードを読む人が Edge Runtime を使用していることを理解しやすい
 
 **Edge Runtime の利点**:
 
