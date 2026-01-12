@@ -615,15 +615,9 @@ isLoggedIn ? <UserMenu /> : <LoginButton />;
 isLoading && <LoadingSpinner />;
 }
 
-````jsx
-  return null;
-}
-if (!isOpen || !product) {
-  return null;
-}
+````
 
-
-[`app/components/ProductModal.ts`](../../app/components/ProductModal.ts)
+[`app/components/ProductModal.tsx`](../../app/components/ProductModal.tsx)
 **詳細な使用例**: このアプリでの条件付きレンダリングの実装例（三項演算子、論理 AND 演算子など）については、[このアプリでの JSX の使用例 - 条件付きレンダリング](#条件付きレンダリング-1)セクションを参照してください。
 
 ### リストのレンダリング
@@ -665,6 +659,7 @@ const emptyProducts: Product[] = [];
 // 空配列の場合にメッセージを表示する
 {
 emptyProducts.length === 0 ? (
+
 <p>商品がありません</p>
 ) : (
 emptyProducts.map((product) => (
@@ -737,7 +732,7 @@ products.map((product, index) => (
 
 **Server Component の例**:
 
-````tsx
+```tsx
 export default function Header() {
   return (
     <header className="sticky top-0 z-50 h-20 overflow-visible bg-white">
@@ -758,23 +753,22 @@ export default function Header() {
     </header>
   );
 }
+```
 
-
-[`app/components/Header.ts`](../../app/components/Header.ts)
+[`app/components/Header.tsx`](../../app/components/Header.tsx)
 
 **Client Component の例**:
 
 function ProductTile({ product, onClick }: ProductTileProps) {
-  return (
-    <button
-      onClick={onClick}
-      className="group w-full overflow-hidden rounded-lg border border-gray-100 bg-white shadow-sm"
-      aria-label={`${product.name}の詳細を見る`}
-    >
-      {/* 商品画像 */}
-      {product.imageUrl ? (
-        <div className="relative aspect-square w-full overflow-hidden bg-gray-50">
-          <Image
+return (
+<button
+onClick={onClick}
+className="group w-full overflow-hidden rounded-lg border border-gray-100 bg-white shadow-sm"
+aria-label={`${product.name}の詳細を見る`} >
+{/_ 商品画像 _/}
+{product.imageUrl ? (
+<div className="relative aspect-square w-full overflow-hidden bg-gray-50">
+<Image
             src={product.imageUrl}
             alt={product.name}
             fill
@@ -782,10 +776,10 @@ function ProductTile({ product, onClick }: ProductTileProps) {
             sizes="(max-width: 768px) 33vw, (max-width: 1024px) 33vw, 33vw"
             loading="lazy"
           />
-        </div>
-      ) : (
-        <div className="aspect-square w-full bg-gray-100" />
-      )}
+</div>
+) : (
+<div className="aspect-square w-full bg-gray-100" />
+)}
 
       {/* 商品名 */}
       <div className="flex h-[3em] items-center justify-center p-1.5">
@@ -794,9 +788,11 @@ function ProductTile({ product, onClick }: ProductTileProps) {
         </h3>
       </div>
     </button>
-  );
+
+);
 }
 
+````
 
 [`app/components/ProductTile.tsx`](../../app/components/ProductTile.tsx)
 

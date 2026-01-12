@@ -88,9 +88,9 @@ export default defineConfig({
     seed: "tsx prisma/seed.ts",
   },
   datasource: {
-    // マイグレーション用の接続文字列（通常のPostgreSQL接続）
-    // POSTGRES_URL または DATABASE_URL_UNPOOLED を優先的に使用
-    url: process.env["POSTGRES_URL"] || process.env["DATABASE_URL_UNPOOLED"],
+    // データベース接続文字列
+    // DATABASE_URL_UNPOOLED が設定されている場合は優先的に使用（マイグレーション用）
+    url: process.env["DATABASE_URL_UNPOOLED"] || process.env["DATABASE_URL"],
     // directUrlは自動的にurlと同じ値が使用されます
   },
 });
@@ -108,7 +108,8 @@ export default defineConfig({
 
 **このアプリでの接続方法**:
 
-- **DATABASE_URL**: PostgreSQL 接続文字列を使用
+- **アプリケーション用**: `DATABASE_URL` 環境変数から PostgreSQL 接続文字列を取得（[`lib/prisma.ts`](../../lib/prisma.ts)で使用）
+- **マイグレーション用**: `DATABASE_URL_UNPOOLED` が設定されている場合は優先的に使用、なければ `DATABASE_URL` を使用（[`prisma.config.ts`](../../prisma.config.ts)で使用）
 - **接続管理**: Prisma Client が接続を管理
 - **型安全性**: Prisma Client の型安全性を維持
 
@@ -172,9 +173,14 @@ if (process.env.NODE_ENV !== "production") {
 ```env
 # PostgreSQL接続文字列（必須）
 DATABASE_URL=postgresql://user:password@host:port/database
+
+# プールされていない接続（マイグレーション用、オプション）
+# DATABASE_URL_UNPOOLEDが設定されている場合、マイグレーション時に優先的に使用されます
+DATABASE_URL_UNPOOLED=postgresql://user:password@host:port/database
 ```
 
 - `DATABASE_URL`: PostgreSQL 接続文字列（アプリケーション用・マイグレーション用）
+- `DATABASE_URL_UNPOOLED`: プールされていない接続（マイグレーション用、オプション）。設定されている場合、`prisma.config.ts`でマイグレーション時に優先的に使用されます
 
 ### Edge Runtime と Node.js Runtime
 
@@ -387,17 +393,18 @@ export default defineConfig({
     seed: "tsx prisma/seed.ts",
   },
 });
-[`prisma.config.ts`](../prisma.config.ts)
-
 ```
 
+[`prisma.config.ts`](../../prisma.config.ts)
+
+**マイグレーションコマンド**:
+
+```bash
 npm run db:migrate
 
 # 本番環境でマイグレーションを適用
-
 npm run db:migrate:deploy
-
-````
+```
 
 - マイグレーションの設定が [`prisma.config.ts`](../../prisma.config.ts) で管理される
 - シードファイルのパスを設定ファイルで指定可能
@@ -434,25 +441,24 @@ CREATE TABLE "products" (
 -- AddForeignKey
 ALTER TABLE "products" ADD CONSTRAINT "products_category_id_fkey"
     FOREIGN KEY ("category_id") REFERENCES "categories"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+```
+
+2. **公開状態フィールドの追加** (`20260101082609_add_published_field`):
+
 ```sql
 -- AlterTable
 ALTER TABLE "products" ADD COLUMN "published" BOOLEAN NOT NULL DEFAULT true;
 ALTER TABLE "products" ADD COLUMN "published_at" TIMESTAMP(3);
 ALTER TABLE "products" ADD COLUMN "ended_at" TIMESTAMP(3);
 ALTER TABLE "products" ADD COLUMN "display_order" INTEGER;
-````
+```
+
+**マイグレーションのメリット**:
 
 - **バージョン管理**: スキーマの変更履歴を追跡
 - **ロールバック**: 問題が発生した場合、以前の状態に戻せる
 - **チーム開発**: 複数の開発者が同じスキーマ変更を適用できる
 - **本番環境**: 本番環境でも安全にスキーマを更新できる
-
-**マイグレーションコマンド**:
-
-```bash
-npm run db:migrate:deploy # 本番環境でマイグレーションを適用
-npm run db:push           # スキーマを直接プッシュ（開発環境のみ）
-```
 
 **説明**: Prisma は、スキーマファイルから TypeScript の型定義を自動生成します。これにより、コンパイル時に型エラーを検出でき、IDE での自動補完も利用できます。
 
@@ -462,7 +468,9 @@ npm run db:push           # スキーマを直接プッシュ（開発環境の�
 
 **型生成の実行**:
 
-````typescript
+Prisma は、スキーマファイルから以下のような TypeScript の型定義を自動生成します：
+
+```typescript
 export type Category = {
   id: number;
   name: string;
@@ -485,16 +493,18 @@ export type Product = {
   createdAt: Date;
   updatedAt: Date;
 };
-```typescript
+```
+
 import { Product, Category } from "@prisma/client";
 
 const product: Product = await prisma.product.findUnique({
-  where: { id: 1 },
+where: { id: 1 },
 });
 
 // 型エラーを検出
 console.log(product.name); // OK
 console.log(product.invalidField); // コンパイルエラー
+
 ````
 
 - スキーマファイル（`schema.prisma`）を変更した後
@@ -523,7 +533,7 @@ npm run db:studio
 
 # ブラウザで http://localhost:5555 を開く
 # カテゴリーや商品のデータを確認・編集できる
-```
+````
 
 ### シードデータ
 
@@ -1503,18 +1513,7 @@ console.log(product.name); // OK
 console.log(product.invalidField); // コンパイルエラー
 ```
 
-データベーススキーマの変更は、Prisma のマイグレーション機能で管理します。
-
-**このアプリでの使用箇所**:
-
-- `prisma/migrations/`: マイグレーションファイルの保存場所
-
-**マイグレーションコマンド**:
-
-```bash
-npm run db:migrate:deploy # 本番環境でマイグレーションを適用
-npm run db:push           # スキーマを直接プッシュ（開発環境のみ）
-```
+データベーススキーマの変更は、Prisma のマイグレーション機能で管理します。詳細については、[マイグレーション](#マイグレーション)セクションを参照してください。
 
 ### 設定ファイルの管理
 
