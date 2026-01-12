@@ -41,8 +41,8 @@ async function getHeic2Any() {
 export function isHeicFile(file: File): boolean {
   const heicTypes = ['image/heic', 'image/heif', 'image/heic-sequence', 'image/heif-sequence'];
   return heicTypes.includes(file.type.toLowerCase()) ||
-         /\.heic$/i.test(file.name) ||
-         /\.heif$/i.test(file.name);
+          /\.heic$/i.test(file.name) ||
+          /\.heif$/i.test(file.name);
 }
 
 /**
