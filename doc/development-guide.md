@@ -1287,6 +1287,8 @@ const user = await prisma.$queryRaw`
 
 **実装**: [`middleware.ts`](../middleware.ts) で起動時に環境変数を検証しています。
 
+**注意**: Next.js 16 では `middleware` が非推奨となり、`proxy` への移行が推奨されています。しかし、`proxy` は Node.js Runtime でのみ動作し、Edge Runtime をサポートしていないため、このアプリでは現時点で `middleware` を継続使用しています。将来的に `proxy` が Edge Runtime をサポートした場合、移行を検討します。
+
 ```typescript
 // middleware.ts
 import { getServerEnv } from "@/lib/env";

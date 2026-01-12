@@ -29,6 +29,13 @@ validateEnvironmentVariables();
 /**
  * Next.js ミドルウェア
  * リクエストごとに実行されます
+ *
+ * 注意: Next.js 16 では `middleware` が非推奨となり、`proxy` への移行が推奨されています。
+ * しかし、`proxy` は Node.js Runtime でのみ動作し、Edge Runtime をサポートしていません。
+ * このアプリは Edge Runtime を使用しているため、現時点では `middleware` を継続使用しています。
+ * 将来的に `proxy` が Edge Runtime をサポートした場合、移行を検討します。
+ *
+ * 参考: https://nextjs.org/docs/messages/middleware-to-proxy
  */
 export function middleware(_request: NextRequest) {
   // 現在は環境変数の検証のみを行います

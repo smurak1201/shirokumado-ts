@@ -64,7 +64,9 @@ Next.js は、Vercel が開発した、React ベースの本番環境対応フ�
 
 **静的サイト生成（SSG）とインクリメンタル静的再生成（ISR）**
 
-このアプリでは、`export const dynamic = "force-dynamic"`を使用して動的レンダリングを強制しているため、SSG と ISR は使用されていません。ただし、これらの機能は知っておくと便利です。
+このアプリでは、`export const dynamic = "force-dynamic"`を使用して動的レンダリングを強制しているため、SSG と ISR は使用されていません。また、Edge Runtime を使用しているため、静的生成は自動的に無効になります。これは期待通りの動作です。
+
+**注意**: Edge Runtime を使用すると、そのページの静的生成が無効になります。このアプリでは常に最新のデータを表示する必要があるため、動的レンダリングを意図的に使用しています。
 
 **ISR の使用例**:
 
@@ -149,11 +151,11 @@ Next.js の設定を管理するファイルです。画像最適化、実験的
 const nextConfig: NextConfig = {
   // 画像最適化の設定
   images: {
-    formats: ['image/avif', 'image/webp'],
+    formats: ["image/avif", "image/webp"],
     remotePatterns: [
       {
-        protocol: 'https',
-        hostname: '*.public.blob.vercel-storage.com',
+        protocol: "https",
+        hostname: "*.public.blob.vercel-storage.com",
       },
     ],
   },
@@ -162,7 +164,7 @@ const nextConfig: NextConfig = {
   experimental: {
     // サーバーアクションの最適化
     serverActions: {
-      bodySizeLimit: '2mb',
+      bodySizeLimit: "2mb",
     },
   },
 
@@ -227,40 +229,40 @@ Next.js は、`next/image` コンポーネントを使用して、画像の自�
 1. **[`app/page.tsx`](../../app/page.tsx) (ヒーロー画像セクション)** - ヒーロー画像の最適化
 
 ```typescript
-        <Image
-          src="/hero.webp"
-          alt="白熊堂"
-          fill
-          priority
-          className="object-cover"
-          sizes="100vw"
-        />
+<Image
+  src="/hero.webp"
+  alt="白熊堂"
+  fill
+  priority
+  className="object-cover"
+  sizes="100vw"
+/>
 ```
 
 2. **[`app/components/ProductTile.tsx`](../../app/components/ProductTile.tsx) (商品画像セクション)** - 商品画像の最適化
 
 ```typescript
-          <Image
-            src={product.imageUrl}
-            alt={product.name}
-            fill
-            className="object-cover transition-transform duration-500 group-hover:scale-110"
-            sizes="(max-width: 768px) 33vw, (max-width: 1024px) 33vw, 33vw"
-            loading="lazy"
-          />
+<Image
+  src={product.imageUrl}
+  alt={product.name}
+  fill
+  className="object-cover transition-transform duration-500 group-hover:scale-110"
+  sizes="(max-width: 768px) 33vw, (max-width: 1024px) 33vw, 33vw"
+  loading="lazy"
+/>
 ```
 
 3. **[`app/components/ProductModal.tsx`](../../app/components/ProductModal.tsx) (モーダル内の商品画像セクション)** - モーダル内の商品画像
 
 ```typescript
-            <Image
-              src={product.imageUrl}
-              alt={product.name}
-              fill
-              className="object-cover"
-              sizes="(max-width: 768px) 100vw, (max-width: 1024px) 90vw, 800px"
-              priority
-            />
+<Image
+  src={product.imageUrl}
+  alt={product.name}
+  fill
+  className="object-cover"
+  sizes="(max-width: 768px) 100vw, (max-width: 1024px) 90vw, 800px"
+  priority
+/>
 ```
 
 ### 画像最適化の設定

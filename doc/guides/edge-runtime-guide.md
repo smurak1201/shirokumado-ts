@@ -152,6 +152,8 @@ export const GET = withErrorHandling(async (request: NextRequest) => {
 - **将来の変更への対応**: Next.js のデフォルトが変更されても影響を受けない
 - **チーム内の理解**: コードを読む人が Edge Runtime を使用していることを理解しやすい
 
+**注意**: Edge Runtime を使用すると、そのページの静的生成（SSG）が無効になります。このアプリでは `export const dynamic = 'force-dynamic'` を使用して動的レンダリングを強制しているため、これは期待通りの動作です。
+
 **Edge Runtime の利点**:
 
 - **高速な起動**: コールドスタートが速く、レスポンス時間が短縮される

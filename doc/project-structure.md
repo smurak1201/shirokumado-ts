@@ -456,6 +456,7 @@ public/
 
 - **[`next.config.ts`](../next.config.ts)**: Next.js の設定（画像最適化、セキュリティヘッダーなど）
 - **[`middleware.ts`](../middleware.ts)**: Next.js ミドルウェア（環境変数の起動時検証など）
+  - **注意**: Next.js 16 では `middleware` が非推奨となり、`proxy` への移行が推奨されていますが、`proxy` は Edge Runtime をサポートしていないため、現時点では `middleware` を継続使用しています
 - **[`tsconfig.json`](../tsconfig.json)**: TypeScript の設定
 - **[`prisma.config.ts`](../prisma.config.ts)**: Prisma 7 の設定（接続情報など）
 - **[`eslint.config.mjs`](../eslint.config.mjs)**: ESLint の設定
