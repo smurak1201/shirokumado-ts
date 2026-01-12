@@ -4,6 +4,7 @@ import { calculatePublishedStatus } from "@/lib/product-utils";
 import ProductGrid from "./components/ProductGrid";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
+import type { Category, Product } from "./types";
 
 /**
  * 動的レンダリングを強制
@@ -13,29 +14,23 @@ export const dynamic = "force-dynamic";
 
 /**
  * 価格を文字列から数値に変換するヘルパー関数
+ * Drizzleのdecimal型は文字列として扱われるため、数値に変換します
  */
-function convertPrice(price: string | null): number | null {
-  return price ? Number(price) : null;
+function convertPrice(price: string | null | undefined): number | null {
+  if (price === null || price === undefined || price === "") {
+    return null;
+  }
+  const num = Number(price);
+  return isNaN(num) ? null : num;
 }
 
 /**
- * 価格変換後の商品型
- */
-type ProductWithConvertedPrices = Omit<
-  Awaited<ReturnType<typeof db.query.products.findMany>>[number],
-  "priceS" | "priceL"
-> & {
-  priceS: number | null;
-  priceL: number | null;
-};
-
-/**
  * カテゴリーと商品のペアの型定義
- * Drizzleの型推論を使用して型安全性を確保
+ * ProductGridコンポーネントに渡すための型
  */
 type CategoryWithProducts = {
-  category: Awaited<ReturnType<typeof db.query.categories.findMany>>[number];
-  products: ProductWithConvertedPrices[];
+  category: Category;
+  products: Product[];
 };
 
 /**
@@ -79,31 +74,47 @@ async function getPublishedProductsByCategory(): Promise<
       ),
     ]);
 
-    // 公開商品のみをフィルタリング（カテゴリーが存在する商品のみ）
-    const publishedProducts = productsList.filter((product) => {
-      // カテゴリーが存在しない商品は除外
-      if (!product.category) {
-        return false;
-      }
+    // データが存在しない場合は空配列を返す
+    if (!categoriesList || categoriesList.length === 0) {
+      return [];
+    }
 
-      // 公開日・終了日が設定されている場合は自動判定
-      if (product.publishedAt || product.endedAt) {
-        return calculatePublishedStatus(
-          product.publishedAt, // Drizzleから取得したDateオブジェクトをそのまま渡す
-          product.endedAt // Drizzleから取得したDateオブジェクトをそのまま渡す
-        );
+    if (!productsList || productsList.length === 0) {
+      return [];
+    }
+
+    // 公開商品のみをフィルタリング（カテゴリーが存在する商品のみ）
+    // 型ガードを使用して型安全性を確保
+    const publishedProducts = productsList.filter(
+      (
+        product
+      ): product is typeof product & {
+        category: NonNullable<typeof product.category>;
+      } => {
+        // カテゴリーが存在しない商品は除外
+        if (!product.category) {
+          return false;
+        }
+
+        // 公開日・終了日が設定されている場合は自動判定
+        if (product.publishedAt || product.endedAt) {
+          return calculatePublishedStatus(
+            product.publishedAt, // Drizzleから取得したDateオブジェクトをそのまま渡す
+            product.endedAt // Drizzleから取得したDateオブジェクトをそのまま渡す
+          );
+        }
+        // 公開日・終了日が設定されていない場合は手動設定値を使用
+        return product.published;
       }
-      // 公開日・終了日が設定されていない場合は手動設定値を使用
-      return product.published;
-    });
+    );
 
     // カテゴリーごとにグループ化（Mapを使用してパフォーマンス向上）
     const categoryOrder = categoriesList.map((c) => c.name);
     const grouped = new Map<string, typeof publishedProducts>();
 
     for (const product of publishedProducts) {
-      // フィルタリング済みなので、categoryは必ず存在する
-      const categoryName = product.category!.name;
+      // 型ガードにより、categoryは必ず存在することが保証されている
+      const categoryName = product.category.name;
       const existing = grouped.get(categoryName);
       if (existing) {
         existing.push(product);
@@ -126,24 +137,44 @@ async function getPublishedProductsByCategory(): Promise<
         continue;
       }
 
+      // ProductGridに渡すために、型を変換する
+      const convertedCategory: Category = {
+        id: category.id,
+        name: category.name,
+      };
+
+      const convertedProducts: Product[] = categoryProducts.map(
+        (product): Product => ({
+          id: product.id,
+          name: product.name,
+          description: product.description,
+          imageUrl: product.imageUrl,
+          // Decimal型をNumber型に変換（DrizzleのDecimal型は文字列として扱われるため）
+          priceS: convertPrice(product.priceS),
+          priceL: convertPrice(product.priceL),
+        })
+      );
+
       result.push({
-        category,
-        products: categoryProducts.map(
-          (product): ProductWithConvertedPrices => ({
-            ...product,
-            // Decimal型をNumber型に変換（DrizzleのDecimal型は文字列として扱われるため）
-            priceS: convertPrice(product.priceS),
-            priceL: convertPrice(product.priceL),
-          })
-        ),
+        category: convertedCategory,
+        products: convertedProducts,
       });
     }
 
     return result;
   } catch (error) {
-    // エラーが発生した場合はログを記録してから再スロー
+    // エラーが発生した場合は詳細なログを記録してから再スロー
     // Next.jsのerror.tsxでエラーハンドリングを行う
-    console.error("Error fetching published products:", error);
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    const errorStack = error instanceof Error ? error.stack : undefined;
+
+    console.error("Error fetching published products:", {
+      message: errorMessage,
+      stack: errorStack,
+      error,
+    });
+
+    // エラーを再スローしてNext.jsのエラーハンドリングに委譲
     throw error;
   }
 }
@@ -164,7 +195,16 @@ async function getPublishedProductsByCategory(): Promise<
  */
 export default async function Home() {
   // カテゴリーごとにグループ化された公開商品を取得
-  const categoriesWithProducts = await getPublishedProductsByCategory();
+  let categoriesWithProducts: CategoryWithProducts[];
+
+  try {
+    categoriesWithProducts = await getPublishedProductsByCategory();
+  } catch (error) {
+    // エラーが発生した場合は空配列を使用（error.tsxでエラーUIが表示される）
+    // ここでは空配列を設定して、ページがクラッシュしないようにする
+    console.error("Failed to load products:", error);
+    categoriesWithProducts = [];
+  }
 
   return (
     <div className="min-h-screen bg-white">
