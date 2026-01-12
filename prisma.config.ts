@@ -10,7 +10,7 @@ import { defineConfig } from "prisma/config";
  * Prisma Accelerateはマイグレーションには使用できません。
  *
  * 環境変数の設定:
- * - DATABASE_URL: Prisma AccelerateのURL（アプリケーション用）
+ * - DATABASE_URL_ACCELERATE: Prisma AccelerateのURL（アプリケーション用）
  * - POSTGRES_URL または DATABASE_URL_UNPOOLED: 通常のデータベース接続文字列（マイグレーション用）
  */
 export default defineConfig({
@@ -22,7 +22,7 @@ export default defineConfig({
   datasource: {
     // マイグレーション用の接続文字列（通常のPostgreSQL接続）
     // POSTGRES_URL または DATABASE_URL_UNPOOLED を優先的に使用
-    url: process.env["POSTGRES_URL"] || process.env["DATABASE_URL_UNPOOLED"] || process.env["DATABASE_URL"],
+    url: process.env["POSTGRES_URL"] || process.env["DATABASE_URL_UNPOOLED"],
     // directUrlは自動的にurlと同じ値が使用されます
   },
 });

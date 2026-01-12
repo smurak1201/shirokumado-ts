@@ -15,8 +15,10 @@ import { DatabaseError, logError } from './errors';
  * 注意: このPrisma ClientはPrisma Accelerate専用です。
  * マイグレーションやPrisma Studioを使用する場合は、通常のデータベース接続文字列が必要です。
  *
- * Prisma AccelerateのURL形式:
- * prisma://accelerate.prisma-data.net/?api_key=YOUR_API_KEY
+ * 環境変数の設定:
+ * - DATABASE_URL_ACCELERATE: Prisma AccelerateのURL（必須）
+ *   prisma://accelerate.prisma-data.net/?api_key=YOUR_API_KEY
+ * - POSTGRES_URL: 通常のデータベース接続文字列（マイグレーション用、必須）
  *
  * Prisma Accelerate Consoleから取得できます:
  * https://console.prisma.io/accelerate
@@ -28,20 +30,29 @@ const globalForPrisma = globalThis as unknown as {
 
 const createPrismaClient = (): PrismaClient => {
   // Prisma AccelerateのURLを取得
-  const accelerateUrl = process.env.DATABASE_URL;
+  const accelerateUrl = process.env.DATABASE_URL_ACCELERATE;
 
   if (!accelerateUrl) {
     throw new Error(
-      'DATABASE_URL environment variable is not set. ' +
-      'Please set it to your Prisma Accelerate URL (prisma://accelerate.prisma-data.net/?api_key=...).'
+      'DATABASE_URL_ACCELERATE environment variable is not set.\n' +
+      'Please set DATABASE_URL_ACCELERATE to your Prisma Accelerate URL in Vercel environment variables.\n' +
+      'Format: prisma://accelerate.prisma-data.net/?api_key=YOUR_API_KEY\n' +
+      'Get your Accelerate URL from: https://console.prisma.io/accelerate\n\n' +
+      'Note: POSTGRES_URL should be set separately for migrations (prisma migrate deploy).'
     );
   }
 
   // Prisma AccelerateのURL形式を確認
   if (!accelerateUrl.startsWith('prisma://')) {
     throw new Error(
-      'DATABASE_URL must be a Prisma Accelerate URL (starting with prisma://). ' +
-      'Get your Accelerate URL from https://console.prisma.io/accelerate'
+      'DATABASE_URL_ACCELERATE must be a Prisma Accelerate URL (starting with prisma://).\n' +
+      `Current value starts with: ${accelerateUrl.substring(0, 20)}...\n\n` +
+      'Please set DATABASE_URL_ACCELERATE to your Prisma Accelerate URL in Vercel:\n' +
+      '1. Go to your Vercel project settings\n' +
+      '2. Navigate to Environment Variables\n' +
+      '3. Set DATABASE_URL_ACCELERATE to: prisma://accelerate.prisma-data.net/?api_key=YOUR_API_KEY\n' +
+      '4. Get your Accelerate URL from: https://console.prisma.io/accelerate\n\n' +
+      'Note: POSTGRES_URL should be set separately for migrations (normal PostgreSQL connection string).'
     );
   }
 

@@ -10,7 +10,7 @@
  */
 export interface ServerEnv {
   // データベース
-  DATABASE_URL: string; // Prisma AccelerateのURL（アプリケーション用）
+  DATABASE_URL_ACCELERATE: string; // Prisma AccelerateのURL（アプリケーション用）
   POSTGRES_URL?: string; // 通常のデータベース接続文字列（マイグレーション用）
   POSTGRES_URL_NON_POOLING?: string; // プールされていない接続（マイグレーション用、オプション）
   DATABASE_URL_UNPOOLED?: string; // プールされていない接続（マイグレーション用、オプション）
@@ -36,21 +36,21 @@ export interface ClientEnv {
  */
 export function getServerEnv(): ServerEnv {
   // アプリケーション用: Prisma AccelerateのURL
-  const databaseUrl = process.env.DATABASE_URL;
+  const accelerateUrl = process.env.DATABASE_URL_ACCELERATE;
   const blobToken = process.env.BLOB_READ_WRITE_TOKEN;
 
-  if (!databaseUrl) {
+  if (!accelerateUrl) {
     throw new Error(
-      'DATABASE_URL is not set. ' +
+      'DATABASE_URL_ACCELERATE is not set. ' +
       'Please set it to your Prisma Accelerate URL (prisma://accelerate.prisma-data.net/?api_key=...). ' +
       'Get your Accelerate URL from https://console.prisma.io/accelerate'
     );
   }
 
   // Prisma AccelerateのURL形式を確認
-  if (!databaseUrl.startsWith('prisma://')) {
+  if (!accelerateUrl.startsWith('prisma://')) {
     throw new Error(
-      'DATABASE_URL must be a Prisma Accelerate URL (starting with prisma://). ' +
+      'DATABASE_URL_ACCELERATE must be a Prisma Accelerate URL (starting with prisma://). ' +
       'Get your Accelerate URL from https://console.prisma.io/accelerate'
     );
   }
@@ -63,7 +63,7 @@ export function getServerEnv(): ServerEnv {
   }
 
   return {
-    DATABASE_URL: databaseUrl,
+    DATABASE_URL_ACCELERATE: accelerateUrl,
     POSTGRES_URL: process.env.POSTGRES_URL,
     POSTGRES_URL_NON_POOLING: process.env.POSTGRES_URL_NON_POOLING,
     DATABASE_URL_UNPOOLED: process.env.DATABASE_URL_UNPOOLED,
