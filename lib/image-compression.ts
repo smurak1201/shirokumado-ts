@@ -21,10 +21,16 @@ interface CompressionOptions {
  * @returns WebPがサポートされている場合true
  */
 function supportsWebP(): boolean {
-  const canvas = document.createElement('canvas');
-  canvas.width = 1;
-  canvas.height = 1;
-  return canvas.toDataURL('image/webp').indexOf('data:image/webp') === 0;
+  try {
+    const canvas = document.createElement('canvas');
+    canvas.width = 1;
+    canvas.height = 1;
+    const dataUrl = canvas.toDataURL('image/webp');
+    return dataUrl.indexOf('data:image/webp') === 0;
+  } catch (error) {
+    console.warn('WebP形式のサポート確認に失敗しました:', error);
+    return false;
+  }
 }
 
 /**
@@ -51,90 +57,112 @@ export async function compressImage(
   const outputExtension = useWebP ? '.webp' : '.jpg';
 
   return new Promise((resolve, reject) => {
+    // ブラウザ環境のチェック
+    if (typeof window === 'undefined' || typeof document === 'undefined') {
+      reject(new Error('画像圧縮はブラウザ環境でのみ実行できます'));
+      return;
+    }
+
     const reader = new FileReader();
     reader.onload = (e) => {
+      if (!e.target?.result) {
+        reject(new Error('ファイルの読み込みに失敗しました'));
+        return;
+      }
+
       const img = new Image();
       img.onload = () => {
-        // 画像のサイズを計算
-        let width = img.width;
-        let height = img.height;
+        try {
+          // 画像のサイズを計算
+          let width = img.width;
+          let height = img.height;
 
-        // アスペクト比を保ちながらリサイズ
-        if (width > maxWidth || height > maxHeight) {
-          const aspectRatio = width / height;
-          if (width > height) {
-            width = Math.min(width, maxWidth);
-            height = width / aspectRatio;
-          } else {
-            height = Math.min(height, maxHeight);
-            width = height * aspectRatio;
+          // 画像サイズが0の場合はエラー
+          if (width === 0 || height === 0) {
+            reject(new Error('画像のサイズが無効です'));
+            return;
           }
+
+          // アスペクト比を保ちながらリサイズ
+          if (width > maxWidth || height > maxHeight) {
+            const aspectRatio = width / height;
+            if (width > height) {
+              width = Math.min(width, maxWidth);
+              height = width / aspectRatio;
+            } else {
+              height = Math.min(height, maxHeight);
+              width = height * aspectRatio;
+            }
+          }
+
+          // Canvasを作成して画像を描画
+          const canvas = document.createElement("canvas");
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext("2d");
+          if (!ctx) {
+            reject(new Error("Canvas context could not be created"));
+            return;
+          }
+
+          // 画像を描画
+          ctx.drawImage(img, 0, 0, width, height);
+
+          // WebP形式（またはJPEG形式）で圧縮（品質を段階的に下げながら目標サイズに近づける）
+          const compressWithQuality = (q: number): Promise<File> => {
+            return new Promise((resolveCompress, rejectCompress) => {
+              canvas.toBlob(
+                (blob) => {
+                  if (!blob) {
+                    rejectCompress(new Error(`画像の圧縮に失敗しました（品質: ${q}）`));
+                    return;
+                  }
+
+                  const sizeMB = blob.size / (1024 * 1024);
+                  // 目標サイズより大きい場合、品質を下げて再試行
+                  // 最小品質は 0.5 に設定（それ以下だと画質が著しく低下するため）
+                  const MIN_QUALITY = 0.5;
+                  const QUALITY_STEP = 0.1; // 品質を下げる際のステップ
+                  if (sizeMB > maxSizeMB && q > MIN_QUALITY) {
+                    resolveCompress(
+                      compressWithQuality(
+                        Math.max(q - QUALITY_STEP, MIN_QUALITY)
+                      )
+                    );
+                  } else {
+                    const compressedFile = new File(
+                      [blob],
+                      file.name.replace(/\.[^/.]+$/, outputExtension),
+                      {
+                        type: outputFormat,
+                        lastModified: Date.now(),
+                      }
+                    );
+                    resolveCompress(compressedFile);
+                  }
+                },
+                outputFormat,
+                q
+              );
+            });
+          };
+
+          compressWithQuality(quality)
+            .then((compressedFile) => {
+              resolve(compressedFile);
+            })
+            .catch(reject);
+        } catch (error) {
+          reject(new Error(`画像処理中にエラーが発生しました: ${error instanceof Error ? error.message : String(error)}`));
         }
-
-        // Canvasを作成して画像を描画
-        const canvas = document.createElement("canvas");
-        canvas.width = width;
-        canvas.height = height;
-        const ctx = canvas.getContext("2d");
-        if (!ctx) {
-          reject(new Error("Canvas context could not be created"));
-          return;
-        }
-
-        ctx.drawImage(img, 0, 0, width, height);
-
-        // WebP形式（またはJPEG形式）で圧縮（品質を段階的に下げながら目標サイズに近づける）
-        const compressWithQuality = (q: number): Promise<File> => {
-          return new Promise((resolveCompress) => {
-            canvas.toBlob(
-              (blob) => {
-                if (!blob) {
-                  reject(new Error("Failed to compress image"));
-                  return;
-                }
-
-                const sizeMB = blob.size / (1024 * 1024);
-                // 目標サイズより大きい場合、品質を下げて再試行
-                // 最小品質は 0.5 に設定（それ以下だと画質が著しく低下するため）
-                const MIN_QUALITY = 0.5;
-                const QUALITY_STEP = 0.1; // 品質を下げる際のステップ
-                if (sizeMB > maxSizeMB && q > MIN_QUALITY) {
-                  resolveCompress(
-                    compressWithQuality(
-                      Math.max(q - QUALITY_STEP, MIN_QUALITY)
-                    )
-                  );
-                } else {
-                  const compressedFile = new File(
-                    [blob],
-                    file.name.replace(/\.[^/.]+$/, outputExtension),
-                    {
-                      type: outputFormat,
-                      lastModified: Date.now(),
-                    }
-                  );
-                  resolveCompress(compressedFile);
-                }
-              },
-              outputFormat,
-              q
-            );
-          });
-        };
-
-        compressWithQuality(quality)
-          .then((compressedFile) => {
-            resolve(compressedFile);
-          })
-          .catch(reject);
       };
-      img.onerror = () => {
-        reject(new Error("Failed to load image"));
+      img.onerror = (error) => {
+        reject(new Error(`画像の読み込みに失敗しました: ${error instanceof Error ? error.message : '不明なエラー'}`));
       };
-      img.src = e.target?.result as string;
+      img.src = e.target.result as string;
     };
-    reader.onerror = () => {
-      reject(new Error("Failed to read file"));
+    reader.onerror = (error) => {
+      reject(new Error(`ファイルの読み込みに失敗しました: ${error instanceof Error ? error.message : '不明なエラー'}`));
     };
     reader.readAsDataURL(file);
   });

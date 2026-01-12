@@ -1,7 +1,13 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { calculatePublishedStatus, hasDateRange, formatPrice, parsePrice, isNumericKey } from "@/lib/product-utils";
+import {
+  calculatePublishedStatus,
+  hasDateRange,
+  formatPrice,
+  parsePrice,
+  isNumericKey,
+} from "@/lib/product-utils";
 import { compressImage } from "@/lib/image-compression";
 import type { Category } from "../types";
 
@@ -57,7 +63,7 @@ export default function DashboardForm({
     setCompressing(true);
     try {
       // 動的インポートで config を読み込む（コード分割のため）
-      const { config } = await import('@/lib/config');
+      const { config } = await import("@/lib/config");
       processedFile = await compressImage(file, {
         maxSizeMB: config.imageConfig.COMPRESSION_TARGET_SIZE_MB,
       });
@@ -77,7 +83,11 @@ export default function DashboardForm({
       }
     } catch (error) {
       console.error("画像の圧縮に失敗しました:", error);
-      alert("画像の圧縮に失敗しました。別の画像を選択してください。");
+      const errorMessage =
+        error instanceof Error ? error.message : "不明なエラー";
+      alert(
+        `画像の圧縮に失敗しました: ${errorMessage}\n別の画像を選択してください。`
+      );
       setCompressing(false);
       return;
     } finally {
@@ -312,9 +322,7 @@ export default function DashboardForm({
               className="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:rounded-md file:border-0 file:bg-blue-50 file:px-4 file:py-2 file:text-sm file:font-semibold file:text-blue-700 hover:file:bg-blue-100"
             />
             {compressing && (
-              <p className="mt-2 text-sm text-gray-500">
-                画像を圧縮中...
-              </p>
+              <p className="mt-2 text-sm text-gray-500">画像を圧縮中...</p>
             )}
             {(uploading || submitting) && (
               <p className="mt-2 text-sm text-gray-500">
