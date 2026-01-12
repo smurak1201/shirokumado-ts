@@ -1184,8 +1184,18 @@ export default function Page() {
 **推奨**: 機密情報は環境変数で管理。
 
 ```typescript
-// 良い例: 環境変数を使用
-const databaseUrl = process.env.DATABASE_URL;
+// 良い例: 環境変数を使用（型安全な方法）
+import { getServerEnv } from "@/lib/env";
+
+const env = getServerEnv();
+const accelerateUrl = env.DATABASE_URL_ACCELERATE; // Prisma AccelerateのURL
+```
+
+または、直接環境変数にアクセスする場合：
+
+```typescript
+// 注意: このアプリでは、Prisma Accelerateを使用しているため、DATABASE_URL_ACCELERATEを使用
+const accelerateUrl = process.env.DATABASE_URL_ACCELERATE;
 ```
 
 **理由**:

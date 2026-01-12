@@ -69,15 +69,29 @@ Vercel ダッシュボードで以下の環境変数を設定します：
 #### 必須環境変数
 
 ```env
-# データベース接続（Neon）
+# Prisma Accelerate（アプリケーション用、必須）
+# Edge Runtime対応のため、Prisma Accelerateを使用します
+DATABASE_URL_ACCELERATE=prisma://accelerate.prisma-data.net/?api_key=YOUR_API_KEY
+
+# データベース接続（マイグレーション用、必須）
+# Prisma Accelerateはマイグレーションには使用できません
+POSTGRES_URL=postgresql://...
+
+# 以下の環境変数はオプションです（Neon の接続プール設定など）
 DATABASE_URL=postgresql://...
 DATABASE_URL_UNPOOLED=postgresql://...
-POSTGRES_URL=postgresql://...
 POSTGRES_URL_NON_POOLING=postgresql://...
 
-# Blob Storage
+# Blob Storage（必須）
 BLOB_READ_WRITE_TOKEN=vercel_blob_rw_...
 ```
+
+**重要**:
+
+- `DATABASE_URL_ACCELERATE`: Prisma Accelerate の URL（アプリケーション用、Edge Runtime で使用）
+- `POSTGRES_URL`: 通常の PostgreSQL 接続文字列（マイグレーション用、Node.js Runtime で使用）
+
+詳細は [Prisma & Blob セットアップガイド](./setup-prisma-blob.md) を参照してください。
 
 #### オプション環境変数
 
@@ -91,8 +105,19 @@ STACK_SECRET_SERVER_KEY=...
 ### 3. Neon データベースの設定
 
 1. [Neon Dashboard](https://console.neon.tech/)でデータベースを作成
-2. 接続文字列を取得
+2. 接続文字列を取得（`POSTGRES_URL` として設定）
 3. Vercel の環境変数に設定
+
+### 3-1. Prisma Accelerate の設定
+
+1. [Prisma Accelerate Console](https://console.prisma.io/accelerate) にアクセス
+2. プロジェクトを作成または選択
+3. Accelerate を有効化
+4. API キーを生成
+5. Prisma Accelerate の URL を取得（`prisma://accelerate.prisma-data.net/?api_key=...` 形式）
+6. Vercel の環境変数に `DATABASE_URL_ACCELERATE` として設定
+
+**注意**: Prisma Accelerate はマイグレーションには使用できません。マイグレーション実行時は `POSTGRES_URL` を使用します。
 
 ### 4. Blob Storage の設定
 
@@ -128,9 +153,11 @@ vercel --prod
 
 ### 本番環境でのマイグレーション
 
+**重要**: マイグレーション実行時は、`POSTGRES_URL` または `DATABASE_URL_UNPOOLED` を使用します。Prisma Accelerate はマイグレーションには使用できません。
+
 ```bash
-# 環境変数を設定
-export DATABASE_URL="postgresql://..."
+# 環境変数を設定（POSTGRES_URLを使用）
+export POSTGRES_URL="postgresql://..."
 
 # マイグレーションを実行
 npm run db:migrate:deploy
@@ -142,6 +169,8 @@ npm run db:migrate:deploy
 vercel env pull .env.production
 npm run db:migrate:deploy
 ```
+
+**注意**: `package.json` の `build` スクリプトには `prisma migrate deploy` が含まれているため、Vercel でのデプロイ時に自動的にマイグレーションが実行されます。この場合、`POSTGRES_URL` が正しく設定されている必要があります。
 
 ### マイグレーションのベストプラクティス
 
@@ -188,9 +217,13 @@ Vercel ダッシュボードでビルドログを確認し、エラーがない�
 
 #### データベース接続エラー
 
-1. `DATABASE_URL`が正しく設定されているか確認
-2. Neon ダッシュボードでデータベースがアクティブか確認
-3. SSL 接続が必要な場合は、接続文字列に`?sslmode=require`が含まれているか確認
+1. **アプリケーション用**: `DATABASE_URL_ACCELERATE` が正しく設定されているか確認
+   - `prisma://` で始まる正しい形式か確認
+   - [Prisma Accelerate Console](https://console.prisma.io/accelerate) から取得した URL か確認
+2. **マイグレーション用**: `POSTGRES_URL` が正しく設定されているか確認
+   - 通常の PostgreSQL 接続文字列か確認
+3. Neon ダッシュボードでデータベースがアクティブか確認
+4. SSL 接続が必要な場合は、接続文字列に`?sslmode=require`が含まれているか確認
 
 #### Blob Storage エラー
 

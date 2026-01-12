@@ -2,6 +2,22 @@
  * 統一されたエラーハンドリングユーティリティ
  */
 
+/**
+ * エラーコードの定数定義
+ * API レスポンスで使用されるエラーコードを一元管理します
+ */
+export const ErrorCodes = {
+  VALIDATION_ERROR: 'VALIDATION_ERROR',
+  DATABASE_ERROR: 'DATABASE_ERROR',
+  BLOB_STORAGE_ERROR: 'BLOB_STORAGE_ERROR',
+  NOT_FOUND: 'NOT_FOUND',
+  UNAUTHORIZED: 'UNAUTHORIZED',
+  FORBIDDEN: 'FORBIDDEN',
+  INTERNAL_SERVER_ERROR: 'INTERNAL_SERVER_ERROR',
+} as const;
+
+export type ErrorCode = typeof ErrorCodes[keyof typeof ErrorCodes];
+
 export class AppError extends Error {
   constructor(
     message: string,
@@ -19,7 +35,7 @@ export class DatabaseError extends AppError {
     super(
       `Database error: ${message}`,
       500,
-      'DATABASE_ERROR'
+      ErrorCodes.DATABASE_ERROR
     );
     this.name = 'DatabaseError';
     if (originalError instanceof Error) {
@@ -33,7 +49,7 @@ export class BlobStorageError extends AppError {
     super(
       `Blob storage error: ${message}`,
       500,
-      'BLOB_STORAGE_ERROR'
+      ErrorCodes.BLOB_STORAGE_ERROR
     );
     this.name = 'BlobStorageError';
     if (originalError instanceof Error) {
@@ -44,20 +60,23 @@ export class BlobStorageError extends AppError {
 
 export class ValidationError extends AppError {
   constructor(message: string) {
-    super(message, 400, 'VALIDATION_ERROR');
+    super(message, 400, ErrorCodes.VALIDATION_ERROR);
     this.name = 'ValidationError';
   }
 }
 
 export class NotFoundError extends AppError {
   constructor(resource: string) {
-    super(`${resource} not found`, 404, 'NOT_FOUND');
+    super(`${resource} not found`, 404, ErrorCodes.NOT_FOUND);
     this.name = 'NotFoundError';
   }
 }
 
 /**
  * エラーを安全にログに記録します
+ *
+ * 注意: この関数は後方互換性のために残されています。
+ * 新しいコードでは `lib/logger.ts` の `log.error()` を直接使用することを推奨します。
  */
 export function logError(error: unknown, context?: string): void {
   const prefix = context ? `[${context}]` : '';

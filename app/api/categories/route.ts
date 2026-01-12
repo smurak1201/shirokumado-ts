@@ -4,16 +4,27 @@ import { config } from '@/lib/config';
 import { NextResponse } from 'next/server';
 
 /**
+ * Edge Runtime を使用
+ * Prisma Accelerate を使用しているため、Edge Runtime で動作します
+ */
+export const runtime = 'edge';
+
+/**
+ * 動的レンダリングを強制
+ * データベースから最新のデータを取得する必要があるため、常にサーバー側でレンダリングします
+ */
+export const dynamic = 'force-dynamic';
+
+/**
  * カテゴリー一覧を取得
  *
  * 注意: 現在このエンドポイントは未使用です。
- * ダッシュボードではサーバーコンポーネントから直接Drizzleで取得しているため、
+ * ダッシュボードではサーバーコンポーネントから直接Prismaで取得しているため、
  * クライアントコンポーネントからの呼び出しは不要です。
  * 将来的にクライアント側でカテゴリー一覧を動的に取得する必要が生じた場合に使用する可能性があります。
  *
  * キャッシュ時間は設定ファイルから読み込み
  */
-export const dynamic = 'force-dynamic'; // 動的レンダリング（キャッシュはクライアント側で制御）
 
 export const GET = withErrorHandling(async () => {
   const categoriesList = await safePrismaOperation(

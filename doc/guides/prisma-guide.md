@@ -35,7 +35,7 @@
 - [型安全性](#型安全性)
 - [マイグレーション](#マイグレーション-1)
 - [Prisma 7 のベストプラクティス](#prisma-7-のベストプラクティス)
-  - [アダプターの使用](#アダプターの使用)
+  - [Prisma Accelerate の使用](#prisma-accelerate-の使用)
   - [設定ファイルの管理](#設定ファイルの管理)
   - [パフォーマンスの最適化](#パフォーマンスの最適化)
 - [まとめ](#まとめ)
@@ -78,6 +78,8 @@ Prisma 7 は、モダンなアプリケーション開発のための次世代 O
 
 **設定ファイルの構成**:
 
+[`prisma.config.ts`](../../prisma.config.ts)
+
 ```typescript
 import "dotenv/config";
 import { defineConfig } from "prisma/config";
@@ -89,14 +91,15 @@ export default defineConfig({
     seed: "tsx prisma/seed.ts",
   },
   datasource: {
-    url: process.env["DATABASE_URL"],
-    // Prisma 7では、directUrlは環境変数から自動的に読み込まれます
-    // DATABASE_URL_UNPOOLED または POSTGRES_URL_NON_POOLING を設定してください
+    // マイグレーション用の接続文字列（通常のPostgreSQL接続）
+    // POSTGRES_URL または DATABASE_URL_UNPOOLED を優先的に使用
+    url: process.env["POSTGRES_URL"] || process.env["DATABASE_URL_UNPOOLED"],
+    // directUrlは自動的にurlと同じ値が使用されます
   },
 });
-[`prisma.config.ts`](../prisma.config.ts)
-
 ```
+
+**注意**: このアプリでは、Prisma Accelerate を使用しているため、マイグレーション用の接続文字列（`POSTGRES_URL` または `DATABASE_URL_UNPOOLED`）を設定する必要があります。Prisma Accelerate はマイグレーションには使用できません。
 
 - 設定ファイルが [`prisma.config.ts`](../../prisma.config.ts) に分離された
 - `defineConfig` 関数を使用して設定を定義
@@ -106,33 +109,31 @@ export default defineConfig({
 
 ### Prisma 7 でのデータベース接続の概要
 
-**説明**: Prisma 7 では、データベースプロバイダーごとに専用のアダプターを使用してデータベースに接続します。これにより、各データベースの特性に最適化された接続管理が可能になります。
+**説明**: Prisma 7 では、データベースプロバイダーごとに専用のアダプターを使用してデータベースに接続する方法と、Prisma Accelerate を使用する方法があります。このアプリでは、Edge Runtime 対応のため、**Prisma Accelerate** を使用しています。
 
-**Prisma 7 での一般的な接続方法**:
+**Prisma 7 での接続方法**:
 
-1. **アダプターの選択**: 使用するデータベースに応じて適切なアダプターを選択
+1. **Prisma Accelerate を使用する方法**（このアプリで使用）:
 
+   - Edge Runtime 対応のため、HTTP ベースの接続を使用
+   - グローバル接続プーリングとキャッシングを提供
+   - 詳細は [Prisma Accelerate](#prisma-accelerate) セクションを参照
+
+2. **アダプターを使用する方法**（このアプリでは未使用）:
+
+   - データベースプロバイダーごとに専用のアダプターを使用
    - PostgreSQL: `@prisma/adapter-postgres` または `@prisma/adapter-neon`（Neon の場合）
    - MySQL: `@prisma/adapter-mysql`
    - SQLite: `@prisma/adapter-sqlite`
 
-2. **Prisma Client の初期化**: アダプターを指定して Prisma Client を作成
+**このアプリでの接続方法**:
 
-```typescript
-import { PrismaClient } from "@prisma/client";
-import { Adapter } from "@prisma/adapter-xxx"; // データベースに応じたアダプター
+このアプリでは、Edge Runtime 対応のため、Prisma Accelerate を使用しています。アダプターは使用していません。
 
-const adapter = new Adapter(connectionString);
-
-const prisma = new PrismaClient({
-  adapter, // アダプターを指定
-});
-```
-
-- **アダプターシステム**: Prisma 6 までは接続文字列を直接指定していましたが、Prisma 7 ではアダプターを使用
-- **接続管理**: アダプターが接続プール、WebSocket、トランザクションなどを管理
-- **パフォーマンス**: サーバーレス環境でのパフォーマンスが向上
-- **型安全性**: アダプターにより、より厳密な型チェックが可能
+- **Prisma Accelerate**: HTTP ベースの接続により、Edge Runtime でも動作
+- **接続管理**: Prisma Accelerate がグローバル接続プーリングとキャッシングを管理
+- **パフォーマンス**: エッジネットワーク経由で高速なデータベースアクセスを実現
+- **型安全性**: Prisma Client の型安全性は維持される
 
 ### このアプリでの PostgreSQL（Neon）への接続
 

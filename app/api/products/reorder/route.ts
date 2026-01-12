@@ -4,6 +4,18 @@ import { ValidationError } from '@/lib/errors';
 import { NextRequest } from 'next/server';
 
 /**
+ * Edge Runtime を使用
+ * Prisma Accelerate を使用しているため、Edge Runtime で動作します
+ */
+export const runtime = 'edge';
+
+/**
+ * 動的レンダリングを強制
+ * データベースから最新のデータを取得する必要があるため、常にサーバー側でレンダリングします
+ */
+export const dynamic = 'force-dynamic';
+
+/**
  * 商品の表示順序を更新
  */
 export const POST = withErrorHandling(async (request: NextRequest) => {
