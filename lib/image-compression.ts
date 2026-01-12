@@ -9,6 +9,14 @@
 
 import { config } from './config';
 
+// 定数定義
+const MAX_INPUT_SIZE_BYTES = 50 * 1024 * 1024; // 50MB
+const CREATE_IMAGE_BITMAP_THRESHOLD_BYTES = 5 * 1024 * 1024; // 5MB
+const IMAGE_LOAD_TIMEOUT_MS = 60000; // 60秒
+const MIN_COMPRESSION_QUALITY = 0.5;
+const QUALITY_STEP = 0.1;
+const RECOMMENDED_FILE_SIZE_MB = 10;
+
 // heic2anyを動的インポート（コード分割のため）
 // @ts-ignore - heic2anyには型定義がないため
 let heic2any: any = null;
@@ -89,7 +97,7 @@ async function convertHeicToJpeg(file: File): Promise<Blob> {
 
     return blob;
   } catch (error) {
-    throw new Error(`HEIC形式の変換に失敗しました: ${error instanceof Error ? error.message : String(error)}`);
+    throw new Error(createErrorMessage('HEIC形式の変換に失敗しました', error));
   }
 }
 
@@ -111,11 +119,69 @@ function supportsWebP(): boolean {
     canvas.width = 1;
     canvas.height = 1;
     const dataUrl = canvas.toDataURL('image/webp');
-    return dataUrl.indexOf('data:image/webp') === 0;
+    return dataUrl.startsWith('data:image/webp');
   } catch (error) {
     console.warn('WebP形式のサポート確認に失敗しました:', error);
     return false;
   }
+}
+
+/**
+ * アスペクト比を保ちながらリサイズ後のサイズを計算します
+ */
+function calculateResizedDimensions(
+  width: number,
+  height: number,
+  maxWidth: number,
+  maxHeight: number
+): { width: number; height: number } {
+  if (width <= maxWidth && height <= maxHeight) {
+    return { width, height };
+  }
+
+  const aspectRatio = width / height;
+  if (width > height) {
+    width = Math.min(width, maxWidth);
+    height = width / aspectRatio;
+  } else {
+    height = Math.min(height, maxHeight);
+    width = height * aspectRatio;
+  }
+
+  return { width, height };
+}
+
+/**
+ * Canvasに画像を描画します
+ */
+function drawImageToCanvas(
+  imageSource: ImageBitmap | HTMLImageElement,
+  width: number,
+  height: number
+): HTMLCanvasElement {
+  const canvas = document.createElement('canvas');
+  canvas.width = width;
+  canvas.height = height;
+  const ctx = canvas.getContext('2d');
+  if (!ctx) {
+    throw new Error('Canvas context could not be created');
+  }
+  ctx.drawImage(imageSource, 0, 0, width, height);
+  return canvas;
+}
+
+/**
+ * ファイルサイズをMB単位で取得します
+ */
+function getFileSizeMB(sizeBytes: number): number {
+  return sizeBytes / (1024 * 1024);
+}
+
+/**
+ * エラーメッセージを生成します
+ */
+function createErrorMessage(message: string, error: unknown): string {
+  return `${message}: ${error instanceof Error ? error.message : String(error)}`;
 }
 
 /**
@@ -162,9 +228,8 @@ export async function compressImage(
         type: 'image/jpeg',
         lastModified: Date.now(),
       });
-      // この時点ではJPEGですが、次のステップでWebPに変換されます（formatオプションが'webp'の場合）
     } catch (error) {
-      throw new Error(`HEIC形式の変換に失敗しました: ${error instanceof Error ? error.message : String(error)}`);
+      throw new Error(createErrorMessage('HEIC形式の変換に失敗しました', error));
     }
   }
 
@@ -175,66 +240,44 @@ export async function compressImage(
   const outputExtension = useWebP ? '.webp' : '.jpg';
 
   return new Promise((resolve, reject) => {
-
     // ファイルサイズの検証（大きすぎるファイルは処理を避ける）
-    const MAX_INPUT_SIZE = 50 * 1024 * 1024; // 50MB
-    if (file.size > MAX_INPUT_SIZE) {
-      reject(new Error(`ファイルサイズが大きすぎます: ${(file.size / 1024 / 1024).toFixed(2)}MB`));
+    if (file.size > MAX_INPUT_SIZE_BYTES) {
+      reject(new Error(`ファイルサイズが大きすぎます: ${getFileSizeMB(file.size).toFixed(2)}MB`));
       return;
     }
 
     // 大きなファイルの場合は、createImageBitmapを使用（より効率的）
-    // サポートされていない場合は、Blob URLを使用
-    // 5MB以上でcreateImageBitmapを使用することで、メモリ効率を向上させ、大きな画像の読み込みエラーを防ぐ
-    const useCreateImageBitmap = typeof window !== 'undefined' && typeof window.createImageBitmap !== 'undefined' && file.size > 5 * 1024 * 1024; // 5MB以上
+    const useCreateImageBitmap =
+      typeof window !== 'undefined' &&
+      typeof window.createImageBitmap !== 'undefined' &&
+      file.size > CREATE_IMAGE_BITMAP_THRESHOLD_BYTES;
 
     if (useCreateImageBitmap) {
       // createImageBitmapを使用（大きな画像に適している）
-      window.createImageBitmap(file)
+      window
+        .createImageBitmap(file)
         .then((imageBitmap) => {
           try {
-            // 画像のサイズを計算
-            let width = imageBitmap.width;
-            let height = imageBitmap.height;
-
-            // 画像サイズが0の場合はエラー
-            if (width === 0 || height === 0) {
+            if (imageBitmap.width === 0 || imageBitmap.height === 0) {
               reject(new Error('画像のサイズが無効です'));
               return;
             }
 
-            // アスペクト比を保ちながらリサイズ
-            if (width > maxWidth || height > maxHeight) {
-              const aspectRatio = width / height;
-              if (width > height) {
-                width = Math.min(width, maxWidth);
-                height = width / aspectRatio;
-              } else {
-                height = Math.min(height, maxHeight);
-                width = height * aspectRatio;
-              }
-            }
+            const { width, height } = calculateResizedDimensions(
+              imageBitmap.width,
+              imageBitmap.height,
+              maxWidth,
+              maxHeight
+            );
 
-            // Canvasを作成して画像を描画
-            const canvas = document.createElement("canvas");
-            canvas.width = width;
-            canvas.height = height;
-            const ctx = canvas.getContext("2d");
-            if (!ctx) {
-              reject(new Error("Canvas context could not be created"));
-              return;
-            }
-
-            // 画像を描画
-            ctx.drawImage(imageBitmap, 0, 0, width, height);
+            const canvas = drawImageToCanvas(imageBitmap, width, height);
             imageBitmap.close(); // メモリを解放
 
-            // WebP形式（またはJPEG形式）で圧縮
             compressCanvasToFile(canvas, outputFormat, quality, maxSizeMB, file.name, outputExtension)
               .then(resolve)
               .catch(reject);
           } catch (error) {
-            reject(new Error(`画像処理中にエラーが発生しました: ${error instanceof Error ? error.message : String(error)}`));
+            reject(new Error(createErrorMessage('画像処理中にエラーが発生しました', error)));
           }
         })
         .catch((error) => {
@@ -250,7 +293,7 @@ export async function compressImage(
             .catch(reject);
         });
     } else {
-      // 小さなファイルの場合は、Blob URLを使用（DataURLよりも効率的）
+      // 小さなファイルの場合は、Blob URLを使用
       loadImageWithBlobURL(processedFile, maxWidth, maxHeight, outputFormat, quality, maxSizeMB, outputExtension)
         .then(resolve)
         .catch(reject);
@@ -279,14 +322,9 @@ function compressCanvasToFile(
               return;
             }
 
-            const sizeMB = blob.size / (1024 * 1024);
-            // 目標サイズより大きい場合、品質を下げて再試行
-            const MIN_QUALITY = 0.5;
-            const QUALITY_STEP = 0.1;
-            if (sizeMB > maxSizeMB && q > MIN_QUALITY) {
-              resolveCompress(
-                compressWithQuality(Math.max(q - QUALITY_STEP, MIN_QUALITY))
-              );
+            const sizeMB = getFileSizeMB(blob.size);
+            if (sizeMB > maxSizeMB && q > MIN_COMPRESSION_QUALITY) {
+              resolveCompress(compressWithQuality(Math.max(q - QUALITY_STEP, MIN_COMPRESSION_QUALITY)));
             } else {
               const compressedFile = new File(
                 [blob],
@@ -327,19 +365,23 @@ function loadImageWithBlobURL(
     try {
       blobUrl = URL.createObjectURL(file);
     } catch (error) {
-      reject(new Error(`Blob URLの作成に失敗しました: ${error instanceof Error ? error.message : String(error)}`));
+      reject(new Error(createErrorMessage('Blob URLの作成に失敗しました', error)));
       return;
     }
 
     const img = new Image();
 
-    // 画像読み込みのタイムアウトを設定（60秒に延長 - 大きなファイル用）
+    // 画像読み込みのタイムアウトを設定
     const timeoutId = setTimeout(() => {
       if (blobUrl) {
         URL.revokeObjectURL(blobUrl);
       }
-      reject(new Error(`画像の読み込みがタイムアウトしました（60秒）。ファイルサイズが大きすぎる可能性があります（${(file.size / 1024 / 1024).toFixed(2)}MB）。`));
-    }, 60000);
+      reject(
+        new Error(
+          `画像の読み込みがタイムアウトしました（${IMAGE_LOAD_TIMEOUT_MS / 1000}秒）。ファイルサイズが大きすぎる可能性があります（${getFileSizeMB(file.size).toFixed(2)}MB）。`
+        )
+      );
+    }, IMAGE_LOAD_TIMEOUT_MS);
 
     img.onload = () => {
       clearTimeout(timeoutId);
@@ -348,50 +390,24 @@ function loadImageWithBlobURL(
       }
 
       try {
-        // 画像のサイズを計算
-        let width = img.width;
-        let height = img.height;
-
-        // 画像サイズが0の場合はエラー
-        if (width === 0 || height === 0) {
+        if (img.width === 0 || img.height === 0) {
           reject(new Error('画像のサイズが無効です'));
           return;
         }
 
-        console.log(`画像読み込み成功: ${width}x${height}, ファイルサイズ: ${(file.size / 1024 / 1024).toFixed(2)}MB`);
+        console.log(`画像読み込み成功: ${img.width}x${img.height}, ファイルサイズ: ${getFileSizeMB(file.size).toFixed(2)}MB`);
 
-        // アスペクト比を保ちながらリサイズ
-        if (width > maxWidth || height > maxHeight) {
-          const aspectRatio = width / height;
-          if (width > height) {
-            width = Math.min(width, maxWidth);
-            height = width / aspectRatio;
-          } else {
-            height = Math.min(height, maxHeight);
-            width = height * aspectRatio;
-          }
+        const { width, height } = calculateResizedDimensions(img.width, img.height, maxWidth, maxHeight);
+        if (width !== img.width || height !== img.height) {
           console.log(`リサイズ: ${width}x${height}`);
         }
 
-        // Canvasを作成して画像を描画
-        const canvas = document.createElement("canvas");
-        canvas.width = width;
-        canvas.height = height;
-        const ctx = canvas.getContext("2d");
-        if (!ctx) {
-          reject(new Error("Canvas context could not be created"));
-          return;
-        }
-
-        // 画像を描画
-        ctx.drawImage(img, 0, 0, width, height);
-
-        // WebP形式（またはJPEG形式）で圧縮
+        const canvas = drawImageToCanvas(img, width, height);
         compressCanvasToFile(canvas, outputFormat, quality, maxSizeMB, file.name, outputExtension)
           .then(resolve)
           .catch(reject);
       } catch (error) {
-        reject(new Error(`画像処理中にエラーが発生しました: ${error instanceof Error ? error.message : String(error)}`));
+        reject(new Error(createErrorMessage('画像処理中にエラーが発生しました', error)));
       }
     };
 
@@ -400,20 +416,23 @@ function loadImageWithBlobURL(
       if (blobUrl) {
         URL.revokeObjectURL(blobUrl);
       }
+      const fileSizeMB = getFileSizeMB(file.size);
       console.error('画像読み込みエラー:', {
         fileType: file.type,
         fileName: file.name,
         fileSize: file.size,
-        fileSizeMB: (file.size / 1024 / 1024).toFixed(2),
+        fileSizeMB: fileSizeMB.toFixed(2),
         blobUrl: blobUrl ? '作成済み' : '作成失敗',
         event: event,
         error: event instanceof ErrorEvent ? event.error : null,
       });
 
-      // ファイルサイズが大きい場合の特別なメッセージ
-      const fileSizeMB = file.size / 1024 / 1024;
-      if (fileSizeMB > 10) {
-        reject(new Error(`画像の読み込みに失敗しました。ファイルサイズが大きすぎる可能性があります（${fileSizeMB.toFixed(2)}MB）。推奨サイズは10MB以下です。別の画像を選択するか、画像を小さくしてから再度お試しください。`));
+      if (fileSizeMB > RECOMMENDED_FILE_SIZE_MB) {
+        reject(
+          new Error(
+            `画像の読み込みに失敗しました。ファイルサイズが大きすぎる可能性があります（${fileSizeMB.toFixed(2)}MB）。推奨サイズは${RECOMMENDED_FILE_SIZE_MB}MB以下です。別の画像を選択するか、画像を小さくしてから再度お試しください。`
+          )
+        );
       } else {
         reject(new Error(`画像の読み込みに失敗しました。ファイル形式（${file.type || '不明'}）がサポートされていない可能性があります。`));
       }
@@ -427,17 +446,11 @@ function loadImageWithBlobURL(
       if (blobUrl) {
         URL.revokeObjectURL(blobUrl);
       }
-      reject(new Error(`画像の読み込み開始に失敗しました: ${error instanceof Error ? error.message : String(error)}`));
+      reject(new Error(createErrorMessage('画像の読み込み開始に失敗しました', error)));
     }
   });
 }
 
-/**
- * 画像ファイルが圧縮が必要かどうかを判定します
- * @param file 画像ファイル
- * @param maxSizeMB 最大ファイルサイズ（MB）
- * @returns 圧縮が必要な場合true
- */
 /**
  * 画像ファイルが圧縮が必要かどうかを判定する関数
  *
@@ -451,8 +464,7 @@ export function needsCompression(
   file: File,
   maxSizeMB: number = config.imageConfig.COMPRESSION_TARGET_SIZE_MB
 ): boolean {
-  const sizeMB = file.size / (1024 * 1024);
-  return sizeMB > maxSizeMB;
+  return getFileSizeMB(file.size) > maxSizeMB;
 }
 
 /**
@@ -469,6 +481,5 @@ export function isTooLarge(
   file: File,
   maxSizeMB: number = config.imageConfig.MAX_FILE_SIZE_MB
 ): boolean {
-  const sizeMB = file.size / (1024 * 1024);
-  return sizeMB > maxSizeMB;
+  return getFileSizeMB(file.size) > maxSizeMB;
 }
