@@ -1,9 +1,10 @@
 import Image from "next/image";
-import { prisma } from "@/lib/prisma";
+import { db, categories, products } from "@/lib/db";
 import { calculatePublishedStatus } from "@/lib/product-utils";
 import ProductGrid from "./components/ProductGrid";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
+import { ascNullsLast } from "drizzle-orm";
 
 /**
  * 動的レンダリングを強制
@@ -25,34 +26,29 @@ export const dynamic = "force-dynamic";
  */
 async function getPublishedProductsByCategory() {
   // カテゴリーと商品を並列で取得（パフォーマンス向上）
-  const [categories, products] = await Promise.all([
+  const [categoriesList, productsList] = await Promise.all([
     // カテゴリーをID順で取得
-    prisma.category.findMany({
-      orderBy: {
-        id: "asc",
-      },
+    db.query.categories.findMany({
+      orderBy: (categories, { asc }) => [asc(categories.id)],
     }),
     // 商品をカテゴリー情報を含めて取得
-    prisma.product.findMany({
-      include: {
+    db.query.products.findMany({
+      with: {
         category: true, // カテゴリー情報も一緒に取得（N+1問題を回避）
       },
-      orderBy: {
-        displayOrder: {
-          sort: "asc",
-          nulls: "last", // displayOrderがnullの商品は最後に
-        },
-      },
+      orderBy: (products, { ascNullsLast }) => [
+        ascNullsLast(products.displayOrder),
+      ], // displayOrderがnullの商品は最後に
     }),
   ]);
 
   // 公開商品のみをフィルタリング
-  const publishedProducts = products.filter((product) => {
+  const publishedProducts = productsList.filter((product) => {
     // 公開日・終了日が設定されている場合は自動判定
     if (product.publishedAt || product.endedAt) {
       return calculatePublishedStatus(
-        product.publishedAt, // Prismaから取得したDateオブジェクトをそのまま渡す
-        product.endedAt // Prismaから取得したDateオブジェクトをそのまま渡す
+        product.publishedAt, // Drizzleから取得したDateオブジェクトをそのまま渡す
+        product.endedAt // Drizzleから取得したDateオブジェクトをそのまま渡す
       );
     }
     // 公開日・終了日が設定されていない場合は手動設定値を使用
@@ -60,7 +56,7 @@ async function getPublishedProductsByCategory() {
   });
 
   // カテゴリーごとにグループ化
-  const categoryOrder = categories.map((c) => c.name);
+  const categoryOrder = categoriesList.map((c) => c.name);
   const grouped: Record<string, typeof publishedProducts> = {};
 
   publishedProducts.forEach((product) => {
@@ -74,10 +70,10 @@ async function getPublishedProductsByCategory() {
   // カテゴリーの順序に従って返す（Decimal型をNumber型に変換、商品があるカテゴリーのみ）
   return categoryOrder
     .map((categoryName) => ({
-    category: categories.find((c) => c.name === categoryName)!,
+      category: categoriesList.find((c) => c.name === categoryName)!,
       products: (grouped[categoryName] || []).map((product) => ({
         ...product,
-        // Decimal型をNumber型に変換（PrismaのDecimal型は文字列として扱われるため）
+        // Decimal型をNumber型に変換（DrizzleのDecimal型は文字列として扱われるため）
         priceS: product.priceS ? Number(product.priceS) : null,
         priceL: product.priceL ? Number(product.priceL) : null,
       })),

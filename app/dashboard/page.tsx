@@ -1,4 +1,5 @@
-import { prisma } from "@/lib/prisma";
+import { db, categories, products } from "@/lib/db";
+import { asc, desc } from "drizzle-orm";
 import DashboardContent from "./components/DashboardContent";
 
 /**
@@ -16,30 +17,26 @@ export const dynamic = "force-dynamic";
  */
 async function getDashboardData() {
   // カテゴリーと商品を並列で取得（パフォーマンス向上）
-  const [categories, products] = await Promise.all([
+  const [categoriesList, productsList] = await Promise.all([
     // カテゴリーをID順で取得
-    prisma.category.findMany({
-      orderBy: {
-        id: "asc",
-      },
+    db.query.categories.findMany({
+      orderBy: (categories, { asc }) => [asc(categories.id)],
     }),
     // 商品をカテゴリー情報を含めて取得（N+1問題を回避）
-    prisma.product.findMany({
-      include: {
+    db.query.products.findMany({
+      with: {
         category: true, // 関連するカテゴリー情報も一緒に取得
       },
-      orderBy: {
-        createdAt: "desc", // 作成日時の降順でソート
-      },
+      orderBy: (products, { desc }) => [desc(products.createdAt)], // 作成日時の降順でソート
     }),
   ]);
 
   return {
-    categories,
+    categories: categoriesList,
     // 商品データをクライアント側で使いやすい形式に変換
-    products: products.map((product) => ({
+    products: productsList.map((product) => ({
       ...product,
-      // Decimal型をNumber型に変換（PrismaのDecimal型は文字列として扱われるため）
+      // Decimal型をNumber型に変換（DrizzleのDecimal型は文字列として扱われるため）
       priceS: product.priceS ? Number(product.priceS) : null,
       priceL: product.priceL ? Number(product.priceL) : null,
       // Date型をISO文字列に変換（JSONシリアライズのため）

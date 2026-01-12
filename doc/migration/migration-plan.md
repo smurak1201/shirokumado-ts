@@ -255,7 +255,7 @@ Edge Runtime 対応のため、Vercel Edge Functions で動作する Drizzle ORM
 - [x] `/api/products/[id]` (DELETE) の移行
 - [x] `/api/products/reorder` の移行
 - [x] `app/dashboard/page.tsx` の移行
-- [ ] `app/page.tsx` の移行
+- [x] `app/page.tsx` の移行
 
 ### Phase 4: クリーンアップ
 

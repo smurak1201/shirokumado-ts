@@ -1,8 +1,8 @@
 import { withErrorHandling, apiSuccess } from '@/lib/api-helpers';
-import { safePrismaOperation } from '@/lib/prisma';
-import { prisma } from '@/lib/prisma';
+import { db, safeDbOperation, products } from '@/lib/db';
 import { ValidationError } from '@/lib/errors';
 import { NextRequest } from 'next/server';
+import { eq } from 'drizzle-orm';
 
 /**
  * 商品の表示順序を更新
@@ -16,16 +16,17 @@ export const POST = withErrorHandling(async (request: NextRequest) => {
   }
 
   // トランザクションで一括更新
-  await safePrismaOperation(
+  await safeDbOperation(
     async () => {
-      await prisma.$transaction(
-        body.productOrders.map((item: { id: number; displayOrder: number }) =>
-          prisma.product.update({
-            where: { id: item.id },
-            data: { displayOrder: item.displayOrder },
-          })
-        )
-      );
+      await db.transaction(async (tx) => {
+        await Promise.all(
+          body.productOrders.map((item: { id: number; displayOrder: number }) =>
+            tx.update(products)
+              .set({ displayOrder: item.displayOrder })
+              .where(eq(products.id, item.id))
+          )
+        );
+      });
     },
     'POST /api/products/reorder'
   );

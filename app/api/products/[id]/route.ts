@@ -1,10 +1,10 @@
 import { withErrorHandling, apiSuccess } from '@/lib/api-helpers';
-import { safePrismaOperation } from '@/lib/prisma';
-import { prisma } from '@/lib/prisma';
+import { db, safeDbOperation, products, categories } from '@/lib/db';
 import { ValidationError, NotFoundError } from '@/lib/errors';
 import { NextRequest } from 'next/server';
 import { calculatePublishedStatus } from '@/lib/product-utils';
 import { deleteFile } from '@/lib/blob';
+import { eq } from 'drizzle-orm';
 
 /**
  * 商品を取得
@@ -23,11 +23,11 @@ export const GET = withErrorHandling(async (
     throw new ValidationError('無効な商品IDです');
   }
 
-  const product = await safePrismaOperation(
+  const product = await safeDbOperation(
     () =>
-      prisma.product.findUnique({
-        where: { id: productId },
-        include: {
+      db.query.products.findFirst({
+        where: eq(products.id, productId),
+        with: {
           category: true,
         },
       }),
@@ -57,8 +57,8 @@ export const PUT = withErrorHandling(async (
   }
 
   // 商品の存在確認
-  const existingProduct = await safePrismaOperation(
-    () => prisma.product.findUnique({ where: { id: productId } }),
+  const existingProduct = await safeDbOperation(
+    () => db.query.products.findFirst({ where: eq(products.id, productId) }),
     `PUT /api/products/${id} - existence check`
   );
 
@@ -85,8 +85,8 @@ export const PUT = withErrorHandling(async (
       throw new ValidationError('カテゴリーIDは数値である必要があります');
     }
 
-    const category = await safePrismaOperation(
-      () => prisma.category.findUnique({ where: { id: body.categoryId } }),
+    const category = await safeDbOperation(
+      () => db.query.categories.findFirst({ where: eq(categories.id, body.categoryId) }),
       `PUT /api/products/${id} - category check`
     );
 
@@ -134,24 +134,33 @@ export const PUT = withErrorHandling(async (
   if (body.name !== undefined) updateData.name = body.name.trim();
   if (body.description !== undefined) updateData.description = body.description.trim();
   if (body.imageUrl !== undefined) updateData.imageUrl = body.imageUrl || null;
-  if (body.priceS !== undefined) updateData.priceS = body.priceS ? parseFloat(body.priceS) : null;
-  if (body.priceL !== undefined) updateData.priceL = body.priceL ? parseFloat(body.priceL) : null;
+  if (body.priceS !== undefined) updateData.priceS = body.priceS ? String(parseFloat(body.priceS)) : null;
+  if (body.priceL !== undefined) updateData.priceL = body.priceL ? String(parseFloat(body.priceL)) : null;
   if (body.categoryId !== undefined) updateData.categoryId = body.categoryId;
   updateData.published = published;
   if (body.publishedAt !== undefined) updateData.publishedAt = publishedAt;
   if (body.endedAt !== undefined) updateData.endedAt = endedAt;
 
-  const product = await safePrismaOperation(
+  await safeDbOperation(
+    () => db.update(products).set(updateData).where(eq(products.id, productId)),
+    `PUT /api/products/${id}`
+  );
+
+  // 更新された商品にカテゴリー情報も含めて取得
+  const product = await safeDbOperation(
     () =>
-      prisma.product.update({
-        where: { id: productId },
-        data: updateData,
-        include: {
+      db.query.products.findFirst({
+        where: eq(products.id, productId),
+        with: {
           category: true,
         },
       }),
-    `PUT /api/products/${id}`
+    `PUT /api/products/${id} - fetch with category`
   );
+
+  if (!product) {
+    throw new NotFoundError('商品');
+  }
 
   return apiSuccess({ product });
 });
@@ -171,8 +180,8 @@ export const DELETE = withErrorHandling(async (
   }
 
   // 商品の存在確認
-  const existingProduct = await safePrismaOperation(
-    () => prisma.product.findUnique({ where: { id: productId } }),
+  const existingProduct = await safeDbOperation(
+    () => db.query.products.findFirst({ where: eq(products.id, productId) }),
     `DELETE /api/products/${id} - existence check`
   );
 
@@ -192,8 +201,8 @@ export const DELETE = withErrorHandling(async (
   }
 
   // 商品を削除
-  await safePrismaOperation(
-    () => prisma.product.delete({ where: { id: productId } }),
+  await safeDbOperation(
+    () => db.delete(products).where(eq(products.id, productId)),
     `DELETE /api/products/${id}`
   );
 

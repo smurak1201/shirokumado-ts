@@ -1,10 +1,10 @@
 import { withErrorHandling, apiSuccess } from '@/lib/api-helpers';
-import { safePrismaOperation } from '@/lib/prisma';
-import { prisma } from '@/lib/prisma';
+import { db, safeDbOperation, products, categories } from '@/lib/db';
 import { ValidationError } from '@/lib/errors';
 import { config } from '@/lib/config';
 import { NextRequest, NextResponse } from 'next/server';
 import { calculatePublishedStatus } from '@/lib/product-utils';
+import { desc, eq } from 'drizzle-orm';
 
 /**
  * 動的レンダリングを強制
@@ -25,16 +25,14 @@ export const dynamic = 'force-dynamic';
  */
 export const GET = withErrorHandling(async () => {
   // データベースから商品を取得
-  // include でカテゴリー情報も一緒に取得することで、N+1問題を回避します
-  const products = await safePrismaOperation(
+  // with でカテゴリー情報も一緒に取得することで、N+1問題を回避します
+  const products = await safeDbOperation(
     () =>
-      prisma.product.findMany({
-        include: {
+      db.query.products.findMany({
+        with: {
           category: true, // 関連するカテゴリー情報も取得
         },
-        orderBy: {
-          createdAt: 'desc', // 作成日時の降順でソート（新しい順）
-        },
+        orderBy: (products, { desc }) => [desc(products.createdAt)], // 作成日時の降順でソート（新しい順）
       }),
     'GET /api/products'
   );
@@ -86,8 +84,8 @@ export const POST = withErrorHandling(async (request: NextRequest) => {
 
   // ===== カテゴリーの存在確認 =====
   // 指定されたカテゴリーがデータベースに存在するか確認
-  const category = await safePrismaOperation(
-    () => prisma.category.findUnique({ where: { id: body.categoryId } }),
+  const category = await safeDbOperation(
+    () => db.query.categories.findFirst({ where: eq(categories.id, body.categoryId) }),
     'POST /api/products - category check'
   );
 
@@ -114,26 +112,37 @@ export const POST = withErrorHandling(async (request: NextRequest) => {
   }
 
   // ===== 商品の作成 =====
-  const product = await safePrismaOperation(
+  const [createdProduct] = await safeDbOperation(
     () =>
-      prisma.product.create({
-        data: {
-          name: body.name.trim(), // 前後の空白を削除
-          description: body.description.trim(), // 前後の空白を削除
-          imageUrl: body.imageUrl || null, // 画像URLが指定されていない場合は null
-          priceS: body.priceS ? parseFloat(body.priceS) : null, // 文字列を数値に変換
-          priceL: body.priceL ? parseFloat(body.priceL) : null, // 文字列を数値に変換
-          categoryId: body.categoryId,
-          published, // 自動判定または手動設定された公開状態
-          publishedAt,
-          endedAt,
-        },
-        include: {
-          category: true, // 作成された商品にカテゴリー情報も含める
-        },
-      }),
+      db.insert(products).values({
+        name: body.name.trim(), // 前後の空白を削除
+        description: body.description.trim(), // 前後の空白を削除
+        imageUrl: body.imageUrl || null, // 画像URLが指定されていない場合は null
+        priceS: body.priceS ? String(parseFloat(body.priceS)) : null, // Decimal型は文字列として保存
+        priceL: body.priceL ? String(parseFloat(body.priceL)) : null, // Decimal型は文字列として保存
+        categoryId: body.categoryId,
+        published, // 自動判定または手動設定された公開状態
+        publishedAt,
+        endedAt,
+      }).returning(),
     'POST /api/products'
   );
+
+  // 作成された商品にカテゴリー情報も含めて取得
+  const product = await safeDbOperation(
+    () =>
+      db.query.products.findFirst({
+        where: eq(products.id, createdProduct.id),
+        with: {
+          category: true,
+        },
+      }),
+    'POST /api/products - fetch with category'
+  );
+
+  if (!product) {
+    throw new ValidationError('商品の作成に失敗しました');
+  }
 
   // 201 Created ステータスでレスポンスを返す
   return apiSuccess({ product }, 201);
