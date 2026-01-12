@@ -33,9 +33,9 @@ export interface LogEntry {
 }
 
 /**
- * ログを出力します
+ * ログを出力します（内部関数）
  */
-function log(level: LogLevel, message: string, options?: {
+function logInternal(level: LogLevel, message: string, options?: {
   context?: string;
   error?: Error | unknown;
   metadata?: Record<string, unknown>;
@@ -106,7 +106,7 @@ export function debug(message: string, options?: {
   context?: string;
   metadata?: Record<string, unknown>;
 }): void {
-  log(LogLevel.DEBUG, message, options);
+  logInternal(LogLevel.DEBUG, message, options);
 }
 
 /**
@@ -116,7 +116,7 @@ export function info(message: string, options?: {
   context?: string;
   metadata?: Record<string, unknown>;
 }): void {
-  log(LogLevel.INFO, message, options);
+  logInternal(LogLevel.INFO, message, options);
 }
 
 /**
@@ -127,7 +127,7 @@ export function warn(message: string, options?: {
   error?: Error | unknown;
   metadata?: Record<string, unknown>;
 }): void {
-  log(LogLevel.WARN, message, options);
+  logInternal(LogLevel.WARN, message, options);
 }
 
 /**
@@ -138,7 +138,7 @@ export function error(message: string, options?: {
   error?: Error | unknown;
   metadata?: Record<string, unknown>;
 }): void {
-  log(LogLevel.ERROR, message, options);
+  logInternal(LogLevel.ERROR, message, options);
 }
 
 /**

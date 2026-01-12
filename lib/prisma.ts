@@ -106,8 +106,12 @@ export async function disconnectPrisma(): Promise<void> {
 
 /**
  * アプリケーション終了時にPrisma接続をクリーンアップします
+ *
+ * 注意: Edge Runtime では Node.js API (process.on) が使用できないため、
+ * このコードは Node.js Runtime でのみ実行されます。
+ * Edge Runtime では Prisma Accelerate が接続を管理するため、明示的なクリーンアップは不要です。
  */
-if (typeof process !== 'undefined') {
+if (typeof process !== 'undefined' && typeof process.on === 'function') {
   process.on('beforeExit', async () => {
     await disconnectPrisma();
   });
