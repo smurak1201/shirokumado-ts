@@ -102,6 +102,7 @@ Next.js App Router では、API Routes と Server Components で使用する Run
 **Edge Runtime で使用できない API**:
 
 - **Node.js API**: `fs`、`path`、`os`、`crypto`（Node.js 版）、`buffer` など
+- **イベントハンドラー**: `process.on`、`process.emit` などの Node.js イベント API
 - **ファイルシステム**: ファイルの読み書きができない
 - **WebSocket**: WebSocket 接続ができない
 - **子プロセス**: `child_process` が使用できない
@@ -233,20 +234,24 @@ const createPrismaClient = (): PrismaClient => {
 
 **主な制限事項**:
 
-1. **Node.js API の制限**: Node.js 専用の API（`fs`、`path`、`os` など）が使用できない
-2. **ファイルシステムへのアクセス**: ファイルの読み書きができない
-3. **WebSocket**: WebSocket 接続ができない
-4. **メモリ制限**: 約 128MB のメモリ制限がある（Vercel の場合）
-5. **実行時間制限**: 約 30 秒の実行時間制限がある（Vercel の場合）
-6. **通常の Prisma Client**: TCP 接続を使用する通常の Prisma Client は使用できない（Prisma Accelerate が必要）
+1. **Node.js API の制限**: Node.js 専用の API（`fs`、`path`、`os`、`process.on` など）が使用できない
+2. **イベントハンドラー**: `process.on('beforeExit', ...)` などの Node.js イベント API が使用できない
+3. **ファイルシステムへのアクセス**: ファイルの読み書きができない
+4. **WebSocket**: WebSocket 接続ができない
+5. **メモリ制限**: 約 128MB のメモリ制限がある（Vercel の場合）
+6. **実行時間制限**: 約 30 秒の実行時間制限がある（Vercel の場合）
+7. **通常の Prisma Client**: TCP 接続を使用する通常の Prisma Client は使用できない（Prisma Accelerate が必要）
 
 **制限事項への対応**:
 
+- **Node.js API**: Edge Runtime で使用できない API を使用する場合は、条件付きで実行するか、Node.js Runtime を使用
+  - 例: `process.on` を使用する場合は `typeof process.on === 'function'` でチェック
 - **ファイルシステム**: Vercel Blob Storage などの外部ストレージサービスを使用
 - **WebSocket**: Server-Sent Events（SSE）や HTTP ポーリングを使用
 - **メモリ制限**: 大きなデータの処理は避け、必要に応じて Node.js Runtime を使用
 - **実行時間制限**: 長時間実行される処理は避け、必要に応じて Node.js Runtime を使用
 - **Prisma Client**: Prisma Accelerate を使用して Edge Runtime でも Prisma Client を使用可能
+  - Prisma Accelerate が接続を管理するため、明示的なクリーンアップ（`process.on('beforeExit', ...)` など）は不要
 
 ## Node.js Runtime が必要な場合
 

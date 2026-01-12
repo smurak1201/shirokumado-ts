@@ -267,7 +267,16 @@ app/dashboard/
 
 #### [`lib/prisma.ts`](../lib/prisma.ts)
 
-Prisma Client のシングルトンインスタンスを管理します。
+Prisma Client のシングルトンインスタンスを管理します。Edge Runtime 対応のため、Prisma Accelerate を使用しています。
+
+**主な機能**:
+
+- Prisma Accelerate を使用した Prisma Client の初期化
+- シングルトンインスタンスの管理（開発環境でのホットリロード対応）
+- 安全な Prisma 操作のラッパー関数（`safePrismaOperation`）
+- Edge Runtime 対応（Node.js API の使用を条件付きで実行）
+
+**注意**: Edge Runtime では `process.on` などの Node.js API が使用できないため、接続のクリーンアップコードは条件付きで実行されます。Prisma Accelerate が接続を管理するため、Edge Runtime では明示的なクリーンアップは不要です。
 
 [`lib/prisma.ts`](../lib/prisma.ts) (`safePrismaOperation`関数)
 
