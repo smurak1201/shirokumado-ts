@@ -1400,6 +1400,7 @@ export function apiSuccess<T>(data: T, status: number = 200): NextResponse {
 ### プロジェクト内のドキュメント
 
 - **[アーキテクチャドキュメント](./architecture.md)**: アーキテクチャと設計思想
+- **[Async/Await ガイド](./guides/async-await-guide.md)**: async/await と Promise の使用方法
 - **[ユーティリティ関数ガイド](./guides/utilities-guide.md)**: エラーハンドリング、ログ、API 型定義などの詳細
 - **[React ガイド](./guides/react-guide.md)**: React の包括的なガイド
 - **[JSX ガイド](./guides/jsx-guide.md)**: JSX の構文とベストプラクティス

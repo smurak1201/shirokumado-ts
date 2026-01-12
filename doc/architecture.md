@@ -419,6 +419,7 @@ export const GET = withErrorHandling(async () => {
 - **[開発ガイドライン](./development-guide.md)**: コーディング規約とベストプラクティス
 - **[プロジェクト構造](./project-structure.md)**: ディレクトリ構造の詳細
 - **[技術スタック](./tech-stack.md)**: 使用している技術の詳細
+- **[Async/Await ガイド](./guides/async-await-guide.md)**: async/await と Promise の使用方法
 - **[ユーティリティ関数ガイド](./guides/utilities-guide.md)**: ユーティリティ関数の詳細
 
 ### 外部ドキュメント

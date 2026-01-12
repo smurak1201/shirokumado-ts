@@ -1468,16 +1468,15 @@ const products = await prisma.product.findMany({
 
 ```typescript
 async function getProducts(page: number = 1, pageSize: number = 20) {
+  // Promise.all を使用して並列でデータを取得
   const [products, total] = await Promise.all([
     prisma.product.findMany({
       skip: (page - 1) * pageSize,
       take: pageSize,
       orderBy: { createdAt: "desc" },
-      include: {
-        category: true,
-      },
+      include: { category: true },
     }),
-    prisma.product.count(), // 総件数を取得
+    prisma.product.count(),
   ]);
 
   return {
@@ -1487,6 +1486,8 @@ async function getProducts(page: number = 1, pageSize: number = 20) {
   };
 }
 ```
+
+**Promise.all の詳細な使用方法は [Async/Await ガイド - Promise.all](./async-await-guide.md#promiseall---このアプリで使用中) を参照してください。**
 
 - 商品数が比較的少ないため、ページネーションが不要
 - すべての商品を一度に取得してもパフォーマンスへの影響が小さい
@@ -1570,6 +1571,7 @@ console.log(product.invalidField); // コンパイルエラー
 
 - **[TypeScript ガイド](./typescript-guide.md)**: Prisma との型統合の詳細
 - **[App Router ガイド](./app-router-guide.md)**: Server Components での Prisma の使用方法
+- **[Async/Await ガイド](./async-await-guide.md)**: async/await と Promise の使用方法
 - **[ユーティリティ関数ガイド](./utilities-guide.md)**: Blob Storage ユーティリティの詳細
 - **[Prisma & Blob セットアップガイド](../setup-prisma-blob.md)**: Prisma と Blob Storage のセットアップ方法
 - **[Prisma 公式ドキュメント](https://www.prisma.io/docs)**: Prisma の包括的なドキュメント

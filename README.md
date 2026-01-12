@@ -134,6 +134,7 @@ npm run dev
 - **[React ガイド](./doc/guides/react-guide.md)** - React の詳細な使用方法。Hooks、カスタムフック、コンポーネント設計などの説明と、このアプリでの実際の使用箇所を説明します。
 - **[JSX ガイド](./doc/guides/jsx-guide.md)** - JSX の構文と使用方法。HTML との違い、基本的な構文、ベストプラクティスなどの説明と、このアプリでの実際の使用例を説明します。
 - **[TypeScript ガイド](./doc/guides/typescript-guide.md)** - TypeScript の詳細な使用方法。型定義、型安全性、Prisma との統合などの説明と、このアプリでの実際の使用箇所を説明します。
+- **[Async/Await ガイド](./doc/guides/async-await-guide.md)** - async/await と Promise の使用方法。基本的な構文、エラーハンドリング、Promise.all などの便利なメソッド、このアプリでの実際の使用例を説明します。
 - **[Prisma ガイド](./doc/guides/prisma-guide.md)** - Prisma の詳細な使用方法。各関数の説明と、このアプリでの実際の使用箇所を説明します。
 - **[ユーティリティ関数ガイド](./doc/guides/utilities-guide.md)** - `lib/` ディレクトリのユーティリティ関数の詳細。商品関連ユーティリティ、画像圧縮、Blob Storage、設定管理、環境変数の型安全な管理などを説明します。
 

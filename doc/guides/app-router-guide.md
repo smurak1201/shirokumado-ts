@@ -350,112 +350,48 @@ export default function Template({ children }: { children: React.ReactNode }) {
 
 **説明**: Server Components では、`async/await` を使用してデータベースから直接データを取得できます。`fetch` API を使用する必要はありません。
 
+**詳細は [Async/Await ガイド - Server Components でのデータフェッチング](./async-await-guide.md#server-components-でのデータフェッチング) を参照してください。**
+
 **このアプリでの使用箇所**:
 
 1. **[`app/page.tsx`](../../app/page.tsx) (`getPublishedProductsByCategory`関数)** - 公開商品をカテゴリーごとに取得
 
 ```typescript
-  // カテゴリーと商品を並列で取得（パフォーマンス向上）
+async function getPublishedProductsByCategory(): Promise<
+  CategoryWithProducts[]
+> {
+  // カテゴリーと商品を並列で取得（Promise.all を使用）
   const [categories, products] = await Promise.all([
-    // カテゴリーをID順で取得
-    prisma.category.findMany({
-      orderBy: {
-        id: "asc",
-      },
-    }),
-    // 商品をカテゴリー情報を含めて取得
+    prisma.category.findMany({ orderBy: { id: "asc" } }),
     prisma.product.findMany({
-      include: {
-        category: true, // カテゴリー情報も一緒に取得（N+1問題を回避）
-      },
-      orderBy: {
-        displayOrder: {
-          sort: "asc",
-          nulls: "last", // displayOrderがnullの商品は最後に
-        },
-      },
+      include: { category: true },
+      orderBy: { displayOrder: { sort: "asc", nulls: "last" } },
     }),
   ]);
 
-  // 公開商品のみをフィルタリング
-  const publishedProducts = products.filter((product) => {
-    // 公開日・終了日が設定されている場合は自動判定
-    if (product.publishedAt || product.endedAt) {
-      return calculatePublishedStatus(
-        product.publishedAt, // Prismaから取得したDateオブジェクトをそのまま渡す
-        product.endedAt // Prismaから取得したDateオブジェクトをそのまま渡す
-      );
-    }
-    // 公開日・終了日が設定されていない場合は手動設定値を使用
-    return product.published;
-  });
-
-  // カテゴリーごとにグループ化
-  const categoryOrder = categories.map((c) => c.name);
-  const grouped: Record<string, typeof publishedProducts> = {};
-
-  publishedProducts.forEach((product) => {
-    const categoryName = product.category.name;
-    if (!grouped[categoryName]) {
-      grouped[categoryName] = [];
-    }
-    grouped[categoryName].push(product);
-  });
-
-  // カテゴリーの順序に従って返す（Decimal型をNumber型に変換、商品があるカテゴリーのみ）
-  return categoryOrder
-    .map((categoryName) => ({
-      category: categories.find((c) => c.name === categoryName)!,
-      products: (grouped[categoryName] || []).map((product) => ({
-        ...product,
-        // Decimal型をNumber型に変換（PrismaのDecimal型は文字列として扱われるため）
-        priceS: product.priceS ? Number(product.priceS) : null,
-        priceL: product.priceL ? Number(product.priceL) : null,
-      })),
-    }))
-    .filter(({ products }) => products.length > 0); // 商品があるカテゴリーのみを返す
+  // 公開商品のフィルタリングとカテゴリーごとのグループ化
+  // ...
 }
 ```
 
 2. **[`app/dashboard/page.tsx`](../../app/dashboard/page.tsx) (`getDashboardData`関数)** - ダッシュボードデータを取得
 
 ```typescript
-  // カテゴリーと商品を並列で取得（パフォーマンス向上）
+async function getDashboardData() {
+  // カテゴリーと商品を並列で取得（Promise.all を使用）
   const [categories, products] = await Promise.all([
-    // カテゴリーをID順で取得
-    prisma.category.findMany({
-      orderBy: {
-        id: "asc",
-      },
-    }),
-    // 商品をカテゴリー情報を含めて取得（N+1問題を回避）
+    prisma.category.findMany({ orderBy: { id: "asc" } }),
     prisma.product.findMany({
-      include: {
-        category: true, // 関連するカテゴリー情報も一緒に取得
-      },
-      orderBy: {
-        createdAt: "desc", // 作成日時の降順でソート
-      },
+      include: { category: true },
+      orderBy: { createdAt: "desc" },
     }),
   ]);
 
-  return {
-    categories,
-    // 商品データをクライアント側で使いやすい形式に変換
-    products: products.map((product) => ({
-      ...product,
-      // Decimal型をNumber型に変換（PrismaのDecimal型は文字列として扱われるため）
-      priceS: product.priceS ? Number(product.priceS) : null,
-      priceL: product.priceL ? Number(product.priceL) : null,
-      // Date型をISO文字列に変換（JSONシリアライズのため）
-      publishedAt: product.publishedAt?.toISOString() || null,
-      endedAt: product.endedAt?.toISOString() || null,
-      published: product.published,
-      displayOrder: product.displayOrder,
-    })),
-  };
+  return { categories, products };
 }
 ```
+
+**async/await と Promise.all の詳細な使用方法は [Async/Await ガイド](./async-await-guide.md) を参照してください。**
 
 ### Client Components でのデータフェッチング（fetch API）
 
@@ -1235,7 +1171,7 @@ export default function ProductForm() {
 3. **データフェッチングの使い分け**:
    - **Server Components**: 初期データの取得は Prisma で直接データベースにアクセス
    - **Client Components**: ユーザーの操作に応じた動的なデータ取得は `fetch` API で API Routes を呼び出し
-4. **並列データフェッチング**: `Promise.all` を使用して複数のデータを並列で取得
+4. **並列データフェッチング**: `Promise.all` を使用して複数のデータを並列で取得（詳細は [Async/Await ガイド - Promise.all](./async-await-guide.md#promiseall---このアプリで使用中) を参照）
 5. **動的レンダリングの適切な使用**: 最新のデータが必要な場合や、時刻に依存する処理（公開状態の自動判定など）がある場合は `export const dynamic = "force-dynamic"` を設定
 6. **キャッシュの制御**: Client Components で最新データを取得する場合は、タイムスタンプと `cache: "no-store"` を使用
 7. **画像最適化**: `Image` コンポーネントを使用して画像を最適化
@@ -1259,4 +1195,5 @@ Next.js App Router を使用することで、以下のメリットが得られ�
 - **[Next.js ガイド](./nextjs-guide.md)**: Next.js 全体の説明（画像最適化、フォント最適化、メタデータ、ビルドとデプロイなど）
 - **[React ガイド](./react-guide.md)**: React の詳細な使用方法
 - **[JSX ガイド](./jsx-guide.md)**: JSX の構文と使用方法
+- **[Async/Await ガイド](./async-await-guide.md)**: async/await と Promise の使用方法
 - **[Next.js 公式ドキュメント - App Router](https://nextjs.org/docs/app)**: App Router の包括的なドキュメント

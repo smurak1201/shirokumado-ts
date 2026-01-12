@@ -44,11 +44,13 @@
 [`app/page.tsx`](../../app/page.tsx) (`getPublishedProductsByCategory`関数)
 
 ```typescript
-  // カテゴリーと商品を並列で取得
+  // カテゴリーと商品を並列で取得（Promise.all を使用）
   const [categories, products] = await Promise.all([
     prisma.category.findMany({ orderBy: { id: "asc" } }),
     prisma.product.findMany({ include: { category: true } }),
   ]);
+
+  // Promise.all の詳細は [Async/Await ガイド - Promise.all](./async-await-guide.md#promiseall---このアプリで使用中) を参照
 
   // 公開商品のみをフィルタリング
   const publishedProducts = products.filter((product) => {
@@ -605,6 +607,7 @@ const { config } = await import("@/lib/config");
 - **[JSX ガイド](./jsx-guide.md)**: JSX の構文と使用方法
 - **[Next.js ガイド](./nextjs-guide.md)**: Next.js の詳細な使用方法
 - **[App Router ガイド](./app-router-guide.md)**: App Router の詳細な使用方法
+- **[Async/Await ガイド](./async-await-guide.md)**: async/await と Promise の使用方法
 - [Next.js App Router](https://nextjs.org/docs/app)
 - [React Server Components](https://react.dev/blog/2023/03/22/react-labs-what-we-have-been-working-on-march-2023#react-server-components)
 - [Tailwind CSS](https://tailwindcss.com/docs)

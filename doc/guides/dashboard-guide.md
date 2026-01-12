@@ -469,7 +469,7 @@ file: [画像ファイル]
   - [`app/dashboard/components/ProductList.tsx`](../../app/dashboard/components/ProductList.tsx): `fetch` API を使用して `/api/products/[id]` に DELETE リクエスト
   - [`app/dashboard/hooks/useProductReorder.ts`](../../app/dashboard/hooks/useProductReorder.ts): `fetch` API を使用して `/api/products/reorder` に POST リクエスト
 - 必要なデータのみを取得（Prisma の`select`を使用） - **このアプリでは未使用**
-- 並列データ取得（`Promise.all`を使用） - **このアプリで使用中**
+- 並列データ取得（`Promise.all`を使用） - **このアプリで使用中**（詳細は [Async/Await ガイド - Promise.all](./async-await-guide.md#promiseall---このアプリで使用中) を参照）
 
 **Prisma の`select`について**:
 
@@ -536,6 +536,9 @@ const products = await prisma.product.findMany({
 
 ## 参考リンク
 
+- **[App Router ガイド](./app-router-guide.md)**: Next.js App Router の詳細な使用方法
+- **[Async/Await ガイド](./async-await-guide.md)**: async/await と Promise の使用方法
+- **[Prisma ガイド](./prisma-guide.md)**: Prisma の詳細な使用方法
 - [Next.js App Router](https://nextjs.org/docs/app)
 - [React Server Components](https://react.dev/blog/2023/03/22/react-labs-what-we-have-been-working-on-march-2023#react-server-components)
 - [Prisma Documentation](https://www.prisma.io/docs)

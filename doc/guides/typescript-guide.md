@@ -437,7 +437,7 @@ npm run db:generate
 ```typescript
 import { Product, Category } from "@prisma/client";
 
-// 型安全なデータアクセス
+// 型安全なデータアクセス（async/await を使用）
 const product: Product = await prisma.product.findUnique({
   where: { id: 1 },
 });
@@ -463,7 +463,7 @@ console.log(product.invalidField); // コンパイルエラー
 - **自動補完**: IDE で自動補完が利用可能
 - **リファクタリング**: スキーマ変更時に型エラーで影響範囲を把握
 
-**詳細は [Prisma ガイド - 型生成](./prisma-guide.md#型生成) を参照してください。**
+**詳細は [Prisma ガイド - 型生成](./prisma-guide.md#型生成) を参照してください。async/await の使用方法については [Async/Await ガイド](./async-await-guide.md) を参照してください。**
 
 ## API Routes での型安全性
 
@@ -484,7 +484,7 @@ export const POST = withErrorHandling(async (request: NextRequest) => {
     throw new ValidationError("商品名は必須です");
   }
 
-  // 型安全なデータ操作
+  // 型安全なデータ操作（async/await を使用）
   const product = await prisma.product.create({
     data: {
       name: body.name.trim(),
@@ -496,6 +496,8 @@ export const POST = withErrorHandling(async (request: NextRequest) => {
   return apiSuccess({ product });
 });
 ```
+
+**async/await の詳細な使用方法については [Async/Await ガイド](./async-await-guide.md) を参照してください。**
 
 ### レスポンスの型定義
 
@@ -771,5 +773,6 @@ type ReadonlyProduct = Readonly<Product>;
 - **[React ガイド](./react-guide.md)**: React での TypeScript の使用方法
 - **[JSX ガイド](./jsx-guide.md)**: TypeScript での JSX の使用方法
 - **[Next.js ガイド](./nextjs-guide.md)**: Next.js での TypeScript の使用方法
+- **[Async/Await ガイド](./async-await-guide.md)**: async/await と Promise の使用方法
 - **[ユーティリティ関数ガイド](./utilities-guide.md)**: 環境変数の型安全な管理（`lib/env.ts`）の詳細
 - **[TypeScript 公式ドキュメント](https://www.typescriptlang.org/docs/)**: TypeScript の包括的なドキュメント
