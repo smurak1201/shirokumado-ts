@@ -8,7 +8,7 @@ import {
   parsePrice,
   isNumericKey,
 } from "@/lib/product-utils";
-import { compressImage } from "@/lib/image-compression";
+import { compressImage, isImageFile } from "@/lib/image-compression";
 import type { Category, Product } from "../types";
 
 interface ProductEditFormProps {
@@ -58,8 +58,8 @@ export default function ProductEditForm({
       return;
     }
 
-    // ファイルタイプの検証
-    if (!file.type.startsWith("image/")) {
+    // ファイルタイプの検証（HEIC形式も含む）
+    if (!isImageFile(file)) {
       alert("画像ファイルのみ選択可能です");
       return;
     }

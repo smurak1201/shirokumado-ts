@@ -30,11 +30,37 @@ async function getHeic2Any() {
  * @param file 画像ファイル
  * @returns HEIC形式の場合true
  */
-function isHeicFile(file: File): boolean {
+export function isHeicFile(file: File): boolean {
   const heicTypes = ['image/heic', 'image/heif', 'image/heic-sequence', 'image/heif-sequence'];
   return heicTypes.includes(file.type.toLowerCase()) ||
          /\.heic$/i.test(file.name) ||
          /\.heif$/i.test(file.name);
+}
+
+/**
+ * 画像ファイルかどうかを判定します（HEIC形式も含む）
+ * iPhoneの写真など、file.typeが空の場合でもファイル拡張子で判定します
+ * @param file ファイル
+ * @returns 画像ファイルの場合true
+ */
+export function isImageFile(file: File): boolean {
+  // ファイルタイプがimage/で始まる場合
+  if (file.type && file.type.startsWith('image/')) {
+    return true;
+  }
+
+  // HEIC形式の場合
+  if (isHeicFile(file)) {
+    return true;
+  }
+
+  // ファイルタイプが空の場合、拡張子で判定
+  if (!file.type || file.type === 'application/octet-stream') {
+    const imageExtensions = /\.(jpg|jpeg|png|gif|webp|bmp|svg|heic|heif)$/i;
+    return imageExtensions.test(file.name);
+  }
+
+  return false;
 }
 
 /**

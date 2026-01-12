@@ -8,7 +8,7 @@ import {
   parsePrice,
   isNumericKey,
 } from "@/lib/product-utils";
-import { compressImage } from "@/lib/image-compression";
+import { compressImage, isImageFile } from "@/lib/image-compression";
 import type { Category } from "../types";
 
 interface DashboardFormProps {
