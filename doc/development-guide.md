@@ -394,9 +394,13 @@ console.log(user.email); // 型が正しくない場合、実行時エラーが�
 
 ### エラーハンドリング
 
+統一されたエラーハンドリングシステムを使用します。エラークラス、エラーコードの定数定義、構造化ログなどが含まれます。
+
+**詳細**: エラーハンドリングの詳細については、[ユーティリティ関数ガイド - エラーハンドリング](./guides/utilities-guide.md#エラーハンドリング-liberrorsts) を参照してください。
+
 #### 統一されたエラークラス
 
-**推奨**: [`lib/errors.ts`](../lib/errors.ts) のエラークラスを使用。
+**推奨**: [`lib/errors.ts`](../lib/errors.ts) のエラークラスとエラーコードの定数を使用。
 
 ```typescript
 import { ValidationError, NotFoundError, DatabaseError } from "@/lib/errors";
@@ -1394,11 +1398,19 @@ export function apiSuccess<T>(data: T, status: number = 200): NextResponse {
 
 ## 参考リンク
 
+### プロジェクト内のドキュメント
+
+- **[アーキテクチャドキュメント](./architecture.md)**: アーキテクチャと設計思想
+- **[ユーティリティ関数ガイド](./guides/utilities-guide.md)**: エラーハンドリング、ログ、API 型定義などの詳細
 - **[React ガイド](./guides/react-guide.md)**: React の包括的なガイド
 - **[JSX ガイド](./guides/jsx-guide.md)**: JSX の構文とベストプラクティス
 - **[TypeScript ガイド](./guides/typescript-guide.md)**: TypeScript の使用方法
 - **[Next.js ガイド](./guides/nextjs-guide.md)**: Next.js の使用方法
 - **[App Router ガイド](./guides/app-router-guide.md)**: App Router の使用方法
+- **[Edge Runtime ガイド](./guides/edge-runtime-guide.md)**: Edge Runtime の使用方法
+
+### 外部ドキュメント
+
 - [Next.js Documentation](https://nextjs.org/docs)
 - [Next.js App Router Best Practices](https://nextjs.org/docs/app/building-your-application/routing)
 - [Prisma Best Practices](https://www.prisma.io/docs/guides/performance-and-optimization)

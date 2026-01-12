@@ -917,6 +917,19 @@ const projectId = env.NEXT_PUBLIC_STACK_PROJECT_ID; // 型安全
 1. **画像のアップロード**: [`app/api/products/upload/route.ts`](../../app/api/products/upload/route.ts) で `uploadImage()` を使用
 2. **画像の削除**: [`app/api/products/[id]/route.ts`](../../app/api/products/[id]/route.ts) で `deleteFile()` を使用
 
+### エラーハンドリング
+
+1. **エラークラスの使用**: すべての API Routes で `ValidationError`、`NotFoundError`、`DatabaseError` を使用
+2. **エラーコードの参照**: [`lib/api-helpers.ts`](../../lib/api-helpers.ts) で `ErrorCodes` を使用
+
+### API レスポンスの型定義
+
+1. **型安全な API 呼び出し**: クライアント側で `GetProductsResponse`、`PostProductResponse` などの型を使用
+
+### 構造化ログ
+
+1. **エラーログの出力**: [`lib/errors.ts`](../../lib/errors.ts) の `logError()` 関数で使用（将来的には `log.error()` に移行予定）
+
 ### 設定管理
 
 1. **画像サイズの制限**: [`lib/image-compression.ts`](../../lib/image-compression.ts) で `config.imageConfig` を使用
@@ -929,14 +942,30 @@ const projectId = env.NEXT_PUBLIC_STACK_PROJECT_ID; // 型安全
 1. **商品関連ユーティリティ**: 公開状態の判定、価格フォーマット、数値入力の検証
 2. **画像圧縮**: クライアントサイドでの画像圧縮・リサイズ
 3. **Blob Storage**: 画像のアップロード・削除・管理
-4. **設定管理**: アプリケーション全体の設定値を一元管理
-5. **環境変数**: 型安全な環境変数の取得
+4. **エラーハンドリング**: 統一されたエラークラスとエラーコードの定数定義
+5. **API レスポンスの型定義**: クライアント側での型安全性を確保
+6. **構造化ログ**: JSON 形式の構造化ログ出力（本番環境）
+7. **設定管理**: アプリケーション全体の設定値を一元管理
+8. **環境変数**: 型安全な環境変数の取得
 
 すべてのユーティリティ関数は型安全に実装され、エラーハンドリングが適切に行われています。また、設定値は [`lib/config.ts`](../../lib/config.ts) で一元管理され、変更が容易になっています。
 
+**関連ドキュメント**:
+
+- **エラーハンドリングの詳細**: [開発ガイドライン - エラーハンドリング](../development-guide.md#エラーハンドリング)
+- **API の使用方法**: [App Router ガイド - API Routes](./app-router-guide.md#api-routes)
+- **セキュリティの詳細**: [開発ガイドライン - セキュリティ](../development-guide.md#セキュリティ)
+
 ## 参考リンク
 
+### プロジェクト内のドキュメント
+
+- **[開発ガイドライン](../development-guide.md)**: コーディング規約とベストプラクティス（エラーハンドリング、セキュリティなど）
+- **[アーキテクチャドキュメント](../architecture.md)**: アーキテクチャと設計思想（エラーハンドリング、設定管理など）
 - **[Prisma & Blob セットアップガイド](../setup-prisma-blob.md)**: Blob Storage のセットアップ方法
-- **[開発ガイドライン](../development-guide.md)**: コーディング規約とベストプラクティス
 - **[TypeScript ガイド](./typescript-guide.md)**: TypeScript の使用方法
+- **[App Router ガイド](./app-router-guide.md)**: API Routes の使用方法
+
+### 外部ドキュメント
+
 - **[Vercel Blob Storage 公式ドキュメント](https://vercel.com/docs/storage/vercel-blob)**: Vercel Blob Storage の詳細

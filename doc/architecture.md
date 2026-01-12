@@ -338,15 +338,29 @@ export interface Product {
 
 ## エラーハンドリング
 
+統一されたエラーハンドリングシステムを実装しています。
+
 ### 統一されたエラークラス
 
-[`lib/errors.ts`](../lib/errors.ts) (`ValidationError`クラス)
+[`lib/errors.ts`](../lib/errors.ts) でエラークラスとエラーコードの定数を定義しています。
 
 ```typescript
 // 使用例
 throw new ValidationError("Invalid input");
 throw new NotFoundError("Product");
 throw new DatabaseError("Failed to connect");
+```
+
+**エラーコードの定数定義**:
+
+```typescript
+export const ErrorCodes = {
+  VALIDATION_ERROR: "VALIDATION_ERROR",
+  DATABASE_ERROR: "DATABASE_ERROR",
+  BLOB_STORAGE_ERROR: "BLOB_STORAGE_ERROR",
+  NOT_FOUND: "NOT_FOUND",
+  // ...
+} as const;
 ```
 
 ### API Routes でのエラーハンドリング
@@ -361,6 +375,8 @@ export const GET = withErrorHandling(async () => {
   return apiSuccess({ data });
 });
 ```
+
+**詳細**: エラーハンドリングの詳細については、[開発ガイドライン - エラーハンドリング](./development-guide.md#エラーハンドリング) と [ユーティリティ関数ガイド - エラーハンドリング](./guides/utilities-guide.md#エラーハンドリング-liberrorsts) を参照してください。
 
 ## パフォーマンス最適化
 
@@ -397,6 +413,15 @@ export const GET = withErrorHandling(async () => {
 - **ヘッダー**: `X-Frame-Options`, `X-Content-Type-Options`, `Referrer-Policy`, `X-XSS-Protection`, `Permissions-Policy`
 
 ## 参考リンク
+
+### プロジェクト内のドキュメント
+
+- **[開発ガイドライン](./development-guide.md)**: コーディング規約とベストプラクティス
+- **[プロジェクト構造](./project-structure.md)**: ディレクトリ構造の詳細
+- **[技術スタック](./tech-stack.md)**: 使用している技術の詳細
+- **[ユーティリティ関数ガイド](./guides/utilities-guide.md)**: ユーティリティ関数の詳細
+
+### 外部ドキュメント
 
 - [Next.js App Router](https://nextjs.org/docs/app)
 - [React Server Components](https://react.dev/blog/2023/03/22/react-labs-what-we-have-been-working-on-march-2023#react-server-components)

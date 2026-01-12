@@ -393,6 +393,8 @@ export default async function Page() {
 
 **詳細な比較と使用方法については、[Edge Runtime ガイド](./edge-runtime-guide.md) を参照してください。**
 
+**注意**: このアプリでは、すべての API Routes で Edge Runtime を明示的に指定しています（`export const runtime = 'edge'`）。詳細は [Edge Runtime ガイド - API Routes での使用](./edge-runtime-guide.md#api-routes-での使用) を参照してください。
+
 ## ORM としての機能
 
 ### データベーススキーマ定義
