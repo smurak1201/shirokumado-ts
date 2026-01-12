@@ -1,6 +1,5 @@
 import { PrismaClient } from '@prisma/client';
 import { PrismaNeon } from '@prisma/adapter-neon';
-import { Pool } from '@neondatabase/serverless';
 import { DatabaseError, logError } from './errors';
 
 /**
@@ -14,7 +13,7 @@ import { DatabaseError, logError } from './errors';
  *
  * Prisma v7 + Neon (Vercel) での設定:
  * - engineType = "client" を使用するため、Neonアダプターが必要です
- * - @prisma/adapter-neon と @neondatabase/serverless を使用します
+ * - @prisma/adapter-neon を使用し、接続文字列を直接渡します
  *
  * 環境変数の設定:
  * - DATABASE_URL: PostgreSQL接続文字列（必須）
@@ -40,8 +39,8 @@ const createPrismaClient = (): PrismaClient => {
 
   // Neonアダプターを使用してPrisma Clientを作成
   // Vercel + Neon環境では、engineType = "client" を使用するため、アダプターが必要です
-  const pool = new Pool({ connectionString: databaseUrl });
-  const adapter = new PrismaNeon(pool);
+  // Prisma v7.2では、接続文字列を直接PrismaNeonに渡します
+  const adapter = new PrismaNeon({ connectionString: databaseUrl });
 
   return new PrismaClient({
     adapter,
