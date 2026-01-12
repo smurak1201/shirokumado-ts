@@ -63,6 +63,19 @@ export async function compressImage(
       return;
     }
 
+    // ファイル形式の検証
+    if (!file.type.startsWith('image/')) {
+      reject(new Error(`サポートされていないファイル形式です: ${file.type || '不明'}`));
+      return;
+    }
+
+    // ファイルサイズの検証（大きすぎるファイルは処理を避ける）
+    const MAX_INPUT_SIZE = 50 * 1024 * 1024; // 50MB
+    if (file.size > MAX_INPUT_SIZE) {
+      reject(new Error(`ファイルサイズが大きすぎます: ${(file.size / 1024 / 1024).toFixed(2)}MB`));
+      return;
+    }
+
     const reader = new FileReader();
     reader.onload = (e) => {
       if (!e.target?.result) {
@@ -70,8 +83,23 @@ export async function compressImage(
         return;
       }
 
+      const dataUrl = e.target.result as string;
+
+      // DataURLの形式を確認
+      if (!dataUrl.startsWith('data:image/')) {
+        reject(new Error(`無効な画像データです: ${file.type || '不明'}`));
+        return;
+      }
+
       const img = new Image();
+
+      // 画像読み込みのタイムアウトを設定（30秒）
+      const timeoutId = setTimeout(() => {
+        reject(new Error('画像の読み込みがタイムアウトしました（30秒）'));
+      }, 30000);
+
       img.onload = () => {
+        clearTimeout(timeoutId);
         try {
           // 画像のサイズを計算
           let width = img.width;
@@ -153,17 +181,35 @@ export async function compressImage(
             })
             .catch(reject);
         } catch (error) {
+          clearTimeout(timeoutId);
           reject(new Error(`画像処理中にエラーが発生しました: ${error instanceof Error ? error.message : String(error)}`));
         }
       };
-      img.onerror = (error) => {
-        reject(new Error(`画像の読み込みに失敗しました: ${error instanceof Error ? error.message : '不明なエラー'}`));
+
+      img.onerror = (event) => {
+        clearTimeout(timeoutId);
+        console.error('画像読み込みエラー:', {
+          fileType: file.type,
+          fileName: file.name,
+          fileSize: file.size,
+          event: event,
+        });
+        reject(new Error(`画像の読み込みに失敗しました。ファイル形式（${file.type || '不明'}）がサポートされていない可能性があります。`));
       };
-      img.src = e.target.result as string;
+
+      img.src = dataUrl;
     };
-    reader.onerror = (error) => {
-      reject(new Error(`ファイルの読み込みに失敗しました: ${error instanceof Error ? error.message : '不明なエラー'}`));
+
+    reader.onerror = (event) => {
+      console.error('FileReaderエラー:', {
+        fileType: file.type,
+        fileName: file.name,
+        fileSize: file.size,
+        event: event,
+      });
+      reject(new Error(`ファイルの読み込みに失敗しました。ファイルが破損している可能性があります。`));
     };
+
     reader.readAsDataURL(file);
   });
 }
