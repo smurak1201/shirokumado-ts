@@ -104,7 +104,7 @@ API Routes で使用する共通のヘルパー関数を確認します。
 
 #### [`lib/prisma.ts`](../lib/prisma.ts)
 
-データベース接続の設定と使用方法を理解します。
+データベース接続の設定と使用方法を理解します。このアプリでは、Edge Runtime 対応のため、Prisma Accelerate を使用しています。
 
 #### [`lib/blob.ts`](../lib/blob.ts)
 
@@ -454,7 +454,8 @@ export default function ProductList() {
 - **[開発ガイドライン](./development-guide.md)** - コーディング規約とベストプラクティス。コードを読む前に主要なポイントを把握しておくと理解が深まります。
 - **[App Router ガイド](./guides/app-router-guide.md)** - Next.js App Router の詳細な使用方法。Server Components、Client Components、API Routes などの説明と、このアプリでの実際の使用箇所を説明します。
 - **[React ガイド](./guides/react-guide.md)** - React の詳細な使用方法。Hooks、カスタムフック、コンポーネント設計などの説明と、このアプリでの実際の使用箇所を説明します。
-- **[Prisma ガイド](./guides/prisma-guide.md)** - Prisma の詳細な使用方法。各関数の説明と、このアプリでの実際の使用箇所を説明します。
+- **[Prisma ガイド](./guides/prisma-guide.md)** - Prisma の詳細な使用方法。各関数の説明と、このアプリでの実際の使用箇所を説明します。Prisma Accelerate の使用方法も含まれます。
+- **[Edge Runtime ガイド](./guides/edge-runtime-guide.md)** - Edge Runtime と Node.js Runtime の詳細な比較と使用方法。このアプリでの Edge Runtime の使用例を説明します。
 - **[TypeScript ガイド](./guides/typescript-guide.md)** - TypeScript の詳細な使用方法。型定義、型安全性、Prisma との統合などの説明と、このアプリでの実際の使用箇所を説明します。
 - **[JSX ガイド](./guides/jsx-guide.md)** - JSX の構文と使用方法。HTML との違い、基本的な構文、ベストプラクティスなどの説明と、このアプリでの実際の使用例を説明します。
 - **[Next.js ガイド](./guides/nextjs-guide.md)** - Next.js の詳細な使用方法。画像最適化、フォント最適化、メタデータ、ビルドとデプロイなどの説明と、このアプリでの実際の使用箇所を説明します。
@@ -465,4 +466,6 @@ export default function ProductList() {
 - [Next.js App Router](https://nextjs.org/docs/app)
 - [React Server Components](https://react.dev/blog/2023/03/22/react-labs-what-we-have-been-working-on-march-2023#react-server-components)
 - [Prisma Documentation](https://www.prisma.io/docs)
+- [Prisma Accelerate Documentation](https://www.prisma.io/docs/accelerate)
+- [Edge Runtime Documentation](https://nextjs.org/docs/app/api-reference/route-segment-config#runtime)
 - [TypeScript Handbook](https://www.typescriptlang.org/docs/handbook/intro.html)

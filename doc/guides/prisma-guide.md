@@ -7,6 +7,8 @@
   - [prisma.config.ts](#prismaconfigts)
 - [データベースへの接続](#データベースへの接続)
   - [Prisma 7 でのデータベース接続の概要](#prisma-7-でのデータベース接続の概要)
+  - [Prisma Accelerate](#prisma-accelerate)
+  - [Edge Runtime と Node.js Runtime](#edge-runtime-と-nodejs-runtime)
   - [このアプリでの PostgreSQL（Neon）への接続](#このアプリでの-postgresqlneonへの接続)
 - [ORM としての機能](#orm-としての機能)
   - [データベーススキーマ定義](#データベーススキーマ定義)
@@ -58,7 +60,7 @@ Prisma 7 は、モダンなアプリケーション開発のための次世代 O
 
 **Prisma 7 の主な特徴**:
 
-- **アダプターシステム**: データベースプロバイダーごとに専用のアダプターを使用（`@prisma/adapter-neon` など）
+- **Prisma Accelerate**: Edge Runtime 対応のためのグローバル接続プーリングとキャッシングレイヤー
 - **設定ファイルの分離**: `prisma.config.ts` で設定を管理
 - **パフォーマンスの向上**: クエリ実行速度の改善とバンドルサイズの縮小
 - **型安全性の強化**: より厳密な型チェックとエラーハンドリング
@@ -134,11 +136,11 @@ const prisma = new PrismaClient({
 
 ### このアプリでの PostgreSQL（Neon）への接続
 
-このアプリケーションでは、**PostgreSQL（Vercel Neon）** に接続するために `@prisma/adapter-neon` を使用しています。
+このアプリケーションでは、**Prisma Accelerate** を使用して PostgreSQL（Vercel Neon）に接続しています。Edge Runtime 対応のため、Prisma Accelerate を採用しています。
 
 **このアプリでの使用箇所**:
 
-- [`lib/prisma.ts`](../../lib/prisma.ts): Prisma Client の初期化とエクスポート
+- [`lib/prisma.ts`](../../lib/prisma.ts): Prisma Client の初期化とエクスポート（Prisma Accelerate を使用）
 - すべての Server Components と API Routes で `import { prisma } from '@/lib/prisma'` として使用
 
 **実際の実装コード**:
@@ -146,107 +148,277 @@ const prisma = new PrismaClient({
 [`lib/prisma.ts`](../../lib/prisma.ts) (`createPrismaClient`関数)
 
 ```typescript
-  // Prisma 7では、Neonに接続するためにアダプターを使用します
-  const rawConnectionString = process.env.DATABASE_URL || process.env.POSTGRES_URL;
+const createPrismaClient = (): PrismaClient => {
+  // Prisma AccelerateのURLを取得
+  const accelerateUrl = process.env.DATABASE_URL_ACCELERATE;
 
-  if (!rawConnectionString) {
-    throw new Error('DATABASE_URL or POSTGRES_URL environment variable is not set');
+  if (!accelerateUrl) {
+    throw new Error("DATABASE_URL_ACCELERATE environment variable is not set.");
   }
 
-  // 接続文字列を確実に文字列に変換
-  // process.envの値は常にstring | undefinedなので、String()で変換
-  const connectionString = String(rawConnectionString).trim();
-
-  // 接続文字列が空でないことを確認
-  if (!connectionString || connectionString.length === 0) {
-    throw new Error('DATABASE_URL must be a non-empty string');
+  // Prisma AccelerateのURL形式を確認
+  if (!accelerateUrl.startsWith("prisma://")) {
+    throw new Error(
+      "DATABASE_URL_ACCELERATE must be a Prisma Accelerate URL (starting with prisma://)."
+    );
   }
 
-  // 接続文字列が正しい形式であることを確認
-  if (!connectionString.startsWith('postgresql://') && !connectionString.startsWith('postgres://')) {
-    throw new Error('DATABASE_URL must be a valid PostgreSQL connection string');
-  }
-
-  try {
-    // neon関数を使用してアダプターを作成
-    // これにより、Vercelの本番環境でも正しく動作します
-    const sql = neon(connectionString);
-    const adapter = new PrismaNeon(sql as any);
-
-    return new PrismaClient({
-      adapter,
-      log:
-        process.env.NODE_ENV === 'development'
-          ? ['query', 'error', 'warn']
-          : ['error'],
-    });
-  } catch (error) {
-    console.error('Failed to create Prisma Client:', error);
-    console.error('Connection string type:', typeof connectionString);
-    console.error('Connection string length:', connectionString.length);
-    console.error('Connection string preview:', connectionString.substring(0, 20) + '...');
-    throw error;
-  }
+  // Prisma Clientを作成（Prisma Accelerateを使用）
+  return new PrismaClient({
+    accelerateUrl,
+    log:
+      process.env.NODE_ENV === "development"
+        ? ["query", "error", "warn"]
+        : ["error"],
+  });
 };
 ```
 
-1. **環境変数からの接続文字列取得**:
+1. **環境変数からの Prisma Accelerate URL 取得**:
 
-   - `DATABASE_URL` または `POSTGRES_URL` から接続文字列を取得
-   - PostgreSQL の接続文字列形式（`postgresql://` または `postgres://` で始まる）を検証
+   - `DATABASE_URL_ACCELERATE` から Prisma Accelerate の URL を取得
+   - Prisma Accelerate の URL 形式（`prisma://` で始まる）を検証
 
-2. **Neon アダプターの作成**:
+2. **Prisma Client の作成**:
 
-   - `@neondatabase/serverless` の `neon` 関数を使用して SQL クライアントを作成
-   - `PrismaNeon` アダプターに SQL クライアントを渡してアダプターを作成
-
-3. **WebSocket の設定**（Node.js 環境用）:
-
-[`lib/prisma.ts`](../../lib/prisma.ts) (WebSocket設定)
-
-```typescript
-if (typeof globalThis !== 'undefined' && !globalThis.WebSocket) {
-  neonConfig.webSocketConstructor = ws;
-}
-```
-
-4. **Prisma Client の作成**:
-
-   - 作成したアダプターを `PrismaClient` のコンストラクタに渡す
+   - `PrismaClient` のコンストラクタに `accelerateUrl` を指定
    - 開発環境ではクエリログを有効化（`['query', 'error', 'warn']`）
    - 本番環境ではエラーログのみ（`['error']`）
 
-5. **シングルトンインスタンスの管理**:
+3. **シングルトンインスタンスの管理**:
 
 [`lib/prisma.ts`](../../lib/prisma.ts) (`prisma`エクスポート)
 
 ```typescript
-  globalForPrisma.prisma ?? createPrismaClient();
+export const prisma = globalForPrisma.prisma ?? createPrismaClient();
 
-if (process.env.NODE_ENV !== 'production') {
+if (process.env.NODE_ENV !== "production") {
   globalForPrisma.prisma = prisma;
 }
 ```
 
-**PostgreSQL（Neon）接続の特徴**:
+**Prisma Accelerate を使用した接続の特徴**:
 
-- **サーバーレス対応**: Neon はサーバーレスアーキテクチャの PostgreSQL サービス
-- **WebSocket 接続**: サーバーレス環境での効率的な接続管理
-- **接続プール**: アダプターが自動的に接続プールを管理
+- **Edge Runtime 対応**: HTTP ベースの接続により、Edge Runtime でも動作
+- **グローバル接続プーリング**: Prisma Accelerate が効率的に接続を管理
+- **キャッシング**: クエリ結果のキャッシングにより、レイテンシーが削減
 - **パフォーマンス**: エッジネットワーク経由で高速なデータベースアクセス
+- **トランザクションサポート**: 配列形式とインタラクティブトランザクションの両方をサポート
 
 **環境変数の設定**:
 
 ```env
-DATABASE_URL=postgresql://user:password@host/database
-DATABASE_URL_UNPOOLED=postgresql://user:password@host/database
-POSTGRES_URL=postgresql://user:password@host/database
-POSTGRES_URL_NON_POOLING=postgresql://user:password@host/database
+# Prisma AccelerateのURL（アプリケーション用、必須）
+DATABASE_URL_ACCELERATE=prisma://accelerate.prisma-data.net/?api_key=YOUR_API_KEY
+
+# 通常のデータベース接続文字列（マイグレーション用、必須）
+POSTGRES_URL=postgresql://user:password@host:port/database
 ```
 
-- `DATABASE_URL`: プールされた接続（通常のクエリ用）
-- `DATABASE_URL_UNPOOLED` または `POSTGRES_URL_NON_POOLING`: プールされていない接続（マイグレーション用）
-- Prisma 7 では、これらの環境変数から自動的に適切な接続を使用します
+- `DATABASE_URL_ACCELERATE`: Prisma Accelerate の URL（アプリケーション用）
+- `POSTGRES_URL`: 通常の PostgreSQL 接続文字列（マイグレーション用、`prisma migrate deploy` などで使用）
+
+### Prisma Accelerate
+
+**説明**: Prisma Accelerate は、Edge Runtime 対応のためのグローバル接続プーリングとキャッシングレイヤーです。HTTP ベースの接続を使用するため、Edge Runtime でも動作します。サーバーレス環境やエッジ環境でのデータベースアクセスを最適化し、パフォーマンスとスケーラビリティを向上させます。
+
+**このアプリでの使用箇所**:
+
+- [`lib/prisma.ts`](../../lib/prisma.ts): Prisma Client の初期化で Prisma Accelerate を使用
+- すべての Server Components と API Routes で Edge Runtime 対応の Prisma Client を使用
+
+**Prisma Accelerate の主な特徴**:
+
+- **Edge Runtime 対応**: HTTP ベースの接続により、Edge Runtime でも動作
+- **グローバル接続プーリング**: 効率的な接続管理により、パフォーマンスが向上
+- **キャッシング**: クエリ結果のキャッシングにより、レイテンシーが削減
+- **トランザクションサポート**: 配列形式とインタラクティブトランザクションの両方をサポート
+- **グローバル配信**: エッジネットワーク経由で配信され、ユーザーに近い場所から実行される
+- **自動スケーリング**: トラフィックの増加に自動的に対応
+
+**Prisma Accelerate の仕組み**:
+
+1. **HTTP ベースの接続**: 通常の Prisma Client は TCP 接続を使用しますが、Prisma Accelerate は HTTP ベースの接続を使用します。これにより、Edge Runtime でも動作可能になります。
+
+2. **グローバル接続プーリング**: Prisma Accelerate がデータベース接続を管理し、複数のリクエスト間で接続を共有します。これにより、接続のオーバーヘッドが削減され、パフォーマンスが向上します。
+
+3. **クエリキャッシング**: 頻繁に実行されるクエリの結果をキャッシュし、データベースへの負荷を削減します。キャッシュされた結果は、エッジネットワーク経由で高速に配信されます。
+
+4. **エッジネットワーク**: Prisma Accelerate は、世界中に分散したエッジサーバーを使用して、ユーザーに近い場所からデータベースアクセスを提供します。
+
+**実際の実装コード**:
+
+[`lib/prisma.ts`](../../lib/prisma.ts) (`createPrismaClient`関数)
+
+```typescript
+const createPrismaClient = (): PrismaClient => {
+  // Prisma AccelerateのURLを取得
+  const accelerateUrl = process.env.DATABASE_URL_ACCELERATE;
+
+  if (!accelerateUrl) {
+    throw new Error(
+      "DATABASE_URL_ACCELERATE environment variable is not set.\n" +
+        "Please set DATABASE_URL_ACCELERATE to your Prisma Accelerate URL in Vercel environment variables.\n" +
+        "Format: prisma://accelerate.prisma-data.net/?api_key=YOUR_API_KEY\n" +
+        "Get your Accelerate URL from: https://console.prisma.io/accelerate\n\n" +
+        "Note: POSTGRES_URL should be set separately for migrations (prisma migrate deploy)."
+    );
+  }
+
+  // Prisma AccelerateのURL形式を確認
+  if (!accelerateUrl.startsWith("prisma://")) {
+    throw new Error(
+      "DATABASE_URL_ACCELERATE must be a Prisma Accelerate URL (starting with prisma://).\n" +
+        `Current value starts with: ${accelerateUrl.substring(0, 20)}...\n\n` +
+        "Please set DATABASE_URL_ACCELERATE to your Prisma Accelerate URL in Vercel:\n" +
+        "1. Go to your Vercel project settings\n" +
+        "2. Navigate to Environment Variables\n" +
+        "3. Set DATABASE_URL_ACCELERATE to: prisma://accelerate.prisma-data.net/?api_key=YOUR_API_KEY\n" +
+        "4. Get your Accelerate URL from: https://console.prisma.io/accelerate\n\n" +
+        "Note: POSTGRES_URL should be set separately for migrations (normal PostgreSQL connection string)."
+    );
+  }
+
+  // Prisma Clientを作成（Prisma Accelerateを使用）
+  return new PrismaClient({
+    accelerateUrl,
+    log:
+      process.env.NODE_ENV === "development"
+        ? ["query", "error", "warn"]
+        : ["error"],
+  });
+};
+```
+
+**シングルトンインスタンスの管理**:
+
+[`lib/prisma.ts`](../../lib/prisma.ts) (`prisma`エクスポート)
+
+```typescript
+export const prisma = globalForPrisma.prisma ?? createPrismaClient();
+
+if (process.env.NODE_ENV !== "production") {
+  globalForPrisma.prisma = prisma;
+}
+```
+
+- **開発環境**: ホットリロード時に新しいインスタンスが作成されないように、グローバル変数に保存
+- **本番環境**: 各リクエストで新しいインスタンスを使用しますが、Prisma Accelerate が効率的に接続を管理
+
+**環境変数の設定**:
+
+```env
+# Prisma AccelerateのURL（アプリケーション用、必須）
+DATABASE_URL_ACCELERATE=prisma://accelerate.prisma-data.net/?api_key=YOUR_API_KEY
+
+# 通常のデータベース接続文字列（マイグレーション用、必須）
+POSTGRES_URL=postgresql://user:password@host:port/database
+```
+
+- `DATABASE_URL_ACCELERATE`: Prisma Accelerate の URL（アプリケーション用、Edge Runtime で使用）
+- `POSTGRES_URL`: 通常の PostgreSQL 接続文字列（マイグレーション用、Node.js Runtime で使用）
+
+**Prisma Accelerate の取得方法**:
+
+1. [Prisma Accelerate Console](https://console.prisma.io/accelerate) にアクセス
+2. プロジェクトを作成または選択
+3. Accelerate を有効化
+4. API キーを生成
+5. Prisma Accelerate の URL を取得（`prisma://accelerate.prisma-data.net/?api_key=...` 形式）
+6. Vercel の環境変数に `DATABASE_URL_ACCELERATE` として設定
+
+**Prisma Accelerate の利点**:
+
+- **パフォーマンス**: グローバル接続プーリングとキャッシングにより、データベースアクセスが高速化
+- **スケーラビリティ**: トラフィックの増加に自動的に対応し、接続数の制限を気にする必要がない
+- **Edge Runtime 対応**: Edge Runtime でも Prisma Client を使用可能
+- **グローバル配信**: エッジネットワーク経由で配信され、世界中のユーザーに低レイテンシーでアクセスを提供
+- **コスト効率**: リクエスト単位で課金され、使用量に応じたコストが発生
+
+**注意事項**:
+
+- **マイグレーション**: Prisma Accelerate はマイグレーションには使用できません。マイグレーション実行時は `POSTGRES_URL` を使用します
+- **Prisma Studio**: Prisma Studio も通常のデータベース接続文字列（`POSTGRES_URL`）が必要です
+- **接続文字列の分離**: `DATABASE_URL_ACCELERATE` と `POSTGRES_URL` は別々に管理する必要があります
+
+**このアプリでの使用例**:
+
+すべての API Routes と Server Components で、Prisma Accelerate を使用した Prisma Client を使用しています：
+
+```typescript
+import { prisma } from "@/lib/prisma";
+
+// API Routeでの使用例
+export const GET = async () => {
+  const products = await prisma.product.findMany({
+    include: {
+      category: true,
+    },
+  });
+  return Response.json({ products });
+};
+
+// Server Componentでの使用例
+export default async function Page() {
+  const products = await prisma.product.findMany();
+  return <div>{/* ... */}</div>;
+}
+```
+
+**詳細な情報**:
+
+- [Edge Runtime ガイド](./edge-runtime-guide.md): Edge Runtime と Node.js Runtime の詳細な比較
+- [Prisma Accelerate 公式ドキュメント](https://www.prisma.io/docs/accelerate): Prisma Accelerate の包括的なドキュメント
+- [Prisma Accelerate Console](https://console.prisma.io/accelerate): Prisma Accelerate の設定と管理
+
+### Edge Runtime と Node.js Runtime
+
+**説明**: Next.js App Router では、API Routes と Server Components で使用する Runtime を選択できます。Edge Runtime と Node.js Runtime にはそれぞれ特徴があります。
+
+**このアプリでの使用箇所**:
+
+- すべての API Routes: Edge Runtime（デフォルト、Prisma Accelerate により動作可能）
+- すべての Server Components: Edge Runtime（デフォルト、Prisma Accelerate により動作可能）
+
+**Edge Runtime と Node.js Runtime の比較**:
+
+| 項目                     | Edge Runtime                         | Node.js Runtime                    |
+| ------------------------ | ------------------------------------ | ---------------------------------- |
+| **起動速度**             | 非常に高速（コールドスタートが速い） | やや遅い（コールドスタートが遅い） |
+| **Prisma Accelerate**    | サポート（推奨）                     | サポート                           |
+| **通常の Prisma Client** | サポートされない                     | サポート                           |
+| **トランザクション**     | サポート（Prisma Accelerate 使用時） | サポート                           |
+| **Node.js API**          | 制限あり（一部の API が使用不可）    | すべて使用可能                     |
+| **ファイルシステム**     | アクセス不可                         | アクセス可能                       |
+| **パフォーマンス**       | 高い（低レイテンシー）               | 中程度                             |
+| **グローバル配信**       | 可能（エッジネットワーク）           | リージョン単位                     |
+
+**推奨**: Edge Runtime を使用（Prisma Accelerate と組み合わせ）。
+
+```typescript
+// Edge Runtime（デフォルト、明示的な指定は不要）
+export const POST = withErrorHandling(async (request: NextRequest) => {
+  // Prisma Accelerateを使用してデータベースにアクセス
+  const products = await prisma.product.findMany();
+  return apiSuccess({ products });
+});
+```
+
+**理由**:
+
+- **高速な起動**: コールドスタートが速く、レスポンス時間が短縮される
+- **グローバル配信**: エッジネットワーク経由で配信され、ユーザーに近い場所から実行される
+- **スケーラビリティ**: 自動的にスケールし、トラフィックの増加に対応できる
+- **コスト効率**: リクエスト単位で課金され、使用量に応じたコストが発生
+
+**このアプリでの実装**:
+
+このアプリでは、すべての API Routes と Server Components で Edge Runtime（デフォルト）を使用しています。Prisma Accelerate により、Edge Runtime でも Prisma Client が正常に動作します。
+
+**詳細な情報**:
+
+- **[Edge Runtime ガイド](./edge-runtime-guide.md)**: Edge Runtime と Node.js Runtime の詳細な比較と使用方法
+- **[Next.js 公式ドキュメント - Runtime](https://nextjs.org/docs/app/api-reference/route-segment-config#runtime)**: Next.js の Runtime 設定の詳細
 
 ## ORM としての機能
 
@@ -891,33 +1063,115 @@ export default defineConfig({
 
 **説明**: 複数のデータベース操作をトランザクションとして実行します。すべての操作が成功するか、すべてがロールバックされます。
 
+**Prisma Accelerate でのトランザクション**:
+
+Prisma Accelerate はトランザクションをサポートしています。配列形式とインタラクティブトランザクションの両方を使用できます。
+
 **基本的な使い方**:
 
+**配列形式のトランザクション**（推奨）:
+
 ```typescript
+await prisma.$transaction([
   prisma.product.update({ where: { id: 1 }, data: { name: "商品1" } }),
   prisma.product.update({ where: { id: 2 }, data: { name: "商品2" } }),
 ]);
 ```
 
+**インタラクティブトランザクション**:
+
+```typescript
+await prisma.$transaction(async (tx) => {
+  const product = await tx.product.create({ data: productData });
+  await tx.category.update({
+    where: { id: categoryId },
+    data: { productCount: { increment: 1 } },
+  });
+});
+```
+
+**このアプリでの使用箇所**:
+
 1. **[`app/api/products/reorder/route.ts`](../../app/api/products/reorder/route.ts) (`POST`エクスポート)** - 複数商品の表示順序を一括更新
 
 ```typescript
-    async () => {
-      await prisma.$transaction(
-        body.productOrders.map((item: { id: number; displayOrder: number }) =>
-          prisma.product.update({
-            where: { id: item.id },
-            data: { displayOrder: item.displayOrder },
-          })
-        )
-      );
-    },
-    'POST /api/products/reorder'
+await safePrismaOperation(async () => {
+  await prisma.$transaction(
+    body.productOrders.map((item: { id: number; displayOrder: number }) =>
+      prisma.product.update({
+        where: { id: item.id },
+        data: { displayOrder: item.displayOrder },
+      })
+    )
+  );
+}, "POST /api/products/reorder");
 ```
 
-- 複数の操作を原子性（atomicity）を保証して実行
-- 一括更新や一括削除
-- データの整合性を保つ必要がある操作
+**配列形式とインタラクティブトランザクションの比較**:
+
+| 項目                           | 配列形式                       | インタラクティブ                   |
+| ------------------------------ | ------------------------------ | ---------------------------------- |
+| **Prisma Accelerate での請求** | 1 つの請求可能なクエリ         | 各クエリが個別にカウント           |
+| **パフォーマンス**             | 高速（単一のラウンドトリップ） | やや遅い（複数のラウンドトリップ） |
+| **Edge Runtime**               | サポート                       | サポート                           |
+| **使用例**                     | 一括更新、一括削除             | 条件に基づく操作、複雑なロジック   |
+
+**推奨**: 配列形式のトランザクションを使用（可能な場合）。
+
+```typescript
+// 良い例: 配列形式のトランザクション
+await prisma.$transaction([
+  prisma.product.update({ where: { id: 1 }, data: { name: "商品1" } }),
+  prisma.product.update({ where: { id: 2 }, data: { name: "商品2" } }),
+]);
+```
+
+**理由**:
+
+- **コスト効率**: Prisma Accelerate では 1 つの請求可能なクエリとしてカウントされる
+- **パフォーマンス**: 単一のラウンドトリップで実行されるため高速
+- **シンプル**: コードが簡潔で読みやすい
+
+**避ける**: 不要な場合にインタラクティブトランザクションを使用。
+
+```typescript
+// 避ける: 配列形式で十分な場合にインタラクティブトランザクションを使用
+await prisma.$transaction(async (tx) => {
+  await tx.product.update({ where: { id: 1 }, data: { name: "商品1" } });
+  await tx.product.update({ where: { id: 2 }, data: { name: "商品2" } });
+});
+```
+
+**理由**:
+
+- **コスト**: Prisma Accelerate では各クエリが個別にカウントされる
+- **パフォーマンス**: 複数のラウンドトリップが必要で、やや遅い
+
+**インタラクティブトランザクションが必要な場合**:
+
+以下の場合はインタラクティブトランザクションを使用してください：
+
+- 前のクエリの結果に基づいて次のクエリを実行する必要がある場合
+- 条件分岐やループを含む複雑なロジックが必要な場合
+
+```typescript
+// インタラクティブトランザクションが必要な例
+await prisma.$transaction(async (tx) => {
+  const product = await tx.product.findUnique({ where: { id: productId } });
+  if (product && product.stock > 0) {
+    await tx.product.update({
+      where: { id: productId },
+      data: { stock: { decrement: 1 } },
+    });
+  }
+});
+```
+
+**トランザクションの特徴**:
+
+- **原子性の保証**: すべての操作が成功するか、すべてがロールバックされる
+- **エラー時の一貫性**: 途中でエラーが発生した場合、部分的な更新が残らず、データベースの状態が一貫性を保つ
+- **データの整合性**: 複数のテーブルを更新する場合、すべての更新が成功することを保証できる
 
 ## クエリオプション
 
@@ -1496,14 +1750,51 @@ npm run db:migrate:deploy # 本番環境でマイグレーションを適用
 npm run db:push           # スキーマを直接プッシュ（開発環境のみ）
 ```
 
-### アダプターの使用
+### Prisma Accelerate の使用
 
-**説明**: Prisma 7 では、データベースプロバイダーごとに専用のアダプターを使用します。これにより、サーバーレス環境でのパフォーマンスが向上し、接続管理が最適化されます。
+**説明**: Edge Runtime 対応のため、Prisma Accelerate を使用します。Prisma Accelerate はグローバル接続プーリングとキャッシングレイヤーを提供し、Edge Runtime でも動作します。
 
 **このアプリでの実装**:
 
-- `@prisma/adapter-neon`: Neon（PostgreSQL）用のアダプター
-- WebSocket の設定により、Node.js 環境でも正しく動作
+- [`lib/prisma.ts`](../../lib/prisma.ts): Prisma Client の初期化で `accelerateUrl` を指定
+- 環境変数 `DATABASE_URL_ACCELERATE` に Prisma Accelerate の URL を設定
+- すべての API Routes と Server Components で Edge Runtime で動作
+
+**推奨**: Prisma Accelerate を使用（Edge Runtime 対応が必要な場合）。
+
+```typescript
+// 良い例: Prisma Accelerateを使用
+const prisma = new PrismaClient({
+  accelerateUrl: process.env.DATABASE_URL_ACCELERATE,
+});
+```
+
+**理由**:
+
+- **Edge Runtime 対応**: HTTP ベースの接続により、Edge Runtime でも動作
+- **グローバル接続プーリング**: 効率的な接続管理により、パフォーマンスが向上
+- **キャッシング**: クエリ結果のキャッシングにより、レイテンシーが削減
+- **トランザクションサポート**: 配列形式とインタラクティブトランザクションの両方をサポート
+- **グローバル配信**: エッジネットワーク経由で配信され、ユーザーに近い場所から実行される
+
+**避ける**: 通常の Prisma Client を Edge Runtime で使用。
+
+```typescript
+// 避ける: Edge Runtimeで通常のPrisma Clientを使用
+const prisma = new PrismaClient({
+  // 通常の接続文字列（Edge Runtimeでは動作しない）
+});
+```
+
+**理由**:
+
+- **Edge Runtime 非対応**: 通常の Prisma Client は Edge Runtime では動作しない
+- **パフォーマンス**: Prisma Accelerate の接続プーリングとキャッシングの恩恵を受けられない
+
+**詳細な情報**:
+
+- **[Prisma Accelerate](#prisma-accelerate)**: Prisma Accelerate の詳細な説明（このドキュメント内）
+- **[Edge Runtime ガイド](./edge-runtime-guide.md)**: Edge Runtime と Node.js Runtime の詳細な比較と使用方法
 
 ### 設定ファイルの管理
 
@@ -1516,11 +1807,13 @@ npm run db:push           # スキーマを直接プッシュ（開発環境の�
 
 ### パフォーマンスの最適化
 
-**説明**: Prisma 7 では、以下の最適化が行われています：
+**説明**: Prisma 7 と Prisma Accelerate では、以下の最適化が行われています：
 
 - **バンドルサイズの縮小**: 不要なコードの削除により、バンドルサイズが削減
 - **クエリ実行速度の向上**: クエリエンジンの改善により、実行速度が向上
-- **接続プールの最適化**: アダプターによる接続プールの管理が改善
+- **グローバル接続プーリング**: Prisma Accelerate による効率的な接続管理
+- **キャッシング**: Prisma Accelerate によるクエリ結果のキャッシング
+- **Edge Runtime 対応**: HTTP ベースの接続により、低レイテンシーを実現
 
 ## まとめ
 
@@ -1534,10 +1827,11 @@ npm run db:push           # スキーマを直接プッシュ（開発環境の�
 
 **Prisma 7 の特徴を活用**:
 
-- **アダプターシステム**: `@prisma/adapter-neon` を使用して Neon に接続
+- **Prisma Accelerate**: Edge Runtime 対応のためのグローバル接続プーリングとキャッシング
 - **設定ファイル**: [`prisma.config.ts`](../../prisma.config.ts) で設定を管理
 - **PostgreSQL 拡張機能**: `orderBy` での `nulls` オプションを使用
-- **パフォーマンス**: アダプターによる接続管理の最適化
+- **パフォーマンス**: Prisma Accelerate による接続管理とキャッシングの最適化
+- **Edge Runtime**: HTTP ベースの接続により、低レイテンシーを実現
 
 すべての操作は `safePrismaOperation` でラップされ、統一されたエラーハンドリングが行われています。また、`include` オプションを使用して N+1 問題を回避し、パフォーマンスを最適化しています。
 
@@ -1549,3 +1843,6 @@ npm run db:push           # スキーマを直接プッシュ（開発環境の�
 - **[Prisma & Blob セットアップガイド](../setup-prisma-blob.md)**: Prisma と Blob Storage のセットアップ方法
 - **[Prisma 公式ドキュメント](https://www.prisma.io/docs)**: Prisma の包括的なドキュメント
 - **[Prisma Client API Reference](https://www.prisma.io/docs/reference/api-reference/prisma-client-reference)**: Prisma Client の API リファレンス
+- **[Prisma Accelerate ドキュメント](https://www.prisma.io/docs/accelerate)**: Prisma Accelerate の詳細なドキュメント
+- **[Prisma Accelerate Console](https://console.prisma.io/accelerate)**: Prisma Accelerate の設定と管理
+- **[Edge Runtime ガイド](./edge-runtime-guide.md)**: Edge Runtime と Node.js Runtime の詳細な比較と使用方法

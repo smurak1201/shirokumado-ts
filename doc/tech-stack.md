@@ -146,6 +146,25 @@
 
 ### ランタイム
 
+- **Edge Runtime** (Next.js)
+
+  Edge Runtime は、Next.js が提供する軽量な JavaScript ランタイムです。Vercel Edge Network などのエッジ環境で実行されます。Node.js Runtime よりも軽量で、起動時間が短く、グローバルに配信できます。
+
+  **主な特徴**:
+
+  - **高速な起動**: コールドスタートが速く、レスポンス時間が短縮される
+  - **グローバル配信**: エッジネットワーク経由で配信され、ユーザーに近い場所から実行される
+  - **自動スケーリング**: トラフィックの増加に自動的に対応
+  - **コスト効率**: リクエスト単位で課金され、使用量に応じたコストが発生
+
+  **このアプリでの使われ方**:
+
+  - すべての API Routes と Server Components で Edge Runtime（デフォルト）を使用
+  - Prisma Accelerate により、Edge Runtime でも Prisma Client が正常に動作
+  - 高速な起動時間とグローバル配信により、優れたユーザー体験を提供
+
+  **詳細な使用方法については、[Edge Runtime ガイド](./guides/edge-runtime-guide.md) を参照してください。**
+
 - **Node.js** `>=24.0.0` (LTS: Krypton)
 
   Node.js は、Chrome の V8 JavaScript エンジン上で動作する JavaScript ランタイムです。サーバーサイドで JavaScript を実行でき、Web アプリケーションのバックエンド開発に広く使用されています。
@@ -159,10 +178,11 @@
 
   **このアプリでの使われ方**:
 
-  - Vercel のランタイムとして使用され、Next.js アプリケーションを実行
-  - Next.js API Routes でサーバーサイドのロジックを実装（商品の CRUD 操作など）
-  - Prisma Client や Vercel Blob Storage SDK などの Node.js ライブラリを使用
+  - マイグレーション実行時など、一部の処理で Node.js Runtime を使用
+  - Prisma Studio などの開発ツールで Node.js Runtime を使用
   - `.nvmrc` ファイルで Node.js のバージョンを固定し、開発環境の一貫性を確保
+
+  **注意**: このアプリでは、通常の API Routes や Server Components では Edge Runtime を使用しています。Node.js Runtime が必要な場合は明示的に指定します。
 
 ### データベース
 
@@ -205,6 +225,26 @@
   - N+1 問題を回避するためのクエリ最適化
 
   **詳細な使用方法については、[Prisma ガイド](./guides/prisma-guide.md) を参照してください。**
+
+- **Prisma Accelerate**
+
+  Prisma Accelerate は、Edge Runtime 対応のためのグローバル接続プーリングとキャッシングレイヤーです。HTTP ベースの接続を使用するため、Edge Runtime でも動作します。
+
+  **主な特徴**:
+
+  - **Edge Runtime 対応**: HTTP ベースの接続により、Edge Runtime でも動作
+  - **グローバル接続プーリング**: 効率的な接続管理により、パフォーマンスが向上
+  - **キャッシング**: クエリ結果のキャッシングにより、レイテンシーが削減
+  - **グローバル配信**: エッジネットワーク経由で配信され、ユーザーに近い場所から実行される
+  - **トランザクションサポート**: 配列形式とインタラクティブトランザクションの両方をサポート
+
+  **このアプリでの使われ方**:
+
+  - Edge Runtime で Prisma Client を使用するために Prisma Accelerate を採用
+  - [`lib/prisma.ts`](../lib/prisma.ts) で Prisma Accelerate を使用した Prisma Client を初期化
+  - すべての API Routes と Server Components で Edge Runtime 対応の Prisma Client を使用
+
+  **詳細な使用方法については、[Prisma ガイド - Prisma Accelerate](./guides/prisma-guide.md#prisma-accelerate) と [Edge Runtime ガイド](./guides/edge-runtime-guide.md) を参照してください。**
 
 ### ストレージ
 
@@ -386,7 +426,8 @@ shirokumado-ts/
 │       ├── react-guide.md          # React ガイド
 │       ├── jsx-guide.md            # JSX ガイド
 │       ├── typescript-guide.md     # TypeScript ガイド
-│       └── prisma-guide.md         # Prisma ガイド
+│       ├── prisma-guide.md         # Prisma ガイド
+│       └── edge-runtime-guide.md   # Edge Runtime ガイド
 ├── package.json     # 依存関係
 ├── tsconfig.json    # TypeScript設定
 ├── next.config.ts   # Next.js設定
@@ -450,5 +491,8 @@ npm run db:studio      # Prisma Studioを起動
 - [Vercel Neon Documentation](https://neon.tech/docs)
 - [Vercel Blob Documentation](https://vercel.com/docs/storage/vercel-blob)
 - [Prisma Documentation](https://www.prisma.io/docs)
+- [Prisma Accelerate Documentation](https://www.prisma.io/docs/accelerate)
+- [Prisma Accelerate Console](https://console.prisma.io/accelerate)
+- [Edge Runtime Documentation](https://nextjs.org/docs/app/api-reference/route-segment-config#runtime)
 - [Tailwind CSS Documentation](https://tailwindcss.com/docs)
 - [TypeScript Documentation](https://www.typescriptlang.org/docs/)
