@@ -94,6 +94,10 @@ export async function safePrismaOperation<T>(
 
 /**
  * データベース接続を切断します
+ *
+ * 注意: Prisma Accelerate を使用している場合、接続のクリーンアップは
+ * Prisma Accelerate 側で自動的に管理されるため、通常は明示的な切断は不要です。
+ * この関数は、マイグレーション実行時や開発ツール（Prisma Studio など）で使用されます。
  */
 export async function disconnectPrisma(): Promise<void> {
   try {
@@ -105,14 +109,14 @@ export async function disconnectPrisma(): Promise<void> {
 }
 
 /**
- * アプリケーション終了時にPrisma接続をクリーンアップします
+ * 注意: アプリケーション終了時の接続クリーンアップについて
  *
- * 注意: Edge Runtime では Node.js API (process.on) が使用できないため、
- * このコードは Node.js Runtime でのみ実行されます。
- * Edge Runtime では Prisma Accelerate が接続を管理するため、明示的なクリーンアップは不要です。
+ * Edge Runtime では Node.js API (process.on) が使用できないため、
+ * アプリケーション終了時の接続クリーンアップコードは実装していません。
+ *
+ * Prisma Accelerate を使用している場合、接続のクリーンアップは Prisma Accelerate 側で
+ * 自動的に管理されるため、明示的なクリーンアップは不要です。
+ *
+ * マイグレーション実行時や開発ツール（Prisma Studio など）では Node.js Runtime が使用され、
+ * これらのツールは独自に接続を管理するため、問題ありません。
  */
-if (typeof process !== 'undefined' && typeof process.on === 'function') {
-  process.on('beforeExit', async () => {
-    await disconnectPrisma();
-  });
-}
