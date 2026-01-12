@@ -23,8 +23,7 @@ export default function Header() {
               width={120}
               height={45}
               priority
-              className="h-auto w-auto max-h-20 lg:max-h-20"
-              style={{ maxWidth: "120px", maxHeight: "45px" }}
+              style={{ width: "120px", height: "auto" }}
             />
           </Link>
           <a
