@@ -104,6 +104,7 @@ shirokumado-ts/
 │   ├── setup-prisma-blob.md # Prisma & Blob セットアップ
 │   ├── deployment.md       # デプロイメントガイド
 │   └── guides/            # ガイド系ドキュメント
+│       ├── learning-guide.md   # 勉強用ガイド
 │       ├── frontend-guide.md   # フロントエンドガイド
 │       ├── dashboard-guide.md  # ダッシュボードガイド
 │       ├── nextjs-guide.md     # Next.js ガイド
@@ -459,6 +460,7 @@ public/
 
 - **[`README.md`](../README.md)**: プロジェクトの概要とセットアップ手順
 - **[`doc/getting-started.md`](./getting-started.md)**: コードリーディングガイド
+- **[`doc/guides/learning-guide.md`](./guides/learning-guide.md)**: 勉強用ガイド（学習の進め方、ファイルの読み順序、技術スタック別おすすめファイル）
 - **[`doc/architecture.md`](./architecture.md)**: アーキテクチャと設計思想
 - **[`doc/project-structure.md`](./project-structure.md)**: プロジェクト構造（このファイル）
 - **[`doc/tech-stack.md`](./tech-stack.md)**: 技術スタックの詳細
