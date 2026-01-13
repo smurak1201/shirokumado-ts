@@ -598,10 +598,15 @@ const categories = [
 
 ### interface vs type
 
-**interface を使用する場合**:
+TypeScript では、`interface`と`type`の両方を使用して型を定義できますが、それぞれに適した使い方があります。
+
+#### interface を使用する場合
+
+**推奨される用途**:
 
 - オブジェクトの型を定義する場合
-- 拡張可能な型を定義する場合
+- 拡張可能な型を定義する場合（`extends`や`implements`を使用）
+- 宣言のマージ（Declaration Merging）が必要な場合
 
 **このアプリでの使用例**:
 
@@ -611,13 +616,46 @@ const categories = [
 export interface Product {
   id: number;
   name: string;
-  // ...
+  description: string;
+  imageUrl: string | null;
+  priceS: number | null;
+  priceL: number | null;
+}
+
+export interface Category {
+  id: number;
+  name: string;
 }
 ```
+
+**interface の特徴**:
+
+- **拡張可能**: `extends`キーワードで継承できる
+- **宣言のマージ**: 同じ名前の`interface`を複数定義すると、自動的にマージされる
+- **オブジェクト型に特化**: オブジェクトの構造を定義するのに適している
+
+**拡張の例**:
+
+```typescript
+interface BaseProduct {
+  id: number;
+  name: string;
+}
+
+interface Product extends BaseProduct {
+  description: string;
+  price: number;
+}
+```
+
+#### type を使用する場合
+
+**推奨される用途**:
 
 - ユニオン型やインターセクション型を定義する場合
 - 型エイリアスを定義する場合
 - プリミティブ型やユニオン型を組み合わせる場合
+- ユーティリティ型を使用する場合
 
 **このアプリでの使用箇所**:
 
@@ -634,40 +672,69 @@ type TabType = "list" | "layout";
 [`app/dashboard/hooks/useTabState.ts`](../../app/dashboard/hooks/useTabState.ts) (`useTabState`フック)
 
 ```typescript
-  const [activeTab, setActiveTab] = useState<TabType>(() => {
+const [activeTab, setActiveTab] = useState<TabType>(() => {
+  // ...
+});
 ```
 
 [`app/dashboard/components/ProductList.tsx`](../../app/dashboard/components/ProductList.tsx) (フィルタリング処理)
 
 ```typescript
-              onClick={() => setActiveTab("list")}
+onClick={() => setActiveTab("list")}
 ```
 
-- **可読性**: 使用可能な値を型定義から明確に把握できる
-- **IDE サポート**: 自動補完で使用可能な値を提案してくれる
+**type の特徴**:
 
-**type と interface の使い分け**:
-
-- **`interface`**: オブジェクトの型定義に使用（`Product`、`Category` など）
-- **`type`**: ユニオン型、文字列リテラル型、型エイリアスなど、オブジェクト以外の型定義に使用（`TabType` など）
+- **柔軟性**: ユニオン型、インターセクション型、ユーティリティ型など、様々な型を定義できる
+- **型エイリアス**: 複雑な型に名前を付けて再利用できる
+- **計算型**: 条件型（Conditional Types）やマップ型（Mapped Types）など、高度な型操作が可能
 
 **その他の使用例**:
 
 ```typescript
+// ユニオン型
 type Status = "pending" | "completed" | "failed";
 
-// 型エイリアスの例
+// 型エイリアス
 type ProductId = number;
 
-// インターセクション型の例
+// インターセクション型
 type AdminUser = User & {
   permissions: string[];
 };
 
-// ユーティリティ型の例
+// ユーティリティ型
 type PartialProduct = Partial<Product>;
 type ReadonlyProduct = Readonly<Product>;
+
+// 関数型
+type EventHandler = (event: Event) => void;
 ```
+
+#### type と interface の使い分けの指針
+
+**このアプリでの使い分け**:
+
+- **`interface`**: オブジェクトの型定義に使用（`Product`、`Category` など）
+  - 理由: オブジェクトの構造を定義するのに適しており、拡張性が高い
+- **`type`**: ユニオン型、文字列リテラル型、型エイリアスなど、オブジェクト以外の型定義に使用（`TabType` など）
+  - 理由: 柔軟性が高く、様々な型を表現できる
+
+**一般的な指針**:
+
+1. **オブジェクトの型を定義する場合**: `interface`を優先
+   - 理由: 拡張性が高く、宣言のマージが可能
+2. **ユニオン型やインターセクション型を定義する場合**: `type`を使用
+   - 理由: `interface`では表現できない
+3. **型エイリアスを定義する場合**: `type`を使用
+   - 理由: 複雑な型に名前を付けて再利用するのに適している
+4. **既存の型を拡張する場合**: `interface extends`を使用
+   - 理由: より明確で、宣言のマージが可能
+
+**注意点**:
+
+- `interface`と`type`は多くの場合、互換的に使用できますが、宣言のマージや拡張の挙動が異なります
+- このアプリでは、一貫性を保つため、オブジェクト型には`interface`、それ以外には`type`を使用しています
 
 **このアプリでの使用例**:
 
