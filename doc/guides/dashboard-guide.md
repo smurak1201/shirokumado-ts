@@ -40,6 +40,7 @@
 ダッシュボードは、Server Component と Client Component を組み合わせた実装です。
 
 ```
+page.tsx (Server Component)
   ↓ データ取得（Prisma）
   ↓ propsで渡す
 DashboardContent (Client Component)
@@ -50,23 +51,28 @@ DashboardContent (Client Component)
       └── SortableProductItem
 ```
 
-├── page.tsx # エントリーポイント（Server Component）
-├── types.ts # 共通型定義
-├── components/ # UI コンポーネント
-│ ├── DashboardContent.tsx # メインコンテナ
-│ ├── DashboardForm.tsx # 新規商品登録フォーム
-│ ├── DashboardFormWrapper.tsx # フォームラッパー
-│ ├── ProductList.tsx # 商品一覧・配置変更
-│ ├── ProductEditForm.tsx # 商品編集フォーム
-│ ├── CategoryTabs.tsx # カテゴリータブ
-│ └── SortableProductItem.tsx # ドラッグ&ドロップ可能な商品アイテム
-├── hooks/ # カスタムフック
-│ ├── useTabState.ts # タブ状態管理
-│ └── useProductReorder.ts # 商品順序変更ロジック
-└── utils/ # ユーティリティ関数
-└── productUtils.ts # 商品のグループ化・フィルタリング
+### ディレクトリ構造
 
-````
+```
+app/dashboard/
+├── page.tsx                    # エントリーポイント（Server Component）
+├── types.ts                    # 共通型定義
+├── components/                 # UI コンポーネント
+│   ├── DashboardContent.tsx    # メインコンテナ
+│   ├── DashboardForm.tsx       # 新規商品登録フォーム
+│   ├── DashboardFormWrapper.tsx # フォームラッパー
+│   ├── ProductList.tsx         # 商品一覧・配置変更
+│   ├── ProductEditForm.tsx     # 商品編集フォーム
+│   ├── CategoryTabs.tsx        # カテゴリータブ
+│   └── SortableProductItem.tsx # ドラッグ&ドロップ可能な商品アイテム
+├── hooks/                      # カスタムフック
+│   ├── useTabState.ts          # タブ状態管理
+│   └── useProductReorder.ts    # 商品順序変更ロジック
+└── utils/                      # ユーティリティ関数
+    └── productUtils.ts         # 商品のグループ化・フィルタリング
+```
+
+## 主要機能
 
 ### 1. 商品一覧表示
 
@@ -114,21 +120,20 @@ DashboardContent (Client Component)
 
 **実装例**:
 
-[`app/dashboard/page.tsx`](../../app/dashboard/page.tsx) (`DashboardPage`コンポーネント)
-
 ```typescript
-  const { categories, products } = await getDashboardData();
+const { categories, products } = await getDashboardData();
 
-  return (
-    <div className="min-h-screen bg-gray-50 py-8">
-      <div className="mx-auto max-w-4xl px-4">
-        <h1 className="mb-8 text-3xl font-bold">商品管理ダッシュボード</h1>
-        <DashboardContent categories={categories} initialProducts={products} />
-      </div>
+return (
+  <div className="min-h-screen bg-gray-50 py-8">
+    <div className="mx-auto max-w-4xl px-4">
+      <h1 className="mb-8 text-3xl font-bold">商品管理ダッシュボード</h1>
+      <DashboardContent categories={categories} initialProducts={products} />
     </div>
-  );
-}
-````
+  </div>
+);
+```
+
+### DashboardContent ([`components/DashboardContent.tsx`](../../app/dashboard/components/DashboardContent.tsx))
 
 ダッシュボードのメインコンテナです。Client Component として実装されています。
 
@@ -141,8 +146,6 @@ DashboardContent (Client Component)
 **状態管理**:
 
 React のベストプラクティスに従い、共有状態（商品一覧）を親コンポーネントで管理しています。
-
-[`app/dashboard/components/DashboardContent.tsx`](../../app/dashboard/components/DashboardContent.tsx) (`DashboardContent`コンポーネント)
 
 ```typescript
 const [products, setProducts] = useState<Product[]>(initialProducts);
@@ -159,6 +162,8 @@ const refreshProducts = async () => {
   setProducts(data.products || []);
 };
 ```
+
+**設計の特徴**:
 
 - `forwardRef`や`useImperativeHandle`を使わず、props でデータとコールバックを渡す
 - データフローが明確になり、コンポーネント間の結合が緩くなる
@@ -202,6 +207,7 @@ const refreshProducts = async () => {
 **Props**:
 
 ```typescript
+interface ProductListProps {
   products: Product[]; // 商品一覧（親コンポーネントから受け取る）
   setProducts: React.Dispatch<React.SetStateAction<Product[]>>; // 状態更新関数
   refreshProducts: () => Promise<void>; // 商品一覧を更新する関数
@@ -209,6 +215,8 @@ const refreshProducts = async () => {
   onNewProductClick?: () => void; // 新規商品登録ボタンクリック時のコールバック
 }
 ```
+
+**設計の特徴**:
 
 - React のベストプラクティスに従い、状態を親コンポーネントから受け取る
 - `forwardRef`や`useImperativeHandle`を使わない設計
@@ -241,6 +249,7 @@ const refreshProducts = async () => {
 ### 初期データ取得
 
 ```
+page.tsx (Server Component)
   ↓ getDashboardData()
   ↓ Prismaクエリ
 Database
@@ -251,21 +260,26 @@ DashboardContent (Client Component)
 子コンポーネント
 ```
 
-↓ フォーム入力
-↓ バリデーション
-↓ fetch('/api/products', { method: 'POST' })
-API Route
-↓ Prisma 操作
-Database
-↓ レスポンス
-DashboardContent
-↓ refreshProducts() を呼び出し
-↓ fetch('/api/products') で最新データを取得
-↓ setProducts() で状態更新
-↓ props で ProductList に渡す
-↓ UI 更新
+### 商品追加フロー
 
 ```
+フォーム入力
+  ↓ バリデーション
+  ↓ fetch('/api/products', { method: 'POST' })
+API Route
+  ↓ Prisma 操作
+Database
+  ↓ レスポンス
+DashboardContent
+  ↓ refreshProducts() を呼び出し
+  ↓ fetch('/api/products') で最新データを取得
+  ↓ setProducts() で状態更新
+  ↓ props で ProductList に渡す
+  ↓ UI 更新
+```
+
+**設計のポイント**:
+
 - 商品追加後は、親コンポーネント（`DashboardContent`）の`refreshProducts`を呼び出す
 - 状態は親コンポーネントで管理され、props で子コンポーネントに渡される
 - データフローが明確で、React のベストプラクティスに沿った実装
@@ -273,18 +287,19 @@ DashboardContent
 ### 商品順序変更フロー
 
 ```
-
-↓ ドラッグ&ドロップ
 ProductList
-↓ 楽観的 UI 更新（即座に状態更新）
-↓ fetch('/api/products/reorder', { method: 'POST' })
+  ↓ ドラッグ&ドロップ
+  ↓ 楽観的 UI 更新（即座に状態更新）
+  ↓ fetch('/api/products/reorder', { method: 'POST' })
 API Route
-↓ Prisma 操作
+  ↓ Prisma 操作
 Database
-↓ 成功: 最新データを取得
-↓ 失敗: エラー表示 + 元の状態に戻す
-
+  ↓ 成功: 最新データを取得
+  ↓ 失敗: エラー表示 + 元の状態に戻す
 ```
+
+## 状態管理
+
 ### 状態のリフトアップ
 
 React のベストプラクティスに従い、共有状態は親コンポーネントで管理します。
@@ -327,7 +342,14 @@ React のベストプラクティスに従い、共有状態は親コンポー�
 
 **使用例**:
 
+```typescript
+const { activeTab, setActiveTab } = useTabState(
+  "dashboard-tab",
+  defaultCategoryId
+);
 ```
+
+#### useProductReorder ([`hooks/useProductReorder.ts`](../../app/dashboard/hooks/useProductReorder.ts))
 
 商品順序変更のロジックを実装したカスタムフックです。
 
@@ -339,50 +361,137 @@ React のベストプラクティスに従い、共有状態は親コンポー�
 
 **使用例**:
 
+```typescript
+const { reorderProducts, isReordering } = useProductReorder(
+  products,
+  setProducts,
+  refreshProducts
+);
+
+// 使用
+await reorderProducts(productId, newOrder);
+```
+
+## API 連携
+
 ### 商品一覧取得
 
-```typescript
-Content-Type: application/json
+**エンドポイント**: `GET /api/products`
 
+**レスポンス**:
+
+```typescript
 {
-  "name": "商品名",
-  "description": "説明",
-  "categoryId": 1,
-  "imageUrl": "https://...",
-  "priceS": 500,
-  "priceL": 800,
-  "published": true
+  products: Product[];
+}
+```
+
+### 商品作成
+
+**エンドポイント**: `POST /api/products`
+
+**リクエストボディ**:
+
+```typescript
+{
+  name: string;
+  description: string;
+  categoryId: number;
+  imageUrl?: string;
+  priceS?: number;
+  priceL?: number;
+  published: boolean;
+  publishedAt?: string; // ISO 8601形式
+  endedAt?: string; // ISO 8601形式
+}
+```
+
+**レスポンス**:
+
+```typescript
+{
+  product: Product;
 }
 ```
 
 ### 商品更新
 
-```typescript
-Content-Type: application/json
+**エンドポイント**: `PUT /api/products/[id]`
 
+**リクエストボディ**:
+
+```typescript
 {
-  "name": "更新後の商品名",
-  // ...
+  name?: string;
+  description?: string;
+  categoryId?: number;
+  imageUrl?: string;
+  priceS?: number;
+  priceL?: number;
+  published?: boolean;
+  publishedAt?: string;
+  endedAt?: string;
+}
+```
+
+**レスポンス**:
+
+```typescript
+{
+  product: Product;
+}
+```
+
+### 商品削除
+
+**エンドポイント**: `DELETE /api/products/[id]`
+
+**レスポンス**:
+
+```typescript
+{
+  success: boolean;
 }
 ```
 
 ### 商品順序変更
 
-```typescript
-Content-Type: application/json
+**エンドポイント**: `POST /api/products/reorder`
 
+**リクエストボディ**:
+
+```typescript
 {
-  "productId": 1,
-  "newOrder": 2
+  productId: number;
+  newOrder: number;
+  categoryId: number;
+}
+```
+
+**レスポンス**:
+
+```typescript
+{
+  success: boolean;
 }
 ```
 
 ### 画像アップロード
 
-```
-Content-Type: multipart/form-data
+**エンドポイント**: `POST /api/products/upload`
 
+**リクエスト**: `multipart/form-data`
+
+```
 file: [画像ファイル]
+```
+
+**レスポンス**:
+
+```typescript
+{
+  url: string; // アップロードされた画像のURL
+}
 ```
 
 #### ファイルサイズの制限と推奨サイズ
@@ -408,6 +517,8 @@ file: [画像ファイル]
 - **圧縮後の目標サイズ**: 3.5MB（安全マージンを確保）
 
 詳細は [画像圧縮ユーティリティ - 画像ファイルサイズの制限と推奨サイズ](./utilities-guide.md#画像ファイルサイズの制限と推奨サイズ) を参照してください。
+
+## 開発ガイド
 
 ### 新しい機能の追加
 
@@ -460,16 +571,15 @@ file: [画像ファイル]
 
 ### データフェッチング
 
-- Server Component でデータを取得 - **このアプリで使用中**
+- **Server Component でデータを取得** - **このアプリで使用中**
   - [`app/dashboard/page.tsx`](../../app/dashboard/page.tsx): Prisma を使用してデータベースから直接データを取得
-- Client Component で API Routes にアクセス - **このアプリで使用中**
+- **Client Component で API Routes にアクセス** - **このアプリで使用中**
   - [`app/dashboard/components/DashboardContent.tsx`](../../app/dashboard/components/DashboardContent.tsx): `fetch` API を使用して `/api/products` にアクセス
   - [`app/dashboard/components/DashboardForm.tsx`](../../app/dashboard/components/DashboardForm.tsx): `fetch` API を使用して `/api/products` に POST リクエスト
   - [`app/dashboard/components/ProductEditForm.tsx`](../../app/dashboard/components/ProductEditForm.tsx): `fetch` API を使用して `/api/products/[id]` に PUT リクエスト
   - [`app/dashboard/components/ProductList.tsx`](../../app/dashboard/components/ProductList.tsx): `fetch` API を使用して `/api/products/[id]` に DELETE リクエスト
   - [`app/dashboard/hooks/useProductReorder.ts`](../../app/dashboard/hooks/useProductReorder.ts): `fetch` API を使用して `/api/products/reorder` に POST リクエスト
-- 必要なデータのみを取得（Prisma の`select`を使用） - **このアプリでは未使用**
-- 並列データ取得（`Promise.all`を使用） - **このアプリで使用中**（詳細は [Async/Await ガイド - Promise.all](./async-await-guide.md#promiseall---このアプリで使用中) を参照）
+- **並列データ取得（`Promise.all`を使用）** - **このアプリで使用中**（詳細は [Async/Await ガイド - Promise.all](./async-await-guide.md#promiseall---このアプリで使用中) を参照）
 
 **Prisma の`select`について**:
 
@@ -491,6 +601,8 @@ const products = await prisma.product.findMany({
   },
 });
 ```
+
+**利点**:
 
 - 必要なデータのみを取得できるため、ネットワーク転送量を削減
 - パフォーマンスの向上（特に大量のデータを扱う場合）

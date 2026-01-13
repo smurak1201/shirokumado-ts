@@ -767,6 +767,7 @@ className="group w-full overflow-hidden rounded-lg border border-gray-100 bg-whi
 aria-label={`${product.name}の詳細を見る`} >
 {/_ 商品画像 _/}
 {product.imageUrl ? (
+
 <div className="relative aspect-square w-full overflow-hidden bg-gray-50">
 <Image
             src={product.imageUrl}
