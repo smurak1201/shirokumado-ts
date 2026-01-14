@@ -29,6 +29,7 @@
   - [インターフェースのジェネリクス](#インターフェースのジェネリクス)
   - [制約付きジェネリクス](#制約付きジェネリクス)
   - [ジェネリクスの使い分け](#ジェネリクスの使い分け)
+  - [Java との比較](#java-との比較)
 - [型の使い分け](#型の使い分け)
   - [interface vs type](#interface-vs-type)
   - [型の分離](#型の分離)
@@ -190,28 +191,6 @@ TypeScript の設定を管理するファイルです。コンパイラオプシ
 - **型安全性**: 厳格な型チェックにより、実行時エラーを事前に検出
 - **開発効率**: パスエイリアスにより、インポートパスが簡潔になる
 - **パフォーマンス**: 増分コンパイルにより、ビルド時間が短縮される
-
-1. **基本設定**:
-
-   - `target: "ES2017"`: コンパイル後の JavaScript のバージョン
-   - `lib`: 使用する型定義ライブラリ（DOM、ESNext など）
-   - `module: "esnext"`: モジュールシステム（ES Modules）
-   - `jsx: "react-jsx"`: React JSX の変換方法（詳細は [JSX ガイド](./jsx-guide.md) を参照）
-
-2. **型チェックの厳格さ**:
-
-   - `strict: true`: すべての厳格な型チェックオプションを有効化
-   - `noUnusedLocals: true`: 未使用のローカル変数をエラーにする
-   - `noUnusedParameters: true`: 未使用のパラメータをエラーにする
-   - `noUncheckedIndexedAccess: true`: インデックスアクセス時に `undefined` の可能性を考慮
-
-3. **パスエイリアス**:
-
-   - `paths: { "@/*": ["./*"] }`: `@/` でプロジェクトルートを参照可能
-
-4. **Next.js 統合**:
-   - `plugins: [{ "name": "next" }]`: Next.js の型チェックプラグインを使用
-   - `incremental: true`: インクリメンタルコンパイルを有効化
 
 ## 型定義
 
@@ -582,6 +561,18 @@ const products = await prisma.product.findMany();
 // products の型は Product[] と推論される
 ```
 
+**配列リテラルの型推論**:
+
+```typescript
+const categories = [
+  { id: 1, name: "かき氷" },
+  { id: 2, name: "ドリンク" },
+];
+// categories の型は { id: number; name: string }[] と推論される
+```
+
+### 関数の戻り値の型推論
+
 **このアプリでの使用箇所**:
 
 [`app/utils/format.ts`](../../app/utils/format.ts) (`formatPrice`関数)
@@ -593,14 +584,13 @@ export function formatPrice(price: number) {
 }
 ```
 
+### 配列の型推論
+
 **このアプリでの使用箇所**:
 
 ```typescript
-const categories = [
-  { id: 1, name: "かき氷" },
-  { id: 2, name: "ドリンク" },
-];
-// categories の型は { id: number; name: string }[] と推論される
+const products = await prisma.product.findMany();
+// products の型は Product[] と推論される
 ```
 
 ## ジェネリクス
@@ -848,6 +838,8 @@ public <T> T identity(T arg) {
 }
 ```
 
+## 型の使い分け
+
 このアプリでは、用途に応じて適切な型定義方法を選択しています。
 
 ### interface vs type
@@ -989,6 +981,10 @@ type EventHandler = (event: Event) => void;
 
 - `interface`と`type`は多くの場合、互換的に使用できますが、宣言のマージや拡張の挙動が異なります
 - このアプリでは、一貫性を保つため、オブジェクト型には`interface`、それ以外には`type`を使用しています
+
+### 型の分離
+
+用途に応じて型を分離することで、パフォーマンスと明確性を向上させます。
 
 **このアプリでの使用例**:
 
