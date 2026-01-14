@@ -23,6 +23,12 @@
   - [変数の型推論](#変数の型推論)
   - [関数の戻り値の型推論](#関数の戻り値の型推論)
   - [配列の型推論](#配列の型推論)
+- [ジェネリクス](#ジェネリクス)
+  - [ジェネリクスとは](#ジェネリクスとは)
+  - [関数のジェネリクス](#関数のジェネリクス)
+  - [インターフェースのジェネリクス](#インターフェースのジェネリクス)
+  - [制約付きジェネリクス](#制約付きジェネリクス)
+  - [ジェネリクスの使い分け](#ジェネリクスの使い分け)
 - [型の使い分け](#型の使い分け)
   - [interface vs type](#interface-vs-type)
   - [型の分離](#型の分離)
@@ -31,8 +37,9 @@
   - [2. null 許容型の明示](#2-null-許容型の明示)
   - [3. 型推論の活用](#3-型推論の活用)
   - [4. 厳格な型チェック](#4-厳格な型チェック)
-  - [5. Prisma との統合](#5-prisma-との統合)
-  - [6. エラーハンドリングの型安全性](#6-エラーハンドリングの型安全性)
+  - [5. ジェネリクスの活用](#5-ジェネリクスの活用)
+  - [6. Prisma との統合](#6-prisma-との統合)
+  - [7. エラーハンドリングの型安全性](#7-エラーハンドリングの型安全性)
 - [このアプリでの TypeScript の使用例まとめ](#このアプリでの-typescript-の使用例まとめ)
   - [型定義の構成](#型定義の構成)
   - [型安全性の実装](#型安全性の実装-1)
@@ -518,6 +525,8 @@ export function apiSuccess<T>(data: T, status: number = 200): NextResponse {
 - **文字エンコーディング**: 自動的に`Content-Type: application/json; charset=utf-8`ヘッダーを設定し、日本語を含む JSON の文字化けを防止
 - **型安全性**: ジェネリック型`<T>`により、レスポンスデータの型が推論される
 
+**詳細**: ジェネリクスの詳細な説明については、[ジェネリクス](#ジェネリクス)セクションを参照してください。
+
 ## エラーハンドリングでの型安全性
 
 このアプリでは、統一されたエラークラスを使用して、エラーハンドリングを型安全に実装しています。
@@ -592,6 +601,251 @@ const categories = [
   { id: 2, name: "ドリンク" },
 ];
 // categories の型は { id: number; name: string }[] と推論される
+```
+
+## ジェネリクス
+
+ジェネリクス（Generics）は、型をパラメータ化することで、複数の型で再利用可能なコードを記述する機能です。同じコードを異なる型で使用できるため、コードの重複を減らし、型安全性を保ちながら柔軟性を提供します。
+
+### ジェネリクスとは
+
+ジェネリクスを使用すると、型を変数のように扱うことができます。これにより、同じ関数やクラスを異なる型で使用できます。
+
+**基本的な構文**:
+
+```typescript
+function identity<T>(arg: T): T {
+  return arg;
+}
+
+// 使用例
+const number = identity<number>(42); // number型
+const text = identity<string>("hello"); // string型
+```
+
+**型推論による省略**:
+
+```typescript
+// 型引数を省略すると、TypeScriptが推論する
+const number = identity(42); // number型と推論される
+const text = identity("hello"); // string型と推論される
+```
+
+### 関数のジェネリクス
+
+関数にジェネリクスを使用することで、異なる型で同じ関数を使用できます。
+
+#### apiSuccess 関数
+
+**このアプリでの使用箇所**:
+
+[`lib/api-helpers.ts`](../../lib/api-helpers.ts) (`apiSuccess`関数)
+
+```typescript
+export function apiSuccess<T>(data: T, status: number = 200): NextResponse {
+  const response = NextResponse.json(data, { status });
+  response.headers.set("Content-Type", "application/json; charset=utf-8");
+  return response;
+}
+```
+
+**使用例**:
+
+```typescript
+// 商品データを返す場合
+const product = await prisma.product.findUnique({ where: { id: 1 } });
+return apiSuccess({ product }); // T は { product: Product } と推論される
+
+// 商品一覧を返す場合
+const products = await prisma.product.findMany();
+return apiSuccess({ products }); // T は { products: Product[] } と推論される
+```
+
+**メリット**:
+
+- **型安全性**: レスポンスデータの型が推論され、型安全な操作が可能
+- **再利用性**: 異なる型のデータに対して同じ関数を使用できる
+- **コードの簡潔性**: 型ごとに別々の関数を定義する必要がない
+
+#### safePrismaOperation 関数
+
+**このアプリでの使用箇所**:
+
+[`lib/prisma.ts`](../../lib/prisma.ts) (`safePrismaOperation`関数)
+
+```typescript
+export async function safePrismaOperation<T>(
+  operation: () => Promise<T>,
+  context?: string
+): Promise<T> {
+  try {
+    return await operation();
+  } catch (error) {
+    logError(error, context);
+    throw new DatabaseError(
+      `Failed to execute database operation${context ? ` in ${context}` : ""}`,
+      error
+    );
+  }
+}
+```
+
+**使用例**:
+
+```typescript
+// Product型を返す操作
+const product = await safePrismaOperation(
+  () => prisma.product.findUnique({ where: { id: 1 } }),
+  "getProduct"
+); // T は Product | null と推論される
+
+// Product[]型を返す操作
+const products = await safePrismaOperation(
+  () => prisma.product.findMany(),
+  "getProducts"
+); // T は Product[] と推論される
+```
+
+**メリット**:
+
+- **型安全性**: Prisma 操作の戻り値の型が保持される
+- **エラーハンドリング**: 統一されたエラーハンドリングを提供
+- **再利用性**: あらゆる Prisma 操作に対して使用可能
+
+### インターフェースのジェネリクス
+
+インターフェースにもジェネリクスを使用できます。これにより、異なる型で同じインターフェース構造を使用できます。
+
+#### ApiSuccessResponse インターフェース
+
+**このアプリでの使用箇所**:
+
+[`lib/api-types.ts`](../../lib/api-types.ts) (`ApiSuccessResponse`インターフェース)
+
+```typescript
+export interface ApiSuccessResponse<T> {
+  [key: string]: T;
+}
+```
+
+**使用例**:
+
+```typescript
+// 商品データのレスポンス
+type ProductResponse = ApiSuccessResponse<Product>;
+// これは { [key: string]: Product } と同じ
+
+// 商品一覧のレスポンス
+type ProductsResponse = ApiSuccessResponse<Product[]>;
+// これは { [key: string]: Product[] } と同じ
+```
+
+**実際の使用**:
+
+このアプリでは、`ApiSuccessResponse<T>`は汎用的な型として定義されていますが、実際の API レスポンス型（`GetProductsResponse`、`PostProductResponse`など）は、より具体的な型として定義されています。これにより、各 API エンドポイントのレスポンス型が明確になります。
+
+**メリット**:
+
+- **型の再利用**: 同じ構造を異なる型で使用できる
+- **型安全性**: レスポンスの型が明確になる
+- **拡張性**: 新しい API エンドポイントを追加する際に、同じパターンを使用できる
+
+### 制約付きジェネリクス
+
+ジェネリクスに制約を付けることで、型パラメータが特定の条件を満たすことを保証できます。
+
+#### withErrorHandling 関数
+
+**このアプリでの使用箇所**:
+
+[`lib/api-helpers.ts`](../../lib/api-helpers.ts) (`withErrorHandling`関数)
+
+```typescript
+export function withErrorHandling<T extends unknown[]>(
+  handler: (...args: T) => Promise<NextResponse>
+) {
+  return async (...args: T): Promise<NextResponse> => {
+    try {
+      return await handler(...args);
+    } catch (error) {
+      return handleApiError(error);
+    }
+  };
+}
+```
+
+**説明**:
+
+- `T extends unknown[]`: `T`は配列型でなければならないという制約
+- これにより、`handler`関数の引数の型が保持される
+
+**使用例**:
+
+```typescript
+// NextRequestを引数に取るハンドラー
+export const POST = withErrorHandling(async (request: NextRequest) => {
+  // ...
+});
+
+// 引数なしのハンドラー
+export const GET = withErrorHandling(async () => {
+  // ...
+});
+```
+
+**メリット**:
+
+- **型安全性**: ハンドラー関数の引数の型が保持される
+- **柔軟性**: 異なる引数を持つハンドラーに対応できる
+
+### ジェネリクスの使い分け
+
+**このアプリでの使い分け**:
+
+1. **関数のジェネリクス**: 異なる型で同じ関数を使用する場合
+   - 例: `apiSuccess<T>`, `safePrismaOperation<T>`
+2. **インターフェースのジェネリクス**: 異なる型で同じ構造を使用する場合
+   - 例: `ApiSuccessResponse<T>`
+3. **制約付きジェネリクス**: 型パラメータに制約を付ける場合
+   - 例: `withErrorHandling<T extends unknown[]>`
+
+**一般的な指針**:
+
+- **関数のジェネリクス**: 複数の型で同じロジックを使用する場合
+- **インターフェースのジェネリクス**: 複数の型で同じ構造を使用する場合
+- **制約付きジェネリクス**: 型パラメータが特定の条件を満たす必要がある場合
+
+**注意点**:
+
+- ジェネリクスは型安全性を保ちながらコードの再利用性を高めるが、過度に使用するとコードが複雑になる
+- このアプリでは、実際に複数の型で使用する場合のみジェネリクスを使用している
+
+### Java との比較
+
+Java 経験者向けの補足:
+
+**類似点**:
+
+- TypeScript の`<T>`は Java の`<T>`と同様の構文
+- 型パラメータの概念は同じ
+
+**違い**:
+
+- TypeScript では型推論が強力で、型引数を省略できる場合が多い
+- TypeScript では`extends`キーワードで制約を付ける（Java の`extends`や`super`に似ている）
+
+**例**:
+
+```typescript
+// TypeScript
+function identity<T>(arg: T): T {
+  return arg;
+}
+
+// Java
+public <T> T identity(T arg) {
+  return arg;
+}
 ```
 
 このアプリでは、用途に応じて適切な型定義方法を選択しています。
@@ -773,13 +1027,25 @@ type EventHandler = (event: Event) => void;
 
 **例**: `strict: true`、`noUnusedLocals: true`、`noUncheckedIndexedAccess: true`
 
-### 5. Prisma との統合
+### 5. ジェネリクスの活用
+
+**原則**: 複数の型で同じコードを使用する場合、ジェネリクスを使用してコードの再利用性を向上
+
+**例**: `apiSuccess<T>`, `safePrismaOperation<T>`, `withErrorHandling<T>`など
+
+**メリット**:
+
+- **コードの再利用性**: 同じ関数を異なる型で使用できる
+- **型安全性**: 型推論により、型安全な操作が可能
+- **保守性**: 型ごとに別々の関数を定義する必要がない
+
+### 6. Prisma との統合
 
 **原則**: Prisma の型生成機能を活用し、データベース操作を型安全に
 
 **例**: `npm run db:generate` で型を生成し、`@prisma/client` から型をインポート
 
-### 6. エラーハンドリングの型安全性
+### 7. エラーハンドリングの型安全性
 
 **原則**: 統一されたエラークラスを使用し、エラーハンドリングを型安全に
 
@@ -808,7 +1074,8 @@ type EventHandler = (event: Event) => void;
 1. **コンポーネントの Props**: すべてのコンポーネントの Props に型を定義
 2. **関数の引数と戻り値**: すべての関数に型を指定
 3. **API Routes**: リクエストとレスポンスの型を定義
-4. **エラーハンドリング**: 統一されたエラークラスを使用
+4. **ジェネリクス**: `apiSuccess<T>`, `safePrismaOperation<T>`, `withErrorHandling<T>`などで型をパラメータ化
+5. **エラーハンドリング**: 統一されたエラークラスを使用
 
 ### Prisma との統合
 
@@ -828,9 +1095,10 @@ type EventHandler = (event: Event) => void;
 1. **型定義の一元管理**: [`app/types.ts`](../../app/types.ts) と [`app/dashboard/types.ts`](../../app/dashboard/types.ts) で型定義を集約
 2. **型安全性**: すべてのコンポーネント、関数、API Routes に型を適用
 3. **型エイリアス**: 文字列リテラル型のユニオン型など、`type` キーワードを使用した型定義
-4. **Prisma との統合**: データベーススキーマから自動的に型を生成
-5. **厳格な型チェック**: [`tsconfig.json`](../../tsconfig.json) で厳格な型チェックを有効化
-6. **エラーハンドリング**: 統一されたエラークラスを使用し、型安全なエラーハンドリングを実現
+4. **ジェネリクス**: `apiSuccess<T>`, `safePrismaOperation<T>`, `withErrorHandling<T>`など、型をパラメータ化してコードの再利用性を向上
+5. **Prisma との統合**: データベーススキーマから自動的に型を生成
+6. **厳格な型チェック**: [`tsconfig.json`](../../tsconfig.json) で厳格な型チェックを有効化
+7. **エラーハンドリング**: 統一されたエラークラスを使用し、型安全なエラーハンドリングを実現
 
 すべてのコードは型安全に実装され、コンパイル時に型エラーを検出できます。これにより、実行時エラーを事前に防止し、コードの品質を向上させています。
 

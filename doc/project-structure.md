@@ -280,12 +280,14 @@ Prisma Client のシングルトンインスタンスを管理します。
 ```typescript
 import { prisma, safePrismaOperation } from "@/lib/prisma";
 
-// 使用例
+// 使用例（ジェネリクスにより、戻り値の型が推論される）
 const users = await safePrismaOperation(
   () => prisma.user.findMany(),
   "getUsers"
-);
+); // users の型は User[] と推論される
 ```
+
+**詳細**: ジェネリクスの詳細な説明については、[TypeScript ガイド - ジェネリクス](./guides/typescript-guide.md#ジェネリクス)を参照してください。
 
 #### [`lib/blob.ts`](../lib/blob.ts)
 
@@ -331,6 +333,12 @@ export const ErrorCodes = {
 
 API Routes 用のヘルパー関数を提供します。
 
+**主な関数**:
+
+- `withErrorHandling<T extends unknown[]>`: エラーハンドリングラッパー（ジェネリクスを使用）
+- `apiSuccess<T>`: 成功レスポンスの生成（ジェネリクスを使用）
+- `apiError`: エラーレスポンスの生成
+
 [`lib/api-helpers.ts`](../lib/api-helpers.ts) (`withErrorHandling`関数)
 
 ```typescript
@@ -338,9 +346,11 @@ import { withErrorHandling, apiSuccess } from "@/lib/api-helpers";
 
 export const GET = withErrorHandling(async () => {
   const data = await fetchData();
-  return apiSuccess({ data });
+  return apiSuccess({ data }); // ジェネリクスにより、dataの型が推論される
 });
 ```
+
+**詳細**: ジェネリクスの詳細な説明については、[TypeScript ガイド - ジェネリクス](./guides/typescript-guide.md#ジェネリクス)を参照してください。
 
 #### [`lib/api-types.ts`](../lib/api-types.ts)
 

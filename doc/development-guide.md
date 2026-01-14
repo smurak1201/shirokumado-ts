@@ -211,8 +211,10 @@ import { safePrismaOperation } from "@/lib/prisma";
 const user = await safePrismaOperation(
   () => prisma.user.findUnique({ where: { id } }),
   "getUser"
-);
+); // ジェネリクスにより、userの型が推論される
 ```
+
+**詳細**: `withErrorHandling`と`safePrismaOperation`はジェネリクスを使用しています。詳細については、[TypeScript ガイド - ジェネリクス](./guides/typescript-guide.md#ジェネリクス)を参照してください。
 
 **理由**:
 
@@ -220,6 +222,9 @@ const user = await safePrismaOperation(
 - **エラーログ**: 操作名を含む構造化されたエラーログが自動的に記録される
 - **コードの簡潔性**: 各操作で try-catch を書く必要がなく、コードが簡潔になる
 - **保守性**: エラーハンドリングのロジックを一箇所で管理でき、変更が容易
+- **型安全性**: ジェネリクスにより、Prisma 操作の戻り値の型が保持される
+
+**詳細**: ジェネリクスの詳細な説明については、[TypeScript ガイド - ジェネリクス](./guides/typescript-guide.md#ジェネリクス)を参照してください。
 
 **避ける**: 直接 try-catch で処理。
 
@@ -450,7 +455,7 @@ import { withErrorHandling, apiSuccess } from "@/lib/api-helpers";
 
 export const GET = withErrorHandling(async () => {
   const data = await fetchData();
-  return apiSuccess({ data });
+  return apiSuccess({ data }); // ジェネリクスにより、dataの型が推論される
 });
 ```
 
@@ -460,6 +465,9 @@ export const GET = withErrorHandling(async () => {
 - **エラーログ**: エラーが自動的にログに記録され、デバッグが容易
 - **適切な HTTP ステータス**: エラーの種類に応じた適切な HTTP ステータスコードが自動的に設定される
 - **コードの簡潔性**: try-catch を書く必要がなく、コードが簡潔で読みやすくなる
+- **型安全性**: ジェネリクスにより、ハンドラー関数の引数とレスポンスの型が保持される
+
+**詳細**: ジェネリクスの詳細な説明については、[TypeScript ガイド - ジェネリクス](./guides/typescript-guide.md#ジェネリクス)を参照してください。
 
 **避ける**: 手動でのエラーハンドリング。
 

@@ -472,7 +472,9 @@ import { ValidationError } from "@/lib/errors";
 3. **[`lib/api-types.ts`](../../lib/api-types.ts)**
 
    - API レスポンスの型定義
-   - ジェネリクスの使用例
+   - ジェネリクスの使用例（`ApiSuccessResponse<T>`）
+
+**詳細**: ジェネリクスの詳細な説明については、[TypeScript ガイド - ジェネリクス](./typescript-guide.md#ジェネリクス)を参照してください。
 
 4. **[`app/page.tsx`](../../app/page.tsx)（28-34 行目）**
    - 型ガードの使用例

@@ -684,6 +684,8 @@ API レスポンスの型定義を提供します。クライアント側での�
 
 [`lib/api-types.ts`](../../lib/api-types.ts) では、以下の型定義を提供しています。
 
+- `ApiSuccessResponse<T>`: 成功レスポンスの基本型（ジェネリクスを使用）
+- `ApiErrorResponse`: エラーレスポンスの型
 - `GetProductsResponse`: 商品一覧取得 API のレスポンス
 - `PostProductResponse`: 商品作成 API のレスポンス
 - `PutProductResponse`: 商品更新 API のレスポンス
@@ -692,6 +694,18 @@ API レスポンスの型定義を提供します。クライアント側での�
 - `PostProductReorderResponse`: 商品順序更新 API のレスポンス
 - `PostProductUploadResponse`: 画像アップロード API のレスポンス
 - `GetCategoriesResponse`: カテゴリー一覧取得 API のレスポンス
+
+**ジェネリクスの使用**:
+
+`ApiSuccessResponse<T>`はジェネリクスを使用しており、異なる型のレスポンスに対して同じ構造を使用できます。
+
+```typescript
+export interface ApiSuccessResponse<T> {
+  [key: string]: T;
+}
+```
+
+**詳細**: ジェネリクスの詳細な説明については、[TypeScript ガイド - ジェネリクス](./typescript-guide.md#ジェネリクス)を参照してください。
 
 ### 使用例
 
