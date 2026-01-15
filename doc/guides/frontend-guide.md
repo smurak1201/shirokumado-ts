@@ -89,6 +89,8 @@
 
 **注意**: プロジェクト全体のディレクトリ構造の詳細については、[プロジェクト構造ドキュメント](../project-structure.md)を参照してください。App Router のディレクトリ構造については、[App Router ガイド](./app-router-guide.md#app-router-のディレクトリ構造)を参照してください。
 
+## ディレクトリ構造
+
 フロントエンドは以下のように構造化されています：
 
 ```
@@ -514,11 +516,19 @@ ProductModal
 - データベースへの直接アクセス
 - クライアントサイドの JavaScript を最小化
 
+**詳細な説明**: Server Components の詳細については、[App Router ガイド - Server Components と Client Components](./app-router-guide.md#server-components-と-client-components) を参照してください。
+
 ### 画像最適化
+
+画像最適化の詳細については、[Next.js ガイド - 画像最適化](./nextjs-guide.md#画像最適化) を参照してください。
+
+**このアプリでの実装**:
 
 - WebP 形式の使用
 - 適切なサイズ指定
 - 優先読み込みの設定
+
+**詳細な説明**: 画像最適化の詳細については、[Next.js ガイド - 画像最適化](./nextjs-guide.md#画像最適化) を参照してください。
 
 ### コード分割
 

@@ -549,7 +549,7 @@ export const POST = withErrorHandling(async (request: NextRequest) => {
 });
 ```
 
-**詳細は [開発ガイド - API Routes](./development-guide.md#api-routes) を参照してください。**
+**詳細は [App Router ガイド - API Routes](./app-router-guide.md#api-routes) を参照してください。**
 
 ### Prisma でのデータベース操作
 

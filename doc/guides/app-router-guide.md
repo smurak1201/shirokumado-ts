@@ -35,8 +35,6 @@ Next.js App Router は、Next.js 13 以降で導入された新しいルーテ�
 
 ## App Router とは
 
-App Router は、Next.js 13 以降で導入された新しいルーティングシステムです。ファイルベースのルーティングと、React Server Components を活用したサーバーサイドレンダリングを提供します。
-
 **Next.js 全体の説明については、[Next.js ガイド](./nextjs-guide.md) を参照してください。**
 
 **App Router の主な特徴**:
@@ -1036,36 +1034,15 @@ export default function ProductForm() {
 
 ## 画像最適化
 
-**説明**: Next.js の `Image` コンポーネントを使用すると、画像の自動最適化、WebP 変換、レスポンシブ画像の生成などが自動で行われます。
+Next.js の `Image` コンポーネントを使用すると、画像の自動最適化、WebP 変換、レスポンシブ画像の生成などが自動で行われます。
+
+**詳細な説明**: 画像最適化の詳細な設定、使用方法、このアプリでの実装例については、[Next.js ガイド - 画像最適化](./nextjs-guide.md#画像最適化) を参照してください。
 
 **このアプリでの使用箇所**:
 
-1. **[`app/page.tsx`](../../app/page.tsx) (ヒーロー画像セクション)** - ヒーロー画像の最適化
-
-```typescript
-<section className="relative h-[30vh] min-h-[200px] w-full overflow-hidden md:h-[50vh] md:min-h-[400px] lg:h-[60vh] lg:min-h-[500px]">
-  <Image
-    src="/hero.webp"
-    alt="白熊堂"
-    fill
-    priority
-    className="object-cover"
-    sizes="100vw"
-  />
-  {/* オーバーレイ */}
-  <div className="absolute inset-0 bg-linear-to-b from-white/20 via-white/8 to-white/25" />
-</section>
-```
-
-**Image コンポーネントの主なプロパティ**:
-
-- `src`: 画像のパス（`/` から始まるパスは `public/` ディレクトリを参照）
-- `alt`: 代替テキスト（アクセシビリティのため必須）
-- `width` / `height`: 画像のサイズ（`fill` を使用する場合は不要）
-- `fill`: 親要素のサイズに合わせて画像を表示
-- `priority`: 優先読み込み（LCP 画像などに使用）
-- `sizes`: レスポンシブ画像のサイズヒント
-- `quality`: 画像品質（1-100、デフォルトは 75）
+- **[`app/page.tsx`](../../app/page.tsx)**: ヒーロー画像の最適化
+- **[`app/components/ProductTile.tsx`](../../app/components/ProductTile.tsx)**: 商品画像の最適化
+- **[`app/components/ProductModal.tsx`](../../app/components/ProductModal.tsx)**: モーダル内の商品画像
 
 ## レイアウトとテンプレート
 

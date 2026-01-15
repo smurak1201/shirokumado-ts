@@ -13,6 +13,14 @@
   - [コンポーネントの Props の型定義](#コンポーネントの-props-の型定義)
   - [関数の型定義](#関数の型定義)
   - [ユニオン型と null 許容型](#ユニオン型と-null-許容型)
+- [型安全と型ガード](#型安全と型ガード)
+  - [型安全とは](#型安全とは)
+  - [型ガードとは](#型ガードとは)
+  - [typeof 型ガード](#typeof-型ガード)
+  - [instanceof 型ガード](#instanceof-型ガード)
+  - [カスタム型ガード関数](#カスタム型ガード関数)
+  - [in 演算子による型ガード](#in-演算子による型ガード)
+  - [判別可能なユニオン型](#判別可能なユニオン型)
 - [Prisma との統合](#prisma-との統合)
   - [型生成](#型生成)
 - [API Routes での型安全性](#api-routes-での型安全性)
@@ -41,6 +49,7 @@
   - [5. ジェネリクスの活用](#5-ジェネリクスの活用)
   - [6. Prisma との統合](#6-prisma-との統合)
   - [7. エラーハンドリングの型安全性](#7-エラーハンドリングの型安全性)
+  - [8. 型ガードの活用](#8-型ガードの活用)
 - [このアプリでの TypeScript の使用例まとめ](#このアプリでの-typescript-の使用例まとめ)
   - [型定義の構成](#型定義の構成)
   - [型安全性の実装](#型安全性の実装-1)
@@ -54,14 +63,6 @@
 TypeScript は、Microsoft が開発した JavaScript の型付きスーパーセットです。JavaScript に静的型付けを追加することで、大規模なアプリケーション開発を支援します。
 
 このアプリケーションでは、**TypeScript 5** を使用して、フロントエンドとバックエンドの両方で型安全性を確保し、開発効率とコード品質を向上させています。
-
-**TypeScript の主な特徴**:
-
-- **型安全性**: コンパイル時に型エラーを検出し、実行時エラーを事前に防止
-- **IDE サポート**: 優れた自動補完とリファクタリング機能により、開発効率を向上
-- **段階的導入**: JavaScript コードをそのまま TypeScript として実行可能
-- **最新の JavaScript 機能**: ES6+ の機能をサポートし、モダンな開発が可能
-- **エコシステム**: 多くのライブラリが TypeScript の型定義を提供
 
 ## TypeScript とは
 
@@ -403,6 +404,365 @@ type TabType = "list" | "layout";
 ```
 
 **詳細は [interface vs type](#interface-vs-type) セクションを参照してください。**
+
+## 型安全と型ガード
+
+### 型安全とは
+
+型安全（Type Safety）とは、コンパイル時に型エラーを検出し、実行時エラーを事前に防止する仕組みです。TypeScript は、静的型付けにより型安全性を提供します。
+
+**型安全のメリット**:
+
+- **実行時エラーの防止**: コンパイル時に型エラーを検出し、実行時エラーを事前に防止
+- **IDE サポート**: 自動補完や型チェックにより、開発効率を向上
+- **リファクタリングの安全性**: 型定義により、安全にリファクタリングが可能
+- **コードの可読性**: 型定義が実質的なドキュメントとして機能し、コードの理解が容易
+
+**このアプリでの型安全の実装**:
+
+- すべてのコンポーネント、関数、API Routes に型を適用
+- 厳格な型チェック（`strict: true`）を有効化
+- null 許容型を明示的に指定
+- 型ガードを使用して実行時の型チェックを実装
+
+### 型ガードとは
+
+型ガード（Type Guard）は、実行時に値の型をチェックし、TypeScript の型システムに型情報を伝える機能です。型ガードを使用することで、型の絞り込み（Narrowing）が行われ、その後のコードで型安全にアクセスできます。
+
+**型ガードの種類**:
+
+1. **typeof 型ガード**: プリミティブ型のチェック
+2. **instanceof 型ガード**: クラスのインスタンスのチェック
+3. **カスタム型ガード関数**: 独自の型チェック関数
+4. **in 演算子**: オブジェクトのプロパティの存在チェック
+5. **判別可能なユニオン型**: 共通のプロパティで型を判別
+
+### typeof 型ガード
+
+`typeof` 演算子を使用して、プリミティブ型をチェックします。
+
+**基本的な構文**:
+
+```typescript
+if (typeof value === "string") {
+  // value は string 型として扱える
+  console.log(value.toUpperCase());
+}
+```
+
+**このアプリでの使用箇所**:
+
+1. **API Routes でのバリデーション** ([`app/api/products/route.ts`](../../app/api/products/route.ts))
+
+```typescript
+if (!body.name || typeof body.name !== "string") {
+  throw new ValidationError("商品名は必須です");
+}
+```
+
+2. **サーバーサイドレンダリング時の環境チェック** ([`app/dashboard/hooks/useTabState.ts`](../../app/dashboard/hooks/useTabState.ts))
+
+```typescript
+if (typeof window !== "undefined") {
+  const saved = localStorage.getItem(STORAGE_KEYS.ACTIVE_TAB);
+  // ...
+}
+```
+
+**理由**: Next.js の Server Components では `window` オブジェクトが存在しないため、クライアントサイドのコードを実行する前に環境をチェックする必要があります。
+
+3. **数値変換時の型チェック** ([`lib/product-utils.ts`](../../lib/product-utils.ts))
+
+```typescript
+const numValue =
+  typeof value === "string" ? parseFloat(value.replace(/,/g, "")) : value;
+if (isNaN(numValue)) {
+  return null;
+}
+```
+
+**typeof でチェックできる型**:
+
+- `"string"`: 文字列型
+- `"number"`: 数値型
+- `"boolean"`: 真偽値型
+- `"undefined"`: undefined 型
+- `"object"`: オブジェクト型（null も含む）
+- `"function"`: 関数型
+- `"symbol"`: シンボル型
+- `"bigint"`: BigInt 型
+
+**注意点**:
+
+- `typeof null === "object"` となるため、null チェックは別途必要です
+- 配列も `typeof array === "object"` となるため、`Array.isArray()` を使用します
+
+### instanceof 型ガード
+
+`instanceof` 演算子を使用して、クラスのインスタンスをチェックします。
+
+**基本的な構文**:
+
+```typescript
+if (error instanceof Error) {
+  // error は Error 型として扱える
+  console.log(error.message);
+}
+```
+
+**このアプリでの使用箇所**:
+
+1. **エラーハンドリング** ([`lib/api-helpers.ts`](../../lib/api-helpers.ts))
+
+```typescript
+if (error instanceof AppError) {
+  return apiError(error.statusCode, error.message, error.errorCode);
+}
+```
+
+2. **Blob Storage エラーのチェック** ([`lib/blob.ts`](../../lib/blob.ts))
+
+```typescript
+if (error instanceof BlobStorageError) {
+  throw error;
+}
+```
+
+3. **コンポーネントでのエラーハンドリング** ([`app/dashboard/components/ProductList.tsx`](../../app/dashboard/components/ProductList.tsx))
+
+```typescript
+catch (error) {
+  const errorMessage =
+    error instanceof Error ? error.message : "商品の削除に失敗しました";
+  // ...
+}
+```
+
+**メリット**:
+
+- **型の絞り込み**: TypeScript が型を自動的に絞り込み、その後のコードで型安全にアクセスできる
+- **エラーの種類の判別**: 異なるエラークラスを区別して処理できる
+- **実行時の型チェック**: 実行時に実際の型を確認できる
+
+### カスタム型ガード関数
+
+カスタム型ガード関数は、`value is Type` という戻り値の型を持つ関数です。これにより、TypeScript に型情報を伝えることができます。
+
+**基本的な構文**:
+
+```typescript
+function isType(value: unknown): value is Type {
+  // 型チェックのロジック
+  return /* 条件 */;
+}
+
+if (isType(data)) {
+  // data は Type 型として扱える
+}
+```
+
+**このアプリでの使用箇所**:
+
+1. **画像ファイルのチェック** ([`lib/image-compression.ts`](../../lib/image-compression.ts))
+
+```typescript
+export function isImageFile(file: File): boolean {
+  // ファイルタイプがimage/で始まる場合
+  if (file.type && file.type.startsWith("image/")) {
+    return true;
+  }
+
+  // HEIC形式の場合
+  if (isHeicFile(file)) {
+    return true;
+  }
+
+  // ファイルタイプが空の場合、拡張子で判定
+  if (!file.type || file.type === "application/octet-stream") {
+    const imageExtensions = /\.(jpg|jpeg|png|gif|webp|bmp|svg|heic|heif)$/i;
+    return imageExtensions.test(file.name);
+  }
+
+  return false;
+}
+```
+
+**使用例** ([`app/dashboard/components/DashboardForm.tsx`](../../app/dashboard/components/DashboardForm.tsx)):
+
+```typescript
+if (!isImageFile(file)) {
+  setError("画像ファイルを選択してください");
+  return;
+}
+```
+
+2. **数値キーのチェック** ([`lib/product-utils.ts`](../../lib/product-utils.ts))
+
+```typescript
+export function isNumericKey(
+  e: React.KeyboardEvent<HTMLInputElement>
+): boolean {
+  // 数字キー（0-9）
+  if (e.key >= "0" && e.key <= "9") {
+    return true;
+  }
+  // 許可された制御キー
+  const allowedKeys = [
+    "Backspace",
+    "Delete",
+    "Tab",
+    "Escape",
+    "Enter",
+    "ArrowLeft",
+    "ArrowRight",
+    "ArrowUp",
+    "ArrowDown",
+    "Home",
+    "End",
+  ];
+  return allowedKeys.includes(e.key);
+}
+```
+
+**使用例** ([`app/dashboard/components/DashboardForm.tsx`](../../app/dashboard/components/DashboardForm.tsx)):
+
+```typescript
+onKeyDown={(e) => {
+  if (!isNumericKey(e)) {
+    e.preventDefault();
+  }
+}}
+```
+
+**カスタム型ガード関数の特徴**:
+
+- **型の絞り込み**: `value is Type` という戻り値の型により、TypeScript が型を絞り込む
+- **再利用性**: 同じ型チェックロジックを複数の場所で使用できる
+- **可読性**: 型チェックの意図が明確になり、コードの可読性が向上
+
+**カスタム型ガード関数の書き方**:
+
+```typescript
+// 良い例: value is Type という戻り値の型を使用
+function isUser(value: unknown): value is User {
+  return (
+    typeof value === "object" &&
+    value !== null &&
+    "id" in value &&
+    "email" in value &&
+    typeof (value as User).id === "number" &&
+    typeof (value as User).email === "string"
+  );
+}
+
+// 使用例
+if (isUser(data)) {
+  // data は User 型として扱える
+  console.log(data.email);
+}
+```
+
+### in 演算子による型ガード
+
+`in` 演算子を使用して、オブジェクトのプロパティの存在をチェックします。
+
+**基本的な構文**:
+
+```typescript
+if ("property" in object) {
+  // object に property が存在する
+}
+```
+
+**このアプリでの使用例**:
+
+```typescript
+function isUser(value: unknown): value is User {
+  return (
+    typeof value === "object" &&
+    value !== null &&
+    "id" in value &&
+    "email" in value
+  );
+}
+```
+
+**in 演算子の特徴**:
+
+- **プロパティの存在チェック**: オブジェクトに特定のプロパティが存在するかチェック
+- **型の絞り込み**: TypeScript が型を絞り込む
+- **実行時のチェック**: 実行時に実際のプロパティの存在を確認
+
+**注意点**:
+
+- `in` 演算子はプロトタイプチェーンも含めてチェックするため、意図しないプロパティが含まれる可能性があります
+- より厳密なチェックが必要な場合は、カスタム型ガード関数を使用します
+
+### 判別可能なユニオン型
+
+判別可能なユニオン型（Discriminated Union）は、共通のプロパティ（判別プロパティ）を持つ複数の型を組み合わせた型です。判別プロパティの値によって、どの型かを判別できます。
+
+**基本的な構文**:
+
+```typescript
+type Success = {
+  status: "success";
+  data: string;
+};
+
+type Error = {
+  status: "error";
+  message: string;
+};
+
+type Result = Success | Error;
+
+function handleResult(result: Result) {
+  if (result.status === "success") {
+    // result は Success 型として扱える
+    console.log(result.data);
+  } else {
+    // result は Error 型として扱える
+    console.log(result.message);
+  }
+}
+```
+
+**このアプリでの使用例**:
+
+このアプリでは、判別可能なユニオン型は直接使用されていませんが、以下のようなパターンで使用できます：
+
+```typescript
+type ApiResponse<T> =
+  | { success: true; data: T }
+  | { success: false; error: string };
+
+function handleResponse<T>(response: ApiResponse<T>) {
+  if (response.success) {
+    // response は { success: true; data: T } 型として扱える
+    return response.data;
+  } else {
+    // response は { success: false; error: string } 型として扱える
+    throw new Error(response.error);
+  }
+}
+```
+
+**判別可能なユニオン型のメリット**:
+
+- **型の絞り込み**: 判別プロパティの値によって、TypeScript が型を自動的に絞り込む
+- **型安全性**: すべてのケースを処理することを強制できる
+- **可読性**: コードの意図が明確になる
+
+**型ガードの使い分け**:
+
+| 型ガード             | 使用場面                       | 例                            |
+| -------------------- | ------------------------------ | ----------------------------- |
+| `typeof`             | プリミティブ型のチェック       | `typeof value === "string"`   |
+| `instanceof`         | クラスのインスタンスのチェック | `error instanceof Error`      |
+| カスタム型ガード関数 | 複雑な型チェック               | `isImageFile(file)`           |
+| `in` 演算子          | プロパティの存在チェック       | `"id" in value`               |
+| 判別可能なユニオン型 | 複数の型を判別                 | `result.status === "success"` |
 
 ## Prisma との統合
 
@@ -1047,6 +1407,36 @@ type EventHandler = (event: Event) => void;
 
 **例**: `ValidationError`、`NotFoundError` などのエラークラスを定義
 
+### 8. 型ガードの活用
+
+**原則**: 実行時の型チェックには型ガードを使用し、型アサーション（`as`）は避ける
+
+**例**:
+
+```typescript
+// 良い例: 型ガードを使用
+if (isImageFile(file)) {
+  // file は画像ファイルとして扱える
+  processImage(file);
+}
+
+// 避ける: 型アサーション
+const imageFile = file as ImageFile; // 実行時に型チェックされない
+```
+
+**理由**:
+
+- **型安全性**: 実行時に型をチェックし、型安全にコードを記述できる
+- **エラーの早期発見**: 不正なデータを早期に検出し、エラーを防止できる
+- **コードの可読性**: 型チェックの意図が明確になり、コードの可読性が向上
+
+**このアプリでの使用例**:
+
+- `isImageFile()`: 画像ファイルのチェック
+- `isNumericKey()`: 数値キーのチェック
+- `typeof window !== "undefined"`: サーバーサイドレンダリング時の環境チェック
+- `error instanceof Error`: エラーの型チェック
+
 ## このアプリでの TypeScript の使用例まとめ
 
 ### 型定義の構成
@@ -1065,7 +1455,7 @@ type EventHandler = (event: Event) => void;
 3. **型エイリアス** ([`app/dashboard/hooks/useTabState.ts`](../../app/dashboard/hooks/useTabState.ts))
    - `TabType`: 文字列リテラル型のユニオン型（`"list" | "layout"`）
 
-### 型安全性の実装
+### 型安全性の実装 {#型安全性の実装-1}
 
 1. **コンポーネントの Props**: すべてのコンポーネントの Props に型を定義
 2. **関数の引数と戻り値**: すべての関数に型を指定
@@ -1073,13 +1463,13 @@ type EventHandler = (event: Event) => void;
 4. **ジェネリクス**: `apiSuccess<T>`, `safePrismaOperation<T>`, `withErrorHandling<T>`などで型をパラメータ化
 5. **エラーハンドリング**: 統一されたエラークラスを使用
 
-### Prisma との統合
+### Prisma との統合 {#prisma-との統合-1}
 
 1. **型生成**: `npm run db:generate` で型を生成
 2. **型の使用**: `@prisma/client` から型をインポート
 3. **型安全な操作**: Prisma Client の操作がすべて型安全
 
-### 設定ファイル
+### 設定ファイル {#設定ファイル-1}
 
 - **[`tsconfig.json`](../../tsconfig.json)**: 厳格な型チェックを有効化
 - **パスエイリアス**: `@/` でプロジェクトルートを参照
@@ -1095,6 +1485,7 @@ type EventHandler = (event: Event) => void;
 5. **Prisma との統合**: データベーススキーマから自動的に型を生成
 6. **厳格な型チェック**: [`tsconfig.json`](../../tsconfig.json) で厳格な型チェックを有効化
 7. **エラーハンドリング**: 統一されたエラークラスを使用し、型安全なエラーハンドリングを実現
+8. **型ガード**: `typeof`、`instanceof`、カスタム型ガード関数を使用して実行時の型チェックを実装
 
 すべてのコードは型安全に実装され、コンパイル時に型エラーを検出できます。これにより、実行時エラーを事前に防止し、コードの品質を向上させています。
 

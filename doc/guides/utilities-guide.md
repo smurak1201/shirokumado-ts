@@ -750,7 +750,7 @@ const created: PostProductResponse = await createResponse.json();
 - `log.warn()`: 警告
 - `log.error()`: エラー
 
-### 使用例
+### 使用例 {#使用例-1}
 
 ```typescript
 import { log } from "@/lib/logger";

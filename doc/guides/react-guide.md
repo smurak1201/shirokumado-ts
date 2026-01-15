@@ -21,7 +21,6 @@
 - [コンポーネント設計](#コンポーネント設計)
   - [コンポーネントの分割原則](#コンポーネントの分割原則)
   - [コンポーネントの階層構造](#コンポーネントの階層構造)
-  - [コンポーネントの実装例](#コンポーネントの実装例)
 - [状態管理](#状態管理)
   - [状態管理の戦略](#状態管理の戦略)
   - [状態管理の例](#状態管理の例)
@@ -42,14 +41,6 @@ React は、ユーザーインターフェースを構築するための JavaScr
 このアプリケーションでは、**React 19.2.3** を使用して、Next.js App Router と統合し、Server Components と Client Components を適切に使い分けながら、インタラクティブな UI を実装しています。
 
 **関連ドキュメント**: JSX の構文について詳しく知りたい場合は、[JSX ガイド](./jsx-guide.md)を参照してください。このガイドでは、React の概念と実装パターンに焦点を当てています。
-
-**React の主な特徴**:
-
-- **コンポーネントベース**: UI を独立したコンポーネントに分割し、再利用性と保守性を向上
-- **仮想 DOM**: 効率的な DOM 更新により、パフォーマンスを最適化
-- **単方向データフロー**: データの流れが明確で、予測可能な動作を実現
-- **Hooks**: 関数コンポーネントで状態管理や副作用を扱える仕組み
-- **豊富なエコシステム**: 多数のサードパーティライブラリと統合可能
 
 ## React とは
 
@@ -76,19 +67,7 @@ React は、Facebook（現 Meta）が開発した、ユーザーインターフ�
 
 Next.js App Router では、React コンポーネントはデフォルトで Server Components として動作します。インタラクティブな機能が必要な場合のみ、`'use client'` ディレクティブを使用して Client Components として実装します。
 
-**Server Components（デフォルト）**:
-
-- サーバーサイドでレンダリングされる
-- データベースに直接アクセス可能
-- クライアントサイドの JavaScript が送信されない（バンドルサイズの削減）
-- `'use client'` ディレクティブは不要
-
-**Client Components**:
-
-- ブラウザで実行される
-- `useState`、`useEffect` などの React Hooks が使用可能
-- イベントハンドラー（`onClick`、`onChange` など）が使用可能
-- `'use client'` ディレクティブが必要
+**詳細な説明**: Server Components と Client Components の詳細な説明、使い分け、データフェッチングの方法については、[App Router ガイド - Server Components と Client Components](./app-router-guide.md#server-components-と-client-components) を参照してください。
 
 **このアプリでの使い分け**:
 
@@ -120,16 +99,16 @@ React Hooks は、関数コンポーネントで状態管理や副作用を扱�
 1. **[`app/hooks/useProductModal.ts`](../../app/hooks/useProductModal.ts) (`useProductModal`フック)** - 商品モーダルの状態管理
 
 ```typescript
-  // 選択された商品を管理（モーダル表示用）
-  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
-  // モーダルの開閉状態を管理
-  const [isModalOpen, setIsModalOpen] = useState(false);
+// 選択された商品を管理（モーダル表示用）
+const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+// モーダルの開閉状態を管理
+const [isModalOpen, setIsModalOpen] = useState(false);
 ```
 
 2. **[`app/dashboard/components/DashboardContent.tsx`](../../app/dashboard/components/DashboardContent.tsx) (`DashboardContent`コンポーネント)** - フォームの開閉状態管理
 
 ```typescript
-  const [isFormOpen, setIsFormOpen] = useState(false);
+const [isFormOpen, setIsFormOpen] = useState(false);
 ```
 
 3. **[`app/dashboard/hooks/useTabState.ts`](../../app/dashboard/hooks/useTabState.ts) (`useTabState`フック)** - タブ状態の管理（localStorage と同期）
@@ -204,52 +183,11 @@ React では、副作用を `useEffect` Hook を使用して処理します。`u
 
 1. **[`app/hooks/useModal.ts`](../../app/hooks/useModal.ts) (`useModal`フック)** - ESC キー処理と背景スクロール無効化
 
-```typescript
-  // onCloseの最新の参照を保持するref
-  // これにより、onCloseが変更されてもuseEffectを再実行せずに最新の関数を呼び出せる
-  const onCloseRef = useRef(onClose);
-
-  // onCloseが変更されたらrefを更新
-  useEffect(() => {
-    onCloseRef.current = onClose;
-  }, [onClose]);
-
-  useEffect(() => {
-    /**
-     * ESCキーでモーダルを閉じる処理
-     */
-    const handleEscape = (e: KeyboardEvent) => {
-      if (e.key === "Escape") {
-        // refから最新のonCloseを呼び出す
-        onCloseRef.current();
-      }
-    };
-
-    if (isOpen) {
-      // ESCキーのイベントリスナーを追加
-      document.addEventListener("keydown", handleEscape);
-      // モーダルが開いている時は背景のスクロールを無効化
-      document.body.style.overflow = "hidden";
-    }
-
-    return () => {
-      // クリーンアップ: イベントリスナーを削除し、スクロールを有効化
-      document.removeEventListener("keydown", handleEscape);
-      document.body.style.overflow = "unset";
-    };
-  }, [isOpen]); // onCloseを依存配列から削除（refで最新の値を保持しているため）
-}
-```
+`useModal`フックでは、`useEffect`を使用して ESC キーのイベントリスナーを登録し、モーダル表示時の背景スクロールを無効化しています。詳細な実装については、[useModal](#usemodal)セクションを参照してください。
 
 2. **[`app/dashboard/hooks/useTabState.ts`](../../app/dashboard/hooks/useTabState.ts) (`useTabState`フック内の`useEffect`)** - localStorage への保存
 
-```typescript
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      localStorage.setItem(STORAGE_KEYS.ACTIVE_TAB, activeTab);
-    }
-  }, [activeTab]);
-```
+`useTabState`フックでは、`useEffect`を使用してタブの状態を localStorage に保存しています。詳細な実装については、[useTabState](#usetabstate)セクションを参照してください。
 
 **useEffect の特徴**:
 
@@ -271,34 +209,7 @@ React では、副作用を `useEffect` Hook を使用して処理します。`u
 
 1. **[`app/dashboard/hooks/useTabState.ts`](../../app/dashboard/hooks/useTabState.ts) (`useCategoryTabState`フック内の`initialCategoryTab`)** - 初期カテゴリータブの計算
 
-```typescript
-    // localStorage から保存されたカテゴリータブを読み込む
-    if (typeof window !== "undefined") {
-      const saved = localStorage.getItem(STORAGE_KEYS.ACTIVE_CATEGORY_TAB);
-      if (saved) {
-        // 保存されたカテゴリーが現在も存在するか確認
-        const categoryExists = categories.some((c) => c.name === saved);
-        if (categoryExists) {
-          return saved;
-        }
-      }
-    }
-
-    // 公開商品があるカテゴリーを探す
-    const published = products.filter((p) => p.published);
-    // カテゴリーをID順でソート（小さい順）
-    const sortedCategories = [...categories].sort((a, b) => a.id - b.id);
-    if (published.length > 0) {
-      // 公開商品がある最初のカテゴリーを探す
-      const firstCategory = sortedCategories.find((c) =>
-        published.some((p) => p.category.id === c.id)
-      );
-      return firstCategory?.name || sortedCategories[0]?.name || "";
-    }
-    // 公開商品がない場合は最初のカテゴリーを返す
-    return sortedCategories[0]?.name || "";
-  }, [products, categories]);
-```
+`useCategoryTabState`フックでは、`useMemo`を使用して初期カテゴリータブを計算しています。詳細な実装については、[useCategoryTabState](#usecategorytabstate)セクションを参照してください。
 
 **useMemo の特徴**:
 
@@ -309,20 +220,19 @@ React では、副作用を `useEffect` Hook を使用して処理します。`u
 2. **[`app/dashboard/components/ProductList.tsx`](../../app/dashboard/components/ProductList.tsx) (`publishedProductsByCategory`の計算)** - 商品のフィルタリングとグループ化
 
 ```typescript
-  const publishedProductsByCategory = useMemo(
-    () => groupProductsByCategory(products, categories),
-    [products, categories]
-  );
+const publishedProductsByCategory = useMemo(
+  () => groupProductsByCategory(products, categories),
+  [products, categories]
+);
 ```
 
 [`app/dashboard/components/ProductList.tsx`](../../app/dashboard/components/ProductList.tsx) (`filteredProducts`の計算)
 
 ```typescript
-  const filteredProducts = useMemo(
-    () =>
-      filterProducts(products, searchName, searchPublished, searchCategoryId),
-    [products, searchName, searchPublished, searchCategoryId] // 依存配列
-  );
+const filteredProducts = useMemo(
+  () => filterProducts(products, searchName, searchPublished, searchCategoryId),
+  [products, searchName, searchPublished, searchCategoryId] // 依存配列
+);
 ```
 
 ### useCallback
@@ -339,60 +249,38 @@ React では、副作用を `useEffect` Hook を使用して処理します。`u
 1. **[`app/dashboard/components/CategoryTabs.tsx`](../../app/dashboard/components/CategoryTabs.tsx) (`checkScrollPosition`関数)** - スクロール位置のチェック
 
 ```typescript
-  const checkScrollPosition = useCallback(() => {
-    if (!scrollContainerRef.current) return;
-    const { scrollLeft, scrollWidth, clientWidth } = scrollContainerRef.current;
-    // 左側にスクロールできる場合（scrollLeft > 0）は左側のグラデーションを表示
-    setShowLeftGradient(scrollLeft > 0);
-    // 右側にスクロールできる場合（scrollLeft < scrollWidth - clientWidth - 1）は右側のグラデーションを表示
-    // -1 は丸め誤差を考慮したマージン
-    setShowRightGradient(scrollLeft < scrollWidth - clientWidth - 1);
-  }, []);
+const checkScrollPosition = useCallback(() => {
+  if (!scrollContainerRef.current) return;
+  const { scrollLeft, scrollWidth, clientWidth } = scrollContainerRef.current;
+  // 左側にスクロールできる場合（scrollLeft > 0）は左側のグラデーションを表示
+  setShowLeftGradient(scrollLeft > 0);
+  // 右側にスクロールできる場合（scrollLeft < scrollWidth - clientWidth - 1）は右側のグラデーションを表示
+  // -1 は丸め誤差を考慮したマージン
+  setShowRightGradient(scrollLeft < scrollWidth - clientWidth - 1);
+}, []);
 ```
 
-2. **[`app/hooks/useProductModal.ts`](../../app/hooks/useProductModal.ts) (`handleProductClick`関数)** - 商品モーダルの操作関数
+2. **[`app/hooks/useProductModal.ts`](../../app/hooks/useProductModal.ts) (`handleProductClick`関数と`handleCloseModal`関数)** - 商品モーダルの操作関数
 
-```typescript
-  const handleProductClick = useCallback((product: Product) => {
-    setSelectedProduct(product);
-    setIsModalOpen(true);
-  }, []);
-```
-
-[`app/hooks/useProductModal.ts`](../../app/hooks/useProductModal.ts) (`handleCloseModal`関数)
-
-```typescript
-  const handleCloseModal = useCallback(() => {
-    setIsModalOpen(false);
-    // 既存のタイマーをクリア（複数回呼ばれた場合に備える）
-    if (timeoutRef.current) {
-      clearTimeout(timeoutRef.current);
-    }
-    // モーダルが閉じた後に選択をクリア（アニメーション完了を待つ）
-    timeoutRef.current = setTimeout(() => {
-      setSelectedProduct(null);
-      timeoutRef.current = null;
-    }, 300);
-  }, []);
-```
+`useProductModal`フックでは、`useCallback`を使用して`handleProductClick`と`handleCloseModal`関数をメモ化しています。詳細な実装については、[useProductModal](#useproductmodal)セクションを参照してください。
 
 3. **[`app/dashboard/components/ProductList.tsx`](../../app/dashboard/components/ProductList.tsx) (`handleEdit`関数)** - 商品操作のコールバック関数
 
 ```typescript
-  const handleEdit = useCallback((product: Product) => {
-    setEditingProduct(product);
-  }, []);
+const handleEdit = useCallback((product: Product) => {
+  setEditingProduct(product);
+}, []);
 ```
 
 [`app/dashboard/components/ProductList.tsx`](../../app/dashboard/components/ProductList.tsx) (`handleDelete`関数)
 
 ```typescript
-  const handleDelete = useCallback(
-    async (productId: number) => {
-      // ...
-    },
-    [refreshProducts]
-  );
+const handleDelete = useCallback(
+  async (productId: number) => {
+    // ...
+  },
+  [refreshProducts]
+);
 ```
 
 **useCallback の特徴**:
@@ -468,14 +356,14 @@ export default memo(ProductTile);
 1. **[`app/dashboard/components/CategoryTabs.tsx`](../../app/dashboard/components/CategoryTabs.tsx) (`scrollContainerRef`)** - DOM 要素への参照
 
 ```typescript
-  // useRef を使用して DOM 要素に直接アクセスします
-  const scrollContainerRef = useRef<HTMLDivElement>(null);
+// useRef を使用して DOM 要素に直接アクセスします
+const scrollContainerRef = useRef<HTMLDivElement>(null);
 ```
 
 2. **[`app/hooks/useProductModal.ts`](../../app/hooks/useProductModal.ts) (`timeoutRef`)** - タイマー ID の保持
 
 ```typescript
-  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 ```
 
 **useRef の特徴**:
@@ -645,8 +533,8 @@ export function useModal(isOpen: boolean, onClose: () => void) {
 [`app/components/ProductModal.tsx`](../../app/components/ProductModal.tsx) (`ProductModal`コンポーネント)
 
 ```typescript
-  // ESCキー処理と背景スクロール無効化を管理
-  useModal(isOpen, onClose);
+// ESCキー処理と背景スクロール無効化を管理
+useModal(isOpen, onClose);
 ```
 
 - ESC キーでモーダルを閉じる
@@ -680,18 +568,24 @@ export function useProductModal() {
    * 商品タイルクリック時のハンドラー
    * 選択された商品を設定してモーダルを開きます
    *
+   * useCallbackでメモ化しており、依存配列が空のため常に同じ関数参照を返します。
+   * これにより、ProductGridコンポーネントの再レンダリングを最小限に抑えます。
+   *
    * @param product - クリックされた商品
    */
-  const handleProductClick = (product: Product) => {
+  const handleProductClick = useCallback((product: Product) => {
     setSelectedProduct(product);
     setIsModalOpen(true);
-  };
+  }, []);
 
   /**
    * モーダル閉じる時のハンドラー
    * モーダルを閉じ、アニメーション完了後に選択をクリアします
+   *
+   * useCallbackでメモ化しており、依存配列が空のため常に同じ関数参照を返します。
+   * これにより、ProductModalコンポーネントの再レンダリングを最小限に抑えます。
    */
-  const handleCloseModal = () => {
+  const handleCloseModal = useCallback(() => {
     setIsModalOpen(false);
     // 既存のタイマーをクリア（複数回呼ばれた場合に備える）
     if (timeoutRef.current) {
@@ -702,7 +596,7 @@ export function useProductModal() {
       setSelectedProduct(null);
       timeoutRef.current = null;
     }, 300);
-  };
+  }, []);
 
   // コンポーネントのアンマウント時にタイマーをクリーンアップ
   useEffect(() => {
@@ -730,15 +624,6 @@ export default function ProductGrid({ category, products }: ProductGridProps) {
   const { selectedProduct, isModalOpen, handleProductClick, handleCloseModal } =
     useProductModal();
 ```
-
-- 商品タイルクリック時にモーダルを開く
-- モーダル閉じる時にアニメーション完了を待ってから選択をクリア
-- `setTimeout`のクリーンアップ処理によりメモリリークを防止
-
-- 選択された商品の管理
-- モーダルの開閉状態管理
-- 商品クリック時のハンドリング
-- モーダル閉じる時のアニメーション考慮（300ms 後に選択をクリア）
 
 ### useTabState
 
@@ -1012,12 +897,8 @@ export default function ProductGrid({ category, products }: ProductGridProps) {
 ```typescript
 export default function ProductGrid({ category, products }: ProductGridProps) {
   // モーダルの状態管理（カスタムフックで実装）
-  const {
-    selectedProduct,
-    isModalOpen,
-    handleProductClick,
-    handleCloseModal,
-  } = useProductModal();
+  const { selectedProduct, isModalOpen, handleProductClick, handleCloseModal } =
+    useProductModal();
 
   // 商品がない場合は何も表示しない
   if (products.length === 0) {
@@ -1193,6 +1074,8 @@ try {
   await refreshProducts();
 }
 ```
+
+## イベントハンドリング
 
 React では、イベントハンドラーを props として渡すことで、コンポーネント間でイベントを処理できます。
 

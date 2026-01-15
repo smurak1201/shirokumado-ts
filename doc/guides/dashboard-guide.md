@@ -543,7 +543,9 @@ file: [画像ファイル]
 
 ### エラーハンドリング
 
-エラーハンドリングは統一されています：
+エラーハンドリングの詳細については、[ユーティリティ関数ガイド - エラーハンドリング](./utilities-guide.md#エラーハンドリング-liberrorsts) を参照してください。
+
+**このアプリでの実装**:
 
 - **API Routes**: [`lib/api-helpers.ts`](../../lib/api-helpers.ts)の`withErrorHandling`を使用
 - **エラークラス**: [`lib/errors.ts`](../../lib/errors.ts)で定義
@@ -616,6 +618,10 @@ const products = await prisma.product.findMany({
 詳細は [Prisma ガイド - select（このアプリでは未使用）](./prisma-guide.md#selectこのアプリでは未使用) を参照してください。
 
 ### 画像最適化
+
+**Next.js の画像最適化**: Next.js Image コンポーネントの詳細については、[Next.js ガイド - 画像最適化](./nextjs-guide.md#画像最適化) を参照してください。
+
+**このアプリでのクライアントサイド画像処理**:
 
 - **クライアントサイドでの画像圧縮**: アップロード前にブラウザで自動的に圧縮・リサイズ
 - **WebP 形式への変換**: JPEG よりも約 25-35% 小さなファイルサイズを実現
