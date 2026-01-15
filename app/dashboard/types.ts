@@ -2,21 +2,27 @@
  * ダッシュボードで使用する共通型定義
  */
 
+/**
+ * カテゴリーの型定義
+ */
 export interface Category {
-  id: number;
-  name: string;
+  id: number; // カテゴリーID
+  name: string; // カテゴリー名
 }
 
+/**
+ * 商品の型定義
+ */
 export interface Product {
-  id: number;
-  name: string;
-  description: string;
-  imageUrl: string | null;
-  priceS: number | null;
-  priceL: number | null;
-  category: Category;
-  published: boolean;
-  publishedAt: string | null;
-  endedAt: string | null;
-  displayOrder: number | null;
+  id: number; // 商品ID
+  name: string; // 商品名
+  description: string; // 商品説明
+  imageUrl: string | null; // 商品画像のURL（BlobストレージのURL）
+  priceS: number | null; // Sサイズの価格（円）
+  priceL: number | null; // Lサイズの価格（円）
+  category: Category; // 所属するカテゴリー
+  published: boolean; // 公開状態（true: 公開, false: 非公開）
+  publishedAt: string | null; // 公開開始日時（ISO文字列形式）
+  endedAt: string | null; // 公開終了日時（ISO文字列形式）
+  displayOrder: number | null; // 表示順序（小さい順に表示、nullの場合は最後に配置）
 }

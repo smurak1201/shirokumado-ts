@@ -6,11 +6,25 @@
  * Server Componentsでエラーが発生した場合に表示されます
  */
 
+/**
+ * Error コンポーネントの Props
+ */
 interface ErrorProps {
-  error: Error & { digest?: string };
-  reset: () => void;
+  error: Error & { digest?: string }; // 発生したエラーオブジェクト（digestはNext.jsが自動的に付与するエラー識別子）
+  reset: () => void; // エラー状態をリセットして再試行する関数
 }
 
+/**
+ * エラーページコンポーネント
+ *
+ * Server Componentsでエラーが発生した場合に表示されるエラーページです。
+ * ユーザーにエラーが発生したことを通知し、再試行できるようにします。
+ *
+ * Client Component として実装されており、エラー情報を表示します。
+ *
+ * @param error - 発生したエラーオブジェクト
+ * @param reset - エラー状態をリセットして再試行する関数
+ */
 export default function Error({ error, reset }: ErrorProps) {
   return (
     <div className="flex min-h-screen flex-col items-center justify-center bg-white px-4">

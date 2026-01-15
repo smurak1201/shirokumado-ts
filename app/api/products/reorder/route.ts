@@ -10,7 +10,26 @@ import { NextRequest } from 'next/server';
 export const dynamic = 'force-dynamic';
 
 /**
- * 商品の表示順序を更新
+ * 商品の表示順序を更新する API エンドポイント
+ * POST /api/products/reorder
+ *
+ * 機能:
+ * - 商品の表示順序（displayOrder）を一括更新
+ * - トランザクションを使用して、すべての更新が成功するか、すべてがロールバックされることを保証
+ *
+ * リクエストボディ:
+ * ```json
+ * {
+ *   "productOrders": [
+ *     { "id": 1, "displayOrder": 1 },
+ *     { "id": 2, "displayOrder": 2 },
+ *     ...
+ *   ]
+ * }
+ * ```
+ *
+ * @param request - リクエストオブジェクト（商品順序の配列を含む）
+ * @returns 更新成功メッセージを含む JSON レスポンス
  */
 export const POST = withErrorHandling(async (request: NextRequest) => {
   const body = await request.json();

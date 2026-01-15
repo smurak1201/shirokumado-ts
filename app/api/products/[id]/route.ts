@@ -47,7 +47,19 @@ export const GET = withErrorHandling(async (
 });
 
 /**
- * 商品を更新
+ * 商品を更新する API エンドポイント
+ * PUT /api/products/[id]
+ *
+ * 機能:
+ * - 商品情報のバリデーション
+ * - カテゴリーの存在確認（指定されている場合）
+ * - 公開日・終了日に基づく公開状態の自動判定
+ * - 画像更新時の古い画像の削除
+ * - 商品情報の更新
+ *
+ * @param request - リクエストオブジェクト（更新する商品情報を含む）
+ * @param params - ルートパラメータ（商品IDを含む）
+ * @returns 更新された商品を含む JSON レスポンス
  */
 export const PUT = withErrorHandling(async (
   request: NextRequest,
@@ -164,7 +176,19 @@ export const PUT = withErrorHandling(async (
 });
 
 /**
- * 商品を削除
+ * 商品を削除する API エンドポイント
+ * DELETE /api/products/[id]
+ *
+ * 機能:
+ * - 商品の存在確認
+ * - 商品に紐づく画像の削除（Blobストレージから）
+ * - 商品の削除（データベースから）
+ *
+ * 注意: 画像削除を先に実行し、成功した場合のみDB削除を実行することで整合性を保ちます。
+ *
+ * @param request - リクエストオブジェクト（未使用）
+ * @param params - ルートパラメータ（商品IDを含む）
+ * @returns 削除成功メッセージを含む JSON レスポンス
  */
 export const DELETE = withErrorHandling(async (
   _request: NextRequest,

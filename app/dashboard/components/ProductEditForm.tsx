@@ -11,27 +11,46 @@ import {
 import { compressImage, isImageFile } from "@/lib/image-compression";
 import type { Category, Product } from "../types";
 
+/**
+ * ProductEditForm の Props
+ */
 interface ProductEditFormProps {
-  product: Product;
-  categories: Category[];
-  onClose: () => void;
-  onUpdated: () => Promise<void>;
+  product: Product; // 編集対象の商品
+  categories: Category[]; // カテゴリー一覧
+  onClose: () => void; // フォームを閉じる際のコールバック関数
+  onUpdated: () => Promise<void>; // 商品更新後のコールバック関数
 }
 
+/**
+ * 商品編集フォームコンポーネント
+ *
+ * 既存商品の情報を編集するためのモーダルフォームです。
+ * 以下の機能を提供します：
+ * - 商品情報の編集（名前、説明、画像、価格、カテゴリー）
+ * - 画像の変更・圧縮・アップロード
+ * - 公開日・終了日の設定と公開状態の自動計算
+ * - フォームバリデーション
+ *
+ * Client Component として実装されており、インタラクティブな機能を提供します。
+ */
 export default function ProductEditForm({
   product,
   categories,
   onClose,
   onUpdated,
 }: ProductEditFormProps) {
+  // フォーム送信中の状態管理
   const [submitting, setSubmitting] = useState(false);
+  // 画像アップロード中の状態管理
   const [uploading, setUploading] = useState(false);
+  // 画像圧縮中の状態管理
   const [compressing, setCompressing] = useState(false);
+  // 画像プレビュー用のURL（既存の画像URLまたはBlob URL）
   const [imagePreview, setImagePreview] = useState<string | null>(
     product.imageUrl
   );
 
-  // フォーム状態
+  // フォーム状態（既存商品の情報で初期化）
   const [formData, setFormData] = useState({
     name: product.name,
     description: product.description,
@@ -49,7 +68,16 @@ export default function ProductEditForm({
       : "",
   });
 
-  // 画像ファイル選択
+  /**
+   * 画像ファイル選択時の処理
+   * ファイルの検証、圧縮、プレビュー表示を行います
+   *
+   * 処理の流れ:
+   * 1. ファイルタイプの検証（画像ファイルのみ許可）
+   * 2. ファイルサイズの事前チェック（10MB以上は警告）
+   * 3. 画像の圧縮（設定された最大サイズまで）
+   * 4. プレビュー用URLの生成
+   */
   const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) {
@@ -122,7 +150,16 @@ export default function ProductEditForm({
     setImagePreview(previewUrl);
   };
 
-  // フォーム送信
+  /**
+   * フォーム送信処理
+   * 商品情報をサーバーに送信して更新します
+   *
+   * 処理の流れ:
+   * 1. 新しい画像ファイルがある場合は先にBlobストレージにアップロード
+   * 2. 商品情報をAPIに送信して更新
+   * 3. 成功時は親コンポーネントに通知してフォームを閉じる
+   * 4. エラー時はエラーメッセージを表示
+   */
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSubmitting(true);
@@ -223,7 +260,13 @@ export default function ProductEditForm({
     }
   };
 
-  // 公開日・終了日の変更時に公開情報を自動計算
+  /**
+   * 公開日・終了日の変更時に公開情報を自動計算
+   *
+   * 公開日・終了日が設定されている場合、現在の日時と比較して
+   * 公開状態を自動的に判定します。
+   * これにより、ユーザーが手動で公開状態を設定する必要がなくなります。
+   */
   useEffect(() => {
     if (formData.publishedAt || formData.endedAt) {
       const publishedAt = formData.publishedAt
@@ -238,7 +281,10 @@ export default function ProductEditForm({
     }
   }, [formData.publishedAt, formData.endedAt]);
 
-  // 公開日・終了日が設定されているかどうか
+  /**
+   * 公開日・終了日が設定されているかどうかを判定
+   * 日付範囲が設定されている場合、公開状態の手動設定を無効化します
+   */
   const hasDateRangeValue = hasDateRange(
     formData.publishedAt ? new Date(formData.publishedAt) : null,
     formData.endedAt ? new Date(formData.endedAt) : null

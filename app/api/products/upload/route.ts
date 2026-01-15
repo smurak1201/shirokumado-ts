@@ -11,10 +11,22 @@ import { NextRequest } from 'next/server';
 export const dynamic = 'force-dynamic';
 
 /**
- * 画像をアップロード
+ * 画像をアップロードする API エンドポイント
+ * POST /api/products/upload
  *
- * 注意: Vercelの関数ペイロードサイズ制限（約4.5MB）に合わせて、
- * ファイルサイズは設定ファイルで制限されています。
+ * 機能:
+ * - 画像ファイルの検証（ファイルタイプ、ファイルサイズ）
+ * - HEIC形式を含む画像ファイルのサポート
+ * - Blobストレージへの画像アップロード
+ * - アップロードされた画像のURLを返却
+ *
+ * 注意:
+ * - Vercelの関数ペイロードサイズ制限（約4.5MB）に合わせて、
+ *   ファイルサイズは設定ファイルで制限されています。
+ * - ファイル名にはタイムスタンプを付与して、同じファイル名でも上書きされないようにします。
+ *
+ * @param request - リクエストオブジェクト（FormData形式で画像ファイルを含む）
+ * @returns アップロードされた画像のURLとファイル名を含む JSON レスポンス
  */
 export const POST = withErrorHandling(async (request: NextRequest) => {
   const formData = await request.formData();
