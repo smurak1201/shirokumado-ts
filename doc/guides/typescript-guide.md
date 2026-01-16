@@ -662,6 +662,28 @@ if (isUser(data)) {
 }
 ```
 
+**このアプリでの使用例**:
+
+実際のコードベースでは、型ガードを使用してフィルタリング時の型安全性を確保しています。
+
+[`app/page.tsx`](../../app/page.tsx) (行 104-125)
+
+```typescript
+const publishedProducts = productsList.filter(
+  (
+    product
+  ): product is typeof product & {
+    category: NonNullable<typeof product.category>;
+  } => {
+    // カテゴリーが存在しない商品は除外
+    if (!product.category) {
+      return false;
+    }
+    // ...
+  }
+);
+```
+
 ### in 演算子による型ガード
 
 `in` 演算子を使用して、オブジェクトのプロパティの存在をチェックします。
@@ -671,19 +693,6 @@ if (isUser(data)) {
 ```typescript
 if ("property" in object) {
   // object に property が存在する
-}
-```
-
-**このアプリでの使用例**:
-
-```typescript
-function isUser(value: unknown): value is User {
-  return (
-    typeof value === "object" &&
-    value !== null &&
-    "id" in value &&
-    "email" in value
-  );
 }
 ```
 
