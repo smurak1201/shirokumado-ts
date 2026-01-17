@@ -50,8 +50,8 @@ Java、PHP、Laravel の経験がある方は、以下のような知識を活�
 **推奨ドキュメント**:
 
 1. [`README.md`](../../README.md) - プロジェクトの概要とセットアップ方法
-2. [`../tech-stack.md`](../tech-stack.md) - 使用している技術スタックの一覧
-3. [`../project-structure.md`](../project-structure.md) - ディレクトリ構造と各ファイルの役割
+2. [`doc/tech-stack.md`](../tech-stack.md) - 使用している技術スタックの一覧
+3. [`doc/project-structure.md`](../project-structure.md) - ディレクトリ構造と各ファイルの役割
 
 **推奨ファイル**:
 
@@ -70,9 +70,9 @@ Java、PHP、Laravel の経験がある方は、以下のような知識を活�
 
 **推奨ドキュメント**:
 
-1. [`typescript-guide.md`](./typescript-guide.md) - TypeScript の基礎
-2. [`react-guide.md`](./react-guide.md) - React の基礎
-3. [`async-await-guide.md`](./async-await-guide.md) - 非同期処理の基礎
+1. [`doc/guides/typescript-guide.md`](./typescript-guide.md) - TypeScript の基礎
+2. [`doc/guides/react-guide.md`](./react-guide.md) - React の基礎
+3. [`doc/guides/async-await-guide.md`](./async-await-guide.md) - 非同期処理の基礎
 
 **推奨ファイル**:
 
@@ -91,9 +91,9 @@ Java、PHP、Laravel の経験がある方は、以下のような知識を活�
 
 **推奨ドキュメント**:
 
-1. [`nextjs-guide.md`](./nextjs-guide.md) - Next.js の基礎
-2. [`app-router-guide.md`](./app-router-guide.md) - App Router の詳細
-3. [`prisma-guide.md`](./prisma-guide.md) - Prisma の基礎
+1. [`doc/guides/nextjs-guide.md`](./nextjs-guide.md) - Next.js の基礎
+2. [`doc/guides/app-router-guide.md`](./app-router-guide.md) - App Router の詳細
+3. [`doc/guides/prisma-guide.md`](./prisma-guide.md) - Prisma の基礎
 
 **推奨ファイル**:
 
@@ -113,9 +113,9 @@ Java、PHP、Laravel の経験がある方は、以下のような知識を活�
 
 **推奨ドキュメント**:
 
-1. [`frontend-guide.md`](./frontend-guide.md) - フロントエンド実装の詳細
-2. [`dashboard-guide.md`](./dashboard-guide.md) - ダッシュボード機能の詳細
-3. [`../development-guide.md`](../development-guide.md) - 開発ガイドライン
+1. [`doc/guides/frontend-guide.md`](./frontend-guide.md) - フロントエンド実装の詳細
+2. [`doc/guides/dashboard-guide.md`](./dashboard-guide.md) - ダッシュボード機能の詳細
+3. [`doc/development-guide.md`](../development-guide.md) - 開発ガイドライン
 
 **推奨ファイル**:
 
@@ -141,76 +141,76 @@ Java、PHP、Laravel の経験がある方は、以下のような知識を活�
    - プロジェクトの概要とセットアップ方法
    - 開発コマンドの確認
 
-2. **[`../tech-stack.md`](../tech-stack.md)**
+2. **[`doc/tech-stack.md`](../tech-stack.md)**
 
    - 使用している技術スタックの一覧
    - 各技術の特徴とこのアプリでの使われ方
 
-3. **[`../project-structure.md`](../project-structure.md)**
+3. **[`doc/project-structure.md`](../project-structure.md)**
    - ディレクトリ構造と各ファイルの役割
    - ファイル命名規則
 
 ### 基礎を学ぶためのドキュメント（推奨）
 
-4. **[`typescript-guide.md`](./typescript-guide.md)**
+4. **[`doc/guides/typescript-guide.md`](./typescript-guide.md)**
 
    - TypeScript の基礎
    - 型定義、インターフェース、ジェネリクス
 
-5. **[`react-guide.md`](./react-guide.md)**
+5. **[`doc/guides/react-guide.md`](./react-guide.md)**
 
    - React の基礎
    - コンポーネント、Hooks、状態管理
 
-6. **[`async-await-guide.md`](./async-await-guide.md)**
+6. **[`doc/guides/async-await-guide.md`](./async-await-guide.md)**
    - 非同期処理の基礎
    - async/await、Promise、エラーハンドリング
 
 ### フレームワークを学ぶためのドキュメント（重要）
 
-7. **[`nextjs-guide.md`](./nextjs-guide.md)**
+7. **[`doc/guides/nextjs-guide.md`](./nextjs-guide.md)**
 
    - Next.js の基礎
    - 画像最適化、フォント最適化、メタデータ
 
-8. **[`app-router-guide.md`](./app-router-guide.md)**
+8. **[`doc/guides/app-router-guide.md`](./app-router-guide.md)**
 
    - App Router の詳細
    - Server Components、Client Components、API Routes
 
-9. **[`prisma-guide.md`](./prisma-guide.md)**
+9. **[`doc/guides/prisma-guide.md`](./prisma-guide.md)**
    - Prisma の基礎
    - スキーマ定義、クエリ、マイグレーション
 
 ### 実装を理解するためのドキュメント（応用）
 
-10. **[`frontend-guide.md`](./frontend-guide.md)**
+10. **[`doc/guides/frontend-guide.md`](./frontend-guide.md)**
 
     - フロントエンド実装の詳細
     - ページ構成、コンポーネント、データフロー
 
-11. **[`dashboard-guide.md`](./dashboard-guide.md)**
+11. **[`doc/guides/dashboard-guide.md`](./dashboard-guide.md)**
 
     - ダッシュボード機能の詳細
     - フォーム、状態管理、API 連携
 
-12. **[`../development-guide.md`](../development-guide.md)**
+12. **[`doc/development-guide.md`](../development-guide.md)**
     - 開発ガイドライン
     - コーディング規約、ベストプラクティス
 
 ### その他のドキュメント（参考）
 
-13. **[`jsx-guide.md`](./jsx-guide.md)**
+13. **[`doc/guides/jsx-guide.md`](./jsx-guide.md)**
 
     - JSX の構文と使用方法
     - HTML との違い、ベストプラクティス
 
-14. **[`utilities-guide.md`](./utilities-guide.md)**
+14. **[`doc/guides/utilities-guide.md`](./utilities-guide.md)**
 
     - ユーティリティ関数の詳細
     - 画像圧縮、Blob Storage、設定管理
 
-15. **[`../architecture.md`](../architecture.md)**
+15. **[`doc/architecture.md`](../architecture.md)**
     - アーキテクチャと設計思想
     - 設計の意図と理由
 
@@ -476,9 +476,9 @@ import { ValidationError } from "@/lib/errors";
 
 **例**:
 
-- Prisma の使い方がわからない → [`prisma-guide.md`](./prisma-guide.md)
-- React Hooks の使い方がわからない → [`react-guide.md`](./react-guide.md)
-- Next.js の概念がわからない → [`nextjs-guide.md`](./nextjs-guide.md)
+- Prisma の使い方がわからない → [`doc/guides/prisma-guide.md`](./prisma-guide.md)
+- React Hooks の使い方がわからない → [`doc/guides/react-guide.md`](./react-guide.md)
+- Next.js の概念がわからない → [`doc/guides/nextjs-guide.md`](./nextjs-guide.md)
 
 ## 技術スタック別おすすめファイル
 
@@ -564,7 +564,7 @@ import { ValidationError } from "@/lib/errors";
 
 **学習の順序**:
 
-1. JSX の構文を理解する（[`jsx-guide.md`](./jsx-guide.md)を参照）
+1. JSX の構文を理解する（[`doc/guides/jsx-guide.md`](./jsx-guide.md)を参照）
 2. コンポーネントと props を理解する
 3. 状態管理（useState）を理解する
 4. 副作用（useEffect）を理解する
@@ -610,7 +610,7 @@ import { ValidationError } from "@/lib/errors";
 
 **学習の順序**:
 
-1. App Router の基本概念を理解する（[`app-router-guide.md`](./app-router-guide.md)を参照）
+1. App Router の基本概念を理解する（[`doc/guides/app-router-guide.md`](./app-router-guide.md)を参照）
 2. Server Component と Client Component の違いを理解する
 3. API Routes の実装を理解する
 4. ルーティングとレイアウトを理解する
@@ -655,7 +655,7 @@ import { ValidationError } from "@/lib/errors";
 
 **学習の順序**:
 
-1. スキーマ定義を理解する（[`prisma-guide.md`](./prisma-guide.md)を参照）
+1. スキーマ定義を理解する（[`doc/guides/prisma-guide.md`](./prisma-guide.md)を参照）
 2. 基本的なクエリ（findMany、findUnique、create、update、delete）を理解する
 3. リレーションの取得を理解する
 4. トランザクションを理解する
@@ -797,7 +797,7 @@ import { ValidationError } from "@/lib/errors";
 - Server Component: [`app/page.tsx`](../../app/page.tsx)
 - Client Component: [`app/components/ProductGrid.tsx`](../../app/components/ProductGrid.tsx)
 
-**詳細**: [`app-router-guide.md`](./app-router-guide.md)を参照
+**詳細**: [`doc/guides/app-router-guide.md`](./app-router-guide.md)を参照
 
 ### Q2: 型定義が複雑で理解できない
 
@@ -809,7 +809,7 @@ import { ValidationError } from "@/lib/errors";
 2. [`app/types.ts`](../../app/types.ts)の`Product`型（中程度）
 3. [`lib/api-types.ts`](../../lib/api-types.ts)の`GetProductsResponse`型（複雑）
 
-**詳細**: [`typescript-guide.md`](./typescript-guide.md)を参照
+**詳細**: [`doc/guides/typescript-guide.md`](./typescript-guide.md)を参照
 
 ### Q3: React Hooks の使い方がわからない
 
@@ -821,7 +821,7 @@ import { ValidationError } from "@/lib/errors";
 2. [`app/hooks/useModal.ts`](../../app/hooks/useModal.ts)（useEffect、useRef の例）
 3. [`app/components/ProductGrid.tsx`](../../app/components/ProductGrid.tsx)（useCallback の例）
 
-**詳細**: [`react-guide.md`](./react-guide.md)を参照
+**詳細**: [`doc/guides/react-guide.md`](./react-guide.md)を参照
 
 ### Q4: Prisma のクエリが複雑で理解できない
 
@@ -833,7 +833,7 @@ import { ValidationError } from "@/lib/errors";
 2. [`app/api/products/route.ts`](../../app/api/products/route.ts)の 120-139 行目（create の例）
 3. [`app/page.tsx`](../../app/page.tsx)の 64-90 行目（複雑なクエリの例）
 
-**詳細**: [`prisma-guide.md`](./prisma-guide.md)を参照
+**詳細**: [`doc/guides/prisma-guide.md`](./prisma-guide.md)を参照
 
 ### Q5: 非同期処理（async/await）が理解できない
 
@@ -844,7 +844,7 @@ import { ValidationError } from "@/lib/errors";
 1. [`app/api/products/route.ts`](../../app/api/products/route.ts)の 29 行目（async 関数の例）
 2. [`app/page.tsx`](../../app/page.tsx)の 62-91 行目（Promise.all の例）
 
-**詳細**: [`async-await-guide.md`](./async-await-guide.md)を参照
+**詳細**: [`doc/guides/async-await-guide.md`](./async-await-guide.md)を参照
 
 ### Q6: エラーハンドリングの方法がわからない
 
@@ -857,7 +857,7 @@ import { ValidationError } from "@/lib/errors";
 3. [`lib/prisma.ts`](../../lib/prisma.ts)（safePrismaOperation の実装）
 4. [`app/api/products/route.ts`](../../app/api/products/route.ts)（実際の使用例）
 
-**詳細**: [`../development-guide.md`](../development-guide.md)の「エラーハンドリング」セクションを参照
+**詳細**: [`doc/development-guide.md`](../development-guide.md)の「エラーハンドリング」セクションを参照
 
 ### Q7: コンポーネントの分割方法がわからない
 
@@ -869,7 +869,7 @@ import { ValidationError } from "@/lib/errors";
 2. [`app/components/ProductGrid.tsx`](../../app/components/ProductGrid.tsx)（コンポーネントの組み合わせ）
 3. [`app/dashboard/components/DashboardContent.tsx`](../../app/dashboard/components/DashboardContent.tsx)（大きなコンポーネントの分割例）
 
-**詳細**: [`frontend-guide.md`](./frontend-guide.md)を参照
+**詳細**: [`doc/guides/frontend-guide.md`](./frontend-guide.md)を参照
 
 ### Q8: 状態管理の方法がわからない
 
@@ -881,7 +881,7 @@ import { ValidationError } from "@/lib/errors";
 2. [`app/dashboard/hooks/useTabState.ts`](../../app/dashboard/hooks/useTabState.ts)（localStorage との連携）
 3. [`app/dashboard/components/ProductList.tsx`](../../app/dashboard/components/ProductList.tsx)（複雑な状態管理）
 
-**詳細**: [`react-guide.md`](./react-guide.md)の「状態管理」セクションを参照
+**詳細**: [`doc/guides/react-guide.md`](./react-guide.md)の「状態管理」セクションを参照
 
 ## まとめ
 

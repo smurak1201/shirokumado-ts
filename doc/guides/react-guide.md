@@ -44,7 +44,7 @@ React は、ユーザーインターフェースを構築するための JavaScr
 
 このアプリケーションでは、**React 19.2.3** を使用して、Next.js App Router と統合し、Server Components と Client Components を適切に使い分けながら、インタラクティブな UI を実装しています。
 
-**関連ドキュメント**: JSX の構文について詳しく知りたい場合は、[JSX ガイド](./jsx-guide.md)を参照してください。このガイドでは、React の概念と実装パターンに焦点を当てています。
+**関連ドキュメント**: JSX の構文について詳しく知りたい場合は、[JSX ガイド](doc/guides/jsx-guide.md)を参照してください。このガイドでは、React の概念と実装パターンに焦点を当てています。
 
 ## React とは
 
@@ -1525,8 +1525,8 @@ export default memo(ProductTile);
 
 ## 参考リンク
 
-- **[JSX ガイド](./jsx-guide.md)**: JSX の構文と使用方法
-- **[Next.js ガイド](./nextjs-guide.md)**: Next.js での React の使用方法
-- **[TypeScript ガイド](./typescript-guide.md)**: TypeScript での React の使用方法
-- **[App Router ガイド](./app-router-guide.md)**: Server Components と Client Components の使い分け
+- **[JSX ガイド](doc/guides/jsx-guide.md)**: JSX の構文と使用方法
+- **[Next.js ガイド](doc/guides/nextjs-guide.md)**: Next.js での React の使用方法
+- **[TypeScript ガイド](doc/guides/typescript-guide.md)**: TypeScript での React の使用方法
+- **[App Router ガイド](doc/guides/app-router-guide.md)**: Server Components と Client Components の使い分け
 - **[React 公式ドキュメント](https://react.dev/)**: React の包括的なドキュメント

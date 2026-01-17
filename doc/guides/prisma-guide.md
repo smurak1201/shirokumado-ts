@@ -1572,10 +1572,10 @@ console.log(product.invalidField); // コンパイルエラー
 
 ## 参考リンク
 
-- **[TypeScript ガイド](./typescript-guide.md)**: Prisma との型統合の詳細
-- **[App Router ガイド](./app-router-guide.md)**: Server Components での Prisma の使用方法
-- **[Async/Await ガイド](./async-await-guide.md)**: async/await と Promise の使用方法
-- **[ユーティリティ関数ガイド](./utilities-guide.md)**: Blob Storage ユーティリティの詳細
-- **[Prisma & Blob セットアップガイド](../setup-prisma-blob.md)**: Prisma と Blob Storage のセットアップ方法
+- **[TypeScript ガイド](doc/guides/typescript-guide.md)**: Prisma との型統合の詳細
+- **[App Router ガイド](doc/guides/app-router-guide.md)**: Server Components での Prisma の使用方法
+- **[Async/Await ガイド](doc/guides/async-await-guide.md)**: async/await と Promise の使用方法
+- **[ユーティリティ関数ガイド](doc/guides/utilities-guide.md)**: Blob Storage ユーティリティの詳細
+- **[Prisma & Blob セットアップガイド](doc/setup-prisma-blob.md)**: Prisma と Blob Storage のセットアップ方法
 - **[Prisma 公式ドキュメント](https://www.prisma.io/docs)**: Prisma の包括的なドキュメント
 - **[Prisma Client API Reference](https://www.prisma.io/docs/reference/api-reference/prisma-client-reference)**: Prisma Client の API リファレンス

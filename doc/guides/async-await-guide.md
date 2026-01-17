@@ -586,7 +586,7 @@ await prisma.$transaction(async (tx) => {
 });
 ```
 
-**詳細は [Prisma ガイド](./prisma-guide.md) を参照してください。**
+**詳細は [Prisma ガイド](doc/guides/prisma-guide.md) を参照してください。**
 
 ### 並列データフェッチング
 
@@ -755,10 +755,10 @@ export const POST = withErrorHandling(async (request: NextRequest) => {
 
 ## 参考リンク
 
-- **[TypeScript ガイド](./typescript-guide.md)**: TypeScript での async/await の型定義
-- **[App Router ガイド](./app-router-guide.md)**: Server Components でのデータフェッチング
-- **[Prisma ガイド](./prisma-guide.md)**: Prisma での非同期処理
-- **[開発ガイド](../development-guide.md)**: コーディング規約とベストプラクティス
+- **[TypeScript ガイド](doc/guides/typescript-guide.md)**: TypeScript での async/await の型定義
+- **[App Router ガイド](doc/guides/app-router-guide.md)**: Server Components でのデータフェッチング
+- **[Prisma ガイド](doc/guides/prisma-guide.md)**: Prisma での非同期処理
+- **[開発ガイド](doc/development-guide.md)**: コーディング規約とベストプラクティス
 - **[MDN - async function](https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Statements/async_function)**: async 関数の詳細な説明
 - **[MDN - await](https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Operators/await)**: await 演算子の詳細な説明
 - **[MDN - Promise](https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Global_Objects/Promise)**: Promise の詳細な説明

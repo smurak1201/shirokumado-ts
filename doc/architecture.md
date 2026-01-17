@@ -29,7 +29,7 @@
 
 ## ディレクトリ構造の設計思想
 
-**注意**: 詳細なディレクトリ構造と各ファイルの役割については、[プロジェクト構造ドキュメント](./project-structure.md)を参照してください。App Router のディレクトリ構造については、[App Router ガイド](./guides/app-router-guide.md#app-router-のディレクトリ構造)を参照してください。
+**注意**: 詳細なディレクトリ構造と各ファイルの役割については、[プロジェクト構造ドキュメント](doc/project-structure.md)を参照してください。App Router のディレクトリ構造については、[App Router ガイド](doc/guides/app-router-guide.md#app-router-のディレクトリ構造)を参照してください。
 
 ### フロントエンド (`app/`)
 
@@ -467,11 +467,11 @@ export const GET = withErrorHandling(async () => {
 
 ### プロジェクト内のドキュメント
 
-- **[開発ガイドライン](./development-guide.md)**: コーディング規約とベストプラクティス
-- **[プロジェクト構造](./project-structure.md)**: ディレクトリ構造の詳細
-- **[技術スタック](./tech-stack.md)**: 使用している技術の詳細
-- **[Async/Await ガイド](./guides/async-await-guide.md)**: async/await と Promise の使用方法
-- **[ユーティリティ関数ガイド](./guides/utilities-guide.md)**: ユーティリティ関数の詳細
+- **[開発ガイドライン](doc/development-guide.md)**: コーディング規約とベストプラクティス
+- **[プロジェクト構造](doc/project-structure.md)**: ディレクトリ構造の詳細
+- **[技術スタック](doc/tech-stack.md)**: 使用している技術の詳細
+- **[Async/Await ガイド](doc/guides/async-await-guide.md)**: async/await と Promise の使用方法
+- **[ユーティリティ関数ガイド](doc/guides/utilities-guide.md)**: ユーティリティ関数の詳細
 
 ### 外部ドキュメント
 

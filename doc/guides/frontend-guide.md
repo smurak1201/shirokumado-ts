@@ -87,7 +87,7 @@
 ];
 ```
 
-**注意**: プロジェクト全体のディレクトリ構造の詳細については、[プロジェクト構造ドキュメント](../project-structure.md)を参照してください。App Router のディレクトリ構造については、[App Router ガイド](./app-router-guide.md#app-router-のディレクトリ構造)を参照してください。
+**注意**: プロジェクト全体のディレクトリ構造の詳細については、[プロジェクト構造ドキュメント](doc/project-structure.md)を参照してください。App Router のディレクトリ構造については、[App Router ガイド](doc/guides/app-router-guide.md#app-router-のディレクトリ構造)を参照してください。
 
 ## ディレクトリ構造
 
@@ -612,11 +612,11 @@ const { config } = await import("@/lib/config");
 
 ## 参考リンク
 
-- **[React ガイド](./react-guide.md)**: React の包括的なガイド
-- **[JSX ガイド](./jsx-guide.md)**: JSX の構文と使用方法
-- **[Next.js ガイド](./nextjs-guide.md)**: Next.js の詳細な使用方法
-- **[App Router ガイド](./app-router-guide.md)**: App Router の詳細な使用方法
-- **[Async/Await ガイド](./async-await-guide.md)**: async/await と Promise の使用方法
+- **[React ガイド](doc/guides/react-guide.md)**: React の包括的なガイド
+- **[JSX ガイド](doc/guides/jsx-guide.md)**: JSX の構文と使用方法
+- **[Next.js ガイド](doc/guides/nextjs-guide.md)**: Next.js の詳細な使用方法
+- **[App Router ガイド](doc/guides/app-router-guide.md)**: App Router の詳細な使用方法
+- **[Async/Await ガイド](doc/guides/async-await-guide.md)**: async/await と Promise の使用方法
 - [Next.js App Router](https://nextjs.org/docs/app)
 - [React Server Components](https://react.dev/blog/2023/03/22/react-labs-what-we-have-been-working-on-march-2023#react-server-components)
 - [Tailwind CSS](https://tailwindcss.com/docs)

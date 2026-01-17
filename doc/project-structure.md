@@ -2,7 +2,7 @@
 
 白熊堂プロジェクトのディレクトリ構造と各ファイルの役割を説明します。
 
-**注意**: App Router のディレクトリ構造については、[App Router ガイド](./guides/app-router-guide.md#app-router-のディレクトリ構造)を参照してください。設計思想については、[アーキテクチャドキュメント](./architecture.md#ディレクトリ構造の設計思想)を参照してください。
+**注意**: App Router のディレクトリ構造については、[App Router ガイド](doc/guides/app-router-guide.md#app-router-のディレクトリ構造)を参照してください。設計思想については、[アーキテクチャドキュメント](doc/architecture.md#ディレクトリ構造の設計思想)を参照してください。
 
 ## 目次
 
@@ -419,7 +419,7 @@ lib/
 - API 設定（キャッシュ期間など）
 - 表示設定（グリッド列数など）
 
-**詳細**: ユーティリティ関数の詳細については、[ユーティリティ関数ガイド](./guides/utilities-guide.md)を参照してください。
+**詳細**: ユーティリティ関数の詳細については、[ユーティリティ関数ガイド](doc/guides/utilities-guide.md)を参照してください。
 
 ### `prisma/` - Prisma 設定
 

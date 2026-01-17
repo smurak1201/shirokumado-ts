@@ -75,7 +75,7 @@ BLOB_READ_WRITE_TOKEN=vercel_blob_rw_...
 
 **詳細な情報**:
 
-- [Prisma ガイド](./guides/prisma-guide.md): Prisma の詳細な使用方法
+- [Prisma ガイド](doc/guides/prisma-guide.md): Prisma の詳細な使用方法
 - [Vercel Neon Documentation](https://vercel.com/docs/storage/vercel-postgres): Vercel Neon の公式ドキュメント
 
 ### 環境変数の型安全な管理
@@ -551,7 +551,7 @@ npm run db:studio
 
 - [Prisma Documentation](https://www.prisma.io/docs)
 - [Prisma Client API Reference](https://www.prisma.io/docs/reference/api-reference/prisma-client-reference)
-- [Prisma ガイド](./guides/prisma-guide.md): Prisma の詳細な使用方法
+- [Prisma ガイド](doc/guides/prisma-guide.md): Prisma の詳細な使用方法
 - [Vercel Blob Documentation](https://vercel.com/docs/storage/vercel-blob)
 - [Neon Documentation](https://neon.tech/docs)
 - [Prisma with Neon](https://www.prisma.io/docs/guides/deployment/deployment-guides/deploying-to-vercel)
