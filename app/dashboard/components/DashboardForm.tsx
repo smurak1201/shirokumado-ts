@@ -1,217 +1,44 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import {
-  calculatePublishedStatus,
-  hasDateRange,
-  formatPrice,
-  parsePrice,
-  isNumericKey,
-} from "@/lib/product-utils";
-import { compressImage, isImageFile } from "@/lib/image-compression";
+import { useProductForm } from "../hooks/useProductForm";
+import ProductFormFields from "./ProductFormFields";
 import type { Category } from "../types";
 
-/**
- * DashboardForm の Props
- */
 interface DashboardFormProps {
-  categories: Category[]; // カテゴリー一覧
-  onProductCreated?: () => Promise<void>; // 商品作成後のコールバック関数
-  onClose?: () => void; // フォームを閉じる際のコールバック関数
-  isOpen: boolean; // フォームの表示状態
+  categories: Category[];
+  onProductCreated?: () => Promise<void>;
+  onClose?: () => void;
+  isOpen: boolean;
 }
 
-/**
- * 新規商品登録フォームコンポーネント
- *
- * 商品の新規登録を行うためのモーダルフォームです。
- * 以下の機能を提供します：
- * - 商品情報の入力（名前、説明、画像、価格、カテゴリー）
- * - 画像の圧縮とアップロード
- * - 公開日・終了日の設定と公開状態の自動計算
- * - フォームバリデーション
- *
- * Client Component として実装されており、インタラクティブな機能を提供します。
- */
 export default function DashboardForm({
   categories,
   onProductCreated,
   onClose,
   isOpen,
 }: DashboardFormProps) {
-  // フォームが閉じている場合は何も表示しない
   if (!isOpen) return null;
 
-  // フォーム送信中の状態管理
-  const [submitting, setSubmitting] = useState(false);
-  // 画像アップロード中の状態管理
-  const [uploading, setUploading] = useState(false);
-  // 画像圧縮中の状態管理
-  const [compressing, setCompressing] = useState(false);
-  // 画像プレビュー用のURL（Blob URL）
-  const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const {
+    formData,
+    setFormData,
+    submitting,
+    setSubmitting,
+    uploading,
+    compressing,
+    imagePreview,
+    handleImageChange,
+    uploadImage,
+    hasDateRangeValue,
+  } = useProductForm();
 
-  // フォーム状態
-  const [formData, setFormData] = useState({
-    name: "", // 商品名
-    description: "", // 商品説明
-    imageFile: null as File | null, // 選択された画像ファイル
-    priceS: "", // Sサイズの価格（文字列として管理）
-    priceL: "", // Lサイズの価格（文字列として管理）
-    categoryId: "", // 選択されたカテゴリーID
-    published: true, // 公開状態（デフォルトで公開）
-    publishedAt: "", // 公開日時（datetime-local形式の文字列）
-    endedAt: "", // 終了日時（datetime-local形式の文字列）
-  });
-
-  /**
-   * 画像ファイル選択時の処理
-   * ファイルの検証、圧縮、プレビュー表示を行います
-   *
-   * 処理の流れ:
-   * 1. ファイルタイプの検証（画像ファイルのみ許可）
-   * 2. ファイルサイズの事前チェック（10MB以上は警告）
-   * 3. 画像の圧縮（設定された最大サイズまで）
-   * 4. プレビュー用URLの生成
-   */
-  const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) {
-      setFormData((prev) => ({ ...prev, imageFile: null }));
-      setImagePreview(null);
-      return;
-    }
-
-    // ファイルタイプの検証（HEIC形式も含む）
-    if (!isImageFile(file)) {
-      alert("画像ファイルのみ選択可能です");
-      return;
-    }
-
-    // ファイルサイズの事前チェック（推奨サイズを超える場合は警告）
-    const fileSizeMB = file.size / 1024 / 1024;
-    if (fileSizeMB > 10) {
-      const proceed = confirm(
-        `選択された画像は${fileSizeMB.toFixed(2)}MBです。\n` +
-          `推奨サイズは10MB以下です。\n` +
-          `処理に時間がかかるか、失敗する可能性があります。\n\n` +
-          `続行しますか？`
-      );
-      if (!proceed) {
-        e.target.value = ""; // ファイル選択をリセット
-        return;
-      }
-    }
-
-    // すべての画像を圧縮（ファイルサイズを確実に小さくするため）
-    let processedFile = file;
-    setCompressing(true);
-    try {
-      // 動的インポートで config を読み込む（コード分割のため）
-      const { config } = await import("@/lib/config");
-      processedFile = await compressImage(file, {
-        maxSizeMB: config.imageConfig.COMPRESSION_TARGET_SIZE_MB,
-      });
-      const originalSizeMB = (file.size / 1024 / 1024).toFixed(2);
-      const compressedSizeMB = (processedFile.size / 1024 / 1024).toFixed(2);
-      console.log(
-        `画像を圧縮しました: ${originalSizeMB}MB → ${compressedSizeMB}MB`
-      );
-
-      // 圧縮後も最大サイズを超える場合は警告
-      if (processedFile.size > config.imageConfig.MAX_FILE_SIZE_BYTES) {
-        alert(
-          `画像が大きすぎます（${compressedSizeMB}MB）。別の画像を選択するか、画像を小さくしてから再度お試しください。`
-        );
-        setCompressing(false);
-        return;
-      }
-    } catch (error) {
-      console.error("画像の圧縮に失敗しました:", error);
-      const errorMessage =
-        error instanceof Error ? error.message : "不明なエラー";
-      alert(
-        `画像の圧縮に失敗しました: ${errorMessage}\n別の画像を選択してください。`
-      );
-      setCompressing(false);
-      return;
-    } finally {
-      setCompressing(false);
-    }
-
-    setFormData((prev) => ({ ...prev, imageFile: processedFile }));
-
-    // プレビュー用のURLを生成
-    const previewUrl = URL.createObjectURL(processedFile);
-    setImagePreview(previewUrl);
-  };
-
-  /**
-   * フォーム送信処理
-   * 商品情報をサーバーに送信して登録します
-   *
-   * 処理の流れ:
-   * 1. 画像ファイルがある場合は先にBlobストレージにアップロード
-   * 2. 商品情報をAPIに送信して登録
-   * 3. 成功時はフォームをリセットして親コンポーネントに通知
-   * 4. エラー時はエラーメッセージを表示
-   */
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSubmitting(true);
-    setUploading(false);
 
     try {
-      let imageUrl: string | null = null;
+      const imageUrl = await uploadImage();
 
-      // 画像ファイルがある場合は先にBlobにアップロード
-      if (formData.imageFile) {
-        setUploading(true);
-        try {
-          const uploadFormData = new FormData();
-          uploadFormData.append("file", formData.imageFile);
-
-          const uploadResponse = await fetch("/api/products/upload", {
-            method: "POST",
-            body: uploadFormData,
-          });
-
-          if (!uploadResponse.ok) {
-            let errorMessage = "画像のアップロードに失敗しました";
-            try {
-              const contentType = uploadResponse.headers.get("content-type");
-              if (contentType && contentType.includes("application/json")) {
-                const error = await uploadResponse.json();
-                errorMessage = error.error || errorMessage;
-              } else {
-                const text = await uploadResponse.text();
-                errorMessage = text || errorMessage;
-              }
-            } catch (parseError) {
-              // JSONパースエラーの場合はデフォルトメッセージを使用
-              errorMessage = `画像のアップロードに失敗しました (${uploadResponse.status})`;
-            }
-            throw new Error(errorMessage);
-          }
-
-          const uploadData = await uploadResponse.json();
-          imageUrl = uploadData.url;
-        } catch (error) {
-          console.error("画像アップロードエラー:", error);
-          alert(
-            error instanceof Error
-              ? error.message
-              : "画像のアップロードに失敗しました"
-          );
-          setUploading(false);
-          setSubmitting(false);
-          return;
-        } finally {
-          setUploading(false);
-        }
-      }
-
-      // 商品を登録
       const response = await fetch("/api/products", {
         method: "POST",
         headers: {
@@ -237,16 +64,15 @@ export default function DashboardForm({
 
       await response.json();
 
-      // プレビューURLをクリーンアップ
       if (imagePreview) {
         URL.revokeObjectURL(imagePreview);
       }
 
-      // フォームをリセット
       setFormData({
         name: "",
         description: "",
         imageFile: null,
+        imageUrl: "",
         priceS: "",
         priceL: "",
         categoryId: "",
@@ -254,14 +80,11 @@ export default function DashboardForm({
         publishedAt: "",
         endedAt: "",
       });
-      setImagePreview(null);
 
-      // 親コンポーネントに通知（一覧の更新を待つ）
       if (onProductCreated) {
         await onProductCreated();
       }
 
-      // モーダルを閉じる
       if (onClose) {
         onClose();
       }
@@ -272,39 +95,8 @@ export default function DashboardForm({
       );
     } finally {
       setSubmitting(false);
-      setUploading(false);
     }
   };
-
-  /**
-   * 公開日・終了日の変更時に公開情報を自動計算
-   *
-   * 公開日・終了日が設定されている場合、現在の日時と比較して
-   * 公開状態を自動的に判定します。
-   * これにより、ユーザーが手動で公開状態を設定する必要がなくなります。
-   */
-  useEffect(() => {
-    if (formData.publishedAt || formData.endedAt) {
-      const publishedAt = formData.publishedAt
-        ? new Date(formData.publishedAt)
-        : null;
-      const endedAt = formData.endedAt ? new Date(formData.endedAt) : null;
-      const calculatedPublished = calculatePublishedStatus(
-        publishedAt,
-        endedAt
-      );
-      setFormData((prev) => ({ ...prev, published: calculatedPublished }));
-    }
-  }, [formData.publishedAt, formData.endedAt]);
-
-  /**
-   * 公開日・終了日が設定されているかどうかを判定
-   * 日付範囲が設定されている場合、公開状態の手動設定を無効化します
-   */
-  const hasDateRangeValue = hasDateRange(
-    formData.publishedAt ? new Date(formData.publishedAt) : null,
-    formData.endedAt ? new Date(formData.endedAt) : null
-  );
 
   return (
     <div
@@ -320,285 +112,23 @@ export default function DashboardForm({
           <button
             onClick={onClose}
             className="text-gray-500 hover:text-gray-700"
+            aria-label="閉じる"
           >
             ✕
           </button>
         </div>
         <form onSubmit={handleSubmit} className="space-y-4 min-w-0">
-          {/* 商品名 */}
-          <div>
-            <label
-              htmlFor="name"
-              className="block text-sm font-medium text-gray-700"
-            >
-              商品名 <span className="text-red-500">*</span>
-            </label>
-            <textarea
-              id="name"
-              required
-              rows={2}
-              value={formData.name}
-              onChange={(e) =>
-                setFormData((prev) => ({ ...prev, name: e.target.value }))
-              }
-              className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-base shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"
-            />
-          </div>
-
-          {/* 商品説明 */}
-          <div>
-            <label
-              htmlFor="description"
-              className="block text-sm font-medium text-gray-700"
-            >
-              商品説明 <span className="text-red-500">*</span>
-            </label>
-            <textarea
-              id="description"
-              required
-              rows={6}
-              value={formData.description}
-              onChange={(e) =>
-                setFormData((prev) => ({
-                  ...prev,
-                  description: e.target.value,
-                }))
-              }
-              className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-base shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"
-            />
-          </div>
-
-          {/* 画像アップロード */}
-          <div>
-            <label
-              htmlFor="image"
-              className="block text-sm font-medium text-gray-700"
-            >
-              商品画像
-            </label>
-            <input
-              type="file"
-              id="image"
-              accept="image/*"
-              onChange={handleImageChange}
-              disabled={submitting || uploading || compressing}
-              className="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:rounded-md file:border-0 file:bg-blue-50 file:px-4 file:py-2 file:text-sm file:font-semibold file:text-blue-700 hover:file:bg-blue-100"
-            />
-            {compressing && (
-              <p className="mt-2 text-sm text-gray-500">画像を圧縮中...</p>
-            )}
-            {(uploading || submitting) && (
-              <p className="mt-2 text-sm text-gray-500">
-                {uploading ? "画像をアップロード中..." : "登録中..."}
-              </p>
-            )}
-            {imagePreview && (
-              <div className="mt-2">
-                <img
-                  src={imagePreview}
-                  alt="プレビュー"
-                  className="h-32 w-32 rounded object-cover"
-                />
-                <p className="mt-1 text-xs text-gray-500">プレビュー</p>
-              </div>
-            )}
-          </div>
-
-          {/* 価格 */}
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label
-                htmlFor="priceS"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Sサイズの料金（円）
-              </label>
-              <input
-                type="text"
-                id="priceS"
-                inputMode="numeric"
-                value={formatPrice(formData.priceS)}
-                onKeyDown={(e) => {
-                  if (!isNumericKey(e)) {
-                    e.preventDefault();
-                  }
-                }}
-                onChange={(e) => {
-                  const cleaned = parsePrice(e.target.value);
-                  setFormData((prev) => ({ ...prev, priceS: cleaned }));
-                }}
-                className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-base shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"
-              />
-            </div>
-            <div>
-              <label
-                htmlFor="priceL"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Lサイズの料金（円）
-              </label>
-              <input
-                type="text"
-                id="priceL"
-                inputMode="numeric"
-                value={formatPrice(formData.priceL)}
-                onKeyDown={(e) => {
-                  if (!isNumericKey(e)) {
-                    e.preventDefault();
-                  }
-                }}
-                onChange={(e) => {
-                  const cleaned = parsePrice(e.target.value);
-                  setFormData((prev) => ({ ...prev, priceL: cleaned }));
-                }}
-                className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-base shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"
-              />
-            </div>
-          </div>
-
-          {/* カテゴリー */}
-          <div>
-            <label
-              htmlFor="categoryId"
-              className="block text-sm font-medium text-gray-700"
-            >
-              カテゴリー <span className="text-red-500">*</span>
-            </label>
-            <select
-              id="categoryId"
-              required
-              value={formData.categoryId}
-              onChange={(e) =>
-                setFormData((prev) => ({ ...prev, categoryId: e.target.value }))
-              }
-              className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-base shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"
-            >
-              <option value="">選択してください</option>
-              {categories.map((category) => (
-                <option key={category.id} value={category.id}>
-                  {category.name}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          {/* 公開情報 */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700">
-              公開情報
-            </label>
-            <div className="mt-2 flex items-center gap-4">
-              <label className="flex cursor-pointer items-center">
-                <input
-                  type="radio"
-                  name="published"
-                  checked={formData.published === true}
-                  onChange={() =>
-                    setFormData((prev) => ({ ...prev, published: true }))
-                  }
-                  disabled={hasDateRangeValue}
-                  className="mr-2"
-                />
-                <span className={hasDateRangeValue ? "text-gray-400" : ""}>
-                  公開
-                </span>
-              </label>
-              <label className="flex cursor-pointer items-center">
-                <input
-                  type="radio"
-                  name="published"
-                  checked={formData.published === false}
-                  onChange={() =>
-                    setFormData((prev) => ({ ...prev, published: false }))
-                  }
-                  disabled={hasDateRangeValue}
-                  className="mr-2"
-                />
-                <span className={hasDateRangeValue ? "text-gray-400" : ""}>
-                  非公開
-                </span>
-              </label>
-            </div>
-            {hasDateRangeValue && (
-              <p className="mt-1 text-xs text-gray-500">
-                公開日・終了日が設定されているため、公開情報は自動的に判定されます
-              </p>
-            )}
-          </div>
-
-          {/* 公開日・終了日 */}
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-            <div>
-              <label
-                htmlFor="publishedAt"
-                className="block text-sm font-medium text-gray-700"
-              >
-                公開日
-              </label>
-              <div className="relative mt-1">
-                <input
-                  type="datetime-local"
-                  id="publishedAt"
-                  value={formData.publishedAt}
-                  onChange={(e) =>
-                    setFormData((prev) => ({
-                      ...prev,
-                      publishedAt: e.target.value,
-                    }))
-                  }
-                  className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 pr-10 text-base shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"
-                />
-                {formData.publishedAt && (
-                  <button
-                    type="button"
-                    onClick={() =>
-                      setFormData((prev) => ({ ...prev, publishedAt: "" }))
-                    }
-                    className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
-                    aria-label="公開日をクリア"
-                  >
-                    ✕
-                  </button>
-                )}
-              </div>
-            </div>
-            <div>
-              <label
-                htmlFor="endedAt"
-                className="block text-sm font-medium text-gray-700"
-              >
-                終了日
-              </label>
-              <div className="relative mt-1">
-                <input
-                  type="datetime-local"
-                  id="endedAt"
-                  value={formData.endedAt}
-                  onChange={(e) =>
-                    setFormData((prev) => ({
-                      ...prev,
-                      endedAt: e.target.value,
-                    }))
-                  }
-                  className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 pr-10 text-base shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"
-                />
-                {formData.endedAt && (
-                  <button
-                    type="button"
-                    onClick={() =>
-                      setFormData((prev) => ({ ...prev, endedAt: "" }))
-                    }
-                    className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
-                    aria-label="終了日をクリア"
-                  >
-                    ✕
-                  </button>
-                )}
-              </div>
-            </div>
-          </div>
-
-          {/* ボタン */}
+          <ProductFormFields
+            formData={formData}
+            setFormData={setFormData}
+            categories={categories}
+            submitting={submitting}
+            uploading={uploading}
+            compressing={compressing}
+            imagePreview={imagePreview}
+            onImageChange={(e) => handleImageChange(e)}
+            hasDateRangeValue={hasDateRangeValue}
+          />
           <div className="flex gap-2 pt-4">
             <button
               type="button"

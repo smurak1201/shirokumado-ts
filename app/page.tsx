@@ -21,11 +21,7 @@ import { Prisma } from "@prisma/client";
  */
 export const dynamic = "force-dynamic";
 
-/**
- * 価格をDecimal型から数値に変換するヘルパー関数
- * PrismaのDecimal型を数値に変換します
- */
-function convertPrice(price: Prisma.Decimal | null | undefined): number | null {
+function _convertPrice(price: Prisma.Decimal | null | undefined): number | null {
   if (price === null || price === undefined) {
     return null;
   }
@@ -166,8 +162,8 @@ async function getPublishedProductsByCategory(): Promise<
           description: product.description,
           imageUrl: product.imageUrl,
           // Decimal型をNumber型に変換
-          priceS: convertPrice(product.priceS),
-          priceL: convertPrice(product.priceL),
+          priceS: _convertPrice(product.priceS),
+          priceL: _convertPrice(product.priceL),
         })
       );
 

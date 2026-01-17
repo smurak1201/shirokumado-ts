@@ -19,36 +19,21 @@ import {
 import ProductEditForm from "./ProductEditForm";
 import CategoryTabs from "./CategoryTabs";
 import SortableProductItem from "./SortableProductItem";
+import ProductSearchFilters from "./ProductSearchFilters";
+import ProductListView from "./ProductListView";
 import { useTabState, useCategoryTabState } from "../hooks/useTabState";
 import { useProductReorder } from "../hooks/useProductReorder";
 import { groupProductsByCategory, filterProducts } from "../utils/productUtils";
 import type { Category, Product } from "../types";
 
-/**
- * ProductList の Props
- *
- * Reactのベストプラクティスに従い、状態を親コンポーネントから受け取ります。
- * これにより、データフローが明確になり、コンポーネント間の結合が緩くなります。
- */
 interface ProductListProps {
-  products: Product[]; // 商品一覧（親コンポーネントから受け取る）
-  setProducts: React.Dispatch<React.SetStateAction<Product[]>>; // 商品一覧の状態更新関数
-  refreshProducts: () => Promise<void>; // 商品一覧をサーバーから取得して更新する関数
-  categories: Category[]; // カテゴリー一覧
-  onNewProductClick?: () => void; // 新規商品登録ボタンクリック時のコールバック
+  products: Product[];
+  setProducts: React.Dispatch<React.SetStateAction<Product[]>>;
+  refreshProducts: () => Promise<void>;
+  categories: Category[];
+  onNewProductClick?: () => void;
 }
 
-/**
- * 商品一覧と配置変更機能を提供するコンポーネント
- *
- * 主な機能:
- * - 商品一覧の表示（検索・フィルタリング対応）
- * - 商品の編集・削除
- * - 配置変更タブでのドラッグ&ドロップによる順序変更
- *
- * Reactのベストプラクティスに従い、状態を親コンポーネントから受け取ります。
- * これにより、データフローが明確になり、コンポーネント間の結合が緩くなります。
- */
 export default function ProductList({
   products,
   setProducts,
@@ -56,55 +41,32 @@ export default function ProductList({
   categories,
   onNewProductClick,
 }: ProductListProps) {
-  // 編集中の商品を管理（null の場合は編集フォームを表示しない）
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
-
-  // タブ状態管理（localStorage と同期）
-  // "list": 商品一覧タブ, "layout": 配置変更タブ
   const { activeTab, setActiveTab } = useTabState();
-
-  // カテゴリータブの状態管理（localStorage と同期）
-  // 配置変更タブで表示するカテゴリーを管理
   const { activeCategoryTab, setActiveCategoryTab, initialCategoryTab } =
     useCategoryTabState(products, categories);
 
-  // 配置変更タブに切り替えたときに、初期カテゴリータブを設定
   useEffect(() => {
     if (activeTab === "layout" && initialCategoryTab) {
       setActiveCategoryTab(initialCategoryTab);
     }
   }, [activeTab, initialCategoryTab, setActiveCategoryTab]);
 
-  // 検索条件の状態管理
-  const [searchName, setSearchName] = useState(""); // 商品名での検索
-  const [searchPublished, setSearchPublished] = useState<boolean | null>(null); // null: すべて, true: 公開のみ, false: 非公開のみ
-  const [searchCategoryId, setSearchCategoryId] = useState<number | null>(null); // カテゴリーIDでのフィルタリング
+  const [searchName, setSearchName] = useState("");
+  const [searchPublished, setSearchPublished] = useState<boolean | null>(null);
+  const [searchCategoryId, setSearchCategoryId] = useState<number | null>(null);
 
-  /**
-   * 商品編集を開始する
-   * 編集フォームに商品情報を渡して表示します
-   *
-   * useCallbackでメモ化しており、依存配列が空のため常に同じ関数参照を返します。
-   */
   const handleEdit = useCallback((product: Product) => {
     setEditingProduct(product);
   }, []);
 
-  /**
-   * 商品を削除する
-   * 確認ダイアログを表示してから削除を実行します
-   *
-   * useCallbackでメモ化しており、refreshProductsが変更されたときのみ再作成されます。
-   */
   const handleDelete = useCallback(
     async (productId: number) => {
-      // 削除前に確認ダイアログを表示
       if (!confirm("本当にこの商品を削除しますか？")) {
         return;
       }
 
       try {
-        // DELETE リクエストを送信
         const response = await fetch(`/api/products/${productId}`, {
           method: "DELETE",
         });
@@ -115,7 +77,6 @@ export default function ProductList({
         }
 
         alert("商品を削除しました");
-        // 削除後に商品一覧を更新
         await refreshProducts();
       } catch (error) {
         console.error("削除エラー:", error);
@@ -127,65 +88,34 @@ export default function ProductList({
     [refreshProducts]
   );
 
-  /**
-   * 商品更新後のコールバック関数
-   * 商品一覧を更新します（編集フォームは ProductEditForm の onClose で閉じられます）
-   *
-   * useCallbackでメモ化しており、refreshProductsが変更されたときのみ再作成されます。
-   */
   const handleUpdated = useCallback(async () => {
     await refreshProducts();
   }, [refreshProducts]);
 
-  /**
-   * ドラッグ&ドロップ用のセンサーを設定
-   * PointerSensor: マウス操作を検知
-   * TouchSensor: タッチ操作を検知（スマホ対応）
-   * KeyboardSensor: キーボード操作を検知（アクセシビリティ対応）
-   *
-   * activationConstraint: タッチデバイスでのドラッグ開始の制約を設定
-   * - delay: タッチ開始から200ms待機（スクロールとの競合を防ぐ）
-   * - tolerance: 移動の許容範囲を設定（水平・垂直方向の両方を検出）
-   *   注意: distanceではなくtoleranceを使用することで、垂直方向の移動も検出できます
-   */
   const sensors = useSensors(
     useSensor(PointerSensor, {
       activationConstraint: {
-        distance: 5, // 5px以上移動したらドラッグ開始
+        distance: 5,
       },
     }),
     useSensor(TouchSensor, {
       activationConstraint: {
-        delay: 200, // 200ms待機してからドラッグ開始（スクロールとの競合を防ぐ）
-        tolerance: 5, // 5pxの許容範囲（水平・垂直方向の両方を検出）
+        delay: 200,
+        tolerance: 5,
       },
     }),
     useSensor(KeyboardSensor, {
-      coordinateGetter: sortableKeyboardCoordinates, // キーボード操作の座標計算
+      coordinateGetter: sortableKeyboardCoordinates,
     })
   );
 
-  /**
-   * 配置変更タブ用: 公開商品をカテゴリーごとにグループ化
-   * useMemo を使用して、products や categories が変更されたときのみ再計算します
-   */
   const publishedProductsByCategory = useMemo(
     () => groupProductsByCategory(products, categories),
     [products, categories]
   );
 
-  /**
-   * 商品順序変更のカスタムフック
-   * 楽観的UI更新を実装しています（API呼び出し前にUIを更新）
-   */
   const { reorderProducts } = useProductReorder(setProducts, refreshProducts);
 
-  /**
-   * ドラッグ&ドロップが終了したときの処理
-   * 商品の順序を変更してサーバーに保存します
-   *
-   * useCallbackでメモ化しており、publishedProductsByCategoryとreorderProductsが変更されたときのみ再作成されます。
-   */
   const handleDragEnd = useCallback(
     async (event: DragEndEvent, categoryName: string) => {
       const { active, over } = event;
@@ -219,31 +149,21 @@ export default function ProductList({
     [publishedProductsByCategory, reorderProducts]
   );
 
-  /**
-   * 検索条件に基づいて商品をフィルタリング
-   *
-   * useMemo を使用して、検索条件や商品一覧が変更されたときのみ再計算します。
-   * これにより、不要な再計算を防ぎ、パフォーマンスを向上させます。
-   *
-   * フィルタリング条件:
-   * - 商品名: 部分一致（ひらがな・カタカナ、大文字小文字を区別しない）
-   * - 公開状態: 公開/非公開/すべて
-   * - カテゴリー: 指定されたカテゴリーID
-   */
   const filteredProducts = useMemo(
     () =>
       filterProducts(products, searchName, searchPublished, searchCategoryId),
-    [products, searchName, searchPublished, searchCategoryId] // 依存配列
+    [products, searchName, searchPublished, searchCategoryId]
   );
 
   return (
     <>
       <div className="rounded-lg bg-white p-6 shadow">
-        {/* タブ */}
         <div className="mb-6 border-b border-gray-200">
-          <nav className="flex space-x-8">
+          <nav className="flex space-x-8" role="tablist">
             <button
               onClick={() => setActiveTab("list")}
+              role="tab"
+              aria-selected={activeTab === "list"}
               className={`relative whitespace-nowrap border-b-2 pb-4 px-1 text-sm font-medium transition-colors ${
                 activeTab === "list"
                   ? "border-blue-500 text-blue-600"
@@ -254,6 +174,8 @@ export default function ProductList({
             </button>
             <button
               onClick={() => setActiveTab("layout")}
+              role="tab"
+              aria-selected={activeTab === "layout"}
               className={`relative whitespace-nowrap border-b-2 pb-4 px-1 text-sm font-medium transition-colors ${
                 activeTab === "layout"
                   ? "border-blue-500 text-blue-600"
@@ -265,11 +187,9 @@ export default function ProductList({
           </nav>
         </div>
 
-        {/* タブコンテンツ */}
         <div className="min-h-[400px]">
           {activeTab === "list" && (
             <>
-              {/* ヘッダー: ボタン */}
               <div className="mb-4">
                 {onNewProductClick && (
                   <button
@@ -281,202 +201,27 @@ export default function ProductList({
                 )}
               </div>
 
-              {/* 検索・フィルターエリア */}
-              <div className="mb-4 space-y-4">
-                {/* 商品名、カテゴリー、公開情報を横並び */}
-                <div className="flex flex-col gap-4 md:flex-row md:items-end md:gap-6">
-                  {/* 商品名検索 */}
-                  <div className="flex-1 min-w-0">
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      商品名
-                    </label>
-                    <input
-                      type="text"
-                      placeholder="商品名で検索..."
-                      value={searchName}
-                      onChange={(e) => setSearchName(e.target.value)}
-                      className="w-full max-w-[224px] rounded-md border border-gray-300 px-3 py-2 text-base focus:border-blue-500 focus:outline-none focus:ring-blue-500"
-                    />
-                  </div>
+              <ProductSearchFilters
+                searchName={searchName}
+                setSearchName={setSearchName}
+                searchPublished={searchPublished}
+                setSearchPublished={setSearchPublished}
+                searchCategoryId={searchCategoryId}
+                setSearchCategoryId={setSearchCategoryId}
+                categories={categories}
+              />
 
-                  {/* カテゴリーフィルター */}
-                  <div className="flex-1 min-w-0">
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      カテゴリー
-                    </label>
-                    <select
-                      value={searchCategoryId || ""}
-                      onChange={(e) =>
-                        setSearchCategoryId(
-                          e.target.value ? parseInt(e.target.value) : null
-                        )
-                      }
-                      className="w-full max-w-[224px] rounded-md border border-gray-300 px-3 py-2 text-base focus:border-blue-500 focus:outline-none focus:ring-blue-500"
-                    >
-                      <option value="">すべてのカテゴリー</option>
-                      {categories.map((category) => (
-                        <option key={category.id} value={category.id}>
-                          {category.name}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-
-                  {/* 公開/非公開フィルター */}
-                  <div className="flex-1 min-w-0">
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      公開情報
-                    </label>
-                    <div className="flex items-center gap-4">
-                      <label className="flex cursor-pointer items-center">
-                        <input
-                          type="radio"
-                          name="search-published"
-                          checked={searchPublished === null}
-                          onChange={() => setSearchPublished(null)}
-                          className="mr-2"
-                        />
-                        <span>すべて</span>
-                      </label>
-                      <label className="flex cursor-pointer items-center">
-                        <input
-                          type="radio"
-                          name="search-published"
-                          checked={searchPublished === true}
-                          onChange={() => setSearchPublished(true)}
-                          className="mr-2"
-                        />
-                        <span>公開</span>
-                      </label>
-                      <label className="flex cursor-pointer items-center">
-                        <input
-                          type="radio"
-                          name="search-published"
-                          checked={searchPublished === false}
-                          onChange={() => setSearchPublished(false)}
-                          className="mr-2"
-                        />
-                        <span>非公開</span>
-                      </label>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              {filteredProducts.length === 0 ? (
-                <p className="text-gray-500">
-                  {products.length === 0
-                    ? "登録されている商品はありません"
-                    : "検索条件に一致する商品がありません"}
-                </p>
-              ) : (
-                <div className="grid grid-cols-3 gap-1 sm:gap-2 md:gap-4">
-                  {filteredProducts.map((product) => (
-                    <div
-                      key={product.id}
-                      className={`flex flex-col rounded-lg border border-gray-200 p-1 sm:p-2 md:p-4 ${
-                        !product.published ? "bg-gray-50" : "bg-white"
-                      }`}
-                    >
-                      {/* 商品画像 */}
-                      {product.imageUrl ? (
-                        <img
-                          src={product.imageUrl}
-                          alt={product.name}
-                          className={`h-20 w-full rounded object-cover sm:h-32 md:h-48 ${
-                            !product.published ? "opacity-50" : ""
-                          }`}
-                          loading="lazy"
-                        />
-                      ) : (
-                        <div
-                          className={`h-20 w-full rounded bg-gray-200 sm:h-32 md:h-48 ${
-                            !product.published ? "opacity-50" : ""
-                          }`}
-                        />
-                      )}
-
-                      {/* 商品情報 */}
-                      <div className="mt-1 flex flex-1 flex-col sm:mt-2 md:mt-4">
-                        {/* 商品名 */}
-                        <div
-                          className={`mb-1 flex h-[3em] items-center justify-center sm:mb-2 sm:h-[3em] md:h-[3.5em]`}
-                        >
-                          <h3
-                            className={`line-clamp-2 whitespace-pre-wrap text-center text-[10px] font-semibold leading-tight sm:text-xs md:text-lg ${
-                              !product.published ? "text-gray-500" : ""
-                            }`}
-                          >
-                            {product.name}
-                          </h3>
-                        </div>
-
-                        {/* 公開状態・カテゴリ・タグ */}
-                        <div className="mb-1 flex flex-wrap gap-0.5 sm:mb-2 sm:gap-1 md:gap-2">
-                          <span
-                            className={`rounded-full px-1 py-0.5 text-[8px] font-medium sm:px-1.5 sm:py-0.5 sm:text-[10px] md:px-2 md:py-1 md:text-xs ${
-                              product.published
-                                ? "bg-green-100 text-green-800"
-                                : "bg-gray-100 text-gray-600"
-                            }`}
-                          >
-                            {product.published ? "公開" : "非公開"}
-                          </span>
-                          <span
-                            className={`rounded-full px-1 py-0.5 text-[8px] sm:px-1.5 sm:py-0.5 sm:text-[10px] md:px-2 md:py-1 md:text-xs ${
-                              !product.published
-                                ? "bg-gray-200 text-gray-500"
-                                : "bg-blue-100 text-blue-800"
-                            }`}
-                          >
-                            {product.category.name}
-                          </span>
-                        </div>
-
-                        {/* 価格 */}
-                        <div
-                          className={`mb-1 text-[8px] sm:mb-2 sm:text-[10px] md:mb-4 md:text-sm ${
-                            !product.published
-                              ? "text-gray-400"
-                              : "text-gray-500"
-                          }`}
-                        >
-                          {product.priceS && (
-                            <span>S: ¥{product.priceS.toLocaleString()}</span>
-                          )}
-                          {product.priceS && product.priceL && (
-                            <span className="mx-0.5 sm:mx-1 md:mx-2">/</span>
-                          )}
-                          {product.priceL && (
-                            <span>L: ¥{product.priceL.toLocaleString()}</span>
-                          )}
-                        </div>
-
-                        {/* ボタン */}
-                        <div className="mt-auto flex gap-0.5 sm:gap-1 md:gap-2">
-                          <button
-                            onClick={() => handleEdit(product)}
-                            className="flex-1 rounded-md bg-blue-600 px-0.5 py-0.5 text-[8px] font-medium text-white hover:bg-blue-700 sm:px-1 sm:py-1 sm:text-[10px] md:px-3 md:py-2 md:text-sm"
-                          >
-                            編集
-                          </button>
-                          <button
-                            onClick={() => handleDelete(product.id)}
-                            className="flex-1 rounded-md bg-red-600 px-0.5 py-0.5 text-[8px] font-medium text-white hover:bg-red-700 sm:px-1 sm:py-1 sm:text-[10px] md:px-3 md:py-2 md:text-sm"
-                          >
-                            削除
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              )}
+              <ProductListView
+                products={products}
+                filteredProducts={filteredProducts}
+                onEdit={handleEdit}
+                onDelete={handleDelete}
+              />
             </>
           )}
 
           {activeTab === "layout" && (
             <div>
-              {/* カテゴリータブ */}
               <CategoryTabs
                 categories={categories}
                 publishedProductsByCategory={publishedProductsByCategory}
@@ -484,14 +229,11 @@ export default function ProductList({
                 onCategoryTabChange={setActiveCategoryTab}
               />
 
-              {/* 選択されたカテゴリーの商品を表示 */}
               {(() => {
-                // 選択されたカテゴリーの商品を取得
                 const activeCategoryGroup = publishedProductsByCategory.find(
                   (g) => g.name === activeCategoryTab
                 );
 
-                // カテゴリーが存在しない、または商品がない場合
                 if (
                   !activeCategoryGroup ||
                   activeCategoryGroup.products.length === 0
@@ -503,7 +245,6 @@ export default function ProductList({
                   );
                 }
 
-                // 商品がある場合
                 return (
                   <DndContext
                     sensors={sensors}
