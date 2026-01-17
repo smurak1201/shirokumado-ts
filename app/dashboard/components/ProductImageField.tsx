@@ -1,5 +1,3 @@
-import type { ProductFormData } from "../hooks/useProductForm";
-
 interface ProductImageFieldProps {
   fieldPrefix?: string;
   submitting: boolean;

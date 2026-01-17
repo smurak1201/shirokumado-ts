@@ -1,5 +1,3 @@
-import type { ProductFormData } from "../hooks/useProductForm";
-
 interface ProductDateInputProps {
   id: string;
   label: string;

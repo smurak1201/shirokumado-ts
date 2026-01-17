@@ -56,10 +56,6 @@ export default function ProductList({
     setEditingProduct(product);
   }, []);
 
-  const handleClose = useCallback(() => {
-    setEditingProduct(null);
-  }, []);
-
   const handleDelete = useCallback(
     async (productId: number): Promise<void> => {
       if (!confirm("本当にこの商品を削除しますか？")) {

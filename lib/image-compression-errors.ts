@@ -13,7 +13,7 @@ const RECOMMENDED_FILE_SIZE_MB = 10;
  */
 export function createImageLoadErrorMessage(
   file: File,
-  event: Event | null
+  _event: Event | null
 ): string {
   const fileSizeMB = getFileSizeMB(file.size);
 
