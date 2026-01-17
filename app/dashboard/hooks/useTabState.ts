@@ -12,23 +12,29 @@ type TabType = "list" | "layout";
  * ダッシュボードのタブ状態を管理するカスタムフック
  *
  * タブの状態を localStorage に保存・復元し、ページリロード後も選択していたタブを保持します。
+ * hydrationエラーを防ぐため、初期状態は常にデフォルト値を使用し、
+ * クライアント側でのみlocalStorageから値を読み込みます。
  */
 export function useTabState() {
-  const [activeTab, setActiveTab] = useState<TabType>(() => {
-    if (typeof window !== "undefined") {
-      const saved = localStorage.getItem(STORAGE_KEYS.ACTIVE_TAB);
-      if (saved === "list" || saved === "layout") {
-        return saved;
-      }
-    }
-    return "list";
-  });
+  // 初期状態は常にデフォルト値を使用（サーバー/クライアントで一致させる）
+  const [activeTab, setActiveTab] = useState<TabType>("list");
+  const [isHydrated, setIsHydrated] = useState(false);
 
+  // クライアント側でのみlocalStorageから値を読み込む
   useEffect(() => {
-    if (typeof window !== "undefined") {
+    setIsHydrated(true);
+    const saved = localStorage.getItem(STORAGE_KEYS.ACTIVE_TAB);
+    if (saved === "list" || saved === "layout") {
+      setActiveTab(saved);
+    }
+  }, []);
+
+  // localStorageに保存
+  useEffect(() => {
+    if (isHydrated) {
       localStorage.setItem(STORAGE_KEYS.ACTIVE_TAB, activeTab);
     }
-  }, [activeTab]);
+  }, [activeTab, isHydrated]);
 
   return { activeTab, setActiveTab };
 }
@@ -38,22 +44,15 @@ export function useTabState() {
  *
  * カテゴリータブの状態を localStorage に保存・復元し、
  * 公開商品がある最初のカテゴリーを自動選択します。
+ * hydrationエラーを防ぐため、初期状態は常にデフォルト値を使用し、
+ * クライアント側でのみlocalStorageから値を読み込みます。
  */
 export function useCategoryTabState(
   products: Product[],
   categories: Category[]
 ) {
-  const initialCategoryTab = useMemo(() => {
-    if (typeof window !== "undefined") {
-      const saved = localStorage.getItem(STORAGE_KEYS.ACTIVE_CATEGORY_TAB);
-      if (saved) {
-        const categoryExists = categories.some((c) => c.name === saved);
-        if (categoryExists) {
-          return saved;
-        }
-      }
-    }
-
+  // デフォルトのカテゴリータブを計算（サーバー/クライアントで一致させる）
+  const defaultCategoryTab = useMemo(() => {
     const published = products.filter((p) => p.published);
     const sortedCategories = [...categories].sort((a, b) => a.id - b.id);
     if (published.length > 0) {
@@ -66,14 +65,32 @@ export function useCategoryTabState(
   }, [products, categories]);
 
   const [activeCategoryTab, setActiveCategoryTab] = useState<string>(
-    initialCategoryTab
+    defaultCategoryTab
   );
+  const [isHydrated, setIsHydrated] = useState(false);
 
+  // クライアント側でのみlocalStorageから値を読み込む
   useEffect(() => {
-    if (typeof window !== "undefined" && activeCategoryTab) {
+    setIsHydrated(true);
+    const saved = localStorage.getItem(STORAGE_KEYS.ACTIVE_CATEGORY_TAB);
+    if (saved) {
+      const categoryExists = categories.some((c) => c.name === saved);
+      if (categoryExists) {
+        setActiveCategoryTab(saved);
+      }
+    }
+  }, [categories]);
+
+  // localStorageに保存
+  useEffect(() => {
+    if (isHydrated && activeCategoryTab) {
       localStorage.setItem(STORAGE_KEYS.ACTIVE_CATEGORY_TAB, activeCategoryTab);
     }
-  }, [activeCategoryTab]);
+  }, [activeCategoryTab, isHydrated]);
 
-  return { activeCategoryTab, setActiveCategoryTab, initialCategoryTab };
+  return {
+    activeCategoryTab,
+    setActiveCategoryTab,
+    initialCategoryTab: defaultCategoryTab,
+  };
 }
