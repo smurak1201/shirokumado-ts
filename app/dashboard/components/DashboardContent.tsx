@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import DashboardFormWrapper from "./DashboardFormWrapper";
+import DashboardForm from "./DashboardForm";
 import ProductList from "./ProductList";
 import type { Category, Product } from "../types";
 
@@ -23,7 +23,7 @@ export default function DashboardContent({
   const [products, setProducts] = useState<Product[]>(initialProducts);
   const [isFormOpen, setIsFormOpen] = useState(false);
 
-  const refreshProducts = async () => {
+  const refreshProducts = async (): Promise<void> => {
     try {
       const response = await fetch(`/api/products?t=${Date.now()}`, {
         cache: "no-store",
@@ -38,18 +38,18 @@ export default function DashboardContent({
     }
   };
 
-  const handleProductCreated = async () => {
+  const handleProductCreated = async (): Promise<void> => {
     await refreshProducts();
     setIsFormOpen(false);
   };
 
   return (
     <>
-      <DashboardFormWrapper
+      <DashboardForm
         categories={categories}
         onProductCreated={handleProductCreated}
-        isFormOpen={isFormOpen}
-        onFormOpenChange={setIsFormOpen}
+        onClose={() => setIsFormOpen(false)}
+        isOpen={isFormOpen}
       />
       <ProductList
         products={products}

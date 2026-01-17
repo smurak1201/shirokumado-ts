@@ -8,42 +8,12 @@
  */
 
 import { config } from './config';
+import { isHeicFile, convertHeicToJpeg } from './image-compression-heic';
+import { supportsWebP, getFileSizeMB, createErrorMessage } from './image-compression-utils';
+import { loadImage } from './image-compression-load';
 
 // 定数定義
 const MAX_INPUT_SIZE_BYTES = 50 * 1024 * 1024; // 50MB
-const CREATE_IMAGE_BITMAP_THRESHOLD_BYTES = 5 * 1024 * 1024; // 5MB
-const IMAGE_LOAD_TIMEOUT_MS = 60000; // 60秒
-const MIN_COMPRESSION_QUALITY = 0.5;
-const QUALITY_STEP = 0.1;
-const RECOMMENDED_FILE_SIZE_MB = 10;
-
-// heic2anyを動的インポート（コード分割のため）
-// @ts-ignore - heic2anyには型定義がないため
-let heic2any: any = null;
-async function getHeic2Any() {
-  if (!heic2any && typeof window !== 'undefined') {
-    try {
-      // @ts-ignore - heic2anyには型定義がないため
-      const heic2anyModule = await import('heic2any');
-      heic2any = heic2anyModule.default || heic2anyModule;
-    } catch (error) {
-      console.warn('heic2anyの読み込みに失敗しました:', error);
-    }
-  }
-  return heic2any;
-}
-
-/**
- * HEIC形式のファイルかどうかを判定します
- * @param file 画像ファイル
- * @returns HEIC形式の場合true
- */
-export function isHeicFile(file: File): boolean {
-  const heicTypes = ['image/heic', 'image/heif', 'image/heic-sequence', 'image/heif-sequence'];
-  return heicTypes.includes(file.type.toLowerCase()) ||
-          /\.heic$/i.test(file.name) ||
-          /\.heif$/i.test(file.name);
-}
 
 /**
  * 画像ファイルかどうかを判定します（HEIC形式も含む）
@@ -71,120 +41,12 @@ export function isImageFile(file: File): boolean {
   return false;
 }
 
-/**
- * HEIC形式のファイルをJPEGに変換します
- * @param file HEIC形式のファイル
- * @returns JPEG形式のBlob
- */
-async function convertHeicToJpeg(file: File): Promise<Blob> {
-  const heic2anyLib = await getHeic2Any();
-  if (!heic2anyLib) {
-    throw new Error('HEIC形式の変換ライブラリが読み込めませんでした');
-  }
-
-  try {
-    const result = await heic2anyLib({
-      blob: file,
-      toType: 'image/jpeg',
-      quality: 0.92, // 高品質を維持
-    });
-
-    // heic2anyは配列を返すことがあるので、最初の要素を取得
-    const blob = Array.isArray(result) ? result[0] : result;
-    if (!(blob instanceof Blob)) {
-      throw new Error('HEIC変換の結果が無効です');
-    }
-
-    return blob;
-  } catch (error) {
-    throw new Error(createErrorMessage('HEIC形式の変換に失敗しました', error));
-  }
-}
-
 interface CompressionOptions {
   maxWidth?: number;
   maxHeight?: number;
   quality?: number; // 0.0 - 1.0
   maxSizeMB?: number; // 目標ファイルサイズ（MB）
   format?: 'webp' | 'jpeg'; // 出力形式
-}
-
-/**
- * WebP形式がサポートされているかどうかを判定します
- * @returns WebPがサポートされている場合true
- */
-function supportsWebP(): boolean {
-  try {
-    const canvas = document.createElement('canvas');
-    canvas.width = 1;
-    canvas.height = 1;
-    const dataUrl = canvas.toDataURL('image/webp');
-    return dataUrl.startsWith('data:image/webp');
-  } catch (error) {
-    console.warn('WebP形式のサポート確認に失敗しました:', error);
-    return false;
-  }
-}
-
-/**
- * アスペクト比を保ちながらリサイズ後のサイズを計算します
- */
-function calculateResizedDimensions(
-  width: number,
-  height: number,
-  maxWidth: number,
-  maxHeight: number
-): { width: number; height: number } {
-  if (width <= maxWidth && height <= maxHeight) {
-    return { width, height };
-  }
-
-  const aspectRatio = width / height;
-  let newWidth = width;
-  let newHeight = height;
-
-  if (width > height) {
-    newWidth = Math.min(width, maxWidth);
-    newHeight = newWidth / aspectRatio;
-  } else {
-    newHeight = Math.min(height, maxHeight);
-    newWidth = newHeight * aspectRatio;
-  }
-
-  return { width: newWidth, height: newHeight };
-}
-
-/**
- * Canvasに画像を描画します
- */
-function drawImageToCanvas(
-  imageSource: ImageBitmap | HTMLImageElement,
-  width: number,
-  height: number
-): HTMLCanvasElement {
-  const canvas = document.createElement('canvas');
-  canvas.width = width;
-  canvas.height = height;
-  const ctx = canvas.getContext('2d');
-  if (!ctx) {
-    throw new Error('Canvas contextの作成に失敗しました');
-  }
-  ctx.drawImage(imageSource, 0, 0, width, height);
-  return canvas;
-}
-
-/**
- * ファイルサイズをMB単位で取得します
- */
-function getFileSizeMB(sizeBytes: number): number {
-  return sizeBytes / (1024 * 1024);
-}
-
-/**
- * エラーメッセージを生成します
- */
-function createErrorMessage(message: string, error: unknown): string {
-  return `${message}: ${error instanceof Error ? error.message : String(error)}`;
 }
 
 /**
@@ -215,6 +77,11 @@ export async function compressImage(
     throw new Error(`サポートされていないファイル形式です: ${file.type || '不明'}`);
   }
 
+  // ファイルサイズの検証（大きすぎるファイルは処理を避ける）
+  if (file.size > MAX_INPUT_SIZE_BYTES) {
+    throw new Error(`ファイルサイズが大きすぎます: ${getFileSizeMB(file.size).toFixed(2)}MB`);
+  }
+
   // HEIC形式の場合は、まずJPEGに変換
   // 注意: HEIC形式はブラウザで直接処理できないため、一度JPEGに変換する必要があります
   // heic2anyライブラリはHEIC → JPEG/PNGの変換のみサポートしており、
@@ -242,220 +109,15 @@ export async function compressImage(
   const outputFormat = useWebP ? 'image/webp' : 'image/jpeg';
   const outputExtension = useWebP ? '.webp' : '.jpg';
 
-  return new Promise((resolve, reject) => {
-    // ファイルサイズの検証（大きすぎるファイルは処理を避ける）
-    if (file.size > MAX_INPUT_SIZE_BYTES) {
-      reject(new Error(`ファイルサイズが大きすぎます: ${getFileSizeMB(file.size).toFixed(2)}MB`));
-      return;
-    }
-
-    // 大きなファイルの場合は、createImageBitmapを使用（より効率的）
-    const useCreateImageBitmap =
-      typeof window !== 'undefined' &&
-      typeof window.createImageBitmap !== 'undefined' &&
-      file.size > CREATE_IMAGE_BITMAP_THRESHOLD_BYTES;
-
-    if (useCreateImageBitmap) {
-      // createImageBitmapを使用（大きな画像に適している）
-      window
-        .createImageBitmap(file)
-        .then((imageBitmap) => {
-          try {
-            if (imageBitmap.width === 0 || imageBitmap.height === 0) {
-              reject(new Error('画像のサイズが無効です'));
-              return;
-            }
-
-            const { width, height } = calculateResizedDimensions(
-              imageBitmap.width,
-              imageBitmap.height,
-              maxWidth,
-              maxHeight
-            );
-
-            const canvas = drawImageToCanvas(imageBitmap, width, height);
-            imageBitmap.close(); // メモリを解放
-
-            compressCanvasToFile(canvas, outputFormat, quality, maxSizeMB, file.name, outputExtension)
-              .then(resolve)
-              .catch(reject);
-          } catch (error) {
-            reject(new Error(createErrorMessage('画像処理中にエラーが発生しました', error)));
-          }
-        })
-        .catch((error) => {
-          console.error('createImageBitmapエラー:', {
-            error,
-            fileName: file.name,
-            fileSize: file.size,
-            fileSizeMB: getFileSizeMB(file.size).toFixed(2),
-            fileType: file.type,
-            processedFileName: processedFile.name,
-            processedFileSize: processedFile.size,
-            processedFileType: processedFile.type,
-          });
-          // createImageBitmapが失敗した場合は、Blob URL方式にフォールバック
-          loadImageWithBlobURL(processedFile, maxWidth, maxHeight, outputFormat, quality, maxSizeMB, outputExtension)
-            .then(resolve)
-            .catch(reject);
-        });
-    } else {
-      // 小さなファイルの場合は、Blob URLを使用
-      loadImageWithBlobURL(processedFile, maxWidth, maxHeight, outputFormat, quality, maxSizeMB, outputExtension)
-        .then(resolve)
-        .catch(reject);
-    }
-  });
-}
-
-/**
- * Canvasを圧縮してFileに変換するヘルパー関数
- */
-function compressCanvasToFile(
-  canvas: HTMLCanvasElement,
-  outputFormat: string,
-  quality: number,
-  maxSizeMB: number,
-  originalFileName: string,
-  outputExtension: string
-): Promise<File> {
-  return new Promise((resolve, reject) => {
-    const compressWithQuality = (q: number): Promise<File> => {
-      return new Promise((resolveCompress, rejectCompress) => {
-        canvas.toBlob(
-          (blob) => {
-            if (!blob) {
-              rejectCompress(new Error(`画像の圧縮に失敗しました（品質: ${q}）`));
-              return;
-            }
-
-            const sizeMB = getFileSizeMB(blob.size);
-            if (sizeMB > maxSizeMB && q > MIN_COMPRESSION_QUALITY) {
-              resolveCompress(compressWithQuality(Math.max(q - QUALITY_STEP, MIN_COMPRESSION_QUALITY)));
-            } else {
-              const compressedFile = new File(
-                [blob],
-                originalFileName.replace(/\.[^/.]+$/, outputExtension),
-                {
-                  type: outputFormat,
-                  lastModified: Date.now(),
-                }
-              );
-              resolveCompress(compressedFile);
-            }
-          },
-          outputFormat,
-          q
-        );
-      });
-    };
-
-    compressWithQuality(quality).then(resolve).catch(reject);
-  });
-}
-
-/**
- * Blob URLを使用して画像を読み込むヘルパー関数
- */
-function loadImageWithBlobURL(
-  file: File,
-  maxWidth: number,
-  maxHeight: number,
-  outputFormat: string,
-  quality: number,
-  maxSizeMB: number,
-  outputExtension: string
-): Promise<File> {
-  return new Promise((resolve, reject) => {
-    let blobUrl: string | null = null;
-
-    try {
-      blobUrl = URL.createObjectURL(file);
-    } catch (error) {
-      reject(new Error(createErrorMessage('Blob URLの作成に失敗しました', error)));
-      return;
-    }
-
-    const img = new Image();
-
-    // 画像読み込みのタイムアウトを設定
-    const timeoutId = setTimeout(() => {
-      if (blobUrl) {
-        URL.revokeObjectURL(blobUrl);
-      }
-      reject(
-        new Error(
-          `画像の読み込みがタイムアウトしました（${IMAGE_LOAD_TIMEOUT_MS / 1000}秒）。ファイルサイズが大きすぎる可能性があります（${getFileSizeMB(file.size).toFixed(2)}MB）。`
-        )
-      );
-    }, IMAGE_LOAD_TIMEOUT_MS);
-
-    img.onload = () => {
-      clearTimeout(timeoutId);
-      if (blobUrl) {
-        URL.revokeObjectURL(blobUrl); // メモリを解放
-      }
-
-      try {
-        if (img.width === 0 || img.height === 0) {
-          reject(new Error('画像のサイズが無効です'));
-          return;
-        }
-
-        console.log(`画像読み込み成功: ${img.width}x${img.height}, ファイルサイズ: ${getFileSizeMB(file.size).toFixed(2)}MB`);
-
-        const { width, height } = calculateResizedDimensions(img.width, img.height, maxWidth, maxHeight);
-        if (width !== img.width || height !== img.height) {
-          console.log(`リサイズ: ${width}x${height}`);
-        }
-
-        const canvas = drawImageToCanvas(img, width, height);
-        compressCanvasToFile(canvas, outputFormat, quality, maxSizeMB, file.name, outputExtension)
-          .then(resolve)
-          .catch(reject);
-      } catch (error) {
-        reject(new Error(createErrorMessage('画像処理中にエラーが発生しました', error)));
-      }
-    };
-
-    img.onerror = (event) => {
-      clearTimeout(timeoutId);
-      if (blobUrl) {
-        URL.revokeObjectURL(blobUrl);
-      }
-      const fileSizeMB = getFileSizeMB(file.size);
-      console.error('画像読み込みエラー:', {
-        fileType: file.type,
-        fileName: file.name,
-        fileSize: file.size,
-        fileSizeMB: fileSizeMB.toFixed(2),
-        blobUrl: blobUrl ? '作成済み' : '作成失敗',
-        event: event,
-        error: event instanceof ErrorEvent ? event.error : null,
-      });
-
-      if (fileSizeMB > RECOMMENDED_FILE_SIZE_MB) {
-        reject(
-          new Error(
-            `画像の読み込みに失敗しました。ファイルサイズが大きすぎる可能性があります（${fileSizeMB.toFixed(2)}MB）。推奨サイズは${RECOMMENDED_FILE_SIZE_MB}MB以下です。別の画像を選択するか、画像を小さくしてから再度お試しください。`
-          )
-        );
-      } else {
-        reject(new Error(`画像の読み込みに失敗しました。ファイル形式（${file.type || '不明'}）がサポートされていない可能性があります。`));
-      }
-    };
-
-    // 画像の読み込みを開始
-    try {
-      img.src = blobUrl;
-    } catch (error) {
-      clearTimeout(timeoutId);
-      if (blobUrl) {
-        URL.revokeObjectURL(blobUrl);
-      }
-      reject(new Error(createErrorMessage('画像の読み込み開始に失敗しました', error)));
-    }
-  });
+  return loadImage(
+    processedFile,
+    maxWidth,
+    maxHeight,
+    outputFormat,
+    quality,
+    maxSizeMB,
+    outputExtension
+  );
 }
 
 /**
