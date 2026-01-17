@@ -127,11 +127,9 @@ DashboardPage (Server Component)
           ├── ProductListTabs
           ├── ProductListContent
           │   ├── ProductSearchFilters
-          │   └── ProductListView
-          │       └── ProductCard
+          │   └── ProductCard
           ├── ProductLayoutTab
           │   ├── ProductCategoryTabs
-          │   │   └── ProductCategoryTabButton
           │   └── SortableProductItem
           └── ProductEditForm
               ├── useProductForm (カスタムフック)

@@ -46,7 +46,6 @@ shirokumado-ts/
 │   │   │   │   ├── ProductList.tsx
 │   │   │   ├── ProductEditForm.tsx
 │   │   │   ├── ProductFormFields.tsx
-│   │   │   ├── ProductListView.tsx
 │   │   │   ├── ProductSearchFilters.tsx
 │   │   │   ├── ProductCategoryTabs.tsx
 │   │   │   └── SortableProductItem.tsx
@@ -250,7 +249,6 @@ app/dashboard/
 │   ├── [ProductList.tsx](../app/dashboard/components/ProductList.tsx)           # 商品一覧・配置変更
 │   ├── [ProductListTabs.tsx](../app/dashboard/components/ProductListTabs.tsx)      # 商品一覧タブ切り替え
 │   ├── [ProductListContent.tsx](../app/dashboard/components/ProductListContent.tsx)  # 商品一覧コンテンツ
-│   ├── [ProductListView.tsx](../app/dashboard/components/ProductListView.tsx)      # 商品一覧表示
 │   ├── [ProductCard.tsx](../app/dashboard/components/ProductCard.tsx)            # 商品カード
 │   ├── [ProductEditForm.tsx](../app/dashboard/components/ProductEditForm.tsx)       # 商品編集フォーム
 │   ├── [ProductFormFields.tsx](../app/dashboard/components/ProductFormFields.tsx)  # 商品フォームフィールド（共通）
@@ -265,7 +263,6 @@ app/dashboard/
 │   ├── [ProductSearchFilters.tsx](../app/dashboard/components/ProductSearchFilters.tsx)  # 商品検索フィルター
 │   ├── [ProductLayoutTab.tsx](../app/dashboard/components/ProductLayoutTab.tsx)  # 商品配置変更タブ
 │   ├── [ProductCategoryTabs.tsx](../app/dashboard/components/ProductCategoryTabs.tsx)          # カテゴリータブ
-│   ├── [ProductCategoryTabButton.tsx](../app/dashboard/components/ProductCategoryTabButton.tsx)  # カテゴリータブボタン
 │   └── [SortableProductItem.tsx](../app/dashboard/components/SortableProductItem.tsx)  # ドラッグ&ドロップ可能な商品アイテム
 ├── hooks/                # カスタムフック
 │   ├── [useTabState.ts](../app/dashboard/hooks/useTabState.ts)            # タブ状態管理（localStorage連携）

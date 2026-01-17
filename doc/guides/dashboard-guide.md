@@ -59,11 +59,9 @@ DashboardContent (Client Component)
       ├── ProductListTabs
       ├── ProductListContent
       │   ├── ProductSearchFilters
-      │   └── ProductListView
-      │       └── ProductCard
+      │   └── ProductCard
       ├── ProductLayoutTab
       │   ├── ProductCategoryTabs
-      │   │   └── ProductCategoryTabButton
       │   └── SortableProductItem
       └── ProductEditForm
           ├── useProductForm (カスタムフック)
@@ -84,7 +82,6 @@ app/dashboard/
 │   ├── ProductList.tsx         # 商品一覧・配置変更
 │   ├── ProductListTabs.tsx    # 商品一覧タブ切り替え
 │   ├── ProductListContent.tsx # 商品一覧コンテンツ
-│   ├── ProductListView.tsx    # 商品一覧表示
 │   ├── ProductCard.tsx        # 商品カード
 │   ├── ProductEditForm.tsx     # 商品編集フォーム
 │   ├── ProductFormFields.tsx   # 商品フォームフィールド（共通）
@@ -99,7 +96,6 @@ app/dashboard/
 │   ├── ProductSearchFilters.tsx # 商品検索フィルター
 │   ├── ProductLayoutTab.tsx  # 商品配置変更タブ
 │   ├── ProductCategoryTabs.tsx       # カテゴリータブ
-│   ├── ProductCategoryTabButton.tsx  # カテゴリータブボタン
 │   └── SortableProductItem.tsx # ドラッグ&ドロップ可能な商品アイテム
 ├── hooks/                      # カスタムフック
 │   ├── useTabState.ts          # タブ状態管理
@@ -266,7 +262,7 @@ const refreshProducts = async () => {
 **主な機能**:
 
 - タブ切り替え（「登録済み商品一覧」と「配置変更」）
-- 商品一覧の表示（`ProductListView`コンポーネントを使用）
+- 商品一覧の表示（`ProductListContent`コンポーネント内で実装）
 - 検索機能（`ProductSearchFilters`コンポーネントを使用）
 - ドラッグ&ドロップによる順序変更
 - 商品の編集・削除
@@ -290,7 +286,7 @@ interface ProductListProps {
 - `@dnd-kit`を使用したドラッグ&ドロップ
 - 楽観的 UI 更新
 - タブ状態の localStorage 連携
-- コンポーネントの分割（`ProductListTabs`、`ProductListContent`、`ProductListView`、`ProductSearchFilters`、`ProductLayoutTab`、`ProductCategoryTabs`）
+- コンポーネントの分割（`ProductListTabs`、`ProductListContent`、`ProductSearchFilters`、`ProductLayoutTab`、`ProductCategoryTabs`）
 
 ### ProductListTabs ([`components/ProductListTabs.tsx`](../../app/dashboard/components/ProductListTabs.tsx))
 
@@ -308,6 +304,8 @@ interface ProductListProps {
 **主な機能**:
 
 - 検索フィルターと商品リストを表示
+- フィルタリングされた商品一覧を3列グリッドで表示
+- 空状態の処理（商品がない場合、検索結果がない場合）
 - 新規商品登録ボタンの表示
 
 ### ProductFormFields ([`components/ProductFormFields.tsx`](../../app/dashboard/components/ProductFormFields.tsx))
@@ -399,16 +397,6 @@ interface ProductListProps {
 - 商品情報のカード形式での表示
 - 編集・削除ボタン
 
-### ProductListView ([`components/ProductListView.tsx`](../../app/dashboard/components/ProductListView.tsx))
-
-フィルタリングされた商品一覧を3列グリッドで表示するコンポーネントです。
-
-**主な機能**:
-
-- 商品一覧の3列グリッド表示
-- 公開状態に応じた視覚的な表示
-- 編集・削除ボタン
-
 ### ProductSearchFilters ([`components/ProductSearchFilters.tsx`](../../app/dashboard/components/ProductSearchFilters.tsx))
 
 商品名、カテゴリー、公開状態による検索・フィルタリング機能を提供するコンポーネントです。
@@ -434,19 +422,11 @@ interface ProductListProps {
 
 **主な機能**:
 
-- カテゴリーのタブ表示（`ProductCategoryTabButton`を使用）
+- カテゴリーのタブ表示（内部コンポーネントとして実装）
 - アクティブタブのハイライト
 - スクロール可能なタブ
 - スクロール可能な場合の視覚的インジケーター（グラデーション）
 - アクティブなタブの自動スクロール
-
-### ProductCategoryTabButton ([`components/ProductCategoryTabButton.tsx`](../../app/dashboard/components/ProductCategoryTabButton.tsx))
-
-カテゴリータブボタンコンポーネントです。
-
-**主な機能**:
-
-- 個別のカテゴリータブボタンの表示
 - 商品数の表示
 
 ### SortableProductItem ([`components/SortableProductItem.tsx`](../../app/dashboard/components/SortableProductItem.tsx))

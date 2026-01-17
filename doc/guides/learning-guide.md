@@ -372,7 +372,7 @@ Java、PHP、Laravel の経験がある方は、以下のような知識を活�
 25. [`app/dashboard/components/ProductList.tsx`](../../app/dashboard/components/ProductList.tsx)
 
     - 複雑な状態管理
-    - コンポーネントの分割（`ProductListView`、`ProductSearchFilters`）
+    - コンポーネントの分割（`ProductListContent`、`ProductSearchFilters`）
     - ドラッグ&ドロップ、検索機能
 
 ## ソースコードを読むときのコツ

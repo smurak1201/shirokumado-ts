@@ -170,9 +170,6 @@ API Routes で使用する共通のヘルパー関数を確認します。
 
 商品作成・編集フォームで使用する共通のフォームフィールドコンポーネントです。
 
-#### [`app/dashboard/components/ProductListView.tsx`](../app/dashboard/components/ProductListView.tsx)
-
-フィルタリングされた商品一覧を3列グリッドで表示するコンポーネントです。
 
 #### [`app/dashboard/components/ProductSearchFilters.tsx`](../app/dashboard/components/ProductSearchFilters.tsx)
 
@@ -250,7 +247,6 @@ app/dashboard/
 │   ├── ProductList.tsx           # 商品一覧・配置変更
 │   ├── ProductListTabs.tsx       # 商品一覧タブ切り替え
 │   ├── ProductListContent.tsx   # 商品一覧コンテンツ
-│   ├── ProductListView.tsx      # 商品一覧表示
 │   ├── ProductCard.tsx          # 商品カード
 │   ├── ProductEditForm.tsx       # 商品編集フォーム
 │   ├── ProductFormFields.tsx     # 商品フォームフィールド（共通）
@@ -265,7 +261,6 @@ app/dashboard/
 │   ├── ProductSearchFilters.tsx # 商品検索フィルター
 │   ├── ProductLayoutTab.tsx     # 商品配置変更タブ
 │   ├── ProductCategoryTabs.tsx          # カテゴリータブ
-│   ├── ProductCategoryTabButton.tsx    # カテゴリータブボタン
 │   └── SortableProductItem.tsx   # ドラッグ&ドロップ可能な商品アイテム
 ├── hooks/                # カスタムフック（状態管理ロジック）
 │   ├── useTabState.ts           # タブ状態管理（localStorage連携）
