@@ -34,6 +34,13 @@ interface ProductListProps {
   onNewProductClick?: () => void;
 }
 
+/**
+ * 商品一覧コンポーネント
+ *
+ * 商品の一覧表示と配置変更の機能を提供します。
+ * 「登録済み商品一覧」タブでは検索・フィルタリング機能を提供し、
+ * 「配置変更」タブではドラッグ&ドロップによる商品の順序変更機能を提供します。
+ */
 export default function ProductList({
   products,
   setProducts,

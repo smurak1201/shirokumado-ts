@@ -5,17 +5,13 @@ import { NextRequest } from 'next/server';
 import { calculatePublishedStatus } from '@/lib/product-utils';
 import { deleteFile } from '@/lib/blob';
 
-/**
- * 動的レンダリングを強制
- * データベースから最新のデータを取得する必要があるため、常にサーバー側でレンダリングします
- */
 export const dynamic = 'force-dynamic';
 
 /**
- * 商品を取得
+ * 商品を取得する API エンドポイント
+ * GET /api/products/[id]
  *
- * 注意: 現在このエンドポイントは未使用です。
- * 将来的に商品詳細ページや外部API連携が必要になった場合に使用する可能性があります。
+ * 指定されたIDの商品をカテゴリー情報を含めて取得します。
  */
 export const GET = withErrorHandling(async (
   _request: NextRequest,
@@ -50,16 +46,8 @@ export const GET = withErrorHandling(async (
  * 商品を更新する API エンドポイント
  * PUT /api/products/[id]
  *
- * 機能:
- * - 商品情報のバリデーション
- * - カテゴリーの存在確認（指定されている場合）
- * - 公開日・終了日に基づく公開状態の自動判定
- * - 画像更新時の古い画像の削除
- * - 商品情報の更新
- *
- * @param request - リクエストオブジェクト（更新する商品情報を含む）
- * @param params - ルートパラメータ（商品IDを含む）
- * @returns 更新された商品を含む JSON レスポンス
+ * 商品情報のバリデーション、カテゴリーの存在確認、公開日・終了日に基づく公開状態の自動判定を行い、
+ * 画像更新時は古い画像を削除してから商品情報を更新します。
  */
 export const PUT = withErrorHandling(async (
   request: NextRequest,
@@ -73,7 +61,6 @@ export const PUT = withErrorHandling(async (
     throw new ValidationError('無効な商品IDです');
   }
 
-  // 商品の存在確認
   const existingProduct = await safePrismaOperation(
     () => prisma.product.findUnique({ where: { id: productId } }),
     `PUT /api/products/${id} - existence check`
@@ -83,7 +70,6 @@ export const PUT = withErrorHandling(async (
     throw new NotFoundError('商品');
   }
 
-  // バリデーション
   if (body.name !== undefined) {
     if (!body.name || typeof body.name !== 'string' || body.name.trim().length === 0) {
       throw new ValidationError('商品名は必須です');
@@ -96,7 +82,6 @@ export const PUT = withErrorHandling(async (
     }
   }
 
-  // カテゴリーの存在確認（指定されている場合）
   if (body.categoryId !== undefined) {
     if (typeof body.categoryId !== 'number') {
       throw new ValidationError('カテゴリーIDは数値である必要があります');
@@ -112,7 +97,6 @@ export const PUT = withErrorHandling(async (
     }
   }
 
-  // 公開日・終了日の処理
   const publishedAt = body.publishedAt !== undefined
     ? (body.publishedAt ? new Date(body.publishedAt) : null)
     : existingProduct.publishedAt;
@@ -120,31 +104,21 @@ export const PUT = withErrorHandling(async (
     ? (body.endedAt ? new Date(body.endedAt) : null)
     : existingProduct.endedAt;
 
-  // 公開情報の自動判定
-  // 公開日・終了日が設定されている場合は自動判定、そうでない場合は手動設定値を使用
   let published: boolean;
   if (publishedAt || endedAt) {
-    // 公開日・終了日が設定されている場合は自動判定
     published = calculatePublishedStatus(publishedAt, endedAt);
   } else {
-    // 公開日・終了日が設定されていない場合は手動設定値（変更がない場合は既存値）
     published = body.published !== undefined ? body.published : existingProduct.published;
   }
 
-  // 画像が更新される場合、元の画像を削除
   const oldImageUrl = existingProduct.imageUrl;
   const newImageUrl = body.imageUrl !== undefined ? (body.imageUrl || null) : oldImageUrl;
 
-  // 新しい画像URLが設定され、元の画像URLと異なる場合、元の画像を削除
-  // 画像削除を先に実行し、成功した場合のみDB更新を実行することで整合性を保ちます
   if (oldImageUrl && newImageUrl && oldImageUrl !== newImageUrl) {
-    // 画像削除を先に実行（失敗した場合はエラーを投げてDB更新を実行しない）
     await deleteFile(oldImageUrl);
     console.log(`元の画像を削除しました: ${oldImageUrl}`);
   }
 
-  // 商品を更新（トランザクションで保護）
-  // 画像削除が成功した場合のみ実行されるため、整合性が保たれます
   const updateData: any = {};
   if (body.name !== undefined) updateData.name = body.name.trim();
   if (body.description !== undefined) updateData.description = body.description.trim();
@@ -179,16 +153,8 @@ export const PUT = withErrorHandling(async (
  * 商品を削除する API エンドポイント
  * DELETE /api/products/[id]
  *
- * 機能:
- * - 商品の存在確認
- * - 商品に紐づく画像の削除（Blobストレージから）
- * - 商品の削除（データベースから）
- *
- * 注意: 画像削除を先に実行し、成功した場合のみDB削除を実行することで整合性を保ちます。
- *
- * @param request - リクエストオブジェクト（未使用）
- * @param params - ルートパラメータ（商品IDを含む）
- * @returns 削除成功メッセージを含む JSON レスポンス
+ * 商品の存在確認を行い、商品に紐づく画像をBlobストレージから削除してから、
+ * データベースから商品を削除します。
  */
 export const DELETE = withErrorHandling(async (
   _request: NextRequest,
@@ -201,7 +167,6 @@ export const DELETE = withErrorHandling(async (
     throw new ValidationError('無効な商品IDです');
   }
 
-  // 商品の存在確認
   const existingProduct = await safePrismaOperation(
     () => prisma.product.findUnique({ where: { id: productId } }),
     `DELETE /api/products/${id} - existence check`
@@ -211,16 +176,11 @@ export const DELETE = withErrorHandling(async (
     throw new NotFoundError('商品');
   }
 
-  // 商品に画像が設定されている場合、画像を削除
-  // 画像削除を先に実行し、成功した場合のみDB削除を実行することで整合性を保ちます
   if (existingProduct.imageUrl) {
-    // 画像削除を先に実行（失敗した場合はエラーを投げてDB削除を実行しない）
     await deleteFile(existingProduct.imageUrl);
     console.log(`商品削除時に画像を削除しました: ${existingProduct.imageUrl}`);
   }
 
-  // 商品を削除（トランザクションで保護）
-  // 画像削除が成功した場合のみ実行されるため、整合性が保たれます
   await safePrismaOperation(
     () => prisma.product.delete({ where: { id: productId } }),
     `DELETE /api/products/${id}`

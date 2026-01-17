@@ -20,6 +20,15 @@ interface UseProductFormOptions {
   initialFormData?: Partial<ProductFormData>;
 }
 
+/**
+ * 商品フォームの状態管理を行うカスタムフック
+ *
+ * 商品作成・編集フォームで使用する共通ロジックを提供します。
+ * 以下の機能を提供します：
+ * - フォームデータの状態管理
+ * - 画像の圧縮とアップロード
+ * - 公開日・終了日に基づく公開状態の自動計算
+ */
 export function useProductForm(options: UseProductFormOptions = {}) {
   const { initialImageUrl = null, initialFormData = {} } = options;
 

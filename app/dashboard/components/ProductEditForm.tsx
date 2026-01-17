@@ -11,6 +11,12 @@ interface ProductEditFormProps {
   onUpdated: () => Promise<void>;
 }
 
+/**
+ * 商品編集フォームコンポーネント
+ *
+ * モーダル形式で既存商品を編集するためのフォームを表示します。
+ * 既存の商品情報を初期値として設定し、画像の更新時は古い画像を削除してから新しい画像をアップロードします。
+ */
 export default function ProductEditForm({
   product,
   categories,

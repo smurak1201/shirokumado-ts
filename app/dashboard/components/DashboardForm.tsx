@@ -11,6 +11,12 @@ interface DashboardFormProps {
   isOpen: boolean;
 }
 
+/**
+ * 新規商品登録フォームコンポーネント
+ *
+ * モーダル形式で新規商品を登録するためのフォームを表示します。
+ * 画像の圧縮・アップロード、公開日・終了日の設定、公開状態の自動判定などの機能を提供します。
+ */
 export default function DashboardForm({
   categories,
   onProductCreated,

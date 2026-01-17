@@ -10,6 +10,12 @@ interface ProductSearchFiltersProps {
   categories: Category[];
 }
 
+/**
+ * 商品検索フィルターコンポーネント
+ *
+ * 商品名、カテゴリー、公開状態による検索・フィルタリング機能を提供します。
+ * 商品名の検索では、ひらがな・カタカナの区別なく検索できます。
+ */
 export default function ProductSearchFilters({
   searchName,
   setSearchName,

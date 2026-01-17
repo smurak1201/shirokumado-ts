@@ -5,22 +5,12 @@ import Link from "next/link";
  * フッターコンポーネント
  *
  * 全ページ共通のフッターを表示します。
- * - 1行目: ロゴ画像（トップページへのリンク）とInstagramアイコン（横並び）
- * - 2行目: 店舗情報（4列グリッド）
- *   - 住所
- *   - 営業情報（営業時間、定休日）
- *   - お問い合わせ（電話番号）
- *   - Googleマップ
- * - 3行目: コピーライト
- *
- * Server Component として実装されており、静的なコンテンツを表示します。
- * レスポンシブデザインに対応しており、モバイルでも4列のグリッドレイアウトを維持します。
+ * ロゴ画像、Instagramアイコン、店舗情報（住所、営業情報、お問い合わせ）、Googleマップ、コピーライトを含みます。
  */
 export default function Footer() {
   return (
     <footer className="border-t border-gray-200 bg-white py-8 md:py-12 lg:py-16">
       <div className="mx-auto max-w-6xl px-2 sm:px-4 md:px-6 lg:px-12">
-        {/* ロゴとInstagramアイコン（1列上） */}
         <div className="mb-6 flex items-center gap-2 sm:gap-3 md:gap-4">
           <Link href="/" className="transition-opacity hover:opacity-80">
             <Image
@@ -48,9 +38,7 @@ export default function Footer() {
           </a>
         </div>
 
-        {/* メインコンテンツ */}
         <div className="grid grid-cols-4 gap-2 sm:gap-4 md:gap-6 lg:gap-4">
-          {/* 住所 */}
           <div className="col-span-1 space-y-1 sm:space-y-1.5 md:space-y-2">
             <h3 className="text-[10px] font-semibold uppercase tracking-wider text-gray-900 sm:text-xs md:text-sm">
               住所
@@ -61,7 +49,6 @@ export default function Footer() {
             </div>
           </div>
 
-          {/* 営業情報 */}
           <div className="col-span-1 space-y-1 sm:space-y-1.5 md:space-y-2">
             <h3 className="text-[10px] font-semibold uppercase tracking-wider text-gray-900 sm:text-xs md:text-sm">
               営業情報
@@ -78,7 +65,6 @@ export default function Footer() {
             </div>
           </div>
 
-          {/* お問い合わせ */}
           <div className="col-span-1 space-y-1 sm:space-y-1.5 md:space-y-2">
             <h3 className="text-[10px] font-semibold uppercase tracking-wider text-gray-900 sm:text-xs md:text-sm">
               お問い合わせ
@@ -93,7 +79,6 @@ export default function Footer() {
             </div>
           </div>
 
-          {/* Googleマップ */}
           <div className="col-span-1">
             <div className="h-32 w-full overflow-hidden rounded-lg border border-gray-200 sm:h-36 md:h-40 lg:h-48">
               <iframe
@@ -112,7 +97,6 @@ export default function Footer() {
           </div>
         </div>
 
-        {/* コピーライト */}
         <div className="mt-12 border-t border-gray-200 pt-8 text-center">
           <p className="text-xs text-gray-500">© 2024 白熊堂</p>
         </div>

@@ -7,6 +7,12 @@ interface ProductListViewProps {
   onDelete: (productId: number) => void;
 }
 
+/**
+ * 商品一覧表示コンポーネント
+ *
+ * フィルタリングされた商品一覧を3列グリッドで表示します。
+ * 各商品カードには編集・削除ボタンが含まれ、公開状態に応じた視覚的な表示を行います。
+ */
 export default function ProductListView({
   products,
   filteredProducts,

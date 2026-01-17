@@ -2,20 +2,14 @@
 
 import { Component, type ReactNode } from "react";
 
-/**
- * ErrorBoundary の Props
- */
 interface ErrorBoundaryProps {
-  children: ReactNode; // エラーバウンダリーで囲む子コンポーネント
-  fallback?: ReactNode; // エラー発生時に表示するフォールバックUI（オプション）
+  children: ReactNode;
+  fallback?: ReactNode;
 }
 
-/**
- * ErrorBoundary の State
- */
 interface ErrorBoundaryState {
-  hasError: boolean; // エラーが発生したかどうか
-  error: Error | null; // 発生したエラー
+  hasError: boolean;
+  error: Error | null;
 }
 
 /**
@@ -24,22 +18,8 @@ interface ErrorBoundaryState {
  * Reactのエラーバウンダリー機能を実装したコンポーネントです。
  * 子コンポーネントで発生したエラーをキャッチし、エラーUIを表示します。
  *
- * Reactのベストプラクティスに従い、クラスコンポーネントとして実装されています。
- * （関数コンポーネントではエラーバウンダリーを実装できないため）
- *
- * 使用例:
- * ```tsx
- * <ErrorBoundary>
- *   <YourComponent />
- * </ErrorBoundary>
- * ```
- *
- * カスタムフォールバックUIを指定する場合:
- * ```tsx
- * <ErrorBoundary fallback={<div>エラーが発生しました</div>}>
- *   <YourComponent />
- * </ErrorBoundary>
- * ```
+ * 関数コンポーネントではエラーバウンダリーを実装できないため、
+ * クラスコンポーネントとして実装されています。
  */
 export default class ErrorBoundary extends Component<
   ErrorBoundaryProps,
@@ -53,10 +33,6 @@ export default class ErrorBoundary extends Component<
     };
   }
 
-  /**
-   * エラーが発生したときに呼ばれるライフサイクルメソッド
-   * エラー状態を更新します
-   */
   static getDerivedStateFromError(error: Error): ErrorBoundaryState {
     return {
       hasError: true,
@@ -64,19 +40,10 @@ export default class ErrorBoundary extends Component<
     };
   }
 
-  /**
-   * エラーが発生したときに呼ばれるライフサイクルメソッド
-   * エラーログを出力します
-   */
   componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
-    // エラーログを出力（本番環境ではエラートラッキングサービスに送信）
     console.error("ErrorBoundary caught an error:", error, errorInfo);
   }
 
-  /**
-   * エラー状態をリセットする
-   * ユーザーが再試行できるようにするためのメソッド
-   */
   resetError = () => {
     this.setState({
       hasError: false,
@@ -86,12 +53,10 @@ export default class ErrorBoundary extends Component<
 
   render() {
     if (this.state.hasError) {
-      // カスタムフォールバックUIが指定されている場合はそれを使用
       if (this.props.fallback) {
         return this.props.fallback;
       }
 
-      // デフォルトのエラーUIを表示
       return (
         <div className="flex min-h-[400px] flex-col items-center justify-center p-8">
           <div className="max-w-md text-center">
