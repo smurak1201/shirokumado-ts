@@ -178,7 +178,7 @@ API Routes で使用する共通のヘルパー関数を確認します。
 
 商品名、カテゴリー、公開状態による検索・フィルタリング機能を提供するコンポーネントです。
 
-#### [`app/dashboard/components/CategoryTabs.tsx`](../app/dashboard/components/CategoryTabs.tsx)
+#### [`app/dashboard/components/ProductCategoryTabs.tsx`](../app/dashboard/components/ProductCategoryTabs.tsx)
 
 カテゴリータブの UI コンポーネントです。スクロール可能なタブの実装を確認します。
 
@@ -264,8 +264,8 @@ app/dashboard/
 │   ├── ProductPublishedField.tsx # 公開情報フィールド
 │   ├── ProductSearchFilters.tsx # 商品検索フィルター
 │   ├── ProductLayoutTab.tsx     # 商品配置変更タブ
-│   ├── CategoryTabs.tsx          # カテゴリータブ
-│   ├── CategoryTabButton.tsx    # カテゴリータブボタン
+│   ├── ProductCategoryTabs.tsx          # カテゴリータブ
+│   ├── ProductCategoryTabButton.tsx    # カテゴリータブボタン
 │   └── SortableProductItem.tsx   # ドラッグ&ドロップ可能な商品アイテム
 ├── hooks/                # カスタムフック（状態管理ロジック）
 │   ├── useTabState.ts           # タブ状態管理（localStorage連携）

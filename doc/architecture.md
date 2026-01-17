@@ -130,8 +130,8 @@ DashboardPage (Server Component)
           │   └── ProductListView
           │       └── ProductCard
           ├── ProductLayoutTab
-          │   ├── CategoryTabs
-          │   │   └── CategoryTabButton
+          │   ├── ProductCategoryTabs
+          │   │   └── ProductCategoryTabButton
           │   └── SortableProductItem
           └── ProductEditForm
               ├── useProductForm (カスタムフック)
@@ -143,7 +143,7 @@ DashboardPage (Server Component)
 ### コンポーネント分割の原則
 
 1. **単一責任の原則**: 各コンポーネントは 1 つの責務を持つ
-2. **再利用性**: 汎用的なコンポーネントは分離（例: `CategoryTabs`, `SortableProductItem`）
+2. **再利用性**: 汎用的なコンポーネントは分離（例: `ProductCategoryTabs`, `SortableProductItem`）
 3. **関心の分離**: UI とロジックを分離（カスタムフックを使用）
 
 ### 例: ProductList の分割
@@ -159,7 +159,7 @@ DashboardPage (Server Component)
 **After** (分割後):
 
 - [`ProductList.tsx`](../app/dashboard/components/ProductList.tsx): メインロジック（約 490 行）
-- [`CategoryTabs.tsx`](../app/dashboard/components/CategoryTabs.tsx): カテゴリータブ UI
+- [`ProductCategoryTabs.tsx`](../app/dashboard/components/ProductCategoryTabs.tsx): カテゴリータブ UI
 - [`SortableProductItem.tsx`](../app/dashboard/components/SortableProductItem.tsx): ドラッグ&ドロップ可能な商品アイテム
 - [`useTabState.ts`](../app/dashboard/hooks/useTabState.ts): タブ状態管理フック
 - [`useProductReorder.ts`](../app/dashboard/hooks/useProductReorder.ts): 商品順序変更フック

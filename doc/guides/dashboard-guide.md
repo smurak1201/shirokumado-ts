@@ -62,8 +62,8 @@ DashboardContent (Client Component)
       │   └── ProductListView
       │       └── ProductCard
       ├── ProductLayoutTab
-      │   ├── CategoryTabs
-      │   │   └── CategoryTabButton
+      │   ├── ProductCategoryTabs
+      │   │   └── ProductCategoryTabButton
       │   └── SortableProductItem
       └── ProductEditForm
           ├── useProductForm (カスタムフック)
@@ -98,8 +98,8 @@ app/dashboard/
 │   ├── ProductPublishedField.tsx # 公開情報フィールド
 │   ├── ProductSearchFilters.tsx # 商品検索フィルター
 │   ├── ProductLayoutTab.tsx  # 商品配置変更タブ
-│   ├── CategoryTabs.tsx       # カテゴリータブ
-│   ├── CategoryTabButton.tsx  # カテゴリータブボタン
+│   ├── ProductCategoryTabs.tsx       # カテゴリータブ
+│   ├── ProductCategoryTabButton.tsx  # カテゴリータブボタン
 │   └── SortableProductItem.tsx # ドラッグ&ドロップ可能な商品アイテム
 ├── hooks/                      # カスタムフック
 │   ├── useTabState.ts          # タブ状態管理
@@ -290,7 +290,7 @@ interface ProductListProps {
 - `@dnd-kit`を使用したドラッグ&ドロップ
 - 楽観的 UI 更新
 - タブ状態の localStorage 連携
-- コンポーネントの分割（`ProductListTabs`、`ProductListContent`、`ProductListView`、`ProductSearchFilters`、`ProductLayoutTab`、`CategoryTabs`）
+- コンポーネントの分割（`ProductListTabs`、`ProductListContent`、`ProductListView`、`ProductSearchFilters`、`ProductLayoutTab`、`ProductCategoryTabs`）
 
 ### ProductListTabs ([`components/ProductListTabs.tsx`](../../app/dashboard/components/ProductListTabs.tsx))
 
@@ -426,21 +426,21 @@ interface ProductListProps {
 **主な機能**:
 
 - ドラッグ&ドロップによる商品の順序変更
-- カテゴリーごとのタブ表示（`CategoryTabs`を使用）
+- カテゴリーごとのタブ表示（`ProductCategoryTabs`を使用）
 
-### CategoryTabs ([`components/CategoryTabs.tsx`](../../app/dashboard/components/CategoryTabs.tsx))
+### ProductCategoryTabs ([`components/ProductCategoryTabs.tsx`](../../app/dashboard/components/ProductCategoryTabs.tsx))
 
 カテゴリータブの UI コンポーネントです。
 
 **主な機能**:
 
-- カテゴリーのタブ表示（`CategoryTabButton`を使用）
+- カテゴリーのタブ表示（`ProductCategoryTabButton`を使用）
 - アクティブタブのハイライト
 - スクロール可能なタブ
 - スクロール可能な場合の視覚的インジケーター（グラデーション）
 - アクティブなタブの自動スクロール
 
-### CategoryTabButton ([`components/CategoryTabButton.tsx`](../../app/dashboard/components/CategoryTabButton.tsx))
+### ProductCategoryTabButton ([`components/ProductCategoryTabButton.tsx`](../../app/dashboard/components/ProductCategoryTabButton.tsx))
 
 カテゴリータブボタンコンポーネントです。
 

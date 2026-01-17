@@ -48,7 +48,7 @@ shirokumado-ts/
 │   │   │   ├── ProductFormFields.tsx
 │   │   │   ├── ProductListView.tsx
 │   │   │   ├── ProductSearchFilters.tsx
-│   │   │   ├── CategoryTabs.tsx
+│   │   │   ├── ProductCategoryTabs.tsx
 │   │   │   └── SortableProductItem.tsx
 │   │   ├── hooks/        # カスタムフック
 │   │   │   ├── useTabState.ts
@@ -264,8 +264,8 @@ app/dashboard/
 │   ├── [ProductPublishedField.tsx](../app/dashboard/components/ProductPublishedField.tsx)  # 公開情報フィールド
 │   ├── [ProductSearchFilters.tsx](../app/dashboard/components/ProductSearchFilters.tsx)  # 商品検索フィルター
 │   ├── [ProductLayoutTab.tsx](../app/dashboard/components/ProductLayoutTab.tsx)  # 商品配置変更タブ
-│   ├── [CategoryTabs.tsx](../app/dashboard/components/CategoryTabs.tsx)          # カテゴリータブ
-│   ├── [CategoryTabButton.tsx](../app/dashboard/components/CategoryTabButton.tsx)  # カテゴリータブボタン
+│   ├── [ProductCategoryTabs.tsx](../app/dashboard/components/ProductCategoryTabs.tsx)          # カテゴリータブ
+│   ├── [ProductCategoryTabButton.tsx](../app/dashboard/components/ProductCategoryTabButton.tsx)  # カテゴリータブボタン
 │   └── [SortableProductItem.tsx](../app/dashboard/components/SortableProductItem.tsx)  # ドラッグ&ドロップ可能な商品アイテム
 ├── hooks/                # カスタムフック
 │   ├── [useTabState.ts](../app/dashboard/hooks/useTabState.ts)            # タブ状態管理（localStorage連携）
