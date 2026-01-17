@@ -1,4 +1,4 @@
-import { withErrorHandling, apiSuccess } from '@/lib/api-helpers';
+import { apiSuccess } from '@/lib/api-helpers';
 import { prisma, safePrismaOperation } from '@/lib/prisma';
 import { ValidationError, NotFoundError } from '@/lib/errors';
 import { NextRequest } from 'next/server';
