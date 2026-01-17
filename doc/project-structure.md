@@ -43,8 +43,7 @@ shirokumado-ts/
 │   │   ├── components/    # ダッシュボードコンポーネント
 │   │   │   ├── DashboardContent.tsx
 │   │   │   ├── DashboardForm.tsx
-│   │   │   ├── DashboardFormWrapper.tsx
-│   │   │   ├── ProductList.tsx
+│   │   │   │   ├── ProductList.tsx
 │   │   │   ├── ProductEditForm.tsx
 │   │   │   ├── ProductFormFields.tsx
 │   │   │   ├── ProductListView.tsx
@@ -248,20 +247,40 @@ app/dashboard/
 ├── components/           # コンポーネント
 │   ├── [DashboardContent.tsx](../app/dashboard/components/DashboardContent.tsx)      # メインコンテナ
 │   ├── [DashboardForm.tsx](../app/dashboard/components/DashboardForm.tsx)         # 新規商品登録フォーム
-│   ├── [DashboardFormWrapper.tsx](../app/dashboard/components/DashboardFormWrapper.tsx)  # フォームラッパー
 │   ├── [ProductList.tsx](../app/dashboard/components/ProductList.tsx)           # 商品一覧・配置変更
+│   ├── [ProductListTabs.tsx](../app/dashboard/components/ProductListTabs.tsx)      # 商品一覧タブ切り替え
+│   ├── [ProductListContent.tsx](../app/dashboard/components/ProductListContent.tsx)  # 商品一覧コンテンツ
+│   ├── [ProductListView.tsx](../app/dashboard/components/ProductListView.tsx)      # 商品一覧表示
+│   ├── [ProductCard.tsx](../app/dashboard/components/ProductCard.tsx)            # 商品カード
 │   ├── [ProductEditForm.tsx](../app/dashboard/components/ProductEditForm.tsx)       # 商品編集フォーム
 │   ├── [ProductFormFields.tsx](../app/dashboard/components/ProductFormFields.tsx)  # 商品フォームフィールド（共通）
-│   ├── [ProductListView.tsx](../app/dashboard/components/ProductListView.tsx)      # 商品一覧表示
+│   ├── [ProductFormModal.tsx](../app/dashboard/components/ProductFormModal.tsx)  # 商品フォームモーダル
+│   ├── [ProductFormFooter.tsx](../app/dashboard/components/ProductFormFooter.tsx)  # 商品フォームフッター
+│   ├── [ProductBasicFields.tsx](../app/dashboard/components/ProductBasicFields.tsx)  # 商品基本情報フィールド
+│   ├── [ProductImageField.tsx](../app/dashboard/components/ProductImageField.tsx)  # 商品画像フィールド
+│   ├── [ProductPriceFields.tsx](../app/dashboard/components/ProductPriceFields.tsx)  # 商品価格フィールド
+│   ├── [ProductDateFields.tsx](../app/dashboard/components/ProductDateFields.tsx)  # 商品日付フィールド
+│   ├── [ProductDateInput.tsx](../app/dashboard/components/ProductDateInput.tsx)  # 日付入力フィールド
+│   ├── [ProductPublishedField.tsx](../app/dashboard/components/ProductPublishedField.tsx)  # 公開情報フィールド
 │   ├── [ProductSearchFilters.tsx](../app/dashboard/components/ProductSearchFilters.tsx)  # 商品検索フィルター
+│   ├── [ProductLayoutTab.tsx](../app/dashboard/components/ProductLayoutTab.tsx)  # 商品配置変更タブ
 │   ├── [CategoryTabs.tsx](../app/dashboard/components/CategoryTabs.tsx)          # カテゴリータブ
+│   ├── [CategoryTabButton.tsx](../app/dashboard/components/CategoryTabButton.tsx)  # カテゴリータブボタン
 │   └── [SortableProductItem.tsx](../app/dashboard/components/SortableProductItem.tsx)  # ドラッグ&ドロップ可能な商品アイテム
 ├── hooks/                # カスタムフック
 │   ├── [useTabState.ts](../app/dashboard/hooks/useTabState.ts)            # タブ状態管理（localStorage連携）
 │   ├── [useProductForm.ts](../app/dashboard/hooks/useProductForm.ts)        # 商品フォームの状態管理
-│   └── [useProductReorder.ts](../app/dashboard/hooks/useProductReorder.ts)      # 商品順序変更ロジック
+│   ├── [useProductReorder.ts](../app/dashboard/hooks/useProductReorder.ts)      # 商品順序変更ロジック
+│   ├── [useImageCompression.ts](../app/dashboard/hooks/useImageCompression.ts)  # 画像圧縮処理
+│   ├── [useImageUpload.ts](../app/dashboard/hooks/useImageUpload.ts)        # 画像アップロード処理
+│   └── [useScrollPosition.ts](../app/dashboard/hooks/useScrollPosition.ts)  # スクロール位置監視
 └── utils/                # ユーティリティ関数
-    └── [productUtils.ts](../app/dashboard/utils/productUtils.ts)           # 商品のグループ化・フィルタリング
+    ├── [productUtils.ts](../app/dashboard/utils/productUtils.ts)           # 商品のグループ化・フィルタリング
+    ├── [productFormActions.ts](../app/dashboard/utils/productFormActions.ts)  # 商品フォームアクション
+    ├── [productFormCreateHandler.ts](../app/dashboard/utils/productFormCreateHandler.ts)  # 商品作成ハンドラー
+    ├── [productFormUpdateHandler.ts](../app/dashboard/utils/productFormUpdateHandler.ts)  # 商品更新ハンドラー
+    ├── [productFormInitialData.ts](../app/dashboard/utils/productFormInitialData.ts)  # 商品フォーム初期データ
+    └── [productFormSubmit.ts](../app/dashboard/utils/productFormSubmit.ts)  # 商品フォーム送信
 ```
 
 **設計の特徴**:

@@ -247,22 +247,40 @@ app/dashboard/
 ├── components/           # UI コンポーネント
 │   ├── DashboardContent.tsx      # メインコンテナ
 │   ├── DashboardForm.tsx         # 新規商品登録フォーム
-│   ├── DashboardFormWrapper.tsx  # フォームラッパー
 │   ├── ProductList.tsx           # 商品一覧・配置変更
+│   ├── ProductListTabs.tsx       # 商品一覧タブ切り替え
+│   ├── ProductListContent.tsx   # 商品一覧コンテンツ
+│   ├── ProductListView.tsx      # 商品一覧表示
+│   ├── ProductCard.tsx          # 商品カード
 │   ├── ProductEditForm.tsx       # 商品編集フォーム
 │   ├── ProductFormFields.tsx     # 商品フォームフィールド（共通）
-│   ├── ProductListView.tsx      # 商品一覧表示
+│   ├── ProductFormModal.tsx     # 商品フォームモーダル
+│   ├── ProductFormFooter.tsx    # 商品フォームフッター
+│   ├── ProductBasicFields.tsx   # 商品基本情報フィールド
+│   ├── ProductImageField.tsx    # 商品画像フィールド
+│   ├── ProductPriceFields.tsx   # 商品価格フィールド
+│   ├── ProductDateFields.tsx    # 商品日付フィールド
+│   ├── ProductDateInput.tsx     # 日付入力フィールド
+│   ├── ProductPublishedField.tsx # 公開情報フィールド
 │   ├── ProductSearchFilters.tsx # 商品検索フィルター
+│   ├── ProductLayoutTab.tsx     # 商品配置変更タブ
 │   ├── CategoryTabs.tsx          # カテゴリータブ
+│   ├── CategoryTabButton.tsx    # カテゴリータブボタン
 │   └── SortableProductItem.tsx   # ドラッグ&ドロップ可能な商品アイテム
 ├── hooks/                # カスタムフック（状態管理ロジック）
-│   ├── useTabState.ts           # タブ状態管理
+│   ├── useTabState.ts           # タブ状態管理（localStorage連携）
 │   ├── useProductForm.ts        # 商品フォームの状態管理
-│   └── useProductReorder.ts     # 商品順序変更ロジック
-│   ├── useTabState.ts            # タブ状態管理（localStorage連携）
-│   └── useProductReorder.ts      # 商品順序変更ロジック
+│   ├── useProductReorder.ts     # 商品順序変更ロジック
+│   ├── useImageCompression.ts   # 画像圧縮処理
+│   ├── useImageUpload.ts        # 画像アップロード処理
+│   └── useScrollPosition.ts     # スクロール位置監視
 └── utils/                # ユーティリティ関数（ビジネスロジック）
-    └── productUtils.ts           # 商品のグループ化・フィルタリング
+    ├── productUtils.ts           # 商品のグループ化・フィルタリング
+    ├── productFormActions.ts    # 商品フォームアクション
+    ├── productFormCreateHandler.ts # 商品作成ハンドラー
+    ├── productFormUpdateHandler.ts # 商品更新ハンドラー
+    ├── productFormInitialData.ts # 商品フォーム初期データ
+    └── productFormSubmit.ts     # 商品フォーム送信
 ```
 
 **設計思想**:

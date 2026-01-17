@@ -44,18 +44,32 @@ page.tsx (Server Component)
   ↓ データ取得（Prisma）
   ↓ propsで渡す
 DashboardContent (Client Component)
-  ├── DashboardFormWrapper
-  │   └── DashboardForm
-  │       ├── useProductForm (カスタムフック)
-  │       └── ProductFormFields
+  ├── DashboardForm
+  │   ├── useProductForm (カスタムフック)
+  │   ├── ProductFormModal
+  │   ├── ProductFormFields
+  │   │   ├── ProductBasicFields
+  │   │   ├── ProductImageField
+  │   │   ├── ProductPriceFields
+  │   │   └── ProductDateFields
+  │   │       ├── ProductPublishedField
+  │   │       └── ProductDateInput
+  │   └── ProductFormFooter
   └── ProductList
-      ├── ProductSearchFilters
-      ├── ProductListView
-      ├── ProductEditForm
-      │   ├── useProductForm (カスタムフック)
-      │   └── ProductFormFields
-      ├── CategoryTabs
-      └── SortableProductItem
+      ├── ProductListTabs
+      ├── ProductListContent
+      │   ├── ProductSearchFilters
+      │   └── ProductListView
+      │       └── ProductCard
+      ├── ProductLayoutTab
+      │   ├── CategoryTabs
+      │   │   └── CategoryTabButton
+      │   └── SortableProductItem
+      └── ProductEditForm
+          ├── useProductForm (カスタムフック)
+          ├── ProductFormModal
+          ├── ProductFormFields
+          └── ProductFormFooter
 ```
 
 ### ディレクトリ構造
@@ -67,20 +81,40 @@ app/dashboard/
 ├── components/                 # UI コンポーネント
 │   ├── DashboardContent.tsx    # メインコンテナ
 │   ├── DashboardForm.tsx       # 新規商品登録フォーム
-│   ├── DashboardFormWrapper.tsx # フォームラッパー
 │   ├── ProductList.tsx         # 商品一覧・配置変更
+│   ├── ProductListTabs.tsx    # 商品一覧タブ切り替え
+│   ├── ProductListContent.tsx # 商品一覧コンテンツ
+│   ├── ProductListView.tsx    # 商品一覧表示
+│   ├── ProductCard.tsx        # 商品カード
 │   ├── ProductEditForm.tsx     # 商品編集フォーム
 │   ├── ProductFormFields.tsx   # 商品フォームフィールド（共通）
-│   ├── ProductListView.tsx    # 商品一覧表示
+│   ├── ProductFormModal.tsx   # 商品フォームモーダル
+│   ├── ProductFormFooter.tsx  # 商品フォームフッター
+│   ├── ProductBasicFields.tsx # 商品基本情報フィールド
+│   ├── ProductImageField.tsx  # 商品画像フィールド
+│   ├── ProductPriceFields.tsx # 商品価格フィールド
+│   ├── ProductDateFields.tsx  # 商品日付フィールド
+│   ├── ProductDateInput.tsx   # 日付入力フィールド
+│   ├── ProductPublishedField.tsx # 公開情報フィールド
 │   ├── ProductSearchFilters.tsx # 商品検索フィルター
-│   ├── CategoryTabs.tsx        # カテゴリータブ
+│   ├── ProductLayoutTab.tsx  # 商品配置変更タブ
+│   ├── CategoryTabs.tsx       # カテゴリータブ
+│   ├── CategoryTabButton.tsx  # カテゴリータブボタン
 │   └── SortableProductItem.tsx # ドラッグ&ドロップ可能な商品アイテム
 ├── hooks/                      # カスタムフック
 │   ├── useTabState.ts          # タブ状態管理
 │   ├── useProductForm.ts       # 商品フォームの状態管理
-│   └── useProductReorder.ts    # 商品順序変更ロジック
+│   ├── useProductReorder.ts    # 商品順序変更ロジック
+│   ├── useImageCompression.ts # 画像圧縮処理
+│   ├── useImageUpload.ts       # 画像アップロード処理
+│   └── useScrollPosition.ts    # スクロール位置監視
 └── utils/                      # ユーティリティ関数
-    └── productUtils.ts         # 商品のグループ化・フィルタリング
+    ├── productUtils.ts         # 商品のグループ化・フィルタリング
+    ├── productFormActions.ts  # 商品フォームアクション
+    ├── productFormCreateHandler.ts # 商品作成ハンドラー
+    ├── productFormUpdateHandler.ts # 商品更新ハンドラー
+    ├── productFormInitialData.ts # 商品フォーム初期データ
+    └── productFormSubmit.ts   # 商品フォーム送信
 ```
 
 ## 主要機能
@@ -256,7 +290,25 @@ interface ProductListProps {
 - `@dnd-kit`を使用したドラッグ&ドロップ
 - 楽観的 UI 更新
 - タブ状態の localStorage 連携
-- コンポーネントの分割（`ProductListView`、`ProductSearchFilters`、`CategoryTabs`）
+- コンポーネントの分割（`ProductListTabs`、`ProductListContent`、`ProductListView`、`ProductSearchFilters`、`ProductLayoutTab`、`CategoryTabs`）
+
+### ProductListTabs ([`components/ProductListTabs.tsx`](../../app/dashboard/components/ProductListTabs.tsx))
+
+商品一覧のタブ切り替えコンポーネントです。
+
+**主な機能**:
+
+- 「登録済み商品一覧」と「配置変更」のタブを表示
+- アクティブなタブのハイライト
+
+### ProductListContent ([`components/ProductListContent.tsx`](../../app/dashboard/components/ProductListContent.tsx))
+
+商品一覧のコンテンツコンポーネントです。
+
+**主な機能**:
+
+- 検索フィルターと商品リストを表示
+- 新規商品登録ボタンの表示
 
 ### ProductFormFields ([`components/ProductFormFields.tsx`](../../app/dashboard/components/ProductFormFields.tsx))
 
@@ -266,6 +318,86 @@ interface ProductListProps {
 
 - 商品名、説明、画像、価格、カテゴリー、公開情報、公開日・終了日の入力フィールド
 - フォーム作成と編集の両方で使用可能（`fieldPrefix`プロップで識別子を付与）
+- 各フィールドを専用コンポーネントに分割（`ProductBasicFields`、`ProductImageField`、`ProductPriceFields`、`ProductDateFields`）
+
+### ProductFormModal ([`components/ProductFormModal.tsx`](../../app/dashboard/components/ProductFormModal.tsx))
+
+商品フォームのモーダルコンポーネントです。
+
+**主な機能**:
+
+- モーダルの表示・非表示制御
+- タイトルとフッターのカスタマイズ
+
+### ProductFormFooter ([`components/ProductFormFooter.tsx`](../../app/dashboard/components/ProductFormFooter.tsx))
+
+商品フォームのフッターコンポーネントです。
+
+**主な機能**:
+
+- キャンセルボタンと送信ボタンの表示
+- 送信状態に応じたボタンテキストの変更
+
+### ProductBasicFields ([`components/ProductBasicFields.tsx`](../../app/dashboard/components/ProductBasicFields.tsx))
+
+商品の基本情報フィールドコンポーネントです。
+
+**主な機能**:
+
+- 商品名、説明、カテゴリーの入力フィールド
+
+### ProductImageField ([`components/ProductImageField.tsx`](../../app/dashboard/components/ProductImageField.tsx))
+
+商品画像フィールドコンポーネントです。
+
+**主な機能**:
+
+- 画像の選択とプレビュー表示
+- 画像のアップロード状態の表示
+
+### ProductPriceFields ([`components/ProductPriceFields.tsx`](../../app/dashboard/components/ProductPriceFields.tsx))
+
+商品価格フィールドコンポーネントです。
+
+**主な機能**:
+
+- SサイズとLサイズの価格入力フィールド
+
+### ProductDateFields ([`components/ProductDateFields.tsx`](../../app/dashboard/components/ProductDateFields.tsx))
+
+商品日付フィールドコンポーネントです。
+
+**主な機能**:
+
+- 公開日・終了日の入力フィールド
+- 公開情報のラジオボタン（`ProductPublishedField`を使用）
+
+### ProductDateInput ([`components/ProductDateInput.tsx`](../../app/dashboard/components/ProductDateInput.tsx))
+
+日付入力フィールドコンポーネントです。
+
+**主な機能**:
+
+- datetime-local形式の日付入力
+- クリアボタンの表示
+
+### ProductPublishedField ([`components/ProductPublishedField.tsx`](../../app/dashboard/components/ProductPublishedField.tsx))
+
+公開情報フィールドコンポーネントです。
+
+**主な機能**:
+
+- 公開・非公開のラジオボタン
+- 公開日・終了日が設定されている場合の自動判定表示
+
+### ProductCard ([`components/ProductCard.tsx`](../../app/dashboard/components/ProductCard.tsx))
+
+商品カードコンポーネントです。
+
+**主な機能**:
+
+- 商品情報のカード形式での表示
+- 編集・削除ボタン
 
 ### ProductListView ([`components/ProductListView.tsx`](../../app/dashboard/components/ProductListView.tsx))
 
@@ -287,17 +419,35 @@ interface ProductListProps {
 - カテゴリーでのフィルタリング
 - 公開状態でのフィルタリング
 
+### ProductLayoutTab ([`components/ProductLayoutTab.tsx`](../../app/dashboard/components/ProductLayoutTab.tsx))
+
+商品配置変更タブコンポーネントです。
+
+**主な機能**:
+
+- ドラッグ&ドロップによる商品の順序変更
+- カテゴリーごとのタブ表示（`CategoryTabs`を使用）
+
 ### CategoryTabs ([`components/CategoryTabs.tsx`](../../app/dashboard/components/CategoryTabs.tsx))
 
 カテゴリータブの UI コンポーネントです。
 
 **主な機能**:
 
-- カテゴリーのタブ表示
+- カテゴリーのタブ表示（`CategoryTabButton`を使用）
 - アクティブタブのハイライト
 - スクロール可能なタブ
 - スクロール可能な場合の視覚的インジケーター（グラデーション）
 - アクティブなタブの自動スクロール
+
+### CategoryTabButton ([`components/CategoryTabButton.tsx`](../../app/dashboard/components/CategoryTabButton.tsx))
+
+カテゴリータブボタンコンポーネントです。
+
+**主な機能**:
+
+- 個別のカテゴリータブボタンの表示
+- 商品数の表示
 
 ### SortableProductItem ([`components/SortableProductItem.tsx`](../../app/dashboard/components/SortableProductItem.tsx))
 
@@ -483,6 +633,61 @@ const { reorderProducts } = useProductReorder(
 
 // 使用
 await reorderProducts(categoryGroup, oldIndex, newIndex);
+```
+
+#### useImageCompression ([`hooks/useImageCompression.ts`](../../app/dashboard/hooks/useImageCompression.ts))
+
+画像圧縮処理を行うカスタムフックです。
+
+**機能**:
+
+- 画像ファイルの検証
+- 画像の圧縮処理
+
+**使用例**:
+
+```typescript
+const { compressing, compressImageFile } = useImageCompression();
+
+const processedFile = await compressImageFile(file);
+```
+
+#### useImageUpload ([`hooks/useImageUpload.ts`](../../app/dashboard/hooks/useImageUpload.ts))
+
+画像アップロード処理を行うカスタムフックです。
+
+**機能**:
+
+- 画像の圧縮とアップロード
+- プレビューURLの生成
+
+**使用例**:
+
+```typescript
+const { uploading, compressing, handleImageChange, uploadImage } = useImageUpload();
+
+const result = await handleImageChange(file, fallbackImageUrl);
+const imageUrl = await uploadImage(imageFile, existingImageUrl);
+```
+
+#### useScrollPosition ([`hooks/useScrollPosition.ts`](../../app/dashboard/hooks/useScrollPosition.ts))
+
+スクロール位置を監視するカスタムフックです。
+
+**機能**:
+
+- スクロール可能なコンテナの左右のスクロール位置を監視
+- グラデーション表示の制御
+
+**使用例**:
+
+```typescript
+const {
+  scrollContainerRef,
+  showLeftGradient,
+  showRightGradient,
+  checkScrollPosition,
+} = useScrollPosition();
 ```
 
 ## API 連携

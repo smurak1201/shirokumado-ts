@@ -19,6 +19,9 @@
   - [useCategoryTabState](#usecategorytabstate)
   - [useProductForm](#useproductform)
   - [useProductReorder](#useproductreorder)
+  - [useImageCompression](#useimagecompression)
+  - [useImageUpload](#useimageupload)
+  - [useScrollPosition](#usescrollposition)
 - [コンポーネント設計](#コンポーネント設計)
   - [コンポーネントの分割原則](#コンポーネントの分割原則)
   - [コンポーネントの階層構造](#コンポーネントの階層構造)
@@ -886,6 +889,206 @@ export default function ProductGrid({ category, products }: ProductGridProps) {
 - **UX の向上**: レスポンスタイムが短く感じられる
 - **エラー処理**: 失敗時は元の状態に戻すことで、データの整合性を保つ
 
+### useImageCompression
+
+**説明**: 画像圧縮処理を行うカスタムフックです。画像ファイルの検証と圧縮機能を提供します。
+
+**このアプリでの使用箇所**:
+
+- [`app/dashboard/hooks/useImageCompression.ts`](../../app/dashboard/hooks/useImageCompression.ts): フックの実装
+- [`app/dashboard/hooks/useImageUpload.ts`](../../app/dashboard/hooks/useImageUpload.ts): `useImageUpload`から使用
+
+**実装コード**:
+
+[`app/dashboard/hooks/useImageCompression.ts`](../../app/dashboard/hooks/useImageCompression.ts) (`useImageCompression`フック)
+
+```typescript
+export function useImageCompression() {
+  const [compressing, setCompressing] = useState(false);
+
+  const compressImageFile = useCallback(
+    async (file: File): Promise<File | null> => {
+      // 画像ファイルの検証
+      if (!isImageFile(file)) {
+        alert("画像ファイルのみ選択可能です");
+        return null;
+      }
+
+      // ファイルサイズの確認（10MB以上の場合警告）
+      const fileSizeMB = file.size / 1024 / 1024;
+      if (fileSizeMB > 10) {
+        const proceed = confirm(/* ... */);
+        if (!proceed) return null;
+      }
+
+      setCompressing(true);
+      try {
+        // 画像を圧縮
+        const processedFile = await compressImage(file, {
+          maxSizeMB: config.imageConfig.COMPRESSION_TARGET_SIZE_MB,
+        });
+        return processedFile;
+      } catch (error) {
+        // エラーハンドリング
+        return null;
+      } finally {
+        setCompressing(false);
+      }
+    },
+    []
+  );
+
+  return { compressing, compressImageFile };
+}
+```
+
+**特徴**:
+
+- 画像ファイルの検証（`isImageFile`を使用）
+- ファイルサイズの確認と警告（10MB以上の場合）
+- 画像の圧縮処理（`compressImage`を使用）
+- 圧縮状態の管理（`compressing`）
+
+### useImageUpload
+
+**説明**: 画像アップロード処理を行うカスタムフックです。画像の圧縮とアップロード機能を提供します。
+
+**このアプリでの使用箇所**:
+
+- [`app/dashboard/hooks/useImageUpload.ts`](../../app/dashboard/hooks/useImageUpload.ts): フックの実装
+- [`app/dashboard/hooks/useProductForm.ts`](../../app/dashboard/hooks/useProductForm.ts): 商品フォームで使用
+
+**実装コード**:
+
+[`app/dashboard/hooks/useImageUpload.ts`](../../app/dashboard/hooks/useImageUpload.ts) (`useImageUpload`フック)
+
+```typescript
+export function useImageUpload() {
+  const [uploading, setUploading] = useState(false);
+  const { compressing, compressImageFile } = useImageCompression();
+
+  const handleImageChange = useCallback(
+    async (
+      file: File | null,
+      fallbackImageUrl?: string | null
+    ): Promise<{ file: File | null; previewUrl: string | null }> => {
+      if (!file) {
+        return { file: null, previewUrl: fallbackImageUrl || null };
+      }
+
+      // 画像を圧縮
+      const processedFile = await compressImageFile(file);
+      if (!processedFile) {
+        return { file: null, previewUrl: fallbackImageUrl || null };
+      }
+
+      // プレビューURLを生成
+      const previewUrl = URL.createObjectURL(processedFile);
+      return { file: processedFile, previewUrl };
+    },
+    [compressImageFile]
+  );
+
+  const uploadImage = useCallback(
+    async (imageFile: File | null, existingImageUrl: string | null): Promise<string | null> => {
+      if (!imageFile) {
+        return existingImageUrl || null;
+      }
+
+      setUploading(true);
+      try {
+        // FormDataを作成してアップロード
+        const uploadFormData = new FormData();
+        uploadFormData.append("file", imageFile);
+
+        const uploadResponse = await fetch("/api/products/upload", {
+          method: "POST",
+          body: uploadFormData,
+        });
+
+        if (!uploadResponse.ok) {
+          throw new Error("画像のアップロードに失敗しました");
+        }
+
+        const uploadData = await uploadResponse.json();
+        return uploadData.url;
+      } catch (error) {
+        console.error("画像アップロードエラー:", error);
+        throw error;
+      } finally {
+        setUploading(false);
+      }
+    },
+    []
+  );
+
+  return { uploading, compressing, handleImageChange, uploadImage };
+}
+```
+
+**特徴**:
+
+- `useImageCompression`を使用して画像を圧縮
+- プレビューURLの生成（`URL.createObjectURL`を使用）
+- 画像のアップロード処理（`/api/products/upload`にPOST）
+- アップロード状態の管理（`uploading`）
+
+### useScrollPosition
+
+**説明**: スクロール位置を監視するカスタムフックです。スクロール可能なコンテナの左右のスクロール位置を監視し、グラデーション表示の制御に使用します。
+
+**このアプリでの使用箇所**:
+
+- [`app/dashboard/hooks/useScrollPosition.ts`](../../app/dashboard/hooks/useScrollPosition.ts): フックの実装
+- [`app/dashboard/components/CategoryTabs.tsx`](../../app/dashboard/components/CategoryTabs.tsx): カテゴリータブで使用
+
+**実装コード**:
+
+[`app/dashboard/hooks/useScrollPosition.ts`](../../app/dashboard/hooks/useScrollPosition.ts) (`useScrollPosition`フック)
+
+```typescript
+export function useScrollPosition() {
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const [showLeftGradient, setShowLeftGradient] = useState(false);
+  const [showRightGradient, setShowRightGradient] = useState(false);
+
+  const checkScrollPosition = useCallback(() => {
+    if (!scrollContainerRef.current) return;
+    const { scrollLeft, scrollWidth, clientWidth } = scrollContainerRef.current;
+    setShowLeftGradient(scrollLeft > 0);
+    setShowRightGradient(scrollLeft < scrollWidth - clientWidth - 1);
+  }, []);
+
+  useEffect(() => {
+    const container = scrollContainerRef.current;
+    if (!container) return;
+
+    checkScrollPosition();
+    container.addEventListener("scroll", checkScrollPosition);
+    window.addEventListener("resize", checkScrollPosition);
+
+    return () => {
+      container.removeEventListener("scroll", checkScrollPosition);
+      window.removeEventListener("resize", checkScrollPosition);
+    };
+  }, [checkScrollPosition]);
+
+  return {
+    scrollContainerRef,
+    showLeftGradient,
+    showRightGradient,
+    checkScrollPosition,
+  };
+}
+```
+
+**特徴**:
+
+- スクロール位置の監視（`scroll`イベントと`resize`イベント）
+- 左右のグラデーション表示の制御
+- `useRef`を使用してDOM要素への参照を保持
+- クリーンアップ処理によるメモリリークの防止
+
 ## コンポーネント設計
 
 このアプリでは、コンポーネントを適切に分割し、再利用性と保守性を向上させています。
@@ -908,7 +1111,6 @@ export default function ProductGrid({ category, products }: ProductGridProps) {
 ```
 
 └── DashboardContent (Client Component)
-├── DashboardFormWrapper (Client Component)
 └── ProductList (Client Component)
 ├── CategoryTabs (Client Component)
 └── SortableProductItem (Client Component)

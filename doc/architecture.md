@@ -112,21 +112,32 @@ FAQPage (Server Component)
 ```
 DashboardPage (Server Component)
   └── DashboardContent (Client Component)
-      ├── DashboardFormWrapper
-      │   └── DashboardForm
-      │       ├── useProductForm (カスタムフック)
-      │       └── ProductFormFields
+      ├── DashboardForm
+      │   ├── useProductForm (カスタムフック)
+      │   ├── ProductFormModal
+      │   ├── ProductFormFields
+      │   │   ├── ProductBasicFields
+      │   │   ├── ProductImageField
+      │   │   ├── ProductPriceFields
+      │   │   └── ProductDateFields
+      │   │       ├── ProductPublishedField
+      │   │       └── ProductDateInput
+      │   └── ProductFormFooter
       └── ProductList
-          ├── ProductSearchFilters
-          ├── ProductListView
-          ├── ProductEditForm
-          │   ├── useProductForm (カスタムフック)
-          │   └── ProductFormFields
-          ├── CategoryTabs
-          └── SortableProductItem
-      └── ProductList
-          ├── CategoryTabs
-          └── SortableProductItem
+          ├── ProductListTabs
+          ├── ProductListContent
+          │   ├── ProductSearchFilters
+          │   └── ProductListView
+          │       └── ProductCard
+          ├── ProductLayoutTab
+          │   ├── CategoryTabs
+          │   │   └── CategoryTabButton
+          │   └── SortableProductItem
+          └── ProductEditForm
+              ├── useProductForm (カスタムフック)
+              ├── ProductFormModal
+              ├── ProductFormFields
+              └── ProductFormFooter
 ```
 
 ### コンポーネント分割の原則
@@ -194,6 +205,38 @@ const { activeCategoryTab, setActiveCategoryTab } = useCategoryTabState(
 ```typescript
 // 商品順序変更の楽観的UI更新
 const { reorderProducts } = useProductReorder(setProducts, refreshProducts);
+```
+
+##### `useImageCompression`
+
+[`app/dashboard/hooks/useImageCompression.ts`](../app/dashboard/hooks/useImageCompression.ts) (`useImageCompression`フック)
+
+```typescript
+// 画像圧縮処理
+const { compressing, compressImageFile } = useImageCompression();
+```
+
+##### `useImageUpload`
+
+[`app/dashboard/hooks/useImageUpload.ts`](../app/dashboard/hooks/useImageUpload.ts) (`useImageUpload`フック)
+
+```typescript
+// 画像アップロード処理
+const { uploading, compressing, handleImageChange, uploadImage } = useImageUpload();
+```
+
+##### `useScrollPosition`
+
+[`app/dashboard/hooks/useScrollPosition.ts`](../app/dashboard/hooks/useScrollPosition.ts) (`useScrollPosition`フック)
+
+```typescript
+// スクロール位置の監視
+const {
+  scrollContainerRef,
+  showLeftGradient,
+  showRightGradient,
+  checkScrollPosition,
+} = useScrollPosition();
 ```
 
 #### フロントエンド用フック
