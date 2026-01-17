@@ -72,7 +72,7 @@
 - [`app/page.tsx`](../../app/page.tsx): 公開商品のフィルタリング
 - [`app/api/products/route.ts`](../../app/api/products/route.ts): 商品作成時の公開状態判定
 - [`app/api/products/[id]/route.ts`](../../app/api/products/[id]/route.ts): 商品更新時の公開状態判定
-- [`app/dashboard/components/DashboardForm.tsx`](../../app/dashboard/components/DashboardForm.tsx): 価格フォーマット、数値入力の検証
+- [`app/dashboard/components/ProductFormFields.tsx`](../../app/dashboard/components/ProductFormFields.tsx): 価格フォーマット、数値入力の検証（`DashboardForm`と`ProductEditForm`の両方で使用）
 
 ### getJapanTime
 
@@ -318,8 +318,7 @@ import { isNumericKey } from "@/lib/product-utils";
 
 **このアプリでの使用箇所**:
 
-- [`app/dashboard/components/DashboardForm.tsx`](../../app/dashboard/components/DashboardForm.tsx): 商品画像のアップロード前の圧縮
-- [`app/dashboard/components/ProductEditForm.tsx`](../../app/dashboard/components/ProductEditForm.tsx): 商品画像の更新時の圧縮
+- [`app/dashboard/hooks/useProductForm.ts`](../../app/dashboard/hooks/useProductForm.ts): 商品画像のアップロード前の圧縮（`DashboardForm`と`ProductEditForm`の両方で使用）
 
 ### compressImage
 
@@ -978,12 +977,12 @@ const projectId = env.NEXT_PUBLIC_STACK_PROJECT_ID; // 型安全
 ### 商品関連ユーティリティ
 
 1. **公開状態の自動判定**: [`app/page.tsx`](../../app/page.tsx) で `calculatePublishedStatus()` を使用
-2. **価格フォーマット**: [`app/dashboard/components/DashboardForm.tsx`](../../app/dashboard/components/DashboardForm.tsx) で `formatPrice()` を使用
-3. **数値入力の検証**: [`app/dashboard/components/DashboardForm.tsx`](../../app/dashboard/components/DashboardForm.tsx) で `isNumericKey()` を使用
+2. **価格フォーマット**: [`app/dashboard/components/ProductFormFields.tsx`](../../app/dashboard/components/ProductFormFields.tsx) で `formatPrice()` を使用（`DashboardForm`と`ProductEditForm`の両方で使用）
+3. **数値入力の検証**: [`app/dashboard/components/ProductFormFields.tsx`](../../app/dashboard/components/ProductFormFields.tsx) で `isNumericKey()` を使用（`DashboardForm`と`ProductEditForm`の両方で使用）
 
 ### 画像圧縮
 
-1. **商品画像の圧縮**: [`app/dashboard/components/DashboardForm.tsx`](../../app/dashboard/components/DashboardForm.tsx) で `compressImage()` を使用
+1. **商品画像の圧縮**: [`app/dashboard/hooks/useProductForm.ts`](../../app/dashboard/hooks/useProductForm.ts) で `compressImage()` を使用（`DashboardForm`と`ProductEditForm`の両方で使用）
 
 ### Blob Storage
 

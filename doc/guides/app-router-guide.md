@@ -106,7 +106,9 @@ export default function Loading() {
     </div>
   );
 }
-[`app/products/loading.ts`](../app/products/loading.ts)
+```
+
+**注意**: このアプリでは `loading.tsx` は使用されていません。上記は参考例です。
 
 ```
 
@@ -137,7 +139,9 @@ export default function Error({
     </div>
   );
 }
-[`app/products/error.ts`](../app/products/error.ts)
+```
+
+**注意**: このアプリでは `error.tsx` は使用されていません。上記は参考例です。
 
 ```
 
@@ -161,7 +165,9 @@ export default function NotFound() {
     </div>
   );
 }
-[`app/products/not-found.ts`](../app/products/not-found.ts)
+```
+
+**注意**: このアプリでは `not-found.tsx` は使用されていません。上記は参考例です。
 
 ```
 
@@ -177,7 +183,7 @@ export default function Template({ children }: { children: React.ReactNode }) {
     </div>
   );
 }
-[`app/products/template.ts`](../app/products/template.ts)
+**注意**: このアプリでは `template.tsx` は使用されていません。上記は参考例です。
 
 ```
 
@@ -397,8 +403,6 @@ async function getDashboardData() {
 
 **なぜ Server Components で直接データベースにアクセスしないのか**:
 
-[`Next.js`](../../Next.js)
-
 - Server Components は初期レンダリング時にのみ実行される
 - ユーザーの操作（ボタンクリック、フォーム送信など）に応じて動的にデータを取得する必要がある
 - Client Components では `useState`、`useEffect` などの Hooks を使用して状態管理を行う
@@ -435,9 +439,8 @@ async function getDashboardData() {
       console.error("商品一覧の更新に失敗しました:", error);
     }
   };
-[`Next.js`](../Next.js)
-
 ```
+
 
 2. **[`app/dashboard/components/ProductList.tsx`](../../app/dashboard/components/ProductList.tsx) (`handleDelete`関数)** - 商品の削除
 
@@ -493,55 +496,75 @@ if (!response.ok) {
 
 **画像アップロード（FormData を使用）**:
 
-[`app/dashboard/components/DashboardForm.tsx`](../../app/dashboard/components/DashboardForm.tsx) (画像アップロード処理)
+このアプリでは、画像アップロード処理は`useProductForm`カスタムフック内で実装されています。
+
+[`app/dashboard/hooks/useProductForm.ts`](../../app/dashboard/hooks/useProductForm.ts) (`uploadImage`関数)
 
 ```typescript
-uploadFormData.append("file", formData.imageFile);
-
-const uploadResponse = await fetch("/api/products/upload", {
-  method: "POST",
-  body: uploadFormData,
-});
-
-if (!uploadResponse.ok) {
-  let errorMessage = "画像のアップロードに失敗しました";
-  try {
-    const contentType = uploadResponse.headers.get("content-type");
-    if (contentType && contentType.includes("application/json")) {
-      const error = await uploadResponse.json();
-      errorMessage = error.error || errorMessage;
-    } else {
-      const text = await uploadResponse.text();
-      errorMessage = text || errorMessage;
-    }
-  } catch (parseError) {
-    // JSONパースエラーの場合はデフォルトメッセージを使用
-    errorMessage = `画像のアップロードに失敗しました (${uploadResponse.status})`;
+const uploadImage = useCallback(async (): Promise<string | null> => {
+  if (!formData.imageFile) {
+    return formData.imageUrl || null;
   }
-  throw new Error(errorMessage);
-}
 
-const uploadData = await uploadResponse.json();
-imageUrl = uploadData.url;
+  setUploading(true);
+  try {
+    const uploadFormData = new FormData();
+    uploadFormData.append("file", formData.imageFile);
+
+    const uploadResponse = await fetch("/api/products/upload", {
+      method: "POST",
+      body: uploadFormData,
+    });
+
+    if (!uploadResponse.ok) {
+      let errorMessage = "画像のアップロードに失敗しました";
+      try {
+        const contentType = uploadResponse.headers.get("content-type");
+        if (contentType && contentType.includes("application/json")) {
+          const error = await uploadResponse.json();
+          errorMessage = error.error || errorMessage;
+        } else {
+          const text = await uploadResponse.text();
+          errorMessage = text || errorMessage;
+        }
+      } catch (parseError) {
+        errorMessage = `画像のアップロードに失敗しました (${uploadResponse.status})`;
+      }
+      throw new Error(errorMessage);
+    }
+
+    const uploadData = await uploadResponse.json();
+    return uploadData.url;
+  } finally {
+    setUploading(false);
+  }
+}, [formData.imageFile, formData.imageUrl]);
 ```
 
 [`app/dashboard/components/DashboardForm.tsx`](../../app/dashboard/components/DashboardForm.tsx) (商品登録処理)
 
 ```typescript
-const response = await fetch("/api/products", {
-  method: "POST",
-  headers: {
-    "Content-Type": "application/json",
-  },
-  body: JSON.stringify({
-    name: formData.name,
-    description: formData.description,
-    imageUrl,
-    categoryId: parseInt(formData.categoryId),
-    priceS: formData.priceS ? parseFloat(formData.priceS) : null,
-    priceL: formData.priceL ? parseFloat(formData.priceL) : null,
-    published: formData.published,
-    publishedAt: formData.publishedAt || null,
+const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
+  setSubmitting(true);
+
+  try {
+    const imageUrl = await uploadImage();
+
+    const response = await fetch("/api/products", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        name: formData.name,
+        description: formData.description,
+        imageUrl,
+        categoryId: parseInt(formData.categoryId),
+        priceS: formData.priceS ? parseFloat(formData.priceS) : null,
+        priceL: formData.priceL ? parseFloat(formData.priceL) : null,
+        published: formData.published,
+        publishedAt: formData.publishedAt || null,
     endedAt: formData.endedAt || null,
   }),
 });

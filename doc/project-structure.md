@@ -46,10 +46,14 @@ shirokumado-ts/
 │   │   │   ├── DashboardFormWrapper.tsx
 │   │   │   ├── ProductList.tsx
 │   │   │   ├── ProductEditForm.tsx
+│   │   │   ├── ProductFormFields.tsx
+│   │   │   ├── ProductListView.tsx
+│   │   │   ├── ProductSearchFilters.tsx
 │   │   │   ├── CategoryTabs.tsx
 │   │   │   └── SortableProductItem.tsx
 │   │   ├── hooks/        # カスタムフック
 │   │   │   ├── useTabState.ts
+│   │   │   ├── useProductForm.ts
 │   │   │   └── useProductReorder.ts
 │   │   └── utils/        # ユーティリティ関数
 │   │       └── productUtils.ts
@@ -62,6 +66,7 @@ shirokumado-ts/
 │   ├── components/       # フロントエンド共通コンポーネント
 │   │   ├── icons/        # アイコンコンポーネント
 │   │   │   └── CloseIcon.tsx # 閉じるアイコン
+│   │   ├── ErrorBoundary.tsx # エラーバウンダリーコンポーネント
 │   │   ├── Header.tsx    # ヘッダーコンポーネント
 │   │   ├── Footer.tsx    # フッターコンポーネント
 │   │   ├── ProductGrid.tsx # 商品グリッドコンポーネント
@@ -208,6 +213,7 @@ app/utils/
 app/components/
 ├── icons/               # アイコンコンポーネント
 │   └── [CloseIcon.tsx](../app/components/icons/CloseIcon.tsx)   # 閉じるアイコン
+├── [ErrorBoundary.tsx](../app/components/ErrorBoundary.tsx)     # エラーバウンダリーコンポーネント
 ├── [Header.tsx](../app/components/Header.tsx)           # ヘッダー（ロゴ、Instagramリンク、ナビゲーション）
 ├── [Footer.tsx](../app/components/Footer.tsx)           # フッター（店舗情報、地図、連絡先）
 ├── [ProductGrid.tsx](../app/components/ProductGrid.tsx)      # カテゴリーごとの商品グリッド表示（Client Component）
@@ -245,10 +251,14 @@ app/dashboard/
 │   ├── [DashboardFormWrapper.tsx](../app/dashboard/components/DashboardFormWrapper.tsx)  # フォームラッパー
 │   ├── [ProductList.tsx](../app/dashboard/components/ProductList.tsx)           # 商品一覧・配置変更
 │   ├── [ProductEditForm.tsx](../app/dashboard/components/ProductEditForm.tsx)       # 商品編集フォーム
+│   ├── [ProductFormFields.tsx](../app/dashboard/components/ProductFormFields.tsx)  # 商品フォームフィールド（共通）
+│   ├── [ProductListView.tsx](../app/dashboard/components/ProductListView.tsx)      # 商品一覧表示
+│   ├── [ProductSearchFilters.tsx](../app/dashboard/components/ProductSearchFilters.tsx)  # 商品検索フィルター
 │   ├── [CategoryTabs.tsx](../app/dashboard/components/CategoryTabs.tsx)          # カテゴリータブ
 │   └── [SortableProductItem.tsx](../app/dashboard/components/SortableProductItem.tsx)  # ドラッグ&ドロップ可能な商品アイテム
 ├── hooks/                # カスタムフック
 │   ├── [useTabState.ts](../app/dashboard/hooks/useTabState.ts)            # タブ状態管理（localStorage連携）
+│   ├── [useProductForm.ts](../app/dashboard/hooks/useProductForm.ts)        # 商品フォームの状態管理
 │   └── [useProductReorder.ts](../app/dashboard/hooks/useProductReorder.ts)      # 商品順序変更ロジック
 └── utils/                # ユーティリティ関数
     └── [productUtils.ts](../app/dashboard/utils/productUtils.ts)           # 商品のグループ化・フィルタリング

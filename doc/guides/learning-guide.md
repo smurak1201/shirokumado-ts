@@ -120,7 +120,10 @@ Java、PHP、Laravel の経験がある方は、以下のような知識を活�
 **推奨ファイル**:
 
 - [`app/dashboard/page.tsx`](../../app/dashboard/page.tsx) - ダッシュボードページ
-- [`app/dashboard/components/DashboardForm.tsx`](../../app/dashboard/components/DashboardForm.tsx) - フォーム実装
+- [`app/dashboard/components/DashboardForm.tsx`](../../app/dashboard/components/DashboardForm.tsx) - 新規商品登録フォーム（`useProductForm`フックと`ProductFormFields`コンポーネントを使用）
+- [`app/dashboard/components/ProductEditForm.tsx`](../../app/dashboard/components/ProductEditForm.tsx) - 商品編集フォーム（`useProductForm`フックと`ProductFormFields`コンポーネントを使用）
+- [`app/dashboard/components/ProductFormFields.tsx`](../../app/dashboard/components/ProductFormFields.tsx) - 商品フォームフィールド（共通コンポーネント）
+- [`app/dashboard/hooks/useProductForm.ts`](../../app/dashboard/hooks/useProductForm.ts) - 商品フォームの状態管理フック
 - [`app/components/ProductGrid.tsx`](../../app/components/ProductGrid.tsx) - コンポーネント実装
 
 **学習のポイント**:
@@ -349,10 +352,27 @@ Java、PHP、Laravel の経験がある方は、以下のような知識を活�
 22. [`app/dashboard/components/DashboardForm.tsx`](../../app/dashboard/components/DashboardForm.tsx)
 
     - フォーム実装の詳細
+    - `useProductForm`フックの使用
+    - `ProductFormFields`コンポーネントの使用
     - 画像アップロード、バリデーション
 
-23. [`app/dashboard/components/ProductList.tsx`](../../app/dashboard/components/ProductList.tsx)
+23. [`app/dashboard/components/ProductEditForm.tsx`](../../app/dashboard/components/ProductEditForm.tsx)
+
+    - 商品編集フォームの実装
+    - `useProductForm`フックの使用（初期値設定）
+    - `ProductFormFields`コンポーネントの使用
+
+24. [`app/dashboard/hooks/useProductForm.ts`](../../app/dashboard/hooks/useProductForm.ts)
+
+    - カスタムフックの実装例
+    - フォーム状態管理
+    - 画像の圧縮とアップロード
+    - 公開状態の自動計算
+
+25. [`app/dashboard/components/ProductList.tsx`](../../app/dashboard/components/ProductList.tsx)
+
     - 複雑な状態管理
+    - コンポーネントの分割（`ProductListView`、`ProductSearchFilters`）
     - ドラッグ&ドロップ、検索機能
 
 ## ソースコードを読むときのコツ
@@ -364,7 +384,9 @@ Java、PHP、Laravel の経験がある方は、以下のような知識を活�
 **良い例**:
 
 - 「商品一覧を表示する機能を理解したい」→ [`app/page.tsx`](../../app/page.tsx)を読む
-- 「商品を追加する機能を理解したい」→ [`app/dashboard/components/DashboardForm.tsx`](../../app/dashboard/components/DashboardForm.tsx)を読む
+- 「商品を追加する機能を理解したい」→ [`app/dashboard/components/DashboardForm.tsx`](../../app/dashboard/components/DashboardForm.tsx)、[`app/dashboard/hooks/useProductForm.ts`](../../app/dashboard/hooks/useProductForm.ts)、[`app/dashboard/components/ProductFormFields.tsx`](../../app/dashboard/components/ProductFormFields.tsx)を読む
+- 「商品を編集する機能を理解したい」→ [`app/dashboard/components/ProductEditForm.tsx`](../../app/dashboard/components/ProductEditForm.tsx)、[`app/dashboard/hooks/useProductForm.ts`](../../app/dashboard/hooks/useProductForm.ts)を読む
+- 「商品一覧の検索機能を理解したい」→ [`app/dashboard/components/ProductList.tsx`](../../app/dashboard/components/ProductList.tsx)、[`app/dashboard/components/ProductSearchFilters.tsx`](../../app/dashboard/components/ProductSearchFilters.tsx)、[`app/dashboard/utils/productUtils.ts`](../../app/dashboard/utils/productUtils.ts)を読む
 - 「データベースから商品を取得する方法を知りたい」→ [`app/api/products/route.ts`](../../app/api/products/route.ts)を読む
 
 ### 2. 型定義を先に確認する
@@ -388,9 +410,17 @@ import { ValidationError } from "@/lib/errors";
 
 ### 4. コメントを活用する
 
-このプロジェクトでは、各ファイルに詳細なコメントが書かれています。コメントを読むことで、コードの意図を理解できます。
+このプロジェクトでは、コンポーネント、カスタムフック、APIエンドポイントなどに機能説明のコメント（JSDoc形式）が書かれています。コメントを読むことで、コードの意図や使用方法を理解できます。
 
-**例**: [`app/page.tsx`](../../app/page.tsx)のコメントで、なぜ`dynamic = "force-dynamic"`を設定しているかが説明されている
+**機能説明のコメントの例**:
+
+- **コンポーネント**: [`app/components/ProductTile.tsx`](../../app/components/ProductTile.tsx) - 商品タイルコンポーネントの機能説明
+- **カスタムフック**: [`app/dashboard/hooks/useProductForm.ts`](../../app/dashboard/hooks/useProductForm.ts) - 商品フォームの状態管理フックの機能説明
+- **APIエンドポイント**: [`app/api/products/route.ts`](../../app/api/products/route.ts) - 商品一覧取得APIの機能説明
+
+**特殊な実装の説明の例**: [`app/page.tsx`](../../app/page.tsx)のコメントで、なぜ`dynamic = "force-dynamic"`を設定しているかが説明されている
+
+**注意**: コードから明らかに分かるコメント（例：「商品名を設定」「フォームを閉じる」など）は書かれていません。コメントは、コードからは明確に分からない情報（コンポーネントの目的、提供する機能、使用方法など）のみを簡潔に記述しています。
 
 ### 5. 小さな単位で理解する
 

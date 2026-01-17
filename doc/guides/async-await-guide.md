@@ -238,7 +238,7 @@ async function getPublishedProductsByCategory(): Promise<
 }
 ```
 
-2. **API Routes** ([`lib/api-helpers.ts`](../../lib/api-helpers.ts])
+2. **API Routes** ([`lib/api-helpers.ts`](../../lib/api-helpers.ts))
 
 このアプリでは、`withErrorHandling` 関数を使用して統一されたエラーハンドリングを実装しています。
 

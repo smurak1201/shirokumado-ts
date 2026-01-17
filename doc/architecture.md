@@ -114,6 +114,16 @@ DashboardPage (Server Component)
   └── DashboardContent (Client Component)
       ├── DashboardFormWrapper
       │   └── DashboardForm
+      │       ├── useProductForm (カスタムフック)
+      │       └── ProductFormFields
+      └── ProductList
+          ├── ProductSearchFilters
+          ├── ProductListView
+          ├── ProductEditForm
+          │   ├── useProductForm (カスタムフック)
+          │   └── ProductFormFields
+          ├── CategoryTabs
+          └── SortableProductItem
       └── ProductList
           ├── CategoryTabs
           └── SortableProductItem

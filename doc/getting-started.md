@@ -166,6 +166,18 @@ API Routes で使用する共通のヘルパー関数を確認します。
 
 商品編集フォームです。既存商品の更新処理を確認します。
 
+#### [`app/dashboard/components/ProductFormFields.tsx`](../app/dashboard/components/ProductFormFields.tsx)
+
+商品作成・編集フォームで使用する共通のフォームフィールドコンポーネントです。
+
+#### [`app/dashboard/components/ProductListView.tsx`](../app/dashboard/components/ProductListView.tsx)
+
+フィルタリングされた商品一覧を3列グリッドで表示するコンポーネントです。
+
+#### [`app/dashboard/components/ProductSearchFilters.tsx`](../app/dashboard/components/ProductSearchFilters.tsx)
+
+商品名、カテゴリー、公開状態による検索・フィルタリング機能を提供するコンポーネントです。
+
 #### [`app/dashboard/components/CategoryTabs.tsx`](../app/dashboard/components/CategoryTabs.tsx)
 
 カテゴリータブの UI コンポーネントです。スクロール可能なタブの実装を確認します。
@@ -177,6 +189,10 @@ API Routes で使用する共通のヘルパー関数を確認します。
 #### [`app/dashboard/hooks/useTabState.ts`](../app/dashboard/hooks/useTabState.ts)
 
 タブ状態管理のカスタムフックです。localStorage との連携方法を確認します。
+
+#### [`app/dashboard/hooks/useProductForm.ts`](../app/dashboard/hooks/useProductForm.ts)
+
+商品フォームの状態管理を行うカスタムフックです。商品作成・編集フォームで使用する共通ロジックを提供します。
 
 #### [`app/dashboard/hooks/useProductReorder.ts`](../app/dashboard/hooks/useProductReorder.ts)
 
@@ -234,9 +250,15 @@ app/dashboard/
 │   ├── DashboardFormWrapper.tsx  # フォームラッパー
 │   ├── ProductList.tsx           # 商品一覧・配置変更
 │   ├── ProductEditForm.tsx       # 商品編集フォーム
+│   ├── ProductFormFields.tsx     # 商品フォームフィールド（共通）
+│   ├── ProductListView.tsx      # 商品一覧表示
+│   ├── ProductSearchFilters.tsx # 商品検索フィルター
 │   ├── CategoryTabs.tsx          # カテゴリータブ
 │   └── SortableProductItem.tsx   # ドラッグ&ドロップ可能な商品アイテム
 ├── hooks/                # カスタムフック（状態管理ロジック）
+│   ├── useTabState.ts           # タブ状態管理
+│   ├── useProductForm.ts        # 商品フォームの状態管理
+│   └── useProductReorder.ts     # 商品順序変更ロジック
 │   ├── useTabState.ts            # タブ状態管理（localStorage連携）
 │   └── useProductReorder.ts      # 商品順序変更ロジック
 └── utils/                # ユーティリティ関数（ビジネスロジック）

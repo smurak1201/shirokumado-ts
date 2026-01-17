@@ -17,6 +17,7 @@
   - [useProductModal](#useproductmodal)
   - [useTabState](#usetabstate)
   - [useCategoryTabState](#usecategorytabstate)
+  - [useProductForm](#useproductform)
   - [useProductReorder](#useproductreorder)
 - [コンポーネント設計](#コンポーネント設計)
   - [コンポーネントの分割原則](#コンポーネントの分割原則)
@@ -58,7 +59,7 @@ React は、Facebook（現 Meta）が開発した、ユーザーインターフ�
 
 - Server Components と Client Components を適切に使い分け
 - Client Components（`'use client'`）でインタラクティブな機能（モーダル、商品選択など）を実装
-- カスタムフック（`useModal`, `useProductModal`, `useTabState`, `useProductReorder`）で状態管理ロジックを分離
+- カスタムフック（`useModal`, `useProductModal`, `useTabState`, `useProductForm`, `useProductReorder`）で状態管理ロジックを分離
 - コンポーネントの再利用性を重視し、`Header`, `Footer`, `ProductGrid` などを共通コンポーネントとして実装
 
 ## Next.js との統合
@@ -84,8 +85,10 @@ React Hooks は、関数コンポーネントで状態管理や副作用を扱�
   - [`app/components/ProductGrid.tsx`](../../app/components/ProductGrid.tsx): `useProductModal` カスタムフックを使用
   - [`app/components/ProductModal.tsx`](../../app/components/ProductModal.tsx): `useModal` カスタムフックを使用
   - [`app/dashboard/components/DashboardContent.tsx`](../../app/dashboard/components/DashboardContent.tsx): `useState` を使用
-  - [`app/dashboard/components/DashboardForm.tsx`](../../app/dashboard/components/DashboardForm.tsx): `useState`、`useEffect` を使用
+  - [`app/dashboard/components/DashboardForm.tsx`](../../app/dashboard/components/DashboardForm.tsx): `useProductForm` カスタムフックを使用
+  - [`app/dashboard/components/ProductEditForm.tsx`](../../app/dashboard/components/ProductEditForm.tsx): `useProductForm` カスタムフックを使用
   - [`app/dashboard/hooks/useTabState.ts`](../../app/dashboard/hooks/useTabState.ts): `useState`、`useEffect`、`localStorage` を使用
+  - [`app/dashboard/hooks/useProductForm.ts`](../../app/dashboard/hooks/useProductForm.ts): `useState`、`useEffect`、`useCallback` を使用
   - [`app/hooks/useModal.ts`](../../app/hooks/useModal.ts): `useEffect`、`useRef` を使用
   - [`app/hooks/useProductModal.ts`](../../app/hooks/useProductModal.ts): `useState`、`useRef` を使用
 - **バックエンド（Server Components、API Routes）**: React Hooks は使用していない。サーバーサイドで実行されるため、状態管理は不要
@@ -676,6 +679,24 @@ export default function ProductGrid({ category, products }: ProductGridProps) {
 
 - [`app/dashboard/hooks/useTabState.ts`](../../app/dashboard/hooks/useTabState.ts): フックの実装
 - [`app/dashboard/components/ProductList.tsx`](../../app/dashboard/components/ProductList.tsx): 商品一覧で使用
+
+### useProductForm
+
+**説明**: 商品フォームの状態管理を行うカスタムフックです。商品作成・編集フォームで使用する共通ロジックを提供します。
+
+**主な機能**:
+
+- フォームデータの状態管理
+- 画像の圧縮とアップロード
+- 公開日・終了日に基づく公開状態の自動計算
+
+**このアプリでの使用箇所**:
+
+- [`app/dashboard/hooks/useProductForm.ts`](../../app/dashboard/hooks/useProductForm.ts): フックの実装
+- [`app/dashboard/components/DashboardForm.tsx`](../../app/dashboard/components/DashboardForm.tsx): 新規商品登録フォームで使用
+- [`app/dashboard/components/ProductEditForm.tsx`](../../app/dashboard/components/ProductEditForm.tsx): 商品編集フォームで使用
+
+**詳細**: このフックの詳細な説明については、[ダッシュボードガイド - useProductForm](./dashboard-guide.md#useproductform)を参照してください。
 
 **実装コード**:
 

@@ -98,16 +98,17 @@
 ├── hooks/                      # カスタムフック
 │   ├── useModal.ts            # モーダル管理フック
 │   └── useProductModal.ts    # 商品モーダル管理フック
-├── utils/                      # ユーティリティ関数
-│   └── format.ts              # フォーマット関数
-├── components/                 # UIコンポーネント
+├── components/                 # フロントエンド共通コンポーネント
 │   ├── icons/                 # アイコンコンポーネント
 │   │   └── CloseIcon.tsx     # 閉じるアイコン
-│   ├── Header.tsx             # ヘッダー
-│   ├── Footer.tsx             # フッター
-│   ├── ProductGrid.tsx        # 商品グリッド
-│   ├── ProductTile.tsx        # 商品タイル
-│   └── ProductModal.tsx       # 商品モーダル
+│   ├── ErrorBoundary.tsx     # エラーバウンダリーコンポーネント
+│   ├── Header.tsx             # ヘッダーコンポーネント
+│   ├── Footer.tsx             # フッターコンポーネント
+│   ├── ProductGrid.tsx        # 商品グリッドコンポーネント
+│   ├── ProductTile.tsx        # 商品タイルコンポーネント
+│   └── ProductModal.tsx       # 商品詳細モーダルコンポーネント
+├── utils/                      # ユーティリティ関数
+│   └── format.ts              # フォーマット関数
 ├── page.tsx                    # ホームページ
 └── faq/
     └── page.tsx               # FAQページ
@@ -413,16 +414,15 @@ className = "grid grid-cols-1 md:grid-cols-3";
   - `app/dashboard/components/DashboardContent.tsx`: 商品一覧取得時に `/api/products` に GET リクエスト
   - `app/dashboard/hooks/useProductReorder.ts`: 商品並び替え時に `/api/products/reorder` に POST リクエスト
   - `app/dashboard/components/ProductList.tsx`: 商品削除時に `/api/products/[id]` に DELETE リクエスト
+  - `app/dashboard/hooks/useProductForm.ts`: 画像アップロード時に `/api/products/upload` に POST リクエスト
 - **`FormData`**: 画像アップロード時に使用
-  - `app/dashboard/components/DashboardForm.tsx`: 画像ファイルを `FormData` に追加して `/api/products/upload` に送信
-  - `app/dashboard/components/ProductEditForm.tsx`: 同様に画像アップロード時に使用
+  - `app/dashboard/hooks/useProductForm.ts`: 画像ファイルを `FormData` に追加して `/api/products/upload` に送信（`DashboardForm`と`ProductEditForm`の両方で使用）
 - **`localStorage`**: ブラウザのローカルストレージにデータを保存
   - `app/dashboard/hooks/useTabState.ts`: タブの状態を `localStorage` に保存
 - **`URL.createObjectURL`**: 画像プレビュー用の URL を生成
-  - `app/dashboard/components/DashboardForm.tsx`: 画像選択時にプレビュー用 URL を生成
+  - `app/dashboard/hooks/useProductForm.ts`: 画像選択時にプレビュー用 URL を生成（`DashboardForm`と`ProductEditForm`の両方で使用）
 - **動的インポート（`await import()`）**: モジュールの動的読み込み
-  - `app/dashboard/components/DashboardForm.tsx`: `config` モジュールを動的インポート
-  - `app/dashboard/components/ProductEditForm.tsx`: `config` モジュールを動的インポート
+  - `app/dashboard/hooks/useProductForm.ts`: `config` モジュールを動的インポート（`DashboardForm`と`ProductEditForm`の両方で使用）
 - **React Hooks**: 状態管理や副作用の処理
   - `useState`, `useEffect`, `useRef`, `useMemo`, `useCallback` など
 
@@ -580,8 +580,7 @@ function App() {
 
 **使用箇所**:
 
-- [`app/dashboard/components/DashboardForm.tsx`](../../app/dashboard/components/DashboardForm.tsx): `config`モジュールの動的インポート（Client Component）
-- [`app/dashboard/components/ProductEditForm.tsx`](../../app/dashboard/components/ProductEditForm.tsx): `config`モジュールの動的インポート（Client Component）
+- [`app/dashboard/hooks/useProductForm.ts`](../../app/dashboard/hooks/useProductForm.ts): `config`モジュールの動的インポート（`DashboardForm`と`ProductEditForm`の両方で使用）
 
 **注意**: これらは Client Components（`'use client'`）内で使用されているため、フロントエンドで実行されます。バックエンド（Server Components、API Routes）では使用されていません。
 

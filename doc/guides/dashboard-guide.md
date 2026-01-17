@@ -46,7 +46,14 @@ page.tsx (Server Component)
 DashboardContent (Client Component)
   ├── DashboardFormWrapper
   │   └── DashboardForm
+  │       ├── useProductForm (カスタムフック)
+  │       └── ProductFormFields
   └── ProductList
+      ├── ProductSearchFilters
+      ├── ProductListView
+      ├── ProductEditForm
+      │   ├── useProductForm (カスタムフック)
+      │   └── ProductFormFields
       ├── CategoryTabs
       └── SortableProductItem
 ```
@@ -63,10 +70,14 @@ app/dashboard/
 │   ├── DashboardFormWrapper.tsx # フォームラッパー
 │   ├── ProductList.tsx         # 商品一覧・配置変更
 │   ├── ProductEditForm.tsx     # 商品編集フォーム
+│   ├── ProductFormFields.tsx   # 商品フォームフィールド（共通）
+│   ├── ProductListView.tsx    # 商品一覧表示
+│   ├── ProductSearchFilters.tsx # 商品検索フィルター
 │   ├── CategoryTabs.tsx        # カテゴリータブ
 │   └── SortableProductItem.tsx # ドラッグ&ドロップ可能な商品アイテム
 ├── hooks/                      # カスタムフック
 │   ├── useTabState.ts          # タブ状態管理
+│   ├── useProductForm.ts       # 商品フォームの状態管理
 │   └── useProductReorder.ts    # 商品順序変更ロジック
 └── utils/                      # ユーティリティ関数
     └── productUtils.ts         # 商品のグループ化・フィルタリング
@@ -175,10 +186,16 @@ const refreshProducts = async () => {
 
 **主な機能**:
 
-- フォーム入力の管理
+- フォーム入力の管理（`useProductForm`フックを使用）
 - 画像アップロード
 - バリデーション
 - フォーム送信
+
+**設計の特徴**:
+
+- `useProductForm`フックでフォームの状態管理を行う
+- `ProductFormFields`コンポーネントで共通のフォームフィールドを表示
+- モーダル形式で表示
 
 **フォーム項目**:
 
@@ -192,15 +209,31 @@ const refreshProducts = async () => {
 - 公開日（自動設定の場合）
 - 終了日（自動設定の場合）
 
+### ProductEditForm ([`components/ProductEditForm.tsx`](../../app/dashboard/components/ProductEditForm.tsx))
+
+商品編集フォームです。
+
+**主な機能**:
+
+- 既存商品の情報更新
+- 画像の差し替え（古い画像を削除してから新しい画像をアップロード）
+- 公開状態の変更
+
+**設計の特徴**:
+
+- `useProductForm`フックでフォームの状態管理を行う（初期値として既存商品情報を設定）
+- `ProductFormFields`コンポーネントで共通のフォームフィールドを表示（`fieldPrefix="edit-"`を使用）
+- モーダル形式で表示
+
 ### ProductList ([`components/ProductList.tsx`](../../app/dashboard/components/ProductList.tsx))
 
 商品一覧の表示と配置変更機能を実装しています。
 
 **主な機能**:
 
-- カテゴリータブの表示
-- 商品一覧の表示
-- 検索機能
+- タブ切り替え（「登録済み商品一覧」と「配置変更」）
+- 商品一覧の表示（`ProductListView`コンポーネントを使用）
+- 検索機能（`ProductSearchFilters`コンポーネントを使用）
 - ドラッグ&ドロップによる順序変更
 - 商品の編集・削除
 
@@ -223,6 +256,36 @@ interface ProductListProps {
 - `@dnd-kit`を使用したドラッグ&ドロップ
 - 楽観的 UI 更新
 - タブ状態の localStorage 連携
+- コンポーネントの分割（`ProductListView`、`ProductSearchFilters`、`CategoryTabs`）
+
+### ProductFormFields ([`components/ProductFormFields.tsx`](../../app/dashboard/components/ProductFormFields.tsx))
+
+商品作成・編集フォームで使用する共通のフォームフィールドコンポーネントです。
+
+**主な機能**:
+
+- 商品名、説明、画像、価格、カテゴリー、公開情報、公開日・終了日の入力フィールド
+- フォーム作成と編集の両方で使用可能（`fieldPrefix`プロップで識別子を付与）
+
+### ProductListView ([`components/ProductListView.tsx`](../../app/dashboard/components/ProductListView.tsx))
+
+フィルタリングされた商品一覧を3列グリッドで表示するコンポーネントです。
+
+**主な機能**:
+
+- 商品一覧の3列グリッド表示
+- 公開状態に応じた視覚的な表示
+- 編集・削除ボタン
+
+### ProductSearchFilters ([`components/ProductSearchFilters.tsx`](../../app/dashboard/components/ProductSearchFilters.tsx))
+
+商品名、カテゴリー、公開状態による検索・フィルタリング機能を提供するコンポーネントです。
+
+**主な機能**:
+
+- 商品名での検索（ひらがな・カタカナの区別なし）
+- カテゴリーでのフィルタリング
+- 公開状態でのフィルタリング
 
 ### CategoryTabs ([`components/CategoryTabs.tsx`](../../app/dashboard/components/CategoryTabs.tsx))
 
@@ -233,6 +296,8 @@ interface ProductListProps {
 - カテゴリーのタブ表示
 - アクティブタブのハイライト
 - スクロール可能なタブ
+- スクロール可能な場合の視覚的インジケーター（グラデーション）
+- アクティブなタブの自動スクロール
 
 ### SortableProductItem ([`components/SortableProductItem.tsx`](../../app/dashboard/components/SortableProductItem.tsx))
 
@@ -343,10 +408,59 @@ React のベストプラクティスに従い、共有状態は親コンポー�
 **使用例**:
 
 ```typescript
-const { activeTab, setActiveTab } = useTabState(
-  "dashboard-tab",
-  defaultCategoryId
+const { activeTab, setActiveTab } = useTabState();
+```
+
+#### useCategoryTabState ([`hooks/useTabState.ts`](../../app/dashboard/hooks/useTabState.ts))
+
+カテゴリータブの状態を管理するカスタムフックです。
+
+**機能**:
+
+- カテゴリータブの状態を localStorage に保存・復元
+- 公開商品がある最初のカテゴリーを自動選択
+
+**使用例**:
+
+```typescript
+const { activeCategoryTab, setActiveCategoryTab, initialCategoryTab } = useCategoryTabState(
+  products,
+  categories
 );
+```
+
+#### useProductForm ([`hooks/useProductForm.ts`](../../app/dashboard/hooks/useProductForm.ts))
+
+商品フォームの状態管理を行うカスタムフックです。
+
+**機能**:
+
+- フォームデータの状態管理
+- 画像の圧縮とアップロード
+- 公開日・終了日に基づく公開状態の自動計算
+
+**使用例**:
+
+```typescript
+const {
+  formData,
+  setFormData,
+  submitting,
+  setSubmitting,
+  uploading,
+  compressing,
+  imagePreview,
+  handleImageChange,
+  uploadImage,
+  hasDateRangeValue,
+} = useProductForm({
+  initialImageUrl: product?.imageUrl,
+  initialFormData: {
+    name: product?.name || "",
+    description: product?.description || "",
+    // ...
+  },
+});
 ```
 
 #### useProductReorder ([`hooks/useProductReorder.ts`](../../app/dashboard/hooks/useProductReorder.ts))
@@ -362,14 +476,13 @@ const { activeTab, setActiveTab } = useTabState(
 **使用例**:
 
 ```typescript
-const { reorderProducts, isReordering } = useProductReorder(
-  products,
+const { reorderProducts } = useProductReorder(
   setProducts,
   refreshProducts
 );
 
 // 使用
-await reorderProducts(productId, newOrder);
+await reorderProducts(categoryGroup, oldIndex, newIndex);
 ```
 
 ## API 連携
