@@ -1,4 +1,4 @@
-interface CategoryTabButtonProps {
+interface ProductCategoryTabButtonProps {
   categoryId: number;
   categoryName: string;
   productCount: number;
@@ -7,15 +7,15 @@ interface CategoryTabButtonProps {
 }
 
 /**
- * カテゴリータブボタンコンポーネント
+ * 商品カテゴリータブボタンコンポーネント
  */
-export default function CategoryTabButton({
+export default function ProductCategoryTabButton({
   categoryId,
   categoryName,
   productCount,
   isActive,
   onCategoryTabChange,
-}: CategoryTabButtonProps) {
+}: ProductCategoryTabButtonProps) {
   return (
     <button
       key={categoryId}
