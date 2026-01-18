@@ -25,12 +25,12 @@ export default async function Home() {
   }
 
   return (
-    <div className="min-h-screen bg-linear-to-b from-background via-background to-muted/30">
+    <div className="min-h-screen bg-background">
       {/* ヘッダー */}
       <Header />
 
       {/* ヒーローバナー */}
-      <section className="relative h-[35vh] min-h-[250px] w-full overflow-hidden md:h-[55vh] md:min-h-[450px] lg:h-[65vh] lg:min-h-[550px]">
+      <section className="relative h-[40vh] min-h-[300px] w-full overflow-hidden md:h-[60vh] md:min-h-[500px] lg:h-[70vh] lg:min-h-[600px]">
         <Image
           src="/hero.webp"
           alt="白熊堂"
@@ -40,21 +40,27 @@ export default async function Home() {
           sizes="100vw"
         />
         {/* グラデーションオーバーレイ */}
-        <div className="absolute inset-0 bg-linear-to-b from-background/40 via-background/10 to-background/60" />
-        {/* 装飾的なオーバーレイ */}
-        <div className="absolute inset-0 bg-linear-to-r from-primary/5 via-transparent to-primary/5" />
+        <div className="absolute inset-0 bg-linear-to-b from-background/50 via-background/20 to-background/80" />
       </section>
 
       {/* メインコンテンツ */}
-      <main className="mx-auto max-w-6xl px-4 py-8 md:px-8 md:py-16 lg:px-12 lg:py-20 xl:py-24">
+      <main className="mx-auto max-w-7xl px-4 py-12 md:px-6 md:py-20 lg:px-8 lg:py-24">
         {/* カテゴリーごとの商品セクション */}
-        {categoriesWithProducts.map(({ category, products }) => (
-          <ProductGrid
-            key={category.id}
-            category={category}
-            products={products}
-          />
-        ))}
+        {categoriesWithProducts.length > 0 ? (
+          categoriesWithProducts.map(({ category, products }) => (
+            <ProductGrid
+              key={category.id}
+              category={category}
+              products={products}
+            />
+          ))
+        ) : (
+          <div className="flex min-h-[50vh] items-center justify-center">
+            <p className="text-center text-muted-foreground">
+              商品の準備中です
+            </p>
+          </div>
+        )}
       </main>
 
       {/* フッター */}

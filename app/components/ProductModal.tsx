@@ -8,8 +8,12 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
+  DialogDescription,
 } from "./ui/dialog";
 import { Separator } from "./ui/separator";
+import { ScrollArea } from "./ui/scroll-area";
+import { AspectRatio } from "./ui/aspect-ratio";
+import { Badge } from "./ui/badge";
 
 interface ProductModalProps {
   product: Product | null;
@@ -21,7 +25,7 @@ interface ProductModalProps {
  * 商品詳細を表示するモーダルウィンドウコンポーネント
  *
  * 商品の詳細情報（画像、名前、説明、価格）をモーダルウィンドウで表示します。
- * shadcn/uiのDialogコンポーネントを使用して実装されています。
+ * shadcn/uiのDialog、ScrollArea、AspectRatioコンポーネントを使用して実装されています。
  * ESCキーでモーダルを閉じる機能と、背景クリックでモーダルを閉じる機能を提供します。
  */
 export default function ProductModal({
@@ -35,62 +39,64 @@ export default function ProductModal({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-h-[90vh] max-w-2xl !flex !flex-col p-0 gap-0 overflow-hidden">
-        {/* 画像部分 - 固定、高さ制限あり */}
-        <div className="relative flex-shrink-0">
+      <DialogContent className="max-h-[90vh] max-w-3xl !flex !flex-col p-0 gap-0 overflow-hidden">
+        {/* 画像部分 - 固定 */}
+        <div className="relative flex-shrink-0 border-b">
           {product.imageUrl ? (
-            <div className="relative w-full h-[40vh] max-h-[400px] min-h-[200px] flex items-center justify-center overflow-hidden rounded-t-lg bg-muted">
-              <Image
-                src={product.imageUrl}
-                alt={product.name}
-                fill
-                className="object-contain"
-                sizes="(max-width: 768px) 100vw, (max-width: 1024px) 90vw, 800px"
-                priority
-              />
-            </div>
+            <AspectRatio ratio={16 / 9} className="bg-muted">
+              <div className="relative h-full w-full">
+                <Image
+                  src={product.imageUrl}
+                  alt={product.name}
+                  fill
+                  className="object-contain"
+                  sizes="(max-width: 768px) 100vw, (max-width: 1024px) 90vw, 800px"
+                  priority
+                />
+              </div>
+            </AspectRatio>
           ) : (
-            <div className="w-full h-[40vh] max-h-[400px] min-h-[200px] rounded-t-lg bg-gradient-to-br from-muted to-muted/50" />
+            <AspectRatio ratio={16 / 9}>
+              <div className="h-full w-full bg-linear-to-br from-muted via-muted/80 to-muted/50" />
+            </AspectRatio>
           )}
         </div>
 
-        {/* テキスト部分 - スクロール可能 */}
-        <div className="flex-1 overflow-y-auto min-h-0">
+        {/* テキスト部分 - ScrollAreaでスクロール可能 */}
+        <ScrollArea className="flex-1">
           <div className="p-6 md:p-8">
-            <DialogHeader>
-              <DialogTitle className="whitespace-pre-wrap text-center text-2xl font-medium leading-relaxed md:text-3xl">
+            <DialogHeader className="space-y-3">
+              <DialogTitle className="whitespace-pre-wrap text-center text-2xl font-semibold leading-tight md:text-3xl">
                 {product.name}
               </DialogTitle>
+              {product.description && (
+                <DialogDescription className="text-center text-base text-muted-foreground md:text-lg">
+                  {product.description}
+                </DialogDescription>
+              )}
             </DialogHeader>
-
-            {product.description && (
-              <p className="mb-6 mt-4 whitespace-pre-wrap text-base leading-relaxed text-muted-foreground md:text-lg">
-                {product.description}
-              </p>
-            )}
 
             {(product.priceS || product.priceL) && (
               <>
                 <Separator className="my-6" />
-                <div className="flex flex-wrap items-baseline justify-center gap-3">
+                <div className="flex flex-wrap items-baseline justify-center gap-4">
                   {product.priceS && (
-                    <span className="text-2xl font-medium tracking-wide md:text-3xl">
-                      S: {formatPrice(product.priceS)}
-                    </span>
-                  )}
-                  {product.priceS && product.priceL && (
-                    <span className="text-xl text-muted-foreground">/</span>
+                    <Badge variant="secondary" className="text-lg px-4 py-2 md:text-xl">
+                      <span className="mr-2 text-xs font-normal">S</span>
+                      {formatPrice(product.priceS)}
+                    </Badge>
                   )}
                   {product.priceL && (
-                    <span className="text-2xl font-medium tracking-wide md:text-3xl">
-                      L: {formatPrice(product.priceL)}
-                    </span>
+                    <Badge variant="secondary" className="text-lg px-4 py-2 md:text-xl">
+                      <span className="mr-2 text-xs font-normal">L</span>
+                      {formatPrice(product.priceL)}
+                    </Badge>
                   )}
                 </div>
               </>
             )}
           </div>
-        </div>
+        </ScrollArea>
       </DialogContent>
     </Dialog>
   );
