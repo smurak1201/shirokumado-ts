@@ -42,25 +42,21 @@ export default function ProductModal({
       <DialogContent className="max-h-[90vh] max-w-4xl p-0 overflow-hidden sm:rounded-lg">
         <ScrollArea className="max-h-[90vh]">
           <div className="flex flex-col">
-            {/* 画像部分 */}
-            <div className="relative overflow-hidden rounded-t-lg bg-muted">
+            {/* 画像部分 - 高さ制限あり */}
+            <div className="relative h-[40vh] min-h-[200px] max-h-[400px] overflow-hidden rounded-t-lg bg-muted">
               {product.imageUrl ? (
-                <AspectRatio ratio={4 / 3} className="bg-muted">
-                  <div className="relative h-full w-full flex items-center justify-center p-4 md:p-8">
-                    <Image
-                      src={product.imageUrl}
-                      alt={product.name}
-                      fill
-                      className="object-contain"
-                      sizes="(max-width: 768px) 100vw, (max-width: 1024px) 90vw, 1000px"
-                      priority
-                    />
-                  </div>
-                </AspectRatio>
+                <div className="relative h-full w-full flex items-center justify-center p-4 md:p-8">
+                  <Image
+                    src={product.imageUrl}
+                    alt={product.name}
+                    fill
+                    className="object-contain"
+                    sizes="(max-width: 768px) 100vw, (max-width: 1024px) 90vw, 1000px"
+                    priority
+                  />
+                </div>
               ) : (
-                <AspectRatio ratio={4 / 3}>
-                  <div className="h-full w-full bg-linear-to-br from-muted via-muted/80 to-muted/50" />
-                </AspectRatio>
+                <div className="h-full w-full bg-linear-to-br from-muted via-muted/80 to-muted/50" />
               )}
             </div>
 
