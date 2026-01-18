@@ -43,7 +43,7 @@ export default function ProductGrid({
           </div>
         )}
 
-        <div className="grid grid-cols-3 gap-4 md:gap-6 lg:gap-8 justify-items-center">
+        <div className="grid grid-cols-3 gap-4 md:gap-6 lg:gap-8">
           {products.map((product) => (
             <ProductTile
               key={product.id}

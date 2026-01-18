@@ -31,7 +31,7 @@ function ProductTile({ product, onClick }: ProductTileProps) {
   return (
     <Card
       className={cn(
-        "group relative cursor-pointer overflow-hidden transition-all duration-500",
+        "group relative w-full cursor-pointer overflow-hidden transition-all duration-500",
         "hover:shadow-2xl hover:shadow-primary/10 hover:-translate-y-2",
         "hover:border-primary/40 border-border/60",
         "focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2"
@@ -48,7 +48,7 @@ function ProductTile({ product, onClick }: ProductTileProps) {
       aria-label={`${product.name}の詳細を見る`}
     >
       <CardHeader className="p-0">
-        <AspectRatio ratio={1} className="overflow-hidden">
+        <AspectRatio ratio={1} className="w-full overflow-hidden">
           {product.imageUrl ? (
             <div className="relative h-full w-full bg-muted">
               <Image
