@@ -29,7 +29,7 @@ export default function FAQPage() {
       <main className="mx-auto max-w-4xl px-4 py-8 md:px-6 md:py-12 lg:px-8 lg:py-16">
         {/* ページタイトル */}
         <div className="mb-10 flex flex-col items-center gap-4 md:mb-12">
-          <h1 className="text-center text-2xl font-bold text-foreground md:text-3xl lg:text-4xl">
+          <h1 className="text-center text-2xl font-normal tracking-wide text-muted-foreground md:text-3xl lg:text-4xl">
             よくある質問
           </h1>
           <Separator className="w-20 md:w-32" />
@@ -51,7 +51,7 @@ export default function FAQPage() {
                   >
                     Q{index + 1}
                   </Badge>
-                  <CardTitle className="flex-1 text-base font-semibold leading-relaxed text-foreground transition-colors duration-300 group-hover:text-primary md:text-lg">
+                  <CardTitle className="flex-1 text-base font-normal leading-relaxed text-foreground transition-colors duration-300 group-hover:text-primary md:text-lg">
                     {faq.question}
                   </CardTitle>
                 </div>

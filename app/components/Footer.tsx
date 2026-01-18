@@ -52,7 +52,7 @@ export default function Footer() {
 
         <div className="grid grid-cols-4 gap-1 md:gap-6">
           <div className="space-y-1 md:space-y-3">
-            <h3 className="text-[8px] font-semibold uppercase tracking-wider text-foreground md:text-sm">
+            <h3 className="text-[8px] font-normal uppercase tracking-wider text-foreground md:text-sm">
               住所
             </h3>
             <div className="space-y-0.5 text-[8px] leading-relaxed text-muted-foreground md:text-sm">
@@ -62,7 +62,7 @@ export default function Footer() {
           </div>
 
           <div className="space-y-1 md:space-y-3">
-            <h3 className="text-[8px] font-semibold uppercase tracking-wider text-foreground md:text-sm">
+            <h3 className="text-[8px] font-normal uppercase tracking-wider text-foreground md:text-sm">
               営業情報
             </h3>
             <div className="space-y-1 text-[8px] leading-relaxed text-muted-foreground md:text-sm">
@@ -78,7 +78,7 @@ export default function Footer() {
           </div>
 
           <div className="space-y-1 md:space-y-3">
-            <h3 className="text-[8px] font-semibold uppercase tracking-wider text-foreground md:text-sm">
+            <h3 className="text-[8px] font-normal uppercase tracking-wider text-foreground md:text-sm">
               お問い合わせ
             </h3>
             <div className="space-y-0.5 text-[8px] leading-relaxed text-muted-foreground md:text-sm">
