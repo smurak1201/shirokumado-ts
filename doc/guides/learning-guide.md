@@ -656,10 +656,11 @@ import { ValidationError } from "@/lib/errors";
    - `create`の使用例
    - データの作成とリレーションの設定
 
-5. **[`lib/products.ts`](../../lib/products.ts)（44-70 行目）**
+5. **[`lib/products.ts`](../../lib/products.ts)（44-72 行目）**
    - 複雑なクエリの例
    - `orderBy`、`include`の組み合わせ
    - `Promise.all`による並列処理
+   - `safePrismaOperation`によるエラーハンドリング
 
 **Laravel との比較**:
 
@@ -904,7 +905,7 @@ import { ValidationError } from "@/lib/errors";
 
 1. [`app/api/products/route.ts`](../../app/api/products/route.ts)の 32-43 行目（findMany の例）
 2. [`app/api/products/route.ts`](../../app/api/products/route.ts)の 120-139 行目（create の例）
-3. [`lib/products.ts`](../../lib/products.ts)の 44-70 行目（複雑なクエリの例、`Promise.all`による並列処理）
+3. [`lib/products.ts`](../../lib/products.ts)の 44-72 行目（複雑なクエリの例、`Promise.all`による並列処理、`safePrismaOperation`によるエラーハンドリング）
 
 **詳細**: [`doc/guides/prisma-guide.md`](./prisma-guide.md)を参照
 
@@ -915,7 +916,7 @@ import { ValidationError } from "@/lib/errors";
 **おすすめファイル**:
 
 1. [`app/api/products/route.ts`](../../app/api/products/route.ts)の 29 行目（async 関数の例）
-2. [`lib/products.ts`](../../lib/products.ts)の 44-70 行目（Promise.all の例）
+2. [`lib/products.ts`](../../lib/products.ts)の 44-72 行目（Promise.all の例、`safePrismaOperation`によるエラーハンドリング）
 
 **詳細**: [`doc/guides/async-await-guide.md`](./async-await-guide.md)を参照
 

@@ -474,7 +474,7 @@ Server Components では、`async/await` を使用してデータベースから
 
 **このアプリでの使用箇所**:
 
-[`app/page.tsx`](../../app/page.tsx) (`getPublishedProductsByCategory`関数)
+[`lib/products.ts`](../../lib/products.ts) (`getPublishedProductsByCategory`関数)
 
 ```typescript
 async function getPublishedProductsByCategory(): Promise<
@@ -510,8 +510,11 @@ async function getPublishedProductsByCategory(): Promise<
     // データの処理...
     return processedData;
   } catch (error) {
-    console.error("商品データの取得に失敗しました:", error);
-    return [];
+    log.error("公開商品の取得に失敗しました", {
+      context: "getPublishedProductsByCategory",
+      error,
+    });
+    throw error;
   }
 }
 ```

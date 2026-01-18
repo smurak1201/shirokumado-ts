@@ -89,9 +89,11 @@ App Router では、`app/` ディレクトリ内のファイル構造がその�
 
 **使用中のファイル**:
 
-**`error.tsx`** - エラーバウンダリー
+**`error.tsx`** - Next.js App Router のエラーハンドリング
 
 このアプリでは [`app/error.tsx`](../../app/error.tsx) でエラーハンドリングを実装しています。Server Componentsでエラーが発生した場合に表示されるエラーページです。
+
+**注意**: `error.tsx`はNext.js App Routerのエラーハンドリング用ファイルです。Reactのエラーバウンダリーコンポーネント（[`app/components/ErrorBoundary.tsx`](../../app/components/ErrorBoundary.tsx)）とは異なります。詳細は [React ガイド - エラーバウンダリー](./react-guide.md#9-エラーバウンダリー) を参照してください。
 
 **未使用ファイルの説明**:
 
@@ -332,7 +334,9 @@ export default function Template({ children }: { children: React.ReactNode }) {
 
 **このアプリでの使用箇所**:
 
-1. **[`app/page.tsx`](../../app/page.tsx) (`getPublishedProductsByCategory`関数)** - 公開商品をカテゴリーごとに取得
+1. **[`lib/products.ts`](../../lib/products.ts) (`getPublishedProductsByCategory`関数)** - 公開商品をカテゴリーごとに取得
+
+**注意**: このコード例は簡潔化したものです。実際の実装では、`safePrismaOperation`を使用してエラーハンドリングを行っています。詳細は [`lib/products.ts`](../../lib/products.ts) を参照してください。
 
 ```typescript
 async function getPublishedProductsByCategory(): Promise<

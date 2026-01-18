@@ -488,7 +488,7 @@ export default class ErrorBoundary extends Component<
 }
 
 
-[`app/components/ErrorBoundary.ts`](../../app/components/ErrorBoundary.ts)
+[`app/components/ErrorBoundary.tsx`](../../app/components/ErrorBoundary.tsx)
 ```
 
 **重要なポイント**:
@@ -610,15 +610,14 @@ JSX では、条件に応じて要素を表示/非表示できます。
 
 **方法 1: 三項演算子**
 
-isLoggedIn ? <UserMenu /> : <LoginButton />;
-}
-isLoading && <LoadingSpinner />;
-}
+```tsx
+{isLoggedIn ? <UserMenu /> : <LoginButton />}
+{isLoading && <LoadingSpinner />}
+```
 
-````
-
-[`app/components/ProductModal.tsx`](../../app/components/ProductModal.tsx)
 **詳細な使用例**: このアプリでの条件付きレンダリングの実装例（三項演算子、論理 AND 演算子など）については、[このアプリでの JSX の使用例 - 条件付きレンダリング](#条件付きレンダリング-1)セクションを参照してください。
+
+**このアプリでの使用例**: [`app/components/ProductModal.tsx`](../../app/components/ProductModal.tsx) (`ProductModal`コンポーネント)
 
 ### リストのレンダリング
 
@@ -799,21 +798,24 @@ aria-label={`${product.name}の詳細を見る`} >
 
 ### 条件付きレンダリング {#条件付きレンダリング-1}
 
-**早期リターン**:
+#### 早期リターン
 
+[`app/components/ProductGrid.tsx`](../../app/components/ProductGrid.tsx) (`ProductGrid`コンポーネント)
+
+```tsx
 export default function ProductGrid({ category, products }: ProductGridProps) {
-// 商品がない場合は何も表示しない
-if (products.length === 0) {
-return null;
+  // 商品がない場合は何も表示しない
+  if (products.length === 0) {
+    return null;
+  }
+
+  return <section className="mb-8 md:mb-16 lg:mb-12">{/* ... */}</section>;
 }
+```
 
-return <section className="mb-8 md:mb-16 lg:mb-12">{/_ ... _/}</section>;
-}
+#### 三項演算子
 
-[`app/components/ProductGrid.ts`](../../app/components/ProductGrid.ts)
-**三項演算子**:
-
-[`app/components/ProductTile.tsx`](../../app/components/ProductTile.tsx)
+[`app/components/ProductTile.tsx`](../../app/components/ProductTile.tsx) (`ProductTile`コンポーネント)
 
 ```tsx
 {
@@ -823,9 +825,9 @@ return <section className="mb-8 md:mb-16 lg:mb-12">{/_ ... _/}</section>;
     </div>
   ) : (
     <div className="aspect-square w-full bg-gray-100" />
-  );
+  )
 }
-````
+```
 
 [`app/components/ProductTile.tsx`](../../app/components/ProductTile.tsx)
 

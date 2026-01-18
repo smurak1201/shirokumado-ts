@@ -41,7 +41,9 @@
 
 **データ取得**:
 
-[`app/page.tsx`](../../app/page.tsx) (`getPublishedProductsByCategory`関数)
+[`lib/products.ts`](../../lib/products.ts) (`getPublishedProductsByCategory`関数)
+
+**注意**: このコード例は簡潔化したものです。実際の実装では、`safePrismaOperation`を使用してエラーハンドリングを行っています。詳細は [`lib/products.ts`](../../lib/products.ts) を参照してください。
 
 ```typescript
   // カテゴリーと商品を並列で取得（Promise.all を使用）

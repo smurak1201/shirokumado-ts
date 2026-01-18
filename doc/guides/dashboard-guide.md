@@ -161,8 +161,11 @@ app/dashboard/
 
 **実装例**:
 
+**注意**: このコード例は簡潔化したものです。実際の実装では、`_getDashboardData()`という内部関数で`Promise.all`と`safePrismaOperation`を使用してデータを取得しています。詳細は [`app/dashboard/page.tsx`](../../app/dashboard/page.tsx) を参照してください。
+
 ```typescript
-const { categories, products } = await getDashboardData();
+const data = await _getDashboardData();
+const { categories, products } = data;
 
 return (
   <div className="min-h-screen bg-gray-50 py-8">
@@ -445,7 +448,8 @@ interface ProductListProps {
 
 ```
 page.tsx (Server Component)
-  ↓ getDashboardData()
+  ↓ _getDashboardData()
+  ↓ Promise.all + safePrismaOperation
   ↓ Prismaクエリ
 Database
   ↓ データ変換
@@ -872,7 +876,7 @@ file: [画像ファイル]
 ### データフェッチング
 
 - **Server Component でデータを取得** - **このアプリで使用中**
-  - [`app/dashboard/page.tsx`](../../app/dashboard/page.tsx): Prisma を使用してデータベースから直接データを取得
+  - [`app/dashboard/page.tsx`](../../app/dashboard/page.tsx): Prisma を使用してデータベースから直接データを取得（`Promise.all`と`safePrismaOperation`を使用して並列取得とエラーハンドリングを実装）
 - **Client Component で API Routes にアクセス** - **このアプリで使用中**
   - [`app/dashboard/components/DashboardContent.tsx`](../../app/dashboard/components/DashboardContent.tsx): `fetch` API を使用して `/api/products` にアクセス
   - [`app/dashboard/components/DashboardForm.tsx`](../../app/dashboard/components/DashboardForm.tsx): `fetch` API を使用して `/api/products` に POST リクエスト

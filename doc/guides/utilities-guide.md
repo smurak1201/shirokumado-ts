@@ -976,7 +976,7 @@ const projectId = env.NEXT_PUBLIC_STACK_PROJECT_ID; // 型安全
 
 ### 商品関連ユーティリティ
 
-1. **公開状態の自動判定**: [`app/page.tsx`](../../app/page.tsx) で `calculatePublishedStatus()` を使用
+1. **公開状態の自動判定**: [`lib/products.ts`](../../lib/products.ts) の `getPublishedProductsByCategory()` 関数内で `calculatePublishedStatus()` を使用（[`app/page.tsx`](../../app/page.tsx) から呼び出される）
 2. **価格フォーマット**: [`app/dashboard/components/ProductFormFields.tsx`](../../app/dashboard/components/ProductFormFields.tsx) で `formatPrice()` を使用（`DashboardForm`と`ProductEditForm`の両方で使用）
 3. **数値入力の検証**: [`app/dashboard/components/ProductFormFields.tsx`](../../app/dashboard/components/ProductFormFields.tsx) で `isNumericKey()` を使用（`DashboardForm`と`ProductEditForm`の両方で使用）
 
