@@ -472,6 +472,7 @@ export const GET = withErrorHandling(async () => {
 - **[技術スタック](doc/tech-stack.md)**: 使用している技術の詳細
 - **[Async/Await ガイド](doc/guides/async-await-guide.md)**: async/await と Promise の使用方法
 - **[ユーティリティ関数ガイド](doc/guides/utilities-guide.md)**: ユーティリティ関数の詳細
+- **[shadcn/ui ガイド](doc/guides/shadcn-ui-guide.md)**: shadcn/ui の使用方法とラッパーコンポーネントの作成
 
 ### 外部ドキュメント
 

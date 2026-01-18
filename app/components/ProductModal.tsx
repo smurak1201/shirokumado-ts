@@ -12,8 +12,14 @@ import {
 } from "./ui/dialog";
 import { Separator } from "./ui/separator";
 import { ScrollArea } from "./ui/scroll-area";
-import { Badge } from "./ui/badge";
-import { Card, CardContent, CardHeader } from "./ui/card";
+import { PriceBadge } from "./ui/badge-price";
+import {
+  ModalImageCard,
+  ModalContentCard,
+  ModalPriceCard,
+  ModalCardContent,
+  ModalCardHeader,
+} from "./ui/card-modal";
 
 interface ProductModalProps {
   product: Product | null;
@@ -43,8 +49,8 @@ export default function ProductModal({
         <ScrollArea className="max-h-[90vh]">
           <div className="flex flex-col gap-4 p-4 md:p-6 lg:p-8">
             {/* 画像部分 - Cardで囲む */}
-            <Card className="overflow-hidden border-0 shadow-lg">
-              <CardHeader className="p-0">
+            <ModalImageCard>
+              <ModalCardHeader>
                 <div className="relative h-[40vh] min-h-[200px] max-h-[450px] md:h-[45vh] md:max-h-[500px] overflow-hidden bg-muted">
                   {product.imageUrl ? (
                     <div className="relative h-full w-full flex items-center justify-center p-4 md:p-6">
@@ -61,12 +67,12 @@ export default function ProductModal({
                     <div className="h-full w-full bg-linear-to-br from-muted via-muted/80 to-muted/50" />
                   )}
                 </div>
-              </CardHeader>
-            </Card>
+              </ModalCardHeader>
+            </ModalImageCard>
 
             {/* 商品情報部分 - Cardで囲む */}
-            <Card className="border-0 shadow-sm">
-              <CardContent className="p-4 md:p-6">
+            <ModalContentCard>
+              <ModalCardContent>
                 <DialogHeader className="space-y-3 mb-0">
                   <DialogTitle className="whitespace-pre-wrap text-center text-xl font-normal tracking-wide leading-tight text-muted-foreground md:text-2xl lg:text-3xl">
                     {product.name}
@@ -77,20 +83,20 @@ export default function ProductModal({
                     </DialogDescription>
                   )}
                 </DialogHeader>
-              </CardContent>
-            </Card>
+              </ModalCardContent>
+            </ModalContentCard>
 
             {/* 価格部分 - Cardで囲む */}
             {(product.priceS || product.priceL) && (
-              <Card className="border-0 shadow-sm bg-muted/30">
-                <CardContent className="p-4 md:p-6">
+              <ModalPriceCard>
+                <ModalCardContent>
                   <div className="flex flex-wrap items-center justify-center gap-3 md:gap-6">
                     {product.priceS && (
                       <div className="flex flex-col items-center gap-2">
                         <span className="text-xs font-normal text-muted-foreground uppercase tracking-wider">S</span>
-                        <Badge variant="secondary" className="text-lg font-normal px-5 py-2.5 md:text-xl md:px-6 md:py-3">
+                        <PriceBadge>
                           {formatPrice(product.priceS)}
-                        </Badge>
+                        </PriceBadge>
                       </div>
                     )}
                     {product.priceS && product.priceL && (
@@ -99,14 +105,14 @@ export default function ProductModal({
                     {product.priceL && (
                       <div className="flex flex-col items-center gap-2">
                         <span className="text-xs font-normal text-muted-foreground uppercase tracking-wider">L</span>
-                        <Badge variant="secondary" className="text-lg font-normal px-5 py-2.5 md:text-xl md:px-6 md:py-3">
+                        <PriceBadge>
                           {formatPrice(product.priceL)}
-                        </Badge>
+                        </PriceBadge>
                       </div>
                     )}
                   </div>
-                </CardContent>
-              </Card>
+                </ModalCardContent>
+              </ModalPriceCard>
             )}
           </div>
         </ScrollArea>

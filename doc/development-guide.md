@@ -1540,6 +1540,7 @@ export function apiSuccess<T>(data: T, status: number = 200): NextResponse {
 - **[TypeScript ガイド](doc/guides/typescript-guide.md)**: TypeScript の使用方法
 - **[Next.js ガイド](doc/guides/nextjs-guide.md)**: Next.js の使用方法
 - **[App Router ガイド](doc/guides/app-router-guide.md)**: App Router の使用方法
+- **[shadcn/ui ガイド](doc/guides/shadcn-ui-guide.md)**: shadcn/ui の使用方法とラッパーコンポーネントの作成
 
 ### 外部ドキュメント
 

@@ -3,7 +3,7 @@
 import { memo } from "react";
 import Image from "next/image";
 import type { ProductTile as ProductTileType } from "../types";
-import { Card, CardContent, CardHeader } from "./ui/card";
+import { ProductCard, ProductCardContent, ProductCardHeader } from "./ui/card-product";
 import { AspectRatio } from "./ui/aspect-ratio";
 import {
   Tooltip,
@@ -11,7 +11,6 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "./ui/tooltip";
-import { cn } from "@/lib/utils";
 
 interface ProductTileProps {
   product: ProductTileType;
@@ -29,13 +28,7 @@ interface ProductTileProps {
  */
 function ProductTile({ product, onClick }: ProductTileProps) {
   return (
-    <Card
-      className={cn(
-        "group relative w-full cursor-pointer overflow-hidden transition-all duration-500",
-        "hover:shadow-2xl hover:shadow-primary/10 hover:-translate-y-2",
-        "hover:border-primary/40 border-border/60",
-        "focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2"
-      )}
+    <ProductCard
       onClick={onClick}
       role="button"
       tabIndex={0}
@@ -47,7 +40,7 @@ function ProductTile({ product, onClick }: ProductTileProps) {
       }}
       aria-label={`${product.name}の詳細を見る`}
     >
-      <CardHeader className="p-0">
+      <ProductCardHeader>
         <AspectRatio ratio={1} className="w-full overflow-hidden">
           {product.imageUrl ? (
             <div className="relative h-full w-full bg-muted">
@@ -67,9 +60,9 @@ function ProductTile({ product, onClick }: ProductTileProps) {
             <div className="h-full w-full bg-linear-to-br from-muted via-muted/80 to-muted/50" />
           )}
         </AspectRatio>
-      </CardHeader>
+      </ProductCardHeader>
 
-      <CardContent className="flex min-h-12 items-center justify-center p-1.5 transition-colors duration-300 group-hover:bg-muted/30 md:min-h-20 md:p-6">
+      <ProductCardContent>
         <TooltipProvider>
           <Tooltip>
             <TooltipTrigger asChild>
@@ -82,8 +75,8 @@ function ProductTile({ product, onClick }: ProductTileProps) {
             </TooltipContent>
           </Tooltip>
         </TooltipProvider>
-      </CardContent>
-    </Card>
+      </ProductCardContent>
+    </ProductCard>
   );
 }
 

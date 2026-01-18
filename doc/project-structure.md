@@ -115,7 +115,8 @@ shirokumado-ts/
 │       ├── react-guide.md      # React ガイド
 │       ├── jsx-guide.md        # JSX ガイド
 │       ├── typescript-guide.md # TypeScript ガイド
-│       └── prisma-guide.md     # Prisma ガイド
+│       ├── prisma-guide.md     # Prisma ガイド
+│       └── shadcn-ui-guide.md  # shadcn/ui ガイド
 │
 ├── .env                    # 環境変数（.gitignoreに含まれる）
 ├── .gitignore            # Git除外設定
@@ -211,6 +212,14 @@ app/utils/
 app/components/
 ├── icons/               # アイコンコンポーネント
 │   └── [CloseIcon.tsx](../app/components/icons/CloseIcon.tsx)   # 閉じるアイコン
+├── ui/                  # shadcn/ui コンポーネントとラッパーコンポーネント
+│   ├── card.tsx        # shadcn/ui の Card コンポーネント
+│   ├── dialog.tsx      # shadcn/ui の Dialog コンポーネント
+│   ├── badge.tsx       # shadcn/ui の Badge コンポーネント
+│   ├── card-product.tsx    # 商品タイル用の Card ラッパー
+│   ├── card-modal.tsx      # モーダル内で使用する Card ラッパー
+│   ├── badge-price.tsx     # 価格表示用の Badge ラッパー
+│   └── ...             # その他の shadcn/ui コンポーネントとラッパー
 ├── [ErrorBoundary.tsx](../app/components/ErrorBoundary.tsx)     # エラーバウンダリーコンポーネント
 ├── [Header.tsx](../app/components/Header.tsx)           # ヘッダー（ロゴ、Instagramリンク、ナビゲーション）
 ├── [Footer.tsx](../app/components/Footer.tsx)           # フッター（店舗情報、地図、連絡先）
@@ -225,6 +234,9 @@ app/components/
 - **Server/Client 分離**: Server Component と Client Component を適切に使い分け
 - **レスポンシブデザイン**: モバイルからデスクトップまで対応
 - **関心の分離**: UI コンポーネントとロジック（フック）を分離
+- **shadcn/ui の活用**: 統一されたデザインシステムを実現するために shadcn/ui を使用
+
+**詳細**: shadcn/ui の使用方法とラッパーコンポーネントの作成については、[shadcn/ui ガイド](./guides/shadcn-ui-guide.md) を参照してください。
 
 #### `app/faq/` - FAQ ページ
 
@@ -509,6 +521,7 @@ public/
 - **[`doc/guides/jsx-guide.md`](./guides/jsx-guide.md)**: JSX の構文と使用方法
 - **[`doc/guides/typescript-guide.md`](./guides/typescript-guide.md)**: TypeScript の詳細な使用方法
 - **[`doc/guides/prisma-guide.md`](./guides/prisma-guide.md)**: Prisma の詳細な使用方法
+- **[`doc/guides/shadcn-ui-guide.md`](./guides/shadcn-ui-guide.md)**: shadcn/ui の使用方法とラッパーコンポーネントの作成
 - **[`doc/setup-prisma-blob.md`](./setup-prisma-blob.md)**: Prisma と Blob のセットアップガイド
 - **[`doc/deployment.md`](./deployment.md)**: デプロイメントガイド
 

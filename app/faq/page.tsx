@@ -1,8 +1,8 @@
 import Header from "../components/Header";
 import Footer from "../components/Footer";
-import { Card, CardHeader, CardContent, CardTitle } from "../components/ui/card";
+import { FAQCard, FAQCardHeader, FAQCardContent, FAQCardTitle } from "../components/ui/card-faq";
 import { Separator } from "../components/ui/separator";
-import { Badge } from "../components/ui/badge";
+import { QuestionBadge } from "../components/ui/badge-question";
 import { faqs } from "./data";
 
 /**
@@ -40,32 +40,26 @@ export default function FAQPage() {
         {/* FAQ一覧 */}
         <div className="space-y-4 md:space-y-6">
           {faqs.map((faq, index) => (
-            <Card
-              key={faq.question}
-              className="group relative overflow-hidden border-border/60 transition-all duration-300 hover:shadow-lg hover:shadow-primary/5 hover:-translate-y-1 hover:border-primary/30"
-            >
-              <CardHeader className="pb-3">
+            <FAQCard key={faq.question}>
+              <FAQCardHeader>
                 <div className="flex items-start gap-3 md:gap-4">
                   {/* 質問番号をBadgeで表示 */}
-                  <Badge
-                    variant="secondary"
-                    className="mt-0.5 shrink-0 text-xs font-bold md:text-sm"
-                  >
+                  <QuestionBadge>
                     Q{index + 1}
-                  </Badge>
-                  <CardTitle className="flex-1 text-base font-normal leading-relaxed text-foreground transition-colors duration-300 group-hover:text-primary md:text-lg">
+                  </QuestionBadge>
+                  <FAQCardTitle>
                     {faq.question}
-                  </CardTitle>
+                  </FAQCardTitle>
                 </div>
-              </CardHeader>
-              <CardContent className="pt-0">
+              </FAQCardHeader>
+              <FAQCardContent>
                 <div className="ml-0 md:ml-8">
                   <p className="text-sm leading-relaxed text-muted-foreground md:text-base">
                     {faq.answer}
                   </p>
                 </div>
-              </CardContent>
-            </Card>
+              </FAQCardContent>
+            </FAQCard>
           ))}
         </div>
       </main>

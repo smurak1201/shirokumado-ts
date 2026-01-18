@@ -616,6 +616,7 @@ const { config } = await import("@/lib/config");
 - **[JSX ガイド](doc/guides/jsx-guide.md)**: JSX の構文と使用方法
 - **[Next.js ガイド](doc/guides/nextjs-guide.md)**: Next.js の詳細な使用方法
 - **[App Router ガイド](doc/guides/app-router-guide.md)**: App Router の詳細な使用方法
+- **[shadcn/ui ガイド](doc/guides/shadcn-ui-guide.md)**: shadcn/ui の使用方法とラッパーコンポーネントの作成
 - **[Async/Await ガイド](doc/guides/async-await-guide.md)**: async/await と Promise の使用方法
 - [Next.js App Router](https://nextjs.org/docs/app)
 - [React Server Components](https://react.dev/blog/2023/03/22/react-labs-what-we-have-been-working-on-march-2023#react-server-components)
