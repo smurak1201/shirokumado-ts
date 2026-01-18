@@ -107,18 +107,21 @@
 **使用例**:
 
 ```tsx
-// app/components/ui/section-header.tsx
-import { ComponentPropsWithoutRef } from "react";
+// app/components/ui/card-product.tsx
+import { Card as ShadCard } from "./card";
+import type { ComponentPropsWithoutRef } from "react";
 import { cn } from "@/lib/utils";
 
-export function SectionHeader({
-  className,
-  ...props
-}: ComponentPropsWithoutRef<"header">) {
+export type ProductCardProps = ComponentPropsWithoutRef<typeof ShadCard>;
+
+export function ProductCard({ className, ...props }: ProductCardProps) {
   return (
-    <header
+    <ShadCard
       className={cn(
-        "border-b border-border bg-background",
+        "group relative w-full cursor-pointer overflow-hidden transition-all duration-500",
+        "hover:shadow-2xl hover:shadow-primary/10 hover:-translate-y-2",
+        "hover:border-primary/40 border-border/60",
+        "focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2",
         className
       )}
       {...props}
@@ -128,7 +131,7 @@ export function SectionHeader({
 ```
 
 ```tsx
-<SectionHeader className="h-20">...</SectionHeader>
+<ProductCard className="h-20">...</ProductCard>
 ```
 
 **メリット**:
@@ -226,9 +229,10 @@ export function ProductCard({ className, ...props }: ProductCardProps) {
   return (
     <ShadCard
       className={cn(
-        "group relative w-full cursor-pointer overflow-hidden",
+        "group relative w-full cursor-pointer overflow-hidden transition-all duration-500",
         "hover:shadow-2xl hover:shadow-primary/10 hover:-translate-y-2",
         "hover:border-primary/40 border-border/60",
+        "focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2",
         className
       )}
       {...props}
@@ -244,31 +248,36 @@ export function ProductCard({ className, ...props }: ProductCardProps) {
 
 ---
 
-### 例3: セクション区切り
+### 例3: FAQカード
 
-**5箇所以上で使用する場合の選択肢**
-
-**選択肢A: カスタムユーティリティ**
-
-```css
-@layer utilities {
-  .section-divider {
-    @apply border-t border-border my-8;
-  }
-}
-```
-
-**選択肢B: ラッパーコンポーネント**
+**推奨**: ラッパーコンポーネント
 
 ```tsx
-export function SectionDivider({ className, ...props }) {
-  return <div className={cn("border-t border-border my-8", className)} {...props} />;
+// app/components/ui/card-faq.tsx
+import { Card as ShadCard } from "./card";
+import type { ComponentPropsWithoutRef } from "react";
+import { cn } from "@/lib/utils";
+
+export type FAQCardProps = ComponentPropsWithoutRef<typeof ShadCard>;
+
+export function FAQCard({ className, ...props }: FAQCardProps) {
+  return (
+    <ShadCard
+      className={cn(
+        "group relative overflow-hidden border-border/60 transition-all duration-300",
+        "hover:shadow-lg hover:shadow-primary/5 hover:-translate-y-1 hover:border-primary/30",
+        className
+      )}
+      {...props}
+    />
+  );
 }
 ```
 
-**判断基準**:
-- 単純なスタイル → カスタムユーティリティ
-- 複雑なスタイル or 将来拡張の可能性 → ラッパーコンポーネント
+**理由**:
+- 複数のプロパティを組み合わせている
+- FAQページで複数箇所で使用
+- コンポーネントとして独立させる価値がある
 
 ---
 
