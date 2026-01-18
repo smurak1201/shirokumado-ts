@@ -39,21 +39,21 @@ export default function ProductModal({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-h-[90vh] w-[calc(100vw-2rem)] max-w-4xl p-0 overflow-hidden sm:rounded-lg">
+      <DialogContent className="max-h-[90vh] w-[calc(100vw-2rem)] max-w-2xl p-0 overflow-hidden sm:rounded-lg">
         <ScrollArea className="max-h-[90vh]">
           <div className="flex flex-col gap-4 p-4 md:p-6 lg:p-8">
             {/* 画像部分 - Cardで囲む */}
             <Card className="overflow-hidden border-0 shadow-lg">
               <CardHeader className="p-0">
-                <div className="relative h-[35vh] min-h-[200px] max-h-[400px] overflow-hidden bg-muted">
+                <div className="relative h-[40vh] min-h-[200px] max-h-[450px] md:h-[45vh] md:max-h-[500px] overflow-hidden bg-muted">
                   {product.imageUrl ? (
-                    <div className="relative h-full w-full flex items-center justify-center p-4 md:p-8">
+                    <div className="relative h-full w-full flex items-center justify-center p-4 md:p-6">
                       <Image
                         src={product.imageUrl}
                         alt={product.name}
                         fill
                         className="object-contain"
-                        sizes="(max-width: 768px) 100vw, (max-width: 1024px) 90vw, 1000px"
+                        sizes="(max-width: 768px) 100vw, (max-width: 1024px) 90vw, 672px"
                         priority
                       />
                     </div>
