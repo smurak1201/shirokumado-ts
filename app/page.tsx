@@ -3,9 +3,10 @@ import {
   getPublishedProductsByCategory,
   type CategoryWithProducts,
 } from "@/lib/products";
-import ProductGrid from "./components/ProductGrid";
+import ProductCategoryTabs from "./components/ProductCategoryTabs";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
+import { Separator } from "./components/ui/separator";
 
 export const dynamic = "force-dynamic";
 
@@ -45,24 +46,15 @@ export default async function Home() {
         <div className="absolute inset-0 bg-linear-to-b from-background/20 via-transparent to-background/40" />
       </section>
 
+      {/* ヒーローとコンテンツの区切り */}
+      <div className="mx-auto max-w-7xl px-2 md:px-6 lg:px-8">
+        <Separator className="bg-border/60" />
+      </div>
+
       {/* メインコンテンツ */}
       <main className="mx-auto max-w-7xl px-2 py-8 md:px-6 md:py-20 lg:px-8 lg:py-24 overflow-x-hidden">
-        {/* カテゴリーごとの商品セクション */}
-        {categoriesWithProducts.length > 0 ? (
-          categoriesWithProducts.map(({ category, products }) => (
-            <ProductGrid
-              key={category.id}
-              category={category}
-              products={products}
-            />
-          ))
-        ) : (
-          <div className="flex min-h-[50vh] items-center justify-center">
-            <p className="text-center text-muted-foreground">
-              商品の準備中です
-            </p>
-          </div>
-        )}
+        {/* カテゴリーごとの商品セクション - Tabsで切り替え */}
+        <ProductCategoryTabs categoriesWithProducts={categoriesWithProducts} />
       </main>
 
       {/* フッター */}

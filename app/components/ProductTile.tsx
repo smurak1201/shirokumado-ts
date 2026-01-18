@@ -5,6 +5,12 @@ import Image from "next/image";
 import type { ProductTile as ProductTileType } from "../types";
 import { Card, CardContent, CardHeader } from "./ui/card";
 import { AspectRatio } from "./ui/aspect-ratio";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "./ui/tooltip";
 import { cn } from "@/lib/utils";
 
 interface ProductTileProps {
@@ -64,9 +70,18 @@ function ProductTile({ product, onClick }: ProductTileProps) {
       </CardHeader>
 
       <CardContent className="flex min-h-12 items-center justify-center p-1.5 transition-colors duration-300 group-hover:bg-muted/30 md:min-h-20 md:p-6">
-        <h3 className="line-clamp-2 whitespace-pre-wrap text-center text-[10px] font-normal leading-relaxed transition-colors duration-300 group-hover:text-foreground md:text-base lg:text-lg">
-          {product.name}
-        </h3>
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <h3 className="line-clamp-2 whitespace-pre-wrap text-center text-[10px] font-normal leading-relaxed transition-colors duration-300 group-hover:text-foreground md:text-base lg:text-lg cursor-pointer">
+                {product.name}
+              </h3>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p className="whitespace-pre-wrap">{product.name}</p>
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
       </CardContent>
     </Card>
   );
