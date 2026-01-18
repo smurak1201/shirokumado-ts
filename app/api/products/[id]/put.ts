@@ -3,7 +3,7 @@ import { prisma, safePrismaOperation } from '@/lib/prisma';
 import { NotFoundError } from '@/lib/errors';
 import { log } from '@/lib/logger';
 import { NextRequest } from 'next/server';
-import { calculatePublishedStatus } from '@/lib/product-utils';
+import { determinePublishedStatus } from '@/lib/product-utils';
 import { deleteFile } from '@/lib/blob';
 import { validateProductUpdate } from './put-validation';
 
@@ -64,9 +64,12 @@ export async function putProduct(
     ? (body.endedAt ? new Date(body.endedAt) : null)
     : existingProduct.endedAt;
 
-  const published = (publishedAt || endedAt)
-    ? calculatePublishedStatus(publishedAt, endedAt)
-    : (body.published !== undefined ? body.published : existingProduct.published);
+  const published = determinePublishedStatus(
+    publishedAt,
+    endedAt,
+    body.published,
+    existingProduct.published // デフォルトは既存商品の公開状態
+  );
 
   const oldImageUrl = existingProduct.imageUrl;
   const newImageUrl = body.imageUrl !== undefined ? (body.imageUrl || null) : oldImageUrl;

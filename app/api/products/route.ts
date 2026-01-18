@@ -3,7 +3,7 @@ import { prisma, safePrismaOperation } from '@/lib/prisma';
 import { ValidationError } from '@/lib/errors';
 import { config } from '@/lib/config';
 import { NextRequest, NextResponse } from 'next/server';
-import { calculatePublishedStatus } from '@/lib/product-utils';
+import { determinePublishedStatus } from '@/lib/product-utils';
 
 export const dynamic = 'force-dynamic';
 
@@ -69,9 +69,12 @@ export const POST = withErrorHandling(async (request: NextRequest) => {
   const publishedAt = body.publishedAt ? new Date(body.publishedAt) : null;
   const endedAt = body.endedAt ? new Date(body.endedAt) : null;
 
-  const published = (publishedAt || endedAt)
-    ? calculatePublishedStatus(publishedAt, endedAt)
-    : (body.published !== undefined ? body.published : true);
+  const published = determinePublishedStatus(
+    publishedAt,
+    endedAt,
+    body.published,
+    true // デフォルトは公開
+  );
 
   const product = await safePrismaOperation(
     () =>

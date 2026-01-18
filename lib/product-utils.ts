@@ -57,6 +57,34 @@ export function hasDateRange(publishedAt: Date | null, endedAt: Date | null): bo
 }
 
 /**
+ * 商品の公開状態を決定する
+ *
+ * 公開日・終了日が設定されている場合は自動判定を優先し、
+ * 設定されていない場合は手動設定値を使用します。
+ * 手動設定値が未指定の場合は、デフォルト値（通常はtrue）を使用します。
+ *
+ * @param publishedAt 公開日（nullの場合は公開日なし）
+ * @param endedAt 終了日（nullの場合は終了日なし）
+ * @param manualPublished 手動設定された公開状態（undefinedの場合はデフォルト値を使用）
+ * @param defaultPublished デフォルトの公開状態（manualPublishedが未指定の場合に使用、デフォルト: true）
+ * @returns 公開状態（true: 公開、false: 非公開）
+ */
+export function determinePublishedStatus(
+  publishedAt: Date | null,
+  endedAt: Date | null,
+  manualPublished?: boolean,
+  defaultPublished: boolean = true
+): boolean {
+  // 公開日・終了日が設定されている場合は自動判定を優先
+  if (publishedAt || endedAt) {
+    return calculatePublishedStatus(publishedAt, endedAt);
+  }
+
+  // 手動設定値が指定されている場合はそれを使用、未指定の場合はデフォルト値を使用
+  return manualPublished !== undefined ? manualPublished : defaultPublished;
+}
+
+/**
  * 数値をカンマ区切りの文字列に変換
  * @param value 数値または数値文字列
  * @returns カンマ区切りの文字列（空の場合は空文字列）
