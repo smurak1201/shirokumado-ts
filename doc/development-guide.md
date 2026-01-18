@@ -867,10 +867,12 @@ export function ProductPage({ product }: { product: Product }) {
 
 ### ファイル名
 
-- **コンポーネント**: PascalCase（例: `UserProfile.tsx`）
-- **ユーティリティ**: camelCase（例: `formatDate.ts`）
+- **コンポーネント**: PascalCase（例: `UserProfile.tsx`）または kebab-case（例: `user-profile.tsx`）
+- **ユーティリティ**: kebab-case（例: `product-utils.ts`）または camelCase（例: `formatDate.ts`）
 - **API Routes**: `route.ts`（Next.js App Router の規約）
 - **型定義**: PascalCase（例: `User.ts`）
+
+**注意**: 各ディレクトリ内で一貫性を保つことが重要です。`lib/` ディレクトリは kebab-case、`app/dashboard/utils/` ディレクトリは camelCase で統一されています。
 
 ### 変数・関数名
 
@@ -883,18 +885,6 @@ export function ProductPage({ product }: { product: Product }) {
 
 - **コンポーネント名**: PascalCase（例: `UserProfile`, `ProductCard`）
 - **Props 型**: `ComponentNameProps`（例: `UserProfileProps`）
-
-```typescript
-// 良い例
-interface UserProfileProps {
-  userId: number;
-  showEmail?: boolean;
-}
-
-export function UserProfile({ userId, showEmail = false }: UserProfileProps) {
-  // ...
-}
-```
 
 ## ファイル構造
 
@@ -930,7 +920,7 @@ app/
 ### ユーティリティ
 
 ```
-lib/
+lib/                    # kebab-case で統一
 ├── prisma.ts          # Prisma Client
 ├── blob.ts            # Blob Storage
 ├── errors.ts          # エラーハンドリング
@@ -938,6 +928,9 @@ lib/
 ├── config.ts          # アプリケーション設定
 ├── image-compression.ts # 画像圧縮
 └── product-utils.ts   # 商品関連ユーティリティ
+
+app/dashboard/utils/   # camelCase で統一
+└── productUtils.ts    # ダッシュボード専用の商品操作関数
 ```
 
 **詳細**: ユーティリティ関数の詳細については、[ユーティリティ関数ガイド](doc/guides/utilities-guide.md)を参照してください。

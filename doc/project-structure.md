@@ -474,23 +474,23 @@ public/
 
 ## ファイル命名規則
 
-### コンポーネント
+### Next.js の規約
 
 - **ページ**: `page.tsx`（Next.js App Router の規約）
 - **レイアウト**: `layout.tsx`
 - **ローディング**: `loading.tsx`
 - **エラー**: `error.tsx`
 - **404**: `not-found.tsx`
-
-### API Routes
-
-- **ルートハンドラー**: `route.ts`
+- **API Routes**: `route.ts`
 - **動的ルート**: `[id]/route.ts`
 
-### ユーティリティ
+### 一般的な規則
 
-- **単一機能**: `camelCase.ts`（例: `formatDate.ts`）
-- **複数機能**: `plural.ts`（例: `formatters.ts`）
+- **コンポーネント**: PascalCase（例: `UserProfile.tsx`）または kebab-case（例: `user-profile.tsx`）
+- **ユーティリティ**: kebab-case（例: `product-utils.ts`）または camelCase（例: `formatDate.ts`）
+- **型定義**: PascalCase（例: `User.ts`）
+
+**注意**: 各ディレクトリ内で一貫性を保つことが重要です。詳細は [開発ガイドライン](doc/development-guide.md#命名規則) を参照してください。
 
 ## ファイルの役割
 
