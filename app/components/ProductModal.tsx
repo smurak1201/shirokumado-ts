@@ -39,62 +39,70 @@ export default function ProductModal({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-h-[90vh] max-w-3xl !flex !flex-col p-0 gap-0 overflow-hidden">
-        {/* 画像部分 - 固定 */}
-        <div className="relative flex-shrink-0 border-b">
-          {product.imageUrl ? (
-            <AspectRatio ratio={16 / 9} className="bg-muted">
-              <div className="relative h-full w-full">
-                <Image
-                  src={product.imageUrl}
-                  alt={product.name}
-                  fill
-                  className="object-contain"
-                  sizes="(max-width: 768px) 100vw, (max-width: 1024px) 90vw, 800px"
-                  priority
-                />
-              </div>
-            </AspectRatio>
-          ) : (
-            <AspectRatio ratio={16 / 9}>
-              <div className="h-full w-full bg-linear-to-br from-muted via-muted/80 to-muted/50" />
-            </AspectRatio>
-          )}
-        </div>
-
-        {/* テキスト部分 - ScrollAreaでスクロール可能 */}
-        <ScrollArea className="flex-1">
-          <div className="p-6 md:p-8">
-            <DialogHeader className="space-y-3">
-              <DialogTitle className="whitespace-pre-wrap text-center text-2xl font-semibold leading-tight md:text-3xl">
-                {product.name}
-              </DialogTitle>
-              {product.description && (
-                <DialogDescription className="text-center text-base text-muted-foreground md:text-lg">
-                  {product.description}
-                </DialogDescription>
+      <DialogContent className="max-h-[90vh] max-w-4xl p-0 overflow-hidden sm:rounded-lg">
+        <ScrollArea className="max-h-[90vh]">
+          <div className="flex flex-col">
+            {/* 画像部分 */}
+            <div className="relative overflow-hidden rounded-t-lg bg-muted">
+              {product.imageUrl ? (
+                <AspectRatio ratio={4 / 3} className="bg-muted">
+                  <div className="relative h-full w-full flex items-center justify-center p-4 md:p-8">
+                    <Image
+                      src={product.imageUrl}
+                      alt={product.name}
+                      fill
+                      className="object-contain"
+                      sizes="(max-width: 768px) 100vw, (max-width: 1024px) 90vw, 1000px"
+                      priority
+                    />
+                  </div>
+                </AspectRatio>
+              ) : (
+                <AspectRatio ratio={4 / 3}>
+                  <div className="h-full w-full bg-linear-to-br from-muted via-muted/80 to-muted/50" />
+                </AspectRatio>
               )}
-            </DialogHeader>
+            </div>
 
-            {(product.priceS || product.priceL) && (
-              <>
-                <Separator className="my-6" />
-                <div className="flex flex-wrap items-baseline justify-center gap-4">
-                  {product.priceS && (
-                    <Badge variant="secondary" className="text-lg px-4 py-2 md:text-xl">
-                      <span className="mr-2 text-xs font-normal">S</span>
-                      {formatPrice(product.priceS)}
-                    </Badge>
-                  )}
-                  {product.priceL && (
-                    <Badge variant="secondary" className="text-lg px-4 py-2 md:text-xl">
-                      <span className="mr-2 text-xs font-normal">L</span>
-                      {formatPrice(product.priceL)}
-                    </Badge>
-                  )}
+            {/* テキスト部分 */}
+            <div className="p-6 md:p-8 lg:p-10">
+              <DialogHeader className="space-y-4 mb-6">
+                <DialogTitle className="whitespace-pre-wrap text-center text-2xl font-bold leading-tight text-foreground md:text-3xl lg:text-4xl">
+                  {product.name}
+                </DialogTitle>
+                {product.description && (
+                  <DialogDescription className="text-center text-base leading-relaxed text-muted-foreground md:text-lg lg:text-xl max-w-2xl mx-auto">
+                    {product.description}
+                  </DialogDescription>
+                )}
+              </DialogHeader>
+
+              {(product.priceS || product.priceL) && (
+                <div className="mt-8 pt-6 border-t">
+                  <div className="flex flex-wrap items-center justify-center gap-3 md:gap-4">
+                    {product.priceS && (
+                      <div className="flex flex-col items-center gap-1">
+                        <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider">S</span>
+                        <Badge variant="secondary" className="text-xl font-semibold px-6 py-3 md:text-2xl">
+                          {formatPrice(product.priceS)}
+                        </Badge>
+                      </div>
+                    )}
+                    {product.priceS && product.priceL && (
+                      <Separator orientation="vertical" className="h-12" />
+                    )}
+                    {product.priceL && (
+                      <div className="flex flex-col items-center gap-1">
+                        <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider">L</span>
+                        <Badge variant="secondary" className="text-xl font-semibold px-6 py-3 md:text-2xl">
+                          {formatPrice(product.priceL)}
+                        </Badge>
+                      </div>
+                    )}
+                  </div>
                 </div>
-              </>
-            )}
+              )}
+            </div>
           </div>
         </ScrollArea>
       </DialogContent>
