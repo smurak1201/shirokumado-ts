@@ -34,10 +34,20 @@ export default function ProductCategoryTabs({
 
   // カテゴリーが1つの場合は通常のグリッド表示
   if (categoriesWithProducts.length === 1) {
+    const firstCategory = categoriesWithProducts[0];
+    if (!firstCategory) {
+      return (
+        <div className="flex min-h-[50vh] items-center justify-center">
+          <p className="text-center text-muted-foreground">
+            商品の準備中です
+          </p>
+        </div>
+      );
+    }
     return (
       <ProductGrid
-        category={categoriesWithProducts[0].category}
-        products={categoriesWithProducts[0].products}
+        category={firstCategory.category}
+        products={firstCategory.products}
       />
     );
   }
