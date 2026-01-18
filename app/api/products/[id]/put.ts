@@ -64,12 +64,9 @@ export async function putProduct(
     ? (body.endedAt ? new Date(body.endedAt) : null)
     : existingProduct.endedAt;
 
-  let published: boolean;
-  if (publishedAt || endedAt) {
-    published = calculatePublishedStatus(publishedAt, endedAt);
-  } else {
-    published = body.published !== undefined ? body.published : existingProduct.published;
-  }
+  const published = (publishedAt || endedAt)
+    ? calculatePublishedStatus(publishedAt, endedAt)
+    : (body.published !== undefined ? body.published : existingProduct.published);
 
   const oldImageUrl = existingProduct.imageUrl;
   const newImageUrl = body.imageUrl !== undefined ? (body.imageUrl || null) : oldImageUrl;

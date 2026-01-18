@@ -34,16 +34,16 @@ export function calculateResizedDimensions(
   }
 
   const aspectRatio = width / height;
-  let newWidth = width;
-  let newHeight = height;
 
-  if (width > height) {
-    newWidth = Math.min(width, maxWidth);
-    newHeight = newWidth / aspectRatio;
-  } else {
-    newHeight = Math.min(height, maxHeight);
-    newWidth = newHeight * aspectRatio;
-  }
+  const { width: newWidth, height: newHeight } = width > height
+    ? {
+      width: Math.min(width, maxWidth),
+      height: Math.min(width, maxWidth) / aspectRatio,
+    }
+    : {
+      width: Math.min(height, maxHeight) * aspectRatio,
+      height: Math.min(height, maxHeight),
+    };
 
   return { width: newWidth, height: newHeight };
 }

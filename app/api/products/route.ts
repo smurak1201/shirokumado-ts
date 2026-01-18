@@ -69,12 +69,9 @@ export const POST = withErrorHandling(async (request: NextRequest) => {
   const publishedAt = body.publishedAt ? new Date(body.publishedAt) : null;
   const endedAt = body.endedAt ? new Date(body.endedAt) : null;
 
-  let published: boolean;
-  if (publishedAt || endedAt) {
-    published = calculatePublishedStatus(publishedAt, endedAt);
-  } else {
-    published = body.published !== undefined ? body.published : true;
-  }
+  const published = (publishedAt || endedAt)
+    ? calculatePublishedStatus(publishedAt, endedAt)
+    : (body.published !== undefined ? body.published : true);
 
   const product = await safePrismaOperation(
     () =>

@@ -82,7 +82,10 @@ export default async function DashboardPage() {
     categories = data.categories;
     products = data.products;
   } catch (error) {
+    // _getDashboardData内でエラーログは記録済み
     // error.tsxでエラーUIが表示される
+    categories = [];
+    products = [];
   }
 
   return (

@@ -7,6 +7,7 @@ import ProductCategoryTabs from "./components/ProductCategoryTabs";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 import { Separator } from "./components/ui/separator";
+import { log } from "@/lib/logger";
 
 export const dynamic = "force-dynamic";
 
@@ -22,6 +23,10 @@ export default async function Home() {
   try {
     categoriesWithProducts = await getPublishedProductsByCategory();
   } catch (error) {
+    log.error("商品データの取得に失敗しました", {
+      context: "Home",
+      error,
+    });
     categoriesWithProducts = [];
   }
 
