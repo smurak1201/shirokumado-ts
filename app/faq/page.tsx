@@ -1,5 +1,7 @@
 import Header from "../components/Header";
 import Footer from "../components/Footer";
+import { Card, CardHeader, CardContent, CardTitle } from "../components/ui/card";
+import { Separator } from "../components/ui/separator";
 
 /**
  * FAQページのメインコンポーネント
@@ -96,29 +98,38 @@ export default function FAQPage() {
   ];
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-background">
       {/* ヘッダー */}
       <Header />
 
       {/* メインコンテンツ */}
-      <main className="mx-auto max-w-4xl px-4 py-8 md:px-8 md:py-12 lg:px-12 lg:py-16">
-        <h1 className="mb-8 text-2xl font-bold text-gray-900 md:text-3xl lg:text-4xl">
-          よくある質問
-        </h1>
+      <main className="mx-auto max-w-4xl px-4 py-8 md:px-6 md:py-12 lg:px-8 lg:py-16">
+        {/* ページタイトル */}
+        <div className="mb-10 flex flex-col items-center gap-4 md:mb-12">
+          <h1 className="text-center text-2xl font-bold text-foreground md:text-3xl lg:text-4xl">
+            よくある質問
+          </h1>
+          <Separator className="w-20 md:w-32" />
+        </div>
 
-        <div className="space-y-6">
+        {/* FAQ一覧 */}
+        <div className="space-y-4 md:space-y-6">
           {faqs.map((faq) => (
-            <div
+            <Card
               key={faq.id}
-              className="border-b border-gray-200 pb-6 last:border-b-0"
+              className="transition-all duration-300 hover:shadow-md hover:border-primary/20"
             >
-              <h2 className="mb-3 text-lg font-semibold text-gray-900 md:text-xl">
-                {faq.question}
-              </h2>
-              <p className="text-sm leading-relaxed text-gray-700 md:text-base">
-                {faq.answer}
-              </p>
-            </div>
+              <CardHeader className="pb-3">
+                <CardTitle className="text-base font-semibold text-foreground md:text-lg">
+                  {faq.question}
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-sm leading-relaxed text-muted-foreground md:text-base">
+                  {faq.answer}
+                </p>
+              </CardContent>
+            </Card>
           ))}
         </div>
       </main>
