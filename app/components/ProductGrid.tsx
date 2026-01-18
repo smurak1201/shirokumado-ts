@@ -1,6 +1,5 @@
 "use client";
 
-import { useCallback } from "react";
 import ProductTile from "./ProductTile";
 import ProductModal from "./ProductModal";
 import type { Category, Product } from "../types";
@@ -25,13 +24,6 @@ export default function ProductGrid({ category, products }: ProductGridProps) {
     return null;
   }
 
-  const handleTileClick = useCallback(
-    (product: Product) => {
-      handleProductClick(product);
-    },
-    [handleProductClick]
-  );
-
   return (
     <>
       <section className="mb-8 md:mb-16 lg:mb-12">
@@ -50,7 +42,7 @@ export default function ProductGrid({ category, products }: ProductGridProps) {
                 name: product.name,
                 imageUrl: product.imageUrl,
               }}
-              onClick={() => handleTileClick(product)}
+              onClick={() => handleProductClick(product)}
             />
           ))}
         </div>

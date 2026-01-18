@@ -39,12 +39,12 @@ export default function ProductModal({
         {/* 画像部分 - 固定、高さ制限あり */}
         <div className="relative flex-shrink-0">
           {product.imageUrl ? (
-            <div className="relative w-full h-[40vh] max-h-[400px] min-h-[200px] overflow-hidden rounded-t-lg bg-muted">
+            <div className="relative w-full h-[40vh] max-h-[400px] min-h-[200px] flex items-center justify-center overflow-hidden rounded-t-lg bg-muted">
               <Image
                 src={product.imageUrl}
                 alt={product.name}
                 fill
-                className="object-cover"
+                className="object-contain"
                 sizes="(max-width: 768px) 100vw, (max-width: 1024px) 90vw, 800px"
                 priority
               />
