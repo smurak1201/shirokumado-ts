@@ -395,14 +395,6 @@
 
 開発コマンドの詳細については、[README.md](../README.md#開発コマンド) を参照してください。
 
-主要なコマンド:
-
-- `npm run dev`: 開発サーバー起動
-- `npm run build`: プロダクションビルド
-- `npm run lint`: リンター実行
-- `npm run db:generate`: Prisma Client を生成
-- `npm run db:migrate`: マイグレーションを作成・適用
-
 ## 参考リンク
 
 - [Next.js Documentation](https://nextjs.org/docs)

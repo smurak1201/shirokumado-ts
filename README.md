@@ -33,6 +33,7 @@
 - **React 19.2.3** - UI ライブラリ
 - **TypeScript 5** - 型安全性
 - **Tailwind CSS 4** - スタイリング
+- **shadcn/ui** - UI コンポーネントライブラリ
 
 ### バックエンド
 
@@ -137,6 +138,7 @@ npm run dev
 - **[TypeScript ガイド](./doc/guides/typescript-guide.md)** - TypeScript の詳細な使用方法。型定義、型安全性、Prisma との統合などの説明と、このアプリでの実際の使用箇所を説明します。
 - **[Async/Await ガイド](./doc/guides/async-await-guide.md)** - async/await と Promise の使用方法。基本的な構文、エラーハンドリング、Promise.all などの便利なメソッド、このアプリでの実際の使用例を説明します。
 - **[Prisma ガイド](./doc/guides/prisma-guide.md)** - Prisma の詳細な使用方法。各関数の説明と、このアプリでの実際の使用箇所を説明します。
+- **[スタイリングのベストプラクティス](./doc/guides/styling-best-practices.md)** - Tailwind CSS と shadcn/ui を使用したスタイリングのベストプラクティス。スタイルの統一方法と使い分けを説明します。
 - **[ユーティリティ関数ガイド](./doc/guides/utilities-guide.md)** - `lib/` ディレクトリのユーティリティ関数の詳細。商品関連ユーティリティ、画像圧縮、Blob Storage、設定管理、環境変数の型安全な管理などを説明します。
 
 ### セットアップとデプロイ
@@ -175,29 +177,45 @@ shirokumado-ts/
 ├── app/                    # Next.js App Router
 │   ├── api/               # API Routes
 │   │   ├── products/     # 商品API
+│   │   │   ├── [id]/    # 商品個別操作
+│   │   │   ├── reorder/ # 並び替え
+│   │   │   └── upload/  # 画像アップロード
 │   │   └── categories/   # カテゴリーAPI
 │   ├── dashboard/         # ダッシュボード機能
 │   │   ├── components/   # ダッシュボードコンポーネント
 │   │   ├── hooks/        # カスタムフック
-│   │   └── utils/        # ユーティリティ関数
+│   │   ├── utils/        # ユーティリティ関数
+│   │   ├── page.tsx      # ダッシュボードページ
+│   │   └── types.ts       # 型定義
 │   ├── components/       # フロントエンド共通コンポーネント
+│   │   ├── ui/          # shadcn/ui コンポーネント
+│   │   ├── Header.tsx   # ヘッダー
+│   │   ├── Footer.tsx   # フッター
+│   │   └── ...          # その他のコンポーネント
 │   ├── hooks/            # カスタムフック
 │   ├── utils/            # ユーティリティ関数
 │   ├── faq/              # FAQページ
+│   ├── error.tsx         # エラーページ
 │   ├── layout.tsx        # ルートレイアウト
-│   └── page.tsx          # ホームページ
+│   ├── page.tsx          # ホームページ
+│   └── types.ts           # 型定義
 ├── lib/                    # ユーティリティ・ライブラリ
 │   ├── prisma.ts         # Prisma Clientインスタンス
 │   ├── blob.ts           # Blobストレージユーティリティ
 │   ├── env.ts            # 環境変数管理
 │   ├── errors.ts          # 統一されたエラーハンドリング
 │   ├── api-helpers.ts    # API Routes用ヘルパー
+│   ├── api-types.ts      # API型定義
 │   ├── config.ts         # アプリケーション設定
+│   ├── logger.ts         # ログユーティリティ
+│   ├── products.ts       # 商品関連ユーティリティ
+│   ├── product-utils.ts  # 商品関連ユーティリティ
 │   ├── image-compression.ts # 画像圧縮ユーティリティ
-│   └── product-utils.ts  # 商品関連ユーティリティ
+│   └── utils.ts           # 汎用ユーティリティ
 ├── prisma/                 # Prisma設定
 │   ├── schema.prisma     # データベーススキーマ定義
-│   └── migrations/       # マイグレーションファイル
+│   ├── migrations/       # マイグレーションファイル
+│   └── seed.ts           # シードデータ
 ├── public/                 # 静的ファイル
 ├── doc/                    # ドキュメント
 └── package.json            # 依存関係

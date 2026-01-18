@@ -354,10 +354,21 @@ shadcn/ui は TypeScript を完全にサポートしています。
 - コンポーネントの props に適切な型を設定
 - `cn` 関数を使用してクラス名を型安全にマージ
 
+### スタイリングの統一
+
+同じスタイルを複数箇所で使用する場合のベストプラクティスについては、[スタイリングのベストプラクティス](./styling-best-practices.md)を参照してください。
+
+**主なポイント**:
+
+- 明示的なクラス指定（デフォルト）
+- ラッパーコンポーネント（複雑なスタイル）
+- カスタムユーティリティクラス（限定的）
+
 ## 参考リンク
 
 - [shadcn/ui 公式ドキュメント](https://ui.shadcn.com/)
 - [Radix UI 公式ドキュメント](https://www.radix-ui.com/)
 - [Tailwind CSS 公式ドキュメント](https://tailwindcss.com/)
+- [このアプリのスタイリングのベストプラクティス](./styling-best-practices.md)
 - [このアプリのフロントエンドガイド](./frontend-guide.md)
 - [このアプリの React ガイド](./react-guide.md)
