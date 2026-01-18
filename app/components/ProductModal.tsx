@@ -12,7 +12,6 @@ import {
 } from "./ui/dialog";
 import { Separator } from "./ui/separator";
 import { ScrollArea } from "./ui/scroll-area";
-import { AspectRatio } from "./ui/aspect-ratio";
 import { Badge } from "./ui/badge";
 
 interface ProductModalProps {
@@ -25,7 +24,7 @@ interface ProductModalProps {
  * 商品詳細を表示するモーダルウィンドウコンポーネント
  *
  * 商品の詳細情報（画像、名前、説明、価格）をモーダルウィンドウで表示します。
- * shadcn/uiのDialog、ScrollArea、AspectRatioコンポーネントを使用して実装されています。
+ * shadcn/uiのDialog、ScrollAreaコンポーネントを使用して実装されています。
  * ESCキーでモーダルを閉じる機能と、背景クリックでモーダルを閉じる機能を提供します。
  */
 export default function ProductModal({
