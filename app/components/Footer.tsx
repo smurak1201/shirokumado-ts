@@ -14,7 +14,7 @@ import { cn } from "@/lib/utils";
  */
 export default function Footer() {
   return (
-    <footer className="border-t bg-linear-to-b from-background to-muted/20 py-12 md:py-16 lg:py-20 overflow-x-hidden">
+    <footer className="border-t border-border bg-linear-to-b from-background to-muted/20 py-12 md:py-16 lg:py-20 overflow-x-hidden">
       <div className="mx-auto max-w-6xl px-2 sm:px-4 md:px-6 lg:px-12">
         <div className="mb-8 flex items-center gap-3 sm:gap-4 md:gap-5">
           <Link
