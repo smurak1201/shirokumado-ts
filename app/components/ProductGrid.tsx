@@ -35,7 +35,7 @@ export default function ProductGrid({
         {!hideCategoryTitle && (
           <div className="mb-8 flex items-center justify-center md:mb-12 lg:mb-16">
             <div className="flex flex-col items-center gap-3 md:gap-4">
-              <h2 className="text-center text-xl font-normal tracking-wide text-muted-foreground md:text-4xl lg:text-3xl">
+              <h2 className="text-center text-xl font-normal tracking-wide text-muted-foreground md:text-4xl lg:text-5xl">
                 {category.name}
               </h2>
               <div className="h-px w-20 bg-linear-to-r from-transparent via-border/60 to-transparent md:w-32" />
