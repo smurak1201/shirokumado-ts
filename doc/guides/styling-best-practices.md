@@ -1,0 +1,316 @@
+# スタイリングのベストプラクティス
+
+このドキュメントでは、Tailwind CSS と shadcn/ui を使用したスタイリングのベストプラクティスを説明します。
+
+## 目次
+
+- [概要](#概要)
+- [スタイルの統一方法](#スタイルの統一方法)
+- [各アプローチの比較](#各アプローチの比較)
+- [推奨される使い分け](#推奨される使い分け)
+- [実装例](#実装例)
+- [まとめ](#まとめ)
+- [参考リンク](#参考リンク)
+
+## 概要
+
+同じスタイルを複数箇所で使用する場合、以下の3つのアプローチがあります：
+
+1. **明示的なクラス指定**: Tailwind の標準クラスをそのまま使用
+2. **カスタムユーティリティクラス**: `@layer utilities` でカスタムクラスを定義
+3. **ラッパーコンポーネント**: shadcn/ui のコンポーネントをラップ
+
+それぞれの特徴と使い分けについて、以下で詳しく説明します。
+
+## スタイルの統一方法
+
+### 1. 明示的なクラス指定
+
+**推奨**: 小規模な繰り返し（2-3箇所程度）
+
+**特徴**:
+- Tailwind の標準的なクラスをそのまま使用
+- コードが読みやすく、意図が明確
+- 学習コストが低い
+
+**使用例**:
+```tsx
+<header className="border-b border-border bg-background">
+<footer className="border-t border-border bg-background">
+```
+
+**メリット**:
+- Tailwind の標準的な使い方
+- コードが読みやすい
+- デバッグが容易
+- IDE の補完が効く
+
+**デメリット**:
+- 同じクラスを複数箇所で書く必要がある
+- 変更時に複数箇所を修正する必要がある
+
+**適用範囲**: 2-3箇所程度の小規模な繰り返し
+
+---
+
+### 2. カスタムユーティリティクラス
+
+**推奨**: 中規模の繰り返し（5箇所以上）
+
+**特徴**:
+- `@layer utilities` でカスタムクラスを定義
+- セマンティックな名前で統一
+
+**使用例**:
+
+```css
+/* globals.css */
+@layer utilities {
+  .border-divider-top {
+    @apply border-t border-border;
+  }
+
+  .border-divider-bottom {
+    @apply border-b border-border;
+  }
+}
+```
+
+```tsx
+<header className="border-divider-bottom">
+<footer className="border-divider-top">
+```
+
+**メリット**:
+- セマンティックな名前で意図が明確
+- 変更を1箇所で管理可能
+- コードが簡潔になる
+
+**デメリット**:
+- Tailwind の標準から外れる
+- プロジェクト固有の知識が必要
+- IDE の補完が効かない場合がある
+
+**適用範囲**: 5箇所以上で使用する場合、または意味的に統一したい場合
+
+---
+
+### 3. ラッパーコンポーネント
+
+**推奨**: 大規模な繰り返し、または複雑なスタイル
+
+**特徴**:
+- shadcn/ui のコンポーネントをラップ
+- アプリ固有のデフォルトスタイルを適用
+- 型安全性が保たれる
+
+**使用例**:
+
+```tsx
+// app/components/ui/section-header.tsx
+import { ComponentPropsWithoutRef } from "react";
+import { cn } from "@/lib/utils";
+
+export function SectionHeader({
+  className,
+  ...props
+}: ComponentPropsWithoutRef<"header">) {
+  return (
+    <header
+      className={cn(
+        "border-b border-border bg-background",
+        className
+      )}
+      {...props}
+    />
+  );
+}
+```
+
+```tsx
+<SectionHeader className="h-20">...</SectionHeader>
+```
+
+**メリット**:
+- 型安全性が保たれる
+- 再利用性が高い
+- コンポーネントとして独立している
+- テストしやすい
+
+**デメリット**:
+- ファイルが増える
+- 過剰な抽象化のリスク
+
+**適用範囲**: 複数のプロパティを組み合わせる場合、またはコンポーネントとして独立させる価値がある場合
+
+---
+
+## 各アプローチの比較
+
+| 観点 | 明示的なクラス指定 | カスタムユーティリティ | ラッパーコンポーネント |
+|------|-------------------|---------------------|---------------------|
+| **学習コスト** | 低い | 中程度 | 中程度 |
+| **コードの可読性** | 高い | 中程度 | 高い |
+| **保守性** | 低い（複数箇所） | 高い（1箇所） | 高い（1箇所） |
+| **型安全性** | あり | あり | あり（より強い） |
+| **適用範囲** | 2-3箇所 | 5箇所以上 | 複雑なスタイル |
+| **Tailwind標準** | 標準 | 非標準 | 標準 |
+
+---
+
+## 推奨される使い分け
+
+### このプロジェクトでの推奨方針
+
+shadcn/ui の設計思想に従い、以下の優先順位で判断します：
+
+1. **明示的なクラス指定**（デフォルト）
+   - 2-3箇所程度の繰り返し
+   - シンプルなスタイルの組み合わせ
+   - Tailwind の標準クラスで表現可能な場合
+
+2. **ラッパーコンポーネント**（複雑なスタイル）
+   - 複数のプロパティを組み合わせる場合
+   - コンポーネントとして独立させる価値がある場合
+   - 既存のパターン（`card-product.tsx` など）に合わせる
+
+3. **カスタムユーティリティクラス**（限定的）
+   - 5箇所以上で使用する場合
+   - セマンティックな名前で統一したい場合
+   - ただし、過剰な抽象化は避ける
+
+### 判断フローチャート
+
+```
+同じスタイルを複数箇所で使用する？
+│
+├─ 2-3箇所程度？
+│  └─ 明示的なクラス指定
+│
+├─ 複数のプロパティを組み合わせる？
+│  └─ ラッパーコンポーネント
+│
+└─ 5箇所以上で使用する？
+   └─ カスタムユーティリティ or ラッパーコンポーネント
+      （プロジェクトの状況に応じて判断）
+```
+
+---
+
+## 実装例
+
+### 例1: ヘッダー・フッターの境界線
+
+**推奨**: 明示的なクラス指定
+
+```tsx
+// 良い例：シンプルで明確
+<header className="border-b border-border">
+<footer className="border-t border-border">
+```
+
+**理由**:
+- 2箇所のみの使用
+- シンプルなスタイル
+- Tailwind の標準的な使い方
+
+---
+
+### 例2: 商品カード
+
+**推奨**: ラッパーコンポーネント
+
+```tsx
+// app/components/ui/card-product.tsx
+export function ProductCard({ className, ...props }: ProductCardProps) {
+  return (
+    <ShadCard
+      className={cn(
+        "group relative w-full cursor-pointer overflow-hidden",
+        "hover:shadow-2xl hover:shadow-primary/10 hover:-translate-y-2",
+        "hover:border-primary/40 border-border/60",
+        className
+      )}
+      {...props}
+    />
+  );
+}
+```
+
+**理由**:
+- 複数のプロパティを組み合わせている
+- 商品一覧で複数箇所で使用
+- コンポーネントとして独立させる価値がある
+
+---
+
+### 例3: セクション区切り
+
+**5箇所以上で使用する場合の選択肢**
+
+**選択肢A: カスタムユーティリティ**
+
+```css
+@layer utilities {
+  .section-divider {
+    @apply border-t border-border my-8;
+  }
+}
+```
+
+**選択肢B: ラッパーコンポーネント**
+
+```tsx
+export function SectionDivider({ className, ...props }) {
+  return <div className={cn("border-t border-border my-8", className)} {...props} />;
+}
+```
+
+**判断基準**:
+- 単純なスタイル → カスタムユーティリティ
+- 複雑なスタイル or 将来拡張の可能性 → ラッパーコンポーネント
+
+---
+
+## まとめ
+
+### このプロジェクトでの推奨事項
+
+1. **デフォルトは明示的なクラス指定**
+   - Tailwind の標準的な使い方を優先
+   - コードが読みやすく、学習コストが低い
+
+2. **複雑なスタイルはラッパーコンポーネント**
+   - 既存のパターン（`card-product.tsx` など）に合わせる
+   - shadcn/ui の設計思想に従う
+
+3. **カスタムユーティリティは限定的に**
+   - 5箇所以上で使用する場合のみ
+   - 過剰な抽象化は避ける
+
+4. **一貫性を保つ**
+   - プロジェクト全体で同じアプローチを使用
+   - 既存のコードスタイルに合わせる
+
+### 現在の実装（ヘッダー・フッター）
+
+```tsx
+// 推奨：明示的なクラス指定
+<header className="border-b border-border">
+<footer className="border-t border-border">
+```
+
+**この実装が適切な理由**:
+- 2箇所のみの使用
+- シンプルで明確
+- Tailwind の標準的な使い方
+- プロジェクトの他の部分と一貫性がある
+
+---
+
+## 参考リンク
+
+- [Tailwind CSS 公式ドキュメント](https://tailwindcss.com/docs)
+- [shadcn/ui 公式ドキュメント](https://ui.shadcn.com/)
+- [このプロジェクトの shadcn/ui ガイド](./shadcn-ui-guide.md)
+- [このプロジェクトのフロントエンドガイド](./frontend-guide.md)
