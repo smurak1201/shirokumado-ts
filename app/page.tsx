@@ -25,7 +25,7 @@ export default async function Home() {
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background overflow-x-hidden">
       {/* ヘッダー */}
       <Header />
 
@@ -44,7 +44,7 @@ export default async function Home() {
       </section>
 
       {/* メインコンテンツ */}
-      <main className="mx-auto max-w-7xl px-4 py-12 md:px-6 md:py-20 lg:px-8 lg:py-24">
+      <main className="mx-auto max-w-7xl px-2 py-8 md:px-6 md:py-20 lg:px-8 lg:py-24 overflow-x-hidden">
         {/* カテゴリーごとの商品セクション */}
         {categoriesWithProducts.length > 0 ? (
           categoriesWithProducts.map(({ category, products }) => (

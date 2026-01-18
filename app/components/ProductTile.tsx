@@ -63,8 +63,8 @@ function ProductTile({ product, onClick }: ProductTileProps) {
         </AspectRatio>
       </CardHeader>
 
-      <CardContent className="flex min-h-[4rem] items-center justify-center p-4 transition-colors duration-300 group-hover:bg-muted/30 md:min-h-[5rem] md:p-6">
-        <h3 className="line-clamp-2 whitespace-pre-wrap text-center text-sm font-medium leading-relaxed transition-colors duration-300 group-hover:text-foreground md:text-base lg:text-lg">
+      <CardContent className="flex min-h-[3rem] items-center justify-center p-1.5 transition-colors duration-300 group-hover:bg-muted/30 md:min-h-[5rem] md:p-6">
+        <h3 className="line-clamp-2 whitespace-pre-wrap text-center text-[10px] font-medium leading-relaxed transition-colors duration-300 group-hover:text-foreground md:text-base lg:text-lg">
           {product.name}
         </h3>
       </CardContent>

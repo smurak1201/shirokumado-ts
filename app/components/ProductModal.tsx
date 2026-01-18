@@ -39,7 +39,7 @@ export default function ProductModal({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-h-[90vh] max-w-4xl p-0 overflow-hidden sm:rounded-lg">
+      <DialogContent className="max-h-[90vh] w-[calc(100vw-2rem)] max-w-4xl p-0 overflow-hidden sm:rounded-lg">
         <ScrollArea className="max-h-[90vh]">
           <div className="flex flex-col">
             {/* 画像部分 - 高さ制限あり */}

@@ -14,7 +14,7 @@ import { cn } from "@/lib/utils";
  */
 export default function Footer() {
   return (
-    <footer className="border-t bg-linear-to-b from-background to-muted/20 py-12 md:py-16 lg:py-20">
+    <footer className="border-t bg-linear-to-b from-background to-muted/20 py-12 md:py-16 lg:py-20 overflow-x-hidden">
       <div className="mx-auto max-w-6xl px-2 sm:px-4 md:px-6 lg:px-12">
         <div className="mb-8 flex items-center gap-3 sm:gap-4 md:gap-5">
           <Link
@@ -50,22 +50,22 @@ export default function Footer() {
           </a>
         </div>
 
-        <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 md:grid-cols-4 md:gap-6">
-          <div className="space-y-2 sm:space-y-3">
-            <h3 className="text-xs font-semibold uppercase tracking-wider text-foreground sm:text-sm">
+        <div className="grid grid-cols-4 gap-1 md:gap-6">
+          <div className="space-y-1 md:space-y-3">
+            <h3 className="text-[8px] font-semibold uppercase tracking-wider text-foreground md:text-sm">
               住所
             </h3>
-            <div className="space-y-1 text-xs leading-relaxed text-muted-foreground sm:text-sm">
+            <div className="space-y-0.5 text-[8px] leading-relaxed text-muted-foreground md:text-sm">
               <p>神奈川県川崎市川崎区小川町4-1</p>
               <p>ラチッタデッラ マッジョーレ1F</p>
             </div>
           </div>
 
-          <div className="space-y-2 sm:space-y-3">
-            <h3 className="text-xs font-semibold uppercase tracking-wider text-foreground sm:text-sm">
+          <div className="space-y-1 md:space-y-3">
+            <h3 className="text-[8px] font-semibold uppercase tracking-wider text-foreground md:text-sm">
               営業情報
             </h3>
-            <div className="space-y-2 text-xs leading-relaxed text-muted-foreground sm:text-sm">
+            <div className="space-y-1 text-[8px] leading-relaxed text-muted-foreground md:text-sm">
               <div>
                 <p className="font-medium text-foreground/90">営業時間</p>
                 <p>11:00～21:00(L.O.20:00)</p>
@@ -77,11 +77,11 @@ export default function Footer() {
             </div>
           </div>
 
-          <div className="space-y-2 sm:space-y-3">
-            <h3 className="text-xs font-semibold uppercase tracking-wider text-foreground sm:text-sm">
+          <div className="space-y-1 md:space-y-3">
+            <h3 className="text-[8px] font-semibold uppercase tracking-wider text-foreground md:text-sm">
               お問い合わせ
             </h3>
-            <div className="space-y-1 text-xs leading-relaxed text-muted-foreground sm:text-sm">
+            <div className="space-y-0.5 text-[8px] leading-relaxed text-muted-foreground md:text-sm">
               <a
                 href="tel:070-9157-3772"
                 className={cn(
@@ -94,7 +94,7 @@ export default function Footer() {
             </div>
           </div>
 
-          <div className="sm:col-span-2 md:col-span-1">
+          <div>
             <Card className="overflow-hidden border-border/60 transition-all duration-500">
               <CardHeader className="p-0">
                 <AspectRatio ratio={4 / 3} className="overflow-hidden">
