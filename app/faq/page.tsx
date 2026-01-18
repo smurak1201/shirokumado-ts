@@ -117,7 +117,7 @@ export default function FAQPage() {
           {faqs.map((faq) => (
             <Card
               key={faq.id}
-              className="transition-all duration-300 hover:shadow-md hover:border-primary/20"
+              className="border-border/60 transition-all duration-300 hover:shadow-md hover:border-primary/20"
             >
               <CardHeader className="pb-3">
                 <CardTitle className="text-base font-semibold text-foreground md:text-lg">
