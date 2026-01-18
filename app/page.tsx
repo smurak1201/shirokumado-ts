@@ -39,8 +39,8 @@ export default async function Home() {
           className="object-cover"
           sizes="100vw"
         />
-        {/* グラデーションオーバーレイ */}
-        <div className="absolute inset-0 bg-linear-to-b from-background/50 via-background/20 to-background/80" />
+        {/* グラデーションオーバーレイ - 軽減 */}
+        <div className="absolute inset-0 bg-linear-to-b from-background/20 via-transparent to-background/40" />
       </section>
 
       {/* メインコンテンツ */}
