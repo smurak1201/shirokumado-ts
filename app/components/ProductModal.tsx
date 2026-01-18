@@ -68,7 +68,7 @@ export default function ProductModal({
             <Card className="border-0 shadow-sm">
               <CardContent className="p-4 md:p-6">
                 <DialogHeader className="space-y-3 mb-0">
-                  <DialogTitle className="whitespace-pre-wrap text-center text-xl font-bold leading-tight text-foreground md:text-2xl lg:text-3xl">
+                  <DialogTitle className="whitespace-pre-wrap text-center text-xl font-normal tracking-wide leading-tight text-muted-foreground md:text-2xl lg:text-3xl">
                     {product.name}
                   </DialogTitle>
                   {product.description && (
@@ -87,8 +87,8 @@ export default function ProductModal({
                   <div className="flex flex-wrap items-center justify-center gap-3 md:gap-6">
                     {product.priceS && (
                       <div className="flex flex-col items-center gap-2">
-                        <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">S</span>
-                        <Badge variant="secondary" className="text-lg font-bold px-5 py-2.5 md:text-xl md:px-6 md:py-3">
+                        <span className="text-xs font-normal text-muted-foreground uppercase tracking-wider">S</span>
+                        <Badge variant="secondary" className="text-lg font-normal px-5 py-2.5 md:text-xl md:px-6 md:py-3">
                           {formatPrice(product.priceS)}
                         </Badge>
                       </div>
@@ -98,8 +98,8 @@ export default function ProductModal({
                     )}
                     {product.priceL && (
                       <div className="flex flex-col items-center gap-2">
-                        <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">L</span>
-                        <Badge variant="secondary" className="text-lg font-bold px-5 py-2.5 md:text-xl md:px-6 md:py-3">
+                        <span className="text-xs font-normal text-muted-foreground uppercase tracking-wider">L</span>
+                        <Badge variant="secondary" className="text-lg font-normal px-5 py-2.5 md:text-xl md:px-6 md:py-3">
                           {formatPrice(product.priceL)}
                         </Badge>
                       </div>
