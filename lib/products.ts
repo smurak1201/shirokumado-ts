@@ -1,4 +1,5 @@
 import { prisma, safePrismaOperation } from "@/lib/prisma";
+import { log } from "@/lib/logger";
 import { calculatePublishedStatus } from "@/lib/product-utils";
 import type { Category, Product } from "@/app/types";
 import { Prisma } from "@prisma/client";
@@ -148,7 +149,10 @@ export async function getPublishedProductsByCategory(): Promise<
 
     return result;
   } catch (error) {
-    console.error("Error fetching published products:", error);
+    log.error("公開商品の取得に失敗しました", {
+      context: "getPublishedProductsByCategory",
+      error,
+    });
     throw error;
   }
 }

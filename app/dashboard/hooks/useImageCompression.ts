@@ -1,4 +1,5 @@
 import { useState, useCallback } from "react";
+import { log } from "@/lib/logger";
 import { compressImage, isImageFile } from "@/lib/image-compression";
 
 /**
@@ -20,9 +21,9 @@ export function useImageCompression() {
       if (fileSizeMB > 10) {
         const proceed = confirm(
           `選択された画像は${fileSizeMB.toFixed(2)}MBです。\n` +
-            `推奨サイズは10MB以下です。\n` +
-            `処理に時間がかかるか、失敗する可能性があります。\n\n` +
-            `続行しますか？`
+          `推奨サイズは10MB以下です。\n` +
+          `処理に時間がかかるか、失敗する可能性があります。\n\n` +
+          `続行しますか？`
         );
         if (!proceed) {
           return null;
@@ -37,9 +38,13 @@ export function useImageCompression() {
         });
         const originalSizeMB = (file.size / 1024 / 1024).toFixed(2);
         const compressedSizeMB = (processedFile.size / 1024 / 1024).toFixed(2);
-        console.log(
-          `画像を圧縮しました: ${originalSizeMB}MB → ${compressedSizeMB}MB`
-        );
+        log.debug("画像を圧縮しました", {
+          context: "useImageCompression.compressImageFile",
+          metadata: {
+            originalSizeMB,
+            compressedSizeMB,
+          },
+        });
 
         if (processedFile.size > config.imageConfig.MAX_FILE_SIZE_BYTES) {
           alert(
@@ -50,7 +55,10 @@ export function useImageCompression() {
 
         return processedFile;
       } catch (error) {
-        console.error("画像の圧縮に失敗しました:", error);
+        log.error("画像の圧縮に失敗しました", {
+          context: "useImageCompression.compressImageFile",
+          error,
+        });
         const errorMessage =
           error instanceof Error ? error.message : "不明なエラー";
         alert(

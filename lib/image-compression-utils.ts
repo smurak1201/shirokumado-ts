@@ -4,6 +4,8 @@
  * 画像圧縮処理で使用する共通のユーティリティ関数を提供します。
  */
 
+import { log } from './logger';
+
 /**
  * ファイルサイズをMB単位で取得します
  */
@@ -77,7 +79,10 @@ export function supportsWebP(): boolean {
     const dataUrl = canvas.toDataURL('image/webp');
     return dataUrl.startsWith('data:image/webp');
   } catch (error) {
-    console.warn('WebP形式のサポート確認に失敗しました:', error);
+    log.warn('WebP形式のサポート確認に失敗しました', {
+      context: 'supportsWebP',
+      error,
+    });
     return false;
   }
 }

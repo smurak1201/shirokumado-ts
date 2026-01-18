@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { log } from "@/lib/logger";
 import DashboardForm from "./DashboardForm";
 import ProductList from "./ProductList";
 import type { Category, Product } from "../types";
@@ -34,7 +35,10 @@ export default function DashboardContent({
       const data = await response.json();
       setProducts(data.products || []);
     } catch (error) {
-      console.error("商品一覧の更新に失敗しました:", error);
+      log.error("商品一覧の更新に失敗しました", {
+        context: "DashboardContent.refreshProducts",
+        error,
+      });
     }
   };
 

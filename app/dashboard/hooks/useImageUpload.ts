@@ -1,4 +1,5 @@
 import { useCallback, useState } from "react";
+import { log } from "@/lib/logger";
 import { useImageCompression } from "./useImageCompression";
 
 /**
@@ -66,7 +67,10 @@ export function useImageUpload() {
         const uploadData = await uploadResponse.json();
         return uploadData.url;
       } catch (error) {
-        console.error("画像アップロードエラー:", error);
+        log.error("画像のアップロードに失敗しました", {
+          context: "useImageUpload.uploadImage",
+          error,
+        });
         throw error;
       } finally {
         setUploading(false);

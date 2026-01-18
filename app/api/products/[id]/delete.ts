@@ -1,6 +1,7 @@
 import { apiSuccess } from '@/lib/api-helpers';
 import { prisma, safePrismaOperation } from '@/lib/prisma';
 import { ValidationError, NotFoundError } from '@/lib/errors';
+import { log } from '@/lib/logger';
 import { NextRequest } from 'next/server';
 import { deleteFile } from '@/lib/blob';
 
@@ -33,7 +34,10 @@ export async function deleteProduct(
 
   if (existingProduct.imageUrl) {
     await deleteFile(existingProduct.imageUrl);
-    console.log(`商品削除時に画像を削除しました: ${existingProduct.imageUrl}`);
+    log.info("商品削除時に画像を削除しました", {
+      context: `DELETE /api/products/${id}`,
+      metadata: { imageUrl: existingProduct.imageUrl },
+    });
   }
 
   await safePrismaOperation(

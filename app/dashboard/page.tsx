@@ -1,4 +1,5 @@
 import { prisma, safePrismaOperation } from "@/lib/prisma";
+import { log } from "@/lib/logger";
 import DashboardContent from "./components/DashboardContent";
 import type { Category, Product } from "./types";
 
@@ -64,7 +65,10 @@ async function _getDashboardData(): Promise<{
       products,
     };
   } catch (error) {
-    console.error("Error fetching dashboard data:", error);
+    log.error("ダッシュボードデータの取得に失敗しました", {
+      context: "getDashboardData",
+      error,
+    });
     throw error;
   }
 }

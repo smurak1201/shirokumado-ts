@@ -1,3 +1,4 @@
+import { log } from "@/lib/logger";
 import type { ProductFormData } from "../hooks/useProductForm";
 import { prepareProductSubmitData, handleProductSubmitError } from "./productFormSubmit";
 
@@ -60,7 +61,10 @@ export async function handleProductCreateSubmit({
       onClose();
     }
   } catch (error) {
-    console.error("登録エラー:", error);
+    log.error("商品の登録に失敗しました", {
+      context: "handleProductCreateSubmit",
+      error,
+    });
     alert(handleProductSubmitError(error));
   } finally {
     setSubmitting(false);

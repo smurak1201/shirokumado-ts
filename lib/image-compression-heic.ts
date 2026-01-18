@@ -4,6 +4,8 @@
  * HEIC形式（iPhoneのデフォルト形式）をJPEGに変換する機能を提供します。
  */
 
+import { log } from './logger';
+
 // heic2anyを動的インポート（コード分割のため）
 // @ts-ignore - heic2anyには型定義がないため
 let heic2any: any = null;
@@ -18,7 +20,10 @@ async function _getHeic2Any() {
       const heic2anyModule = await import('heic2any');
       heic2any = heic2anyModule.default || heic2anyModule;
     } catch (error) {
-      console.warn('heic2anyの読み込みに失敗しました:', error);
+      log.warn('heic2anyの読み込みに失敗しました', {
+        context: '_getHeic2Any',
+        error,
+      });
     }
   }
   return heic2any;
@@ -32,8 +37,8 @@ async function _getHeic2Any() {
 export function isHeicFile(file: File): boolean {
   const heicTypes = ['image/heic', 'image/heif', 'image/heic-sequence', 'image/heif-sequence'];
   return heicTypes.includes(file.type.toLowerCase()) ||
-          /\.heic$/i.test(file.name) ||
-          /\.heif$/i.test(file.name);
+    /\.heic$/i.test(file.name) ||
+    /\.heif$/i.test(file.name);
 }
 
 /**

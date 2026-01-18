@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useMemo, useCallback } from "react";
+import { log } from "@/lib/logger";
 import ProductEditForm from "./ProductEditForm";
 import ProductListTabs from "./ProductListTabs";
 import ProductListContent from "./ProductListContent";
@@ -75,7 +76,11 @@ export default function ProductList({
         alert("商品を削除しました");
         await refreshProducts();
       } catch (error) {
-        console.error("削除エラー:", error);
+        log.error("商品の削除に失敗しました", {
+          context: "ProductList.handleDelete",
+          error,
+          metadata: { productId },
+        });
         alert(
           error instanceof Error ? error.message : "商品の削除に失敗しました"
         );

@@ -1,6 +1,7 @@
 import { apiSuccess } from '@/lib/api-helpers';
 import { prisma, safePrismaOperation } from '@/lib/prisma';
 import { NotFoundError } from '@/lib/errors';
+import { log } from '@/lib/logger';
 import { NextRequest } from 'next/server';
 import { calculatePublishedStatus } from '@/lib/product-utils';
 import { deleteFile } from '@/lib/blob';
@@ -75,7 +76,10 @@ export async function putProduct(
 
   if (oldImageUrl && newImageUrl && oldImageUrl !== newImageUrl) {
     await deleteFile(oldImageUrl);
-    console.log(`元の画像を削除しました: ${oldImageUrl}`);
+    log.info("元の画像を削除しました", {
+      context: `PUT /api/products/${id}`,
+      metadata: { oldImageUrl },
+    });
   }
 
   const updateData: ProductUpdateData = {

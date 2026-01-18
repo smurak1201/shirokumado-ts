@@ -4,6 +4,7 @@
  * createImageBitmapを使用して画像を読み込む機能を提供します。
  */
 
+import { log } from './logger';
 import {
   calculateResizedDimensions,
   drawImageToCanvas,
@@ -49,12 +50,15 @@ export function loadImageWithImageBitmap(
       }
     })
     .catch((error) => {
-      console.error('createImageBitmapエラー:', {
+      log.error('createImageBitmapエラー', {
+        context: 'loadImageWithImageBitmap',
         error,
-        fileName: file.name,
-        fileSize: file.size,
-        fileSizeMB: getFileSizeMB(file.size).toFixed(2),
-        fileType: file.type,
+        metadata: {
+          fileName: file.name,
+          fileSize: file.size,
+          fileSizeMB: getFileSizeMB(file.size).toFixed(2),
+          fileType: file.type,
+        },
       });
       return loadImageWithBlobURL(file, maxWidth, maxHeight, outputFormat, quality, maxSizeMB, outputExtension);
     });

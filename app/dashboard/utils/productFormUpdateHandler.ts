@@ -1,3 +1,4 @@
+import { log } from "@/lib/logger";
 import type { ProductFormData } from "../hooks/useProductForm";
 import { prepareProductSubmitData, handleProductSubmitError } from "./productFormSubmit";
 
@@ -67,7 +68,11 @@ export async function handleProductUpdateSubmit({
     await onUpdated();
     onClose();
   } catch (error) {
-    console.error("更新エラー:", error);
+    log.error("商品の更新に失敗しました", {
+      context: "handleProductUpdateSubmit",
+      error,
+      metadata: { productId },
+    });
     alert(handleProductSubmitError(error));
   } finally {
     setSubmitting(false);

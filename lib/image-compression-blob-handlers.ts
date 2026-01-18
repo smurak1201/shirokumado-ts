@@ -4,6 +4,7 @@
  * Blob URLを使用した画像読み込み時のイベント処理を提供します。
  */
 
+import { log } from './logger';
 import {
   calculateResizedDimensions,
   drawImageToCanvas,
@@ -44,11 +45,23 @@ export function handleImageLoad(
       return;
     }
 
-    console.log(`画像読み込み成功: ${img.width}x${img.height}, ファイルサイズ: ${getFileSizeMB(file.size).toFixed(2)}MB`);
+    log.debug('画像読み込み成功', {
+      context: 'handleImageLoad',
+      metadata: {
+        dimensions: `${img.width}x${img.height}`,
+        fileSizeMB: getFileSizeMB(file.size).toFixed(2),
+      },
+    });
 
     const { width, height } = calculateResizedDimensions(img.width, img.height, maxWidth, maxHeight);
     if (width !== img.width || height !== img.height) {
-      console.log(`リサイズ: ${width}x${height}`);
+      log.debug('画像をリサイズ', {
+        context: 'handleImageLoad',
+        metadata: {
+          originalDimensions: `${img.width}x${img.height}`,
+          resizedDimensions: `${width}x${height}`,
+        },
+      });
     }
 
     const canvas = drawImageToCanvas(img, width, height);

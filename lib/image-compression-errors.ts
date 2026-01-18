@@ -4,6 +4,7 @@
  * 画像読み込み時のエラーメッセージ生成を提供します。
  */
 
+import { log } from './logger';
 import { getFileSizeMB } from './image-compression-utils';
 
 const RECOMMENDED_FILE_SIZE_MB = 10;
@@ -33,13 +34,15 @@ export function logImageLoadError(
   event: Event | null
 ): void {
   const fileSizeMB = getFileSizeMB(file.size);
-  console.error('画像読み込みエラー:', {
-    fileType: file.type,
-    fileName: file.name,
-    fileSize: file.size,
-    fileSizeMB: fileSizeMB.toFixed(2),
-    blobUrl: blobUrl ? '作成済み' : '作成失敗',
-    event: event,
-    error: event instanceof ErrorEvent ? event.error : null,
+  log.error('画像読み込みエラー', {
+    context: 'logImageLoadError',
+    error: event instanceof ErrorEvent ? event.error : new Error('画像読み込みに失敗しました'),
+    metadata: {
+      fileType: file.type,
+      fileName: file.name,
+      fileSize: file.size,
+      fileSizeMB: fileSizeMB.toFixed(2),
+      blobUrl: blobUrl ? '作成済み' : '作成失敗',
+    },
   });
 }
