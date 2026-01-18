@@ -24,12 +24,16 @@
     "@dnd-kit/utilities": "^3.2.2",
     "@neondatabase/serverless": "^0.10.0",
     "@prisma/adapter-neon": "^7.2.0",
+    "@radix-ui/react-slot": "^1.2.4",
     "@vercel/analytics": "^1.6.1",
     "@vercel/blob": "^2.0.0",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
     "heic2any": "^0.0.4",
     "next": "16.1.1",
     "react": "19.2.3",
     "react-dom": "19.2.3",
+    "tailwind-merge": "^3.4.0",
     "ws": "^8.18.0"
   },
   "devDependencies": {
