@@ -1,17 +1,17 @@
-import { Card as ShadCard, CardContent as ShadCardContent, CardHeader as ShadCardHeader } from "./card";
+import { Card, CardContent, CardHeader } from "./card";
 import type { ComponentPropsWithoutRef } from "react";
 import { cn } from "@/lib/utils";
 
-export type ModalCardProps = ComponentPropsWithoutRef<typeof ShadCard>;
-export type ModalCardContentProps = ComponentPropsWithoutRef<typeof ShadCardContent>;
-export type ModalCardHeaderProps = ComponentPropsWithoutRef<typeof ShadCardHeader>;
+export type ModalCardProps = ComponentPropsWithoutRef<typeof Card>;
+export type ModalCardContentProps = ComponentPropsWithoutRef<typeof CardContent>;
+export type ModalCardHeaderProps = ComponentPropsWithoutRef<typeof CardHeader>;
 
 /**
  * モーダル内の画像表示用Cardコンポーネント
  */
 export function ModalImageCard({ className, ...props }: ModalCardProps) {
   return (
-    <ShadCard className={cn("overflow-hidden border-0 shadow-lg", className)} {...props} />
+    <Card className={cn("overflow-hidden border-0 shadow-lg", className)} {...props} />
   );
 }
 
@@ -20,7 +20,7 @@ export function ModalImageCard({ className, ...props }: ModalCardProps) {
  */
 export function ModalContentCard({ className, ...props }: ModalCardProps) {
   return (
-    <ShadCard className={cn("border-0 shadow-sm", className)} {...props} />
+    <Card className={cn("border-0 shadow-sm", className)} {...props} />
   );
 }
 
@@ -29,7 +29,7 @@ export function ModalContentCard({ className, ...props }: ModalCardProps) {
  */
 export function ModalPriceCard({ className, ...props }: ModalCardProps) {
   return (
-    <ShadCard className={cn("border-0 shadow-sm bg-muted/30", className)} {...props} />
+    <Card className={cn("border-0 shadow-sm bg-muted/30", className)} {...props} />
   );
 }
 
@@ -38,7 +38,7 @@ export function ModalPriceCard({ className, ...props }: ModalCardProps) {
  */
 export function ModalCardContent({ className, ...props }: ModalCardContentProps) {
   return (
-    <ShadCardContent className={cn("p-4 md:p-6", className)} {...props} />
+    <CardContent className={cn("p-4 md:p-6", className)} {...props} />
   );
 }
 
@@ -47,6 +47,6 @@ export function ModalCardContent({ className, ...props }: ModalCardContentProps)
  */
 export function ModalCardHeader({ className, ...props }: ModalCardHeaderProps) {
   return (
-    <ShadCardHeader className={cn("p-0", className)} {...props} />
+    <CardHeader className={cn("p-0", className)} {...props} />
   );
 }

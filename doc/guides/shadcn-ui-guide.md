@@ -190,15 +190,15 @@ shadcn/ui のコンポーネントをラップして、アプリ固有のデフ�
 **基本的なパターン**:
 
 ```typescript
-import { Card as ShadCard } from "./card";
+import { Card } from "./card";
 import type { ComponentPropsWithoutRef } from "react";
 import { cn } from "@/lib/utils";
 
-export type ProductCardProps = ComponentPropsWithoutRef<typeof ShadCard>;
+export type ProductCardProps = ComponentPropsWithoutRef<typeof Card>;
 
 export function ProductCard({ className, ...props }: ProductCardProps) {
   return (
-    <ShadCard
+    <Card
       className={cn(
         "group relative w-full cursor-pointer overflow-hidden",
         "hover:shadow-2xl hover:shadow-primary/10",
@@ -212,7 +212,7 @@ export function ProductCard({ className, ...props }: ProductCardProps) {
 
 **構文の説明**:
 
-- **`ComponentPropsWithoutRef<typeof ShadCard>`**: React の型ユーティリティ。コンポーネントの props の型から `ref` を除いた型を取得します。これにより、型を崩さずにラッパーコンポーネントを作成できます。
+- **`ComponentPropsWithoutRef<typeof Card>`**: React の型ユーティリティ。コンポーネントの props の型から `ref` を除いた型を取得します。これにより、型を崩さずにラッパーコンポーネントを作成できます。
 - **分割代入 `{ className, ...props }`**: props から `className` を抽出し、残りの props を `props` オブジェクトにまとめます。これにより、`className` を個別に処理しつつ、他の props をそのまま渡せます。
 - **スプレッド演算子 `{...props}`**: `props` オブジェクトを展開して、すべての props を子コンポーネントに渡します。
 
@@ -224,7 +224,7 @@ export function ProductCard({ className, ...props }: ProductCardProps) {
 
 **ポイント**:
 
-- `ComponentPropsWithoutRef<typeof ShadCard>` で型を定義
+- `ComponentPropsWithoutRef<typeof Card>` で型を定義
 - `cn` 関数を使用してクラス名をマージ
 - `className` を props として受け取り、デフォルトスタイルとマージ
 - 他の props は `...props` でそのまま渡す

@@ -1,8 +1,8 @@
-import { Badge as ShadBadge } from "./badge";
+import { Badge } from "./badge";
 import type { ComponentPropsWithoutRef } from "react";
 import { cn } from "@/lib/utils";
 
-export type PriceBadgeProps = ComponentPropsWithoutRef<typeof ShadBadge>;
+export type PriceBadgeProps = ComponentPropsWithoutRef<typeof Badge>;
 
 /**
  * 価格表示用のBadgeコンポーネント
@@ -12,7 +12,7 @@ export type PriceBadgeProps = ComponentPropsWithoutRef<typeof ShadBadge>;
  */
 export function PriceBadge({ className, ...props }: PriceBadgeProps) {
   return (
-    <ShadBadge
+    <Badge
       variant="secondary"
       className={cn("text-lg font-normal px-5 py-2.5 md:text-xl md:px-6 md:py-3", className)}
       {...props}

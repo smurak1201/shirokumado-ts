@@ -108,15 +108,15 @@
 
 ```tsx
 // app/components/ui/card-product.tsx
-import { Card as ShadCard } from "./card";
+import { Card } from "./card";
 import type { ComponentPropsWithoutRef } from "react";
 import { cn } from "@/lib/utils";
 
-export type ProductCardProps = ComponentPropsWithoutRef<typeof ShadCard>;
+export type ProductCardProps = ComponentPropsWithoutRef<typeof Card>;
 
 export function ProductCard({ className, ...props }: ProductCardProps) {
   return (
-    <ShadCard
+    <Card
       className={cn(
         "group relative w-full cursor-pointer overflow-hidden transition-all duration-500",
         "hover:shadow-2xl hover:shadow-primary/10 hover:-translate-y-2",
@@ -227,7 +227,7 @@ shadcn/ui の設計思想に従い、以下の優先順位で判断します：
 // app/components/ui/card-product.tsx
 export function ProductCard({ className, ...props }: ProductCardProps) {
   return (
-    <ShadCard
+    <Card
       className={cn(
         "group relative w-full cursor-pointer overflow-hidden transition-all duration-500",
         "hover:shadow-2xl hover:shadow-primary/10 hover:-translate-y-2",
@@ -254,15 +254,15 @@ export function ProductCard({ className, ...props }: ProductCardProps) {
 
 ```tsx
 // app/components/ui/card-faq.tsx
-import { Card as ShadCard } from "./card";
+import { Card } from "./card";
 import type { ComponentPropsWithoutRef } from "react";
 import { cn } from "@/lib/utils";
 
-export type FAQCardProps = ComponentPropsWithoutRef<typeof ShadCard>;
+export type FAQCardProps = ComponentPropsWithoutRef<typeof Card>;
 
 export function FAQCard({ className, ...props }: FAQCardProps) {
   return (
-    <ShadCard
+    <Card
       className={cn(
         "group relative overflow-hidden border-border/60 transition-all duration-300",
         "hover:shadow-lg hover:shadow-primary/5 hover:-translate-y-1 hover:border-primary/30",

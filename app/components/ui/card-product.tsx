@@ -1,10 +1,10 @@
-import { Card as ShadCard, CardContent as ShadCardContent, CardHeader as ShadCardHeader } from "./card";
+import { Card, CardContent, CardHeader } from "./card";
 import type { ComponentPropsWithoutRef } from "react";
 import { cn } from "@/lib/utils";
 
-export type ProductCardProps = ComponentPropsWithoutRef<typeof ShadCard>;
-export type ProductCardContentProps = ComponentPropsWithoutRef<typeof ShadCardContent>;
-export type ProductCardHeaderProps = ComponentPropsWithoutRef<typeof ShadCardHeader>;
+export type ProductCardProps = ComponentPropsWithoutRef<typeof Card>;
+export type ProductCardContentProps = ComponentPropsWithoutRef<typeof CardContent>;
+export type ProductCardHeaderProps = ComponentPropsWithoutRef<typeof CardHeader>;
 
 /**
  * 商品タイル用のCardコンポーネント
@@ -14,7 +14,7 @@ export type ProductCardHeaderProps = ComponentPropsWithoutRef<typeof ShadCardHea
  */
 export function ProductCard({ className, ...props }: ProductCardProps) {
   return (
-    <ShadCard
+    <Card
       className={cn(
         "group relative w-full cursor-pointer overflow-hidden transition-all duration-500",
         "hover:shadow-2xl hover:shadow-primary/10 hover:-translate-y-2",
@@ -32,7 +32,7 @@ export function ProductCard({ className, ...props }: ProductCardProps) {
  */
 export function ProductCardContent({ className, ...props }: ProductCardContentProps) {
   return (
-    <ShadCardContent
+    <CardContent
       className={cn(
         "flex min-h-12 items-center justify-center p-1.5 transition-colors duration-300 group-hover:bg-muted/30 md:min-h-20 md:p-6",
         className
@@ -47,6 +47,6 @@ export function ProductCardContent({ className, ...props }: ProductCardContentPr
  */
 export function ProductCardHeader({ className, ...props }: ProductCardHeaderProps) {
   return (
-    <ShadCardHeader className={cn("p-0", className)} {...props} />
+    <CardHeader className={cn("p-0", className)} {...props} />
   );
 }
