@@ -309,7 +309,6 @@ app/dashboard/
 
 **主要なフック**:
 
-- **[`useModal.ts`](../app/hooks/useModal.ts)**: モーダルの開閉状態と ESC キー処理を管理
 - **[`useProductModal.ts`](../app/hooks/useProductModal.ts)**: 商品モーダルの状態管理
 
 #### `app/utils/` - ユーティリティ関数
@@ -328,13 +327,10 @@ app/dashboard/
 
 - **[`Header.tsx`](../app/components/Header.tsx)**: ヘッダーコンポーネント（ロゴ、Instagram リンク、ナビゲーション）
 - **[`Footer.tsx`](../app/components/Footer.tsx)**: フッターコンポーネント（店舗情報、地図、連絡先）
+- **[`ProductCategoryTabs.tsx`](../app/components/ProductCategoryTabs.tsx)**: カテゴリーをTabsで切り替えるコンポーネント（Client Component）
 - **[`ProductGrid.tsx`](../app/components/ProductGrid.tsx)**: カテゴリーごとの商品グリッド表示（Client Component）
 - **[`ProductTile.tsx`](../app/components/ProductTile.tsx)**: 商品タイルコンポーネント（個別商品の表示）
 - **[`ProductModal.tsx`](../app/components/ProductModal.tsx)**: 商品詳細モーダルコンポーネント
-
-**アイコンコンポーネント** (`components/icons/`):
-
-- **[`CloseIcon.tsx`](../app/components/icons/CloseIcon.tsx)**: 閉じるアイコンコンポーネント
 
 #### [`app/layout.tsx`](../app/layout.tsx) - ルートレイアウト
 

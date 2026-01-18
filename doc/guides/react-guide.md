@@ -13,7 +13,6 @@
   - [useMemo](#usememo)
   - [useRef](#useref)
 - [カスタムフック](#カスタムフック)
-  - [useModal](#usemodal)
   - [useProductModal](#useproductmodal)
   - [useTabState](#usetabstate)
   - [useCategoryTabState](#usecategorytabstate)
@@ -62,7 +61,7 @@ React は、Facebook（現 Meta）が開発した、ユーザーインターフ�
 
 - Server Components と Client Components を適切に使い分け
 - Client Components（`'use client'`）でインタラクティブな機能（モーダル、商品選択など）を実装
-- カスタムフック（`useModal`, `useProductModal`, `useTabState`, `useProductForm`, `useProductReorder`）で状態管理ロジックを分離
+- カスタムフック（`useProductModal`, `useTabState`, `useProductForm`, `useProductReorder`）で状態管理ロジックを分離
 - コンポーネントの再利用性を重視し、`Header`, `Footer`, `ProductGrid` などを共通コンポーネントとして実装
 
 ## Next.js との統合
@@ -86,13 +85,13 @@ React Hooks は、関数コンポーネントで状態管理や副作用を扱�
 
 - **フロントエンド（Client Components）**: React Hooks を使用して状態管理や副作用を実装
   - [`app/components/ProductGrid.tsx`](../../app/components/ProductGrid.tsx): `useProductModal` カスタムフックを使用
-  - [`app/components/ProductModal.tsx`](../../app/components/ProductModal.tsx): `useModal` カスタムフックを使用
+  - [`app/components/ProductModal.tsx`](../../app/components/ProductModal.tsx): shadcn/ui の Dialog コンポーネントを使用
   - [`app/dashboard/components/DashboardContent.tsx`](../../app/dashboard/components/DashboardContent.tsx): `useState` を使用
   - [`app/dashboard/components/DashboardForm.tsx`](../../app/dashboard/components/DashboardForm.tsx): `useProductForm` カスタムフックを使用
   - [`app/dashboard/components/ProductEditForm.tsx`](../../app/dashboard/components/ProductEditForm.tsx): `useProductForm` カスタムフックを使用
   - [`app/dashboard/hooks/useTabState.ts`](../../app/dashboard/hooks/useTabState.ts): `useState`、`useEffect`、`localStorage` を使用
   - [`app/dashboard/hooks/useProductForm.ts`](../../app/dashboard/hooks/useProductForm.ts): `useState`、`useEffect`、`useCallback` を使用
-  - [`app/hooks/useModal.ts`](../../app/hooks/useModal.ts): `useEffect`、`useRef` を使用
+  - [`app/hooks/useProductModal.ts`](../../app/hooks/useProductModal.ts): `useState` を使用
   - [`app/hooks/useProductModal.ts`](../../app/hooks/useProductModal.ts): `useState`、`useRef` を使用
 - **バックエンド（Server Components、API Routes）**: React Hooks は使用していない。サーバーサイドで実行されるため、状態管理は不要
 
@@ -168,8 +167,8 @@ React では、副作用を `useEffect` Hook を使用して処理します。`u
 
 **このアプリでの副作用の使用例**:
 
-- **イベントリスナーの登録**: `useModal` で ESC キーのイベントリスナーを登録
-- **DOM 操作**: `useModal` で背景のスクロールを無効化
+- **イベントリスナーの登録**: shadcn/ui の Dialog コンポーネントが自動的に ESC キーのイベントリスナーを登録
+- **DOM 操作**: shadcn/ui の Dialog コンポーネントが自動的に背景のスクロールを無効化
 - **localStorage への保存**: `useTabState` でタブの状態を保存
 - **API 呼び出し**: `useProductReorder` で商品の順序を更新
 
@@ -187,9 +186,9 @@ React では、副作用を `useEffect` Hook を使用して処理します。`u
 }, [dependencies]);
 ```
 
-1. **[`app/hooks/useModal.ts`](../../app/hooks/useModal.ts) (`useModal`フック)** - ESC キー処理と背景スクロール無効化
+1. **[`app/components/ProductModal.tsx`](../../app/components/ProductModal.tsx) (`ProductModal`コンポーネント)** - shadcn/ui の Dialog コンポーネントを使用
 
-`useModal`フックでは、`useEffect`を使用して ESC キーのイベントリスナーを登録し、モーダル表示時の背景スクロールを無効化しています。詳細な実装については、[useModal](#usemodal)セクションを参照してください。
+`ProductModal`コンポーネントでは、shadcn/ui の Dialog コンポーネントを使用しており、ESC キー処理と背景スクロール無効化が自動的に行われます。詳細については、[shadcn/ui ガイド](./shadcn-ui-guide.md) を参照してください。
 
 2. **[`app/dashboard/hooks/useTabState.ts`](../../app/dashboard/hooks/useTabState.ts) (`useTabState`フック内の`useEffect`)** - localStorage への保存
 
@@ -485,63 +484,13 @@ function ParentComponent() {
 
 カスタムフックは、状態管理ロジックを再利用可能な関数に抽出するための仕組みです。このアプリでは、複数のカスタムフックを実装し、コンポーネントのロジックを分離しています。
 
-### useModal
-
-**説明**: モーダルの開閉状態と ESC キー処理を管理するカスタムフックです。
+**注意**: このアプリでは、モーダルコンポーネントに shadcn/ui の Dialog コンポーネントを使用しています。Dialog コンポーネントは、ESC キー処理と背景スクロール無効化を自動的に行うため、専用のカスタムフックは不要です。
 
 **このアプリでの使用箇所**:
 
-- [`app/hooks/useModal.ts`](../../app/hooks/useModal.ts): フックの実装
-- [`app/components/ProductModal.tsx`](../../app/components/ProductModal.tsx): 商品モーダルで使用
+- [`app/components/ProductModal.tsx`](../../app/components/ProductModal.tsx): shadcn/ui の Dialog コンポーネントを使用
 
-**実装コード**:
-
-[`app/hooks/useModal.ts`](../../app/hooks/useModal.ts) (`useModal`フック)
-
-```typescript
-export function useModal(isOpen: boolean, onClose: () => void) {
-  // onCloseの最新の参照を保持するref
-  // これにより、onCloseが変更されてもuseEffectを再実行せずに最新の関数を呼び出せる
-  const onCloseRef = useRef(onClose);
-
-  // onCloseが変更されたらrefを更新
-  useEffect(() => {
-    onCloseRef.current = onClose;
-  }, [onClose]);
-
-  useEffect(() => {
-    /**
-     * ESCキーでモーダルを閉じる処理
-     */
-    const handleEscape = (e: KeyboardEvent) => {
-      if (e.key === "Escape") {
-        // refから最新のonCloseを呼び出す
-        onCloseRef.current();
-      }
-    };
-
-    if (isOpen) {
-      // ESCキーのイベントリスナーを追加
-      document.addEventListener("keydown", handleEscape);
-      // モーダルが開いている時は背景のスクロールを無効化
-      document.body.style.overflow = "hidden";
-    }
-
-    return () => {
-      // クリーンアップ: イベントリスナーを削除し、スクロールを有効化
-      document.removeEventListener("keydown", handleEscape);
-      document.body.style.overflow = "unset";
-    };
-  }, [isOpen]); // onCloseを依存配列から削除（refで最新の値を保持しているため）
-}
-```
-
-[`app/components/ProductModal.tsx`](../../app/components/ProductModal.tsx) (`ProductModal`コンポーネント)
-
-```typescript
-// ESCキー処理と背景スクロール無効化を管理
-useModal(isOpen, onClose);
-```
+**詳細**: shadcn/ui の使用方法については、[shadcn/ui ガイド](./shadcn-ui-guide.md) を参照してください。
 
 - ESC キーでモーダルを閉じる
 - モーダル表示時の背景スクロール無効化
@@ -1104,10 +1053,10 @@ export function useScrollPosition() {
 **フロントエンドコンポーネント**:
 
 ```
-  └── ProductGrid (Client Component)
-      ├── ProductTile (Client Component)
-      └── ProductModal (Client Component)
-          └── CloseIcon (Client Component)
+  └── ProductCategoryTabs (Client Component)
+      └── ProductGrid (Client Component)
+          ├── ProductTile (Client Component)
+          └── ProductModal (Client Component)
 ```
 
 └── DashboardContent (Client Component)
@@ -1168,46 +1117,35 @@ export default function ProductGrid({ category, products }: ProductGridProps) {
 2. **[`app/components/ProductModal.tsx`](../../app/components/ProductModal.tsx) (`ProductModal`コンポーネント)** - 商品モーダルコンポーネント
 
 ```typescript
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "./ui/dialog";
+import { ScrollArea } from "./ui/scroll-area";
+import { PriceBadge } from "./ui/badge-price";
+import { ModalImageCard, ModalContentCard, ModalPriceCard, ModalCardContent, ModalCardHeader } from "./ui/card-modal";
+
 export default function ProductModal({
   product,
   isOpen,
   onClose,
 }: ProductModalProps) {
-  // ESCキー処理と背景スクロール無効化を管理
-  useModal(isOpen, onClose);
-
-  if (!isOpen || !product) {
+  if (!product) {
     return null;
   }
 
   return (
-    <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-sm"
-      onClick={onClose}
-    >
-      <div
-        className="relative max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-lg bg-white shadow-2xl"
-        onClick={(e) => e.stopPropagation()}
-      >
-        {/* 閉じるボタン - スクロールしても右上に固定表示 */}
-        <div className="sticky top-0 right-0 z-10 flex justify-end p-4">
-          <button
-            onClick={onClose}
-            className="rounded-full bg-white/90 p-2 text-gray-600 transition-colors hover:bg-white hover:text-gray-800 shadow-md"
-            aria-label="閉じる"
-          >
-            <CloseIcon />
-          </button>
-        </div>
-
-        {/* 商品画像 */}
-        {product.imageUrl ? (
-          <div className="relative aspect-square w-full overflow-hidden bg-gray-50">
-            <Image
-              src={product.imageUrl}
-              alt={product.name}
-              fill
-              className="object-cover"
+    <Dialog open={isOpen} onOpenChange={onClose}>
+      <DialogContent className="max-h-[90vh] w-[calc(100vw-2rem)] max-w-2xl p-0 overflow-hidden">
+        <ScrollArea className="max-h-[90vh]">
+          <div className="flex flex-col gap-4 p-4 md:p-6 lg:p-8">
+            {/* 画像部分 */}
+            <ModalImageCard>
+              <ModalCardHeader>
+                <div className="relative h-[40vh] min-h-[200px] max-h-[450px] md:h-[45vh] md:max-h-[500px] overflow-hidden bg-muted">
+                  {product.imageUrl ? (
+                    <Image
+                      src={product.imageUrl}
+                      alt={product.name}
+                      fill
+                      className="object-contain"
               sizes="(max-width: 768px) 100vw, (max-width: 1024px) 90vw, 800px"
               priority
             />
@@ -1377,7 +1315,6 @@ function ProductTile({ product, onClick }: ProductTileProps) {
 
 1. **フロントエンド用フック** (`app/hooks/`)
 
-   - [`useModal.ts`](../../app/hooks/useModal.ts): モーダルの開閉状態と ESC キー処理を管理
    - [`useProductModal.ts`](../../app/hooks/useProductModal.ts): 商品モーダルの状態管理
 
 2. **ダッシュボード用フック** (`app/dashboard/hooks/`)
@@ -1403,7 +1340,7 @@ function ProductTile({ product, onClick }: ProductTileProps) {
 
 **原則**: 状態管理ロジックをカスタムフックに分離し、再利用性を向上
 
-**例**: `useModal`、`useProductModal`、`useTabState`、`useProductReorder`
+**例**: `useProductModal`、`useTabState`、`useProductReorder`
 
 ### 3. パフォーマンスの最適化
 
@@ -1438,7 +1375,7 @@ export default memo(ProductTile);
 
 **例**:
 
-- `useModal` で ESC キーのイベントリスナーを削除
+- shadcn/ui の Dialog コンポーネントが自動的に ESC キーのイベントリスナーを削除
 - `useProductModal` で `setTimeout` のタイマーをクリーンアップ
 - `ProductCategoryTabs` でスクロールイベントリスナーを削除
 

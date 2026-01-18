@@ -57,16 +57,15 @@ shirokumado-ts/
 │   │       └── productUtils.ts
 │   ├── types.ts          # フロントエンド共通型定義
 │   ├── hooks/            # カスタムフック
-│   │   ├── useModal.ts   # モーダル管理フック
 │   │   └── useProductModal.ts # 商品モーダル管理フック
 │   ├── utils/            # ユーティリティ関数
 │   │   └── format.ts     # フォーマット関数
 │   ├── components/       # フロントエンド共通コンポーネント
-│   │   ├── icons/        # アイコンコンポーネント
-│   │   │   └── CloseIcon.tsx # 閉じるアイコン
+│   │   ├── ui/          # shadcn/ui コンポーネントとラッパーコンポーネント
 │   │   ├── ErrorBoundary.tsx # エラーバウンダリーコンポーネント
 │   │   ├── Header.tsx    # ヘッダーコンポーネント
 │   │   ├── Footer.tsx    # フッターコンポーネント
+│   │   ├── ProductCategoryTabs.tsx # カテゴリーをTabsで切り替えるコンポーネント
 │   │   ├── ProductGrid.tsx # 商品グリッドコンポーネント
 │   │   ├── ProductTile.tsx # 商品タイルコンポーネント
 │   │   └── ProductModal.tsx # 商品詳細モーダルコンポーネント
@@ -179,7 +178,6 @@ app/api/
 
 ```
 app/hooks/
-├── [useModal.ts](../app/hooks/useModal.ts)          # モーダル管理フック（ESCキー、スクロール無効化）
 └── [useProductModal.ts](../app/hooks/useProductModal.ts)   # 商品モーダル管理フック（状態管理）
 ```
 
@@ -210,8 +208,6 @@ app/utils/
 
 ```
 app/components/
-├── icons/               # アイコンコンポーネント
-│   └── [CloseIcon.tsx](../app/components/icons/CloseIcon.tsx)   # 閉じるアイコン
 ├── ui/                  # shadcn/ui コンポーネントとラッパーコンポーネント
 │   ├── card.tsx        # shadcn/ui の Card コンポーネント
 │   ├── dialog.tsx      # shadcn/ui の Dialog コンポーネント
@@ -223,6 +219,7 @@ app/components/
 ├── [ErrorBoundary.tsx](../app/components/ErrorBoundary.tsx)     # エラーバウンダリーコンポーネント
 ├── [Header.tsx](../app/components/Header.tsx)           # ヘッダー（ロゴ、Instagramリンク、ナビゲーション）
 ├── [Footer.tsx](../app/components/Footer.tsx)           # フッター（店舗情報、地図、連絡先）
+├── [ProductCategoryTabs.tsx](../app/components/ProductCategoryTabs.tsx)  # カテゴリーをTabsで切り替えるコンポーネント（Client Component）
 ├── [ProductGrid.tsx](../app/components/ProductGrid.tsx)      # カテゴリーごとの商品グリッド表示（Client Component）
 ├── [ProductTile.tsx](../app/components/ProductTile.tsx)      # 商品タイルコンポーネント
 └── [ProductModal.tsx](../app/components/ProductModal.tsx)     # 商品詳細モーダルコンポーネント

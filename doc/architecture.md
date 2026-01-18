@@ -94,13 +94,12 @@ lib/
 HomePage (Server Component)
   ├── Header (Server Component)
   ├── HeroBanner (Server Component)
-  └── ProductGrid (Client Component)
-      ├── useProductModal (カスタムフック)
-      ├── ProductTile
-      └── ProductModal
-          ├── useModal (カスタムフック)
-          ├── CloseIcon
-          └── formatPrice (ユーティリティ関数)
+  └── ProductCategoryTabs (Client Component)
+      └── ProductGrid (Client Component)
+          ├── useProductModal (カスタムフック)
+          ├── ProductTile
+          └── ProductModal
+              └── formatPrice (ユーティリティ関数)
 
 FAQPage (Server Component)
   ├── Header (Server Component)
@@ -239,15 +238,6 @@ const {
 
 #### フロントエンド用フック
 
-##### `useModal`
-
-[`app/hooks/useModal.ts`](../app/hooks/useModal.ts) (`useModal`フック)
-
-```typescript
-// モーダルの開閉状態とESCキー処理を管理
-useModal(isOpen, onClose);
-```
-
 ##### `useProductModal`
 
 [`app/hooks/useProductModal.ts`](../app/hooks/useProductModal.ts) (`useProductModal`フック)
@@ -268,6 +258,9 @@ const { selectedProduct, isModalOpen, handleProductClick, handleCloseModal } =
 HomePage (Server Component)
   ↓ Prismaクエリ（データベースから直接取得）
   ↓ 公開商品のフィルタリング
+  ↓ propsで渡す
+ProductCategoryTabs (Client Component)
+  ↓ カテゴリーごとのタブ切り替え
   ↓ propsで渡す
 ProductGrid (Client Component)
   ↓ 状態管理（モーダル表示）

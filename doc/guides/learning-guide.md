@@ -19,6 +19,7 @@
   - [Next.js](#nextjs)
   - [Prisma](#prisma)
   - [Tailwind CSS](#tailwind-css)
+  - [shadcn/ui](#shadcnui)
 - [Java/PHP/Laravel 経験者向けの補足](#javaphplaravel経験者向けの補足)
 - [よくある質問](#よくある質問)
 
@@ -31,6 +32,7 @@
 - **Next.js**: React フレームワーク
 - **Prisma**: ORM（データベースアクセス）
 - **Tailwind CSS**: CSS フレームワーク
+- **shadcn/ui**: UI コンポーネントライブラリ
 
 Java、PHP、Laravel の経験がある方は、以下のような知識を活用できます：
 
@@ -303,6 +305,7 @@ Java、PHP、Laravel の経験がある方は、以下のような知識を活�
     - Server Component の例
     - データベースからのデータ取得
     - データの変換とフィルタリング
+    - `ProductCategoryTabs` コンポーネントへのデータ受け渡し
 
 14. [`app/faq/page.tsx`](../../app/faq/page.tsx)
     - シンプルな Server Component の例
@@ -318,14 +321,16 @@ Java、PHP、Laravel の経験がある方は、以下のような知識を活�
     - カスタムフックの使用
     - イベントハンドリング
 
-16. [`app/hooks/useModal.ts`](../../app/hooks/useModal.ts)
+16. [`app/hooks/useProductModal.ts`](../../app/hooks/useProductModal.ts)
 
     - カスタムフックの例
-    - useEffect、useRef の使い方
-
-17. [`app/hooks/useProductModal.ts`](../../app/hooks/useProductModal.ts)
-    - 状態管理のカスタムフック
     - useState の使い方
+    - 状態管理のパターン
+
+17. [`app/components/ProductCategoryTabs.tsx`](../../app/components/ProductCategoryTabs.tsx)
+    - カテゴリーをTabsで切り替えるコンポーネント
+    - useState の使い方
+    - shadcn/ui の Tabs コンポーネントの使用例
 
 ### 7. API Routes（バックエンド）
 
@@ -389,7 +394,7 @@ Java、PHP、Laravel の経験がある方は、以下のような知識を活�
 
 **良い例**:
 
-- 「商品一覧を表示する機能を理解したい」→ [`app/page.tsx`](../../app/page.tsx)を読む
+- 「商品一覧を表示する機能を理解したい」→ [`app/page.tsx`](../../app/page.tsx)、[`app/components/ProductCategoryTabs.tsx`](../../app/components/ProductCategoryTabs.tsx)、[`app/components/ProductGrid.tsx`](../../app/components/ProductGrid.tsx)を読む
 - 「商品を追加する機能を理解したい」→ [`app/dashboard/components/DashboardForm.tsx`](../../app/dashboard/components/DashboardForm.tsx)、[`app/dashboard/hooks/useProductForm.ts`](../../app/dashboard/hooks/useProductForm.ts)、[`app/dashboard/components/ProductFormFields.tsx`](../../app/dashboard/components/ProductFormFields.tsx)を読む
 - 「商品を編集する機能を理解したい」→ [`app/dashboard/components/ProductEditForm.tsx`](../../app/dashboard/components/ProductEditForm.tsx)、[`app/dashboard/hooks/useProductForm.ts`](../../app/dashboard/hooks/useProductForm.ts)を読む
 - 「商品一覧の検索機能を理解したい」→ [`app/dashboard/components/ProductList.tsx`](../../app/dashboard/components/ProductList.tsx)、[`app/dashboard/components/ProductSearchFilters.tsx`](../../app/dashboard/components/ProductSearchFilters.tsx)、[`app/dashboard/utils/productUtils.ts`](../../app/dashboard/utils/productUtils.ts)を読む
@@ -464,7 +469,7 @@ import { ValidationError } from "@/lib/errors";
 **例**:
 
 - [`app/api/products/route.ts`](../../app/api/products/route.ts)を読むときは、[`lib/prisma.ts`](../../lib/prisma.ts)と[`lib/errors.ts`](../../lib/errors.ts)も一緒に読む
-- [`app/components/ProductGrid.tsx`](../../app/components/ProductGrid.tsx)を読むときは、[`app/hooks/useProductModal.ts`](../../app/hooks/useProductModal.ts)も一緒に読む
+- [`app/components/ProductGrid.tsx`](../../app/components/ProductGrid.tsx)を読むときは、[`app/hooks/useProductModal.ts`](../../app/hooks/useProductModal.ts)と[`app/components/ProductCategoryTabs.tsx`](../../app/components/ProductCategoryTabs.tsx)も一緒に読む
 
 ### 9. パターンを探す
 
@@ -512,9 +517,10 @@ import { ValidationError } from "@/lib/errors";
 
 **詳細**: ジェネリクスの詳細な説明については、[TypeScript ガイド - ジェネリクス](./typescript-guide.md#ジェネリクス)を参照してください。
 
-4. **[`app/page.tsx`](../../app/page.tsx)（28-34 行目）**
+4. **[`lib/products.ts`](../../lib/products.ts)（20-26 行目、81-99 行目）**
    - 型ガードの使用例
    - `Prisma.Decimal`型の変換
+   - 型の絞り込み（type narrowing）
 
 **Java との比較**:
 
@@ -547,16 +553,17 @@ import { ValidationError } from "@/lib/errors";
    - カスタムフックの使用
    - `useCallback`の使用例
 
-3. **[`app/hooks/useModal.ts`](../../app/hooks/useModal.ts)**
+3. **[`app/hooks/useProductModal.ts`](../../app/hooks/useProductModal.ts)**
 
    - カスタムフックの実装
-   - `useEffect`、`useRef`の使い方
-   - クリーンアップ関数
-
-4. **[`app/hooks/useProductModal.ts`](../../app/hooks/useProductModal.ts)**
-
-   - 状態管理のカスタムフック
    - `useState`の使い方
+   - 状態管理のパターン
+
+4. **[`app/components/ProductCategoryTabs.tsx`](../../app/components/ProductCategoryTabs.tsx)**
+
+   - カテゴリーをTabsで切り替えるコンポーネント
+   - `useState`の使い方
+   - shadcn/ui の Tabs コンポーネントの使用例
 
 5. **[`app/dashboard/components/ProductList.tsx`](../../app/dashboard/components/ProductList.tsx)**
    - 複雑な状態管理
@@ -587,6 +594,7 @@ import { ValidationError } from "@/lib/errors";
    - Server Component の例
    - データベースからのデータ取得
    - 動的レンダリングの設定
+   - `ProductCategoryTabs` コンポーネントへのデータ受け渡し
 
 2. **[`app/layout.tsx`](../../app/layout.tsx)**
 
@@ -648,7 +656,7 @@ import { ValidationError } from "@/lib/errors";
    - `create`の使用例
    - データの作成とリレーションの設定
 
-5. **[`app/page.tsx`](../../app/page.tsx)（64-90 行目）**
+5. **[`lib/products.ts`](../../lib/products.ts)（44-70 行目）**
    - 複雑なクエリの例
    - `orderBy`、`include`の組み合わせ
    - `Promise.all`による並列処理
@@ -703,6 +711,61 @@ import { ValidationError } from "@/lib/errors";
 1. 基本的なユーティリティクラスを理解する
 2. レスポンシブデザインを理解する
 3. カスタマイズ方法を理解する
+
+### shadcn/ui
+
+**学習のポイント**: コンポーネントライブラリの使い方とラッパーコンポーネントの作成方法を理解する
+
+**おすすめファイル**:
+
+1. **[`app/components/ui/card.tsx`](../../app/components/ui/card.tsx)**
+
+   - shadcn/ui の基本コンポーネント
+   - Radix UI との統合
+   - 型安全性の実装
+
+2. **[`app/components/ui/card-product.tsx`](../../app/components/ui/card-product.tsx)**
+
+   - ラッパーコンポーネントの実装例
+   - `ComponentPropsWithoutRef` の使用
+   - アプリ固有のデフォルトスタイルの適用
+
+3. **[`app/components/ProductTile.tsx`](../../app/components/ProductTile.tsx)**
+
+   - shadcn/ui コンポーネントの使用例
+   - Card、AspectRatio、Tooltip の組み合わせ
+   - ラッパーコンポーネントの活用
+
+4. **[`app/components/ProductModal.tsx`](../../app/components/ProductModal.tsx)**
+
+   - Dialog コンポーネントの使用例
+   - ScrollArea の使用例
+   - ラッパーコンポーネント（ModalImageCard、ModalContentCard、ModalPriceCard）の活用
+
+5. **[`app/components/ProductCategoryTabs.tsx`](../../app/components/ProductCategoryTabs.tsx)**
+
+   - Tabs コンポーネントの使用例
+   - タブ切り替えの実装
+
+6. **[`app/faq/page.tsx`](../../app/faq/page.tsx)**
+
+   - Card コンポーネントの使用例
+   - Badge コンポーネントの使用例
+   - ラッパーコンポーネント（FAQCard、QuestionBadge）の活用
+
+**特徴**:
+
+- コピー&ペースト可能なコンポーネントライブラリ
+- Radix UI ベースでアクセシビリティに優れている
+- TypeScript で完全な型安全性を提供
+- ラッパーコンポーネントでアプリ固有のスタイルを適用可能
+
+**学習の順序**:
+
+1. shadcn/ui の基本概念を理解する（[`doc/guides/shadcn-ui-guide.md`](./shadcn-ui-guide.md)を参照）
+2. 基本的なコンポーネント（Card、Dialog、Tabs）の使い方を理解する
+3. ラッパーコンポーネントの作成方法を理解する
+4. 実際のコンポーネントでの使用例を確認する
 
 ## Java/PHP/Laravel 経験者向けの補足
 
@@ -771,7 +834,7 @@ import { ValidationError } from "@/lib/errors";
 | `@foreach ($items as $item)` | `{items.map(item => <Component />)}` | ループ処理       |
 | `{{ $variable }}`            | `{variable}`                         | 変数の出力       |
 
-**例**: [`app/components/ProductGrid.tsx`](../../app/components/ProductGrid.tsx)の 62-72 行目
+**例**: [`app/components/ProductGrid.tsx`](../../app/components/ProductGrid.tsx)の 46-58 行目（ループ処理）
 
 ### セッション管理
 
@@ -801,7 +864,7 @@ import { ValidationError } from "@/lib/errors";
 **おすすめファイル**:
 
 - Server Component: [`app/page.tsx`](../../app/page.tsx)
-- Client Component: [`app/components/ProductGrid.tsx`](../../app/components/ProductGrid.tsx)
+- Client Component: [`app/components/ProductCategoryTabs.tsx`](../../app/components/ProductCategoryTabs.tsx)、[`app/components/ProductGrid.tsx`](../../app/components/ProductGrid.tsx)
 
 **詳細**: [`doc/guides/app-router-guide.md`](./app-router-guide.md)を参照
 
@@ -824,8 +887,8 @@ import { ValidationError } from "@/lib/errors";
 **おすすめファイル**:
 
 1. [`app/hooks/useProductModal.ts`](../../app/hooks/useProductModal.ts)（useState の例）
-2. [`app/hooks/useModal.ts`](../../app/hooks/useModal.ts)（useEffect、useRef の例）
-3. [`app/components/ProductGrid.tsx`](../../app/components/ProductGrid.tsx)（useCallback の例）
+2. [`app/components/ProductGrid.tsx`](../../app/components/ProductGrid.tsx)（カスタムフックの使用例）
+3. [`app/components/ProductCategoryTabs.tsx`](../../app/components/ProductCategoryTabs.tsx)（useState の例）
 
 **詳細**: [`doc/guides/react-guide.md`](./react-guide.md)を参照
 
@@ -837,7 +900,7 @@ import { ValidationError } from "@/lib/errors";
 
 1. [`app/api/products/route.ts`](../../app/api/products/route.ts)の 32-43 行目（findMany の例）
 2. [`app/api/products/route.ts`](../../app/api/products/route.ts)の 120-139 行目（create の例）
-3. [`app/page.tsx`](../../app/page.tsx)の 64-90 行目（複雑なクエリの例）
+3. [`lib/products.ts`](../../lib/products.ts)の 44-70 行目（複雑なクエリの例、`Promise.all`による並列処理）
 
 **詳細**: [`doc/guides/prisma-guide.md`](./prisma-guide.md)を参照
 
@@ -848,7 +911,7 @@ import { ValidationError } from "@/lib/errors";
 **おすすめファイル**:
 
 1. [`app/api/products/route.ts`](../../app/api/products/route.ts)の 29 行目（async 関数の例）
-2. [`app/page.tsx`](../../app/page.tsx)の 62-91 行目（Promise.all の例）
+2. [`lib/products.ts`](../../lib/products.ts)の 44-70 行目（Promise.all の例）
 
 **詳細**: [`doc/guides/async-await-guide.md`](./async-await-guide.md)を参照
 

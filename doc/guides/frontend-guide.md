@@ -96,14 +96,13 @@
 ```
 ├── types.ts                    # 共通型定義
 ├── hooks/                      # カスタムフック
-│   ├── useModal.ts            # モーダル管理フック
 │   └── useProductModal.ts    # 商品モーダル管理フック
 ├── components/                 # フロントエンド共通コンポーネント
-│   ├── icons/                 # アイコンコンポーネント
-│   │   └── CloseIcon.tsx     # 閉じるアイコン
+│   ├── ui/                    # shadcn/ui コンポーネントとラッパーコンポーネント
 │   ├── ErrorBoundary.tsx     # エラーバウンダリーコンポーネント
 │   ├── Header.tsx             # ヘッダーコンポーネント
 │   ├── Footer.tsx             # フッターコンポーネント
+│   ├── ProductCategoryTabs.tsx # カテゴリーをTabsで切り替えるコンポーネント
 │   ├── ProductGrid.tsx        # 商品グリッドコンポーネント
 │   ├── ProductTile.tsx        # 商品タイルコンポーネント
 │   └── ProductModal.tsx       # 商品詳細モーダルコンポーネント
@@ -140,22 +139,7 @@
 
 ### カスタムフック (`app/hooks/`)
 
-#### useModal (`hooks/useModal.ts`)
-
-モーダルの開閉状態と ESC キー処理を管理するカスタムフックです。
-
-**機能**:
-
-- ESC キーでモーダルを閉じる
-- モーダル表示時の背景スクロール無効化
-
-**使用例**:
-
-[`app/hooks/useModal.ts`](../../app/hooks/useModal.ts) (`useModal`フック)
-
-```typescript
-useModal(isOpen, onClose);
-```
+#### useProductModal (`hooks/useProductModal.ts`)
 
 商品モーダルの状態管理を行うカスタムフックです。
 
@@ -257,6 +241,60 @@ useProductModal();
 **機能**:
 
 - カテゴリータイトルの表示
+#### ProductCategoryTabs (`ProductCategoryTabs.tsx`)
+
+カテゴリーを Tabs で切り替えて表示するコンポーネントです。
+
+**機能**:
+
+- カテゴリーごとのタブ切り替え（shadcn/ui の Tabs を使用）
+- カテゴリーが1つの場合は通常のグリッド表示
+- 商品がない場合は「商品の準備中です」を表示
+
+**特徴**:
+
+- Client Component（`'use client'`）
+- shadcn/ui の Tabs コンポーネントを使用
+- レスポンシブデザイン対応
+
+**実装例**:
+
+[`app/components/ProductCategoryTabs.tsx`](../../app/components/ProductCategoryTabs.tsx) (`ProductCategoryTabs`コンポーネント)
+
+```typescript
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
+import ProductGrid from "./ProductGrid";
+
+export default function ProductCategoryTabs({ categoriesWithProducts }) {
+  const [activeTab, setActiveTab] = useState(
+    categoriesWithProducts[0]?.category.id.toString() || ""
+  );
+
+  return (
+    <Tabs value={activeTab} onValueChange={setActiveTab}>
+      <TabsList>
+        {categoriesWithProducts.map(({ category }) => (
+          <TabsTrigger key={category.id} value={category.id.toString()}>
+            {category.name}
+          </TabsTrigger>
+        ))}
+      </TabsList>
+      {categoriesWithProducts.map(({ category, products }) => (
+        <TabsContent key={category.id} value={category.id.toString()}>
+          <ProductGrid category={category} products={products} hideCategoryTitle={true} />
+        </TabsContent>
+      ))}
+    </Tabs>
+  );
+}
+```
+
+#### ProductGrid (`ProductGrid.tsx`)
+
+カテゴリーごとの商品グリッド表示コンポーネントです。
+
+**機能**:
+
 - 商品タイルの 3 列グリッド表示
 - 商品クリック時のモーダル表示（`useProductModal`フックで管理）
 
@@ -265,6 +303,7 @@ useProductModal();
 - Client Component（`'use client'`）
 - 商品がない場合は非表示
 - モーダル状態管理をカスタムフックに分離
+- `hideCategoryTitle` プロップでカテゴリータイトルの表示を制御可能
 
 **実装例**:
 
@@ -334,26 +373,12 @@ export default function ProductGrid({ category, products }) {
 **特徴**:
 
 - Next.js Image コンポーネントを使用（画像最適化）
+- shadcn/ui の Dialog コンポーネントを使用（アクセシビリティ対応）
 - 背景クリックで閉じる
-- ESC キーで閉じる（`useModal`フックで実装）
-- モーダル表示時の背景スクロール無効化（`useModal`フックで実装）
-- スクロールしても右上に固定表示される閉じるボタン（`sticky`を使用）
+- ESC キーで閉じる（shadcn/ui の Dialog で自動対応）
+- モーダル表示時の背景スクロール無効化（shadcn/ui の Dialog で自動対応）
 - フェードイン・フェードアウトアニメーション
 - 価格フォーマット（`formatPrice`ユーティリティを使用）
-
-#### CloseIcon (`components/icons/CloseIcon.tsx`)
-
-閉じるアイコンコンポーネントです。
-
-**機能**:
-
-- X アイコンの表示
-- モーダルやダイアログの閉じるボタンで使用
-
-**特徴**:
-
-- 再利用可能なアイコンコンポーネント
-- アクセシビリティ対応（`aria-hidden`）
 
 ## レイアウトとスタイリング
 
@@ -453,12 +478,15 @@ className = "grid grid-cols-1 md:grid-cols-3";
   ↓ データ取得（Prisma）
   ↓ 公開商品のフィルタリング
   ↓ propsで渡す
+ProductCategoryTabs (Client Component)
+  ↓ カテゴリーごとのタブ切り替え
+  ↓ propsで渡す
 ProductGrid (Client Component)
   ↓ カスタムフック（useProductModal）
   ↓ 状態管理とイベントハンドリング
 ProductModal (Client Component)
-  ↓ カスタムフック（useModal）
-  ↓ ESCキー処理とスクロール無効化
+  ↓ shadcn/ui の Dialog コンポーネント
+  ↓ ESCキー処理とスクロール無効化（自動対応）
 ```
 
 ↓ useProductModal()
@@ -468,9 +496,9 @@ ProductModal (Client Component)
 └── handleCloseModal (モーダル閉じる時の処理)
 ↓
 ProductModal
-↓ useModal(isOpen, onClose)
-├── ESC キー処理
-└── 背景スクロール無効化
+↓ shadcn/ui Dialog
+├── ESC キー処理（自動）
+└── 背景スクロール無効化（自動）
 
 ````
 
