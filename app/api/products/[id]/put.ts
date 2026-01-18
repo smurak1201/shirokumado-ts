@@ -3,7 +3,7 @@ import { prisma, safePrismaOperation } from '@/lib/prisma';
 import { NotFoundError } from '@/lib/errors';
 import { log } from '@/lib/logger';
 import { NextRequest } from 'next/server';
-import { determinePublishedStatus } from '@/lib/product-utils';
+import { determinePublishedStatus, resolveDateValue } from '@/lib/product-utils';
 import { deleteFile } from '@/lib/blob';
 import { validateProductUpdate } from './put-validation';
 
@@ -57,12 +57,8 @@ export async function putProduct(
     throw new NotFoundError('商品');
   }
 
-  const publishedAt = body.publishedAt !== undefined
-    ? (body.publishedAt ? new Date(body.publishedAt) : null)
-    : existingProduct.publishedAt;
-  const endedAt = body.endedAt !== undefined
-    ? (body.endedAt ? new Date(body.endedAt) : null)
-    : existingProduct.endedAt;
+  const publishedAt = resolveDateValue(body.publishedAt, existingProduct.publishedAt);
+  const endedAt = resolveDateValue(body.endedAt, existingProduct.endedAt);
 
   const published = determinePublishedStatus(
     publishedAt,

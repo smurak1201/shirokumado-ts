@@ -57,6 +57,34 @@ export function hasDateRange(publishedAt: Date | null, endedAt: Date | null): bo
 }
 
 /**
+ * 日付の値を解決する
+ *
+ * リクエストボディで日付が指定されている場合は、その値をDateオブジェクトに変換します。
+ * 指定されていない場合は、既存の値をそのまま返します。
+ *
+ * @param requestValue リクエストボディから来る日付文字列（string | null | undefined）
+ * @param existingValue 既存の日付値（Date | null）
+ * @returns 解決された日付値（Date | null）
+ */
+export function resolveDateValue(
+  requestValue: string | null | undefined,
+  existingValue: Date | null
+): Date | null {
+  // リクエストボディで値が指定されていない場合は、既存の値を返す
+  if (requestValue === undefined) {
+    return existingValue;
+  }
+
+  // リクエストボディでnullが指定されている場合は、nullを返す
+  if (requestValue === null) {
+    return null;
+  }
+
+  // リクエストボディで文字列が指定されている場合は、Dateオブジェクトに変換
+  return new Date(requestValue);
+}
+
+/**
  * 商品の公開状態を決定する
  *
  * 公開日・終了日が設定されている場合は自動判定を優先し、
