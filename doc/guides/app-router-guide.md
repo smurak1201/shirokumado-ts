@@ -830,15 +830,9 @@ export const dynamic = "force-dynamic";
   // ===== 公開状態の自動判定 =====
   // 公開日・終了日が設定されている場合は自動判定
   // 設定されていない場合は手動設定値（デフォルトは true）を使用
-  let published: boolean;
-  if (publishedAt || endedAt) {
-    // 公開日・終了日に基づいて公開状態を自動判定
-    published = calculatePublishedStatus(publishedAt, endedAt);
-  } else {
-    // 公開日・終了日が設定されていない場合は手動設定値を使用
-    // body.published が undefined の場合はデフォルトで true（公開）にする
-    published = body.published !== undefined ? body.published : true;
-  }
+  const published = (publishedAt || endedAt)
+    ? calculatePublishedStatus(publishedAt, endedAt)
+    : (body.published !== undefined ? body.published : true);
 
   // ===== 商品の作成 =====
   const product = await safePrismaOperation(
@@ -930,14 +924,9 @@ export const dynamic = "force-dynamic";
 
   // 公開情報の自動判定
   // 公開日・終了日が設定されている場合は自動判定、そうでない場合は手動設定値を使用
-  let published: boolean;
-  if (publishedAt || endedAt) {
-    // 公開日・終了日が設定されている場合は自動判定
-    published = calculatePublishedStatus(publishedAt, endedAt);
-  } else {
-    // 公開日・終了日が設定されていない場合は手動設定値（変更がない場合は既存値）
-    published = body.published !== undefined ? body.published : existingProduct.published;
-  }
+  const published = (publishedAt || endedAt)
+    ? calculatePublishedStatus(publishedAt, endedAt)
+    : (body.published !== undefined ? body.published : existingProduct.published);
 
   // 画像が更新される場合、元の画像を削除
   const oldImageUrl = existingProduct.imageUrl;
