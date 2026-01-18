@@ -35,8 +35,8 @@ export default function ProductGrid({ category, products }: ProductGridProps) {
   return (
     <>
       <section className="mb-8 md:mb-16 lg:mb-12">
-        <div className="mb-4 border-b border-gray-200 pb-2 md:mb-10 md:pb-5 lg:mb-6 lg:pb-3">
-          <h2 className="text-center text-lg font-light tracking-widest text-gray-800 md:text-3xl lg:text-2xl">
+        <div className="mb-4 pb-2 md:mb-10 md:pb-5 lg:mb-6 lg:pb-3">
+          <h2 className="text-center text-lg font-light tracking-widest md:text-3xl lg:text-2xl">
             {category.name}
           </h2>
         </div>

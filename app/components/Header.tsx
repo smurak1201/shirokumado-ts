@@ -1,18 +1,24 @@
 import Link from "next/link";
 import Image from "next/image";
+import { Separator } from "./ui/separator";
+import { cn } from "@/lib/utils";
 
 /**
  * ヘッダーコンポーネント
  *
  * 全ページ共通のヘッダーを表示します。
  * ロゴ画像（トップページへのリンク）、Instagramアイコン、ナビゲーションリンクを含みます。
+ * shadcn/uiのSeparatorコンポーネントを使用して実装されています。
  */
 export default function Header() {
   return (
-    <header className="sticky top-0 z-50 h-20 overflow-visible bg-white">
+    <header className="sticky top-0 z-50 h-20 overflow-visible bg-background">
       <div className="mx-auto flex h-full max-w-6xl items-center justify-between px-4 md:px-6">
         <div className="relative flex items-center gap-3 overflow-visible">
-          <Link href="/" className="transition-opacity hover:opacity-80">
+          <Link
+            href="/"
+            className="transition-opacity hover:opacity-80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded-sm"
+          >
             <Image
               src="/logo.webp"
               alt="白熊堂"
@@ -26,7 +32,10 @@ export default function Header() {
             href="https://www.instagram.com/shirokumado2021/"
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center justify-center transition-opacity hover:opacity-80"
+            className={cn(
+              "flex items-center justify-center transition-opacity",
+              "hover:opacity-80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded-sm"
+            )}
             aria-label="Instagram"
           >
             <Image
@@ -34,7 +43,7 @@ export default function Header() {
               alt="Instagram"
               width={24}
               height={24}
-              className="h-6 w-6 text-gray-900 md:h-7 md:w-7"
+              className="h-6 w-6 md:h-7 md:w-7"
             />
           </a>
         </div>
@@ -42,13 +51,17 @@ export default function Header() {
         <nav className="flex items-center gap-4 md:gap-6">
           <Link
             href="/faq"
-            className="text-sm text-gray-700 transition-colors hover:text-gray-900 md:text-base"
+            className={cn(
+              "text-sm transition-colors md:text-base",
+              "text-foreground/70 hover:text-foreground",
+              "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded-sm"
+            )}
           >
             よくある質問
           </Link>
         </nav>
       </div>
-      <div className="h-px bg-gray-200" />
+      <Separator />
     </header>
   );
 }

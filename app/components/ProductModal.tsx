@@ -2,9 +2,14 @@
 
 import Image from "next/image";
 import type { Product } from "../types";
-import { useModal } from "../hooks/useModal";
 import { formatPrice } from "../utils/format";
-import CloseIcon from "./icons/CloseIcon";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "./ui/dialog";
+import { Separator } from "./ui/separator";
 
 interface ProductModalProps {
   product: Product | null;
@@ -16,6 +21,7 @@ interface ProductModalProps {
  * 商品詳細を表示するモーダルウィンドウコンポーネント
  *
  * 商品の詳細情報（画像、名前、説明、価格）をモーダルウィンドウで表示します。
+ * shadcn/uiのDialogコンポーネントを使用して実装されています。
  * ESCキーでモーダルを閉じる機能と、背景クリックでモーダルを閉じる機能を提供します。
  */
 export default function ProductModal({
@@ -23,78 +29,69 @@ export default function ProductModal({
   isOpen,
   onClose,
 }: ProductModalProps) {
-  useModal(isOpen, onClose);
-
-  if (!isOpen || !product) {
+  if (!product) {
     return null;
   }
 
   return (
-    <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-sm"
-      onClick={onClose}
-    >
-      <div
-        className="relative max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-lg bg-white shadow-2xl"
-        onClick={(e) => e.stopPropagation()}
-      >
-        <div className="sticky top-0 right-0 z-10 flex justify-end p-4">
-          <button
-            onClick={onClose}
-            className="rounded-full bg-white/90 p-2 text-gray-600 transition-colors hover:bg-white hover:text-gray-800 shadow-md"
-            aria-label="閉じる"
-          >
-            <CloseIcon />
-          </button>
-        </div>
-
-        {product.imageUrl ? (
-          <div className="relative aspect-square w-full overflow-hidden bg-gray-50">
-            <Image
-              src={product.imageUrl}
-              alt={product.name}
-              fill
-              className="object-cover"
-              sizes="(max-width: 768px) 100vw, (max-width: 1024px) 90vw, 800px"
-              priority
-            />
-          </div>
-        ) : (
-          <div className="aspect-square w-full bg-linear-to-br from-gray-50 to-gray-100" />
-        )}
-
-        <div className="p-6 md:p-8">
-          <div className="mb-4 flex h-[4em] items-center justify-center md:h-[4.25em]">
-            <h2 className="line-clamp-2 whitespace-pre-wrap text-center text-2xl font-medium leading-relaxed text-gray-800 md:text-3xl">
-              {product.name}
-            </h2>
-          </div>
-
-          {product.description && (
-            <p className="mb-6 whitespace-pre-wrap text-base leading-relaxed text-gray-600 md:text-lg">
-              {product.description}
-            </p>
-          )}
-
-          {(product.priceS || product.priceL) && (
-            <div className="flex items-baseline gap-3 border-t border-gray-200 pt-6">
-              {product.priceS && (
-                <span className="text-2xl font-medium tracking-wide text-gray-800 md:text-3xl">
-                  S: {formatPrice(product.priceS)}
-                </span>
-              )}
-              {product.priceS && product.priceL && (
-                <span className="text-xl text-gray-300">/</span>
-              )}
-              {product.priceL && (
-                <span className="text-2xl font-medium tracking-wide text-gray-800 md:text-3xl">
-                  L: {formatPrice(product.priceL)}
-                </span>
-              )}
+    <Dialog open={isOpen} onOpenChange={onClose}>
+      <DialogContent className="max-h-[90vh] max-w-2xl !flex !flex-col p-0 gap-0 overflow-hidden">
+        {/* 画像部分 - 固定、高さ制限あり */}
+        <div className="relative flex-shrink-0">
+          {product.imageUrl ? (
+            <div className="relative w-full h-[40vh] max-h-[400px] min-h-[200px] overflow-hidden rounded-t-lg bg-muted">
+              <Image
+                src={product.imageUrl}
+                alt={product.name}
+                fill
+                className="object-cover"
+                sizes="(max-width: 768px) 100vw, (max-width: 1024px) 90vw, 800px"
+                priority
+              />
             </div>
+          ) : (
+            <div className="w-full h-[40vh] max-h-[400px] min-h-[200px] rounded-t-lg bg-gradient-to-br from-muted to-muted/50" />
           )}
         </div>
-      </div>
-    </div>
+
+        {/* テキスト部分 - スクロール可能 */}
+        <div className="flex-1 overflow-y-auto min-h-0">
+          <div className="p-6 md:p-8">
+            <DialogHeader>
+              <DialogTitle className="whitespace-pre-wrap text-center text-2xl font-medium leading-relaxed md:text-3xl">
+                {product.name}
+              </DialogTitle>
+            </DialogHeader>
+
+            {product.description && (
+              <p className="mb-6 mt-4 whitespace-pre-wrap text-base leading-relaxed text-muted-foreground md:text-lg">
+                {product.description}
+              </p>
+            )}
+
+            {(product.priceS || product.priceL) && (
+              <>
+                <Separator className="my-6" />
+                <div className="flex flex-wrap items-baseline justify-center gap-3">
+                  {product.priceS && (
+                    <span className="text-2xl font-medium tracking-wide md:text-3xl">
+                      S: {formatPrice(product.priceS)}
+                    </span>
+                  )}
+                  {product.priceS && product.priceL && (
+                    <span className="text-xl text-muted-foreground">/</span>
+                  )}
+                  {product.priceL && (
+                    <span className="text-2xl font-medium tracking-wide md:text-3xl">
+                      L: {formatPrice(product.priceL)}
+                    </span>
+                  )}
+                </div>
+              </>
+            )}
+          </div>
+        </div>
+      </DialogContent>
+    </Dialog>
   );
 }
