@@ -28,6 +28,8 @@ export default async function Home() {
     <div className="min-h-screen bg-background overflow-x-hidden">
       {/* ヘッダー */}
       <Header />
+      {/* ヘッダーの高さ分のスペーサー */}
+      <div className="h-20" />
 
       {/* ヒーローバナー */}
       <section className="relative h-[40vh] min-h-[300px] w-full overflow-hidden md:h-[60vh] md:min-h-[500px] lg:h-[70vh] lg:min-h-[600px]">
