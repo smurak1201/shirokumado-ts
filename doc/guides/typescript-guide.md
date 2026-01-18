@@ -50,6 +50,10 @@
   - [6. Prisma との統合](#6-prisma-との統合)
   - [7. エラーハンドリングの型安全性](#7-エラーハンドリングの型安全性)
   - [8. 型ガードの活用](#8-型ガードの活用)
+- [コードスタイルと可読性](#コードスタイルと可読性)
+  - [1. 三項演算子の使い分け](#1-三項演算子の使い分け)
+  - [2. 関数呼び出しによるコードの整理](#2-関数呼び出しによるコードの整理)
+  - [3. 早期リターンパターン](#3-早期リターンパターン)
 - [このアプリでの TypeScript の使用例まとめ](#このアプリでの-typescript-の使用例まとめ)
   - [型定義の構成](#型定義の構成)
   - [型安全性の実装](#型安全性の実装-1)
@@ -1445,6 +1449,228 @@ const imageFile = file as ImageFile; // 実行時に型チェックされない
 - `isNumericKey()`: 数値キーのチェック
 - `typeof window !== "undefined"`: サーバーサイドレンダリング時の環境チェック
 - `error instanceof Error`: エラーの型チェック
+
+## コードスタイルと可読性
+
+コードの可読性と保守性を向上させるためのベストプラクティスです。型安全性だけでなく、コードの書き方も重要です。
+
+### 1. 三項演算子の使い分け
+
+**原則**: 単純な三項演算子は推奨しますが、ネストされた三項演算子は避け、関数に分離します。
+
+#### 単純な三項演算子（推奨）
+
+**推奨**: 条件が1つで、結果が明確な場合に使用します。
+
+```typescript
+// 良い例: 単純な三項演算子
+const priceS = body.priceS ? parseFloat(body.priceS) : null;
+const status = isActive ? 'active' : 'inactive';
+const imageUrl = body.imageUrl ? body.imageUrl : null;
+```
+
+**理由**:
+
+- **可読性**: 条件と結果が1行で明確に表現される
+- **簡潔性**: コードが短く、意図が明確
+- **保守性**: 条件が単純で、変更が容易
+
+#### ネストされた三項演算子（避ける）
+
+**避ける**: 三項演算子がネストされている場合、可読性が低下します。
+
+```typescript
+// 悪い例: ネストされた三項演算子
+const publishedAt = body.publishedAt !== undefined
+  ? (body.publishedAt ? new Date(body.publishedAt) : null)
+  : existingProduct.publishedAt;
+```
+
+**理由**:
+
+- **可読性の低下**: ネストが深くなり、条件の流れが追いにくい
+- **保守性の低下**: 条件が複雑で、変更時の影響範囲が不明確
+- **デバッグの困難**: どの条件が適用されているかが分かりにくい
+
+#### 改善方法: 関数に分離
+
+**推奨**: ネストされた三項演算子は関数に分離します。
+
+```typescript
+// 良い例: 関数に分離
+/**
+ * 日付の値を解決する
+ */
+export function resolveDateValue(
+  requestValue: string | null | undefined,
+  existingValue: Date | null
+): Date | null {
+  if (requestValue === undefined) {
+    return existingValue;
+  }
+  if (requestValue === null) {
+    return null;
+  }
+  return new Date(requestValue);
+}
+
+// 使用例
+const publishedAt = resolveDateValue(body.publishedAt, existingProduct.publishedAt);
+```
+
+**理由**:
+
+- **可読性**: 関数名で意図が明確になる
+- **再利用性**: 同じロジックを複数箇所で使用できる
+- **テスト容易性**: 関数を単体でテストできる
+- **保守性**: ロジックの変更が1箇所で済む
+
+**このアプリでの使用例**:
+
+- [`lib/product-utils.ts`](../../lib/product-utils.ts) (`resolveDateValue`関数): 日付の値を解決する関数
+- [`lib/product-utils.ts`](../../lib/product-utils.ts) (`determinePublishedStatus`関数): 公開状態を決定する関数
+
+### 2. 関数呼び出しによるコードの整理
+
+**原則**: 複雑なロジックや繰り返し使用される処理は関数に分離します。
+
+#### 複雑な条件分岐を関数に分離
+
+**推奨**: 複雑な条件分岐や計算ロジックを関数に分離します。
+
+```typescript
+// 悪い例: 複雑な条件分岐がインラインに記述されている
+const published = (publishedAt || endedAt)
+  ? calculatePublishedStatus(publishedAt, endedAt)
+  : (body.published !== undefined ? body.published : true);
+```
+
+```typescript
+// 良い例: 関数に分離
+/**
+ * 商品の公開状態を決定する
+ */
+export function determinePublishedStatus(
+  publishedAt: Date | null,
+  endedAt: Date | null,
+  manualPublished?: boolean,
+  defaultPublished: boolean = true
+): boolean {
+  if (publishedAt || endedAt) {
+    return calculatePublishedStatus(publishedAt, endedAt);
+  }
+  return manualPublished !== undefined ? manualPublished : defaultPublished;
+}
+
+// 使用例
+const published = determinePublishedStatus(
+  publishedAt,
+  endedAt,
+  body.published,
+  true
+);
+```
+
+**理由**:
+
+- **可読性**: 関数名で処理の意図が明確になる
+- **再利用性**: 同じロジックを複数箇所で使用できる
+- **テスト容易性**: 関数を単体でテストできる
+- **保守性**: ロジックの変更が1箇所で済む
+
+**このアプリでの使用例**:
+
+- [`lib/product-utils.ts`](../../lib/product-utils.ts) (`determinePublishedStatus`関数): 公開状態の決定ロジックを関数化
+- [`app/api/products/route.ts`](../../app/api/products/route.ts): POSTエンドポイントで使用
+- [`app/api/products/[id]/put.ts`](../../app/api/products/[id]/put.ts): PUTエンドポイントで使用
+
+### 3. 早期リターンパターン
+
+**原則**: 条件を満たした場合は早期に`return`し、ネストを避けます。
+
+#### 早期リターンとは
+
+**説明**: 関数内で条件を満たした場合に早期に`return`するパターンです。これにより、ネストが浅くなり、コードの可読性が向上します。
+
+```typescript
+// 良い例: 早期リターンを使用
+export function resolveDateValue(
+  requestValue: string | null | undefined,
+  existingValue: Date | null
+): Date | null {
+  // 早期リターン1: undefinedの場合は早期にreturn
+  if (requestValue === undefined) {
+    return existingValue;
+  }
+
+  // 早期リターン2: nullの場合は早期にreturn
+  if (requestValue === null) {
+    return null;
+  }
+
+  // 最後のケース: 文字列の場合
+  return new Date(requestValue);
+}
+```
+
+**理由**:
+
+- **可読性**: ネストが浅くなり、コードが読みやすくなる
+- **保守性**: 条件分岐が明確になり、変更が容易
+- **パフォーマンス**: 不要な処理をスキップできる（この例では効果は小さい）
+
+#### 早期リターンを使わない場合（ネストが深くなる）
+
+```typescript
+// 悪い例: 早期リターンを使わない
+export function resolveDateValue(
+  requestValue: string | null | undefined,
+  existingValue: Date | null
+): Date | null {
+  if (requestValue !== undefined) {
+    if (requestValue !== null) {
+      return new Date(requestValue);
+    } else {
+      return null;
+    }
+  } else {
+    return existingValue;
+  }
+}
+```
+
+**理由**:
+
+- **可読性の低下**: ネストが深くなり、コードが読みにくくなる
+- **保守性の低下**: 条件分岐が複雑になり、変更が困難
+- **エラーの発生**: 条件の追加時にネストがさらに深くなる可能性がある
+
+#### 早期リターンと関数呼び出しの組み合わせ
+
+**推奨**: 早期リターンパターンと関数呼び出しを組み合わせることで、コードの可読性と保守性をさらに向上させます。
+
+```typescript
+// 良い例: 早期リターンと関数呼び出しの組み合わせ
+export function determinePublishedStatus(
+  publishedAt: Date | null,
+  endedAt: Date | null,
+  manualPublished?: boolean,
+  defaultPublished: boolean = true
+): boolean {
+  // 早期リターン: 公開日・終了日が設定されている場合は自動判定を優先
+  if (publishedAt || endedAt) {
+    return calculatePublishedStatus(publishedAt, endedAt);
+  }
+
+  // 手動設定値が指定されている場合はそれを使用、未指定の場合はデフォルト値を使用
+  return manualPublished !== undefined ? manualPublished : defaultPublished;
+}
+```
+
+**このアプリでの使用例**:
+
+- [`lib/product-utils.ts`](../../lib/product-utils.ts) (`resolveDateValue`関数): 早期リターンを使用
+- [`lib/product-utils.ts`](../../lib/product-utils.ts) (`determinePublishedStatus`関数): 早期リターンと関数呼び出しを組み合わせ
 
 ## このアプリでの TypeScript の使用例まとめ
 
