@@ -25,12 +25,12 @@ export default async function Home() {
   }
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-linear-to-b from-background via-background to-muted/30">
       {/* ヘッダー */}
       <Header />
 
       {/* ヒーローバナー */}
-      <section className="relative h-[30vh] min-h-[200px] w-full overflow-hidden md:h-[50vh] md:min-h-[400px] lg:h-[60vh] lg:min-h-[500px]">
+      <section className="relative h-[35vh] min-h-[250px] w-full overflow-hidden md:h-[55vh] md:min-h-[450px] lg:h-[65vh] lg:min-h-[550px]">
         <Image
           src="/hero.webp"
           alt="白熊堂"
@@ -39,12 +39,14 @@ export default async function Home() {
           className="object-cover"
           sizes="100vw"
         />
-        {/* オーバーレイ */}
-        <div className="absolute inset-0 bg-linear-to-b from-white/20 via-white/8 to-white/25" />
+        {/* グラデーションオーバーレイ */}
+        <div className="absolute inset-0 bg-linear-to-b from-background/40 via-background/10 to-background/60" />
+        {/* 装飾的なオーバーレイ */}
+        <div className="absolute inset-0 bg-linear-to-r from-primary/5 via-transparent to-primary/5" />
       </section>
 
       {/* メインコンテンツ */}
-      <main className="mx-auto max-w-6xl px-4 py-6 md:px-8 md:py-12 lg:px-12 lg:py-16 xl:py-20">
+      <main className="mx-auto max-w-6xl px-4 py-8 md:px-8 md:py-16 lg:px-12 lg:py-20 xl:py-24">
         {/* カテゴリーごとの商品セクション */}
         {categoriesWithProducts.map(({ category, products }) => (
           <ProductGrid

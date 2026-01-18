@@ -26,14 +26,17 @@ export default function ProductGrid({ category, products }: ProductGridProps) {
 
   return (
     <>
-      <section className="mb-8 md:mb-16 lg:mb-12">
-        <div className="mb-4 pb-2 md:mb-10 md:pb-5 lg:mb-6 lg:pb-3">
-          <h2 className="text-center text-lg font-light tracking-widest md:text-3xl lg:text-2xl">
-            {category.name}
-          </h2>
+      <section className="mb-12 md:mb-20 lg:mb-16">
+        <div className="mb-8 flex items-center justify-center md:mb-12 lg:mb-10">
+          <div className="relative">
+            <h2 className="relative z-10 text-center text-xl font-light tracking-[0.2em] text-foreground/90 md:text-4xl lg:text-3xl">
+              {category.name}
+            </h2>
+            <div className="absolute -bottom-2 left-1/2 h-[1px] w-16 -translate-x-1/2 bg-gradient-to-r from-transparent via-border to-transparent md:w-24" />
+          </div>
         </div>
 
-        <div className="grid grid-cols-3 gap-3 md:gap-8 lg:gap-6">
+        <div className="grid grid-cols-3 gap-4 md:gap-8 lg:gap-6">
           {products.map((product) => (
             <ProductTile
               key={product.id}

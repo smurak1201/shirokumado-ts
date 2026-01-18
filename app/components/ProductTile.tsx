@@ -24,8 +24,9 @@ function ProductTile({ product, onClick }: ProductTileProps) {
   return (
     <Card
       className={cn(
-        "group cursor-pointer overflow-hidden transition-all duration-300",
-        "hover:shadow-lg hover:border-primary/20",
+        "group cursor-pointer overflow-hidden transition-all duration-500",
+        "hover:shadow-xl hover:shadow-primary/5 hover:-translate-y-1",
+        "hover:border-primary/30 border-border/50",
         "focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2"
       )}
       onClick={onClick}
@@ -45,18 +46,19 @@ function ProductTile({ product, onClick }: ProductTileProps) {
             src={product.imageUrl}
             alt={product.name}
             fill
-            className="object-cover transition-transform duration-500 group-hover:scale-110"
+            className="object-cover transition-transform duration-700 ease-out group-hover:scale-110"
             sizes="(max-width: 768px) 33vw, (max-width: 1024px) 33vw, 33vw"
             loading="lazy"
           />
-          <div className="absolute inset-0 bg-background/0 transition-colors duration-300 group-hover:bg-background/5" />
+          <div className="absolute inset-0 bg-linear-to-t from-background/60 via-transparent to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
+          <div className="absolute inset-0 bg-primary/0 transition-colors duration-500 group-hover:bg-primary/5" />
         </div>
       ) : (
-        <div className="aspect-square w-full rounded-t-lg bg-gradient-to-br from-muted to-muted/50" />
+        <div className="aspect-square w-full rounded-t-lg bg-linear-to-br from-muted via-muted/80 to-muted/50" />
       )}
 
-      <CardContent className="flex h-[3em] items-center justify-center rounded-b-lg p-1.5 md:h-[4em] md:p-5 lg:h-[3.5em] lg:p-4">
-        <h3 className="line-clamp-2 whitespace-pre-wrap text-center text-[10px] font-medium leading-relaxed md:text-lg lg:text-base">
+      <CardContent className="flex h-[3em] items-center justify-center rounded-b-lg bg-linear-to-b from-card to-card/95 p-1.5 transition-colors duration-300 group-hover:from-card group-hover:to-card/90 md:h-[4em] md:p-5 lg:h-[3.5em] lg:p-4">
+        <h3 className="line-clamp-2 whitespace-pre-wrap text-center text-[10px] font-medium leading-relaxed transition-colors duration-300 group-hover:text-foreground md:text-lg lg:text-base">
           {product.name}
         </h3>
       </CardContent>
