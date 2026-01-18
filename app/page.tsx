@@ -3,9 +3,10 @@ import {
   getPublishedProductsByCategory,
   type CategoryWithProducts,
 } from "@/lib/products";
-import ProductGrid from "./components/ProductGrid";
+import ProductCategoryTabs from "./components/ProductCategoryTabs";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
+import { Separator } from "./components/ui/separator";
 
 export const dynamic = "force-dynamic";
 
@@ -25,12 +26,14 @@ export default async function Home() {
   }
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-background overflow-x-hidden">
       {/* ヘッダー */}
       <Header />
+      {/* ヘッダーの高さ分のスペーサー */}
+      <div className="h-20" />
 
       {/* ヒーローバナー */}
-      <section className="relative h-[30vh] min-h-[200px] w-full overflow-hidden md:h-[50vh] md:min-h-[400px] lg:h-[60vh] lg:min-h-[500px]">
+      <section className="relative h-[40vh] min-h-[300px] w-full overflow-hidden md:h-[60vh] md:min-h-[500px] lg:h-[70vh] lg:min-h-[600px]">
         <Image
           src="/hero.webp"
           alt="白熊堂"
@@ -39,20 +42,19 @@ export default async function Home() {
           className="object-cover"
           sizes="100vw"
         />
-        {/* オーバーレイ */}
-        <div className="absolute inset-0 bg-linear-to-b from-white/20 via-white/8 to-white/25" />
+        {/* グラデーションオーバーレイ - 軽減 */}
+        <div className="absolute inset-0 bg-linear-to-b from-background/20 via-transparent to-background/40" />
       </section>
 
+      {/* ヒーローとコンテンツの区切り */}
+      <div className="mx-auto max-w-7xl px-2 md:px-6 lg:px-8">
+        <Separator className="bg-border/60" />
+      </div>
+
       {/* メインコンテンツ */}
-      <main className="mx-auto max-w-6xl px-4 py-6 md:px-8 md:py-12 lg:px-12 lg:py-16 xl:py-20">
-        {/* カテゴリーごとの商品セクション */}
-        {categoriesWithProducts.map(({ category, products }) => (
-          <ProductGrid
-            key={category.id}
-            category={category}
-            products={products}
-          />
-        ))}
+      <main className="mx-auto max-w-7xl px-2 py-8 md:px-6 md:py-20 lg:px-8 lg:py-24 overflow-x-hidden">
+        {/* カテゴリーごとの商品セクション - Tabsで切り替え */}
+        <ProductCategoryTabs categoriesWithProducts={categoriesWithProducts} />
       </main>
 
       {/* フッター */}

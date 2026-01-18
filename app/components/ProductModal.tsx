@@ -2,9 +2,18 @@
 
 import Image from "next/image";
 import type { Product } from "../types";
-import { useModal } from "../hooks/useModal";
 import { formatPrice } from "../utils/format";
-import CloseIcon from "./icons/CloseIcon";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from "./ui/dialog";
+import { Separator } from "./ui/separator";
+import { ScrollArea } from "./ui/scroll-area";
+import { Badge } from "./ui/badge";
+import { Card, CardContent, CardHeader } from "./ui/card";
 
 interface ProductModalProps {
   product: Product | null;
@@ -16,6 +25,7 @@ interface ProductModalProps {
  * 商品詳細を表示するモーダルウィンドウコンポーネント
  *
  * 商品の詳細情報（画像、名前、説明、価格）をモーダルウィンドウで表示します。
+ * shadcn/uiのDialog、ScrollAreaコンポーネントを使用して実装されています。
  * ESCキーでモーダルを閉じる機能と、背景クリックでモーダルを閉じる機能を提供します。
  */
 export default function ProductModal({
@@ -23,78 +33,84 @@ export default function ProductModal({
   isOpen,
   onClose,
 }: ProductModalProps) {
-  useModal(isOpen, onClose);
-
-  if (!isOpen || !product) {
+  if (!product) {
     return null;
   }
 
   return (
-    <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-sm"
-      onClick={onClose}
-    >
-      <div
-        className="relative max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-lg bg-white shadow-2xl"
-        onClick={(e) => e.stopPropagation()}
-      >
-        <div className="sticky top-0 right-0 z-10 flex justify-end p-4">
-          <button
-            onClick={onClose}
-            className="rounded-full bg-white/90 p-2 text-gray-600 transition-colors hover:bg-white hover:text-gray-800 shadow-md"
-            aria-label="閉じる"
-          >
-            <CloseIcon />
-          </button>
-        </div>
+    <Dialog open={isOpen} onOpenChange={onClose}>
+      <DialogContent className="max-h-[90vh] w-[calc(100vw-2rem)] max-w-2xl p-0 overflow-hidden sm:rounded-lg">
+        <ScrollArea className="max-h-[90vh]">
+          <div className="flex flex-col gap-4 p-4 md:p-6 lg:p-8">
+            {/* 画像部分 - Cardで囲む */}
+            <Card className="overflow-hidden border-0 shadow-lg">
+              <CardHeader className="p-0">
+                <div className="relative h-[40vh] min-h-[200px] max-h-[450px] md:h-[45vh] md:max-h-[500px] overflow-hidden bg-muted">
+                  {product.imageUrl ? (
+                    <div className="relative h-full w-full flex items-center justify-center p-4 md:p-6">
+                      <Image
+                        src={product.imageUrl}
+                        alt={product.name}
+                        fill
+                        className="object-contain"
+                        sizes="(max-width: 768px) 100vw, (max-width: 1024px) 90vw, 672px"
+                        priority
+                      />
+                    </div>
+                  ) : (
+                    <div className="h-full w-full bg-linear-to-br from-muted via-muted/80 to-muted/50" />
+                  )}
+                </div>
+              </CardHeader>
+            </Card>
 
-        {product.imageUrl ? (
-          <div className="relative aspect-square w-full overflow-hidden bg-gray-50">
-            <Image
-              src={product.imageUrl}
-              alt={product.name}
-              fill
-              className="object-cover"
-              sizes="(max-width: 768px) 100vw, (max-width: 1024px) 90vw, 800px"
-              priority
-            />
+            {/* 商品情報部分 - Cardで囲む */}
+            <Card className="border-0 shadow-sm">
+              <CardContent className="p-4 md:p-6">
+                <DialogHeader className="space-y-3 mb-0">
+                  <DialogTitle className="whitespace-pre-wrap text-center text-xl font-normal tracking-wide leading-tight text-muted-foreground md:text-2xl lg:text-3xl">
+                    {product.name}
+                  </DialogTitle>
+                  {product.description && (
+                    <DialogDescription className="text-center text-sm leading-relaxed text-muted-foreground md:text-base lg:text-lg mt-2">
+                      {product.description}
+                    </DialogDescription>
+                  )}
+                </DialogHeader>
+              </CardContent>
+            </Card>
+
+            {/* 価格部分 - Cardで囲む */}
+            {(product.priceS || product.priceL) && (
+              <Card className="border-0 shadow-sm bg-muted/30">
+                <CardContent className="p-4 md:p-6">
+                  <div className="flex flex-wrap items-center justify-center gap-3 md:gap-6">
+                    {product.priceS && (
+                      <div className="flex flex-col items-center gap-2">
+                        <span className="text-xs font-normal text-muted-foreground uppercase tracking-wider">S</span>
+                        <Badge variant="secondary" className="text-lg font-normal px-5 py-2.5 md:text-xl md:px-6 md:py-3">
+                          {formatPrice(product.priceS)}
+                        </Badge>
+                      </div>
+                    )}
+                    {product.priceS && product.priceL && (
+                      <Separator orientation="vertical" className="h-12 md:h-16" />
+                    )}
+                    {product.priceL && (
+                      <div className="flex flex-col items-center gap-2">
+                        <span className="text-xs font-normal text-muted-foreground uppercase tracking-wider">L</span>
+                        <Badge variant="secondary" className="text-lg font-normal px-5 py-2.5 md:text-xl md:px-6 md:py-3">
+                          {formatPrice(product.priceL)}
+                        </Badge>
+                      </div>
+                    )}
+                  </div>
+                </CardContent>
+              </Card>
+            )}
           </div>
-        ) : (
-          <div className="aspect-square w-full bg-linear-to-br from-gray-50 to-gray-100" />
-        )}
-
-        <div className="p-6 md:p-8">
-          <div className="mb-4 flex h-[4em] items-center justify-center md:h-[4.25em]">
-            <h2 className="line-clamp-2 whitespace-pre-wrap text-center text-2xl font-medium leading-relaxed text-gray-800 md:text-3xl">
-              {product.name}
-            </h2>
-          </div>
-
-          {product.description && (
-            <p className="mb-6 whitespace-pre-wrap text-base leading-relaxed text-gray-600 md:text-lg">
-              {product.description}
-            </p>
-          )}
-
-          {(product.priceS || product.priceL) && (
-            <div className="flex items-baseline gap-3 border-t border-gray-200 pt-6">
-              {product.priceS && (
-                <span className="text-2xl font-medium tracking-wide text-gray-800 md:text-3xl">
-                  S: {formatPrice(product.priceS)}
-                </span>
-              )}
-              {product.priceS && product.priceL && (
-                <span className="text-xl text-gray-300">/</span>
-              )}
-              {product.priceL && (
-                <span className="text-2xl font-medium tracking-wide text-gray-800 md:text-3xl">
-                  L: {formatPrice(product.priceL)}
-                </span>
-              )}
-            </div>
-          )}
-        </div>
-      </div>
-    </div>
+        </ScrollArea>
+      </DialogContent>
+    </Dialog>
   );
 }
