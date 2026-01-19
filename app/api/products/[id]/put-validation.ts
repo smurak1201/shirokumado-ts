@@ -12,10 +12,6 @@ export async function validateProductUpdate(
   body: ProductUpdateRequestBody,
   id: string
 ): Promise<void> {
-  if (isNaN(productId)) {
-    throw new ValidationError('無効な商品IDです');
-  }
-
   const existingProduct = await safePrismaOperation(
     () => prisma.product.findUnique({ where: { id: productId } }),
     `PUT /api/products/${id} - existence check`

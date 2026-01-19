@@ -1,4 +1,4 @@
-import { apiSuccess } from '@/lib/api-helpers';
+import { apiSuccess, parseProductId } from '@/lib/api-helpers';
 import { prisma, safePrismaOperation } from '@/lib/prisma';
 import { NotFoundError } from '@/lib/errors';
 import { log } from '@/lib/logger';
@@ -43,7 +43,7 @@ export async function putProduct(
   params: Promise<{ id: string }>
 ) {
   const { id } = await params;
-  const productId = parseInt(id);
+  const productId = parseProductId(id);
   const body = await request.json() as ProductUpdateRequestBody;
 
   await validateProductUpdate(productId, body, id);

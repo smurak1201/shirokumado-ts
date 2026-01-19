@@ -1,6 +1,6 @@
-import { apiSuccess } from '@/lib/api-helpers';
+import { apiSuccess, parseProductId } from '@/lib/api-helpers';
 import { prisma, safePrismaOperation } from '@/lib/prisma';
-import { ValidationError, NotFoundError } from '@/lib/errors';
+import { NotFoundError } from '@/lib/errors';
 import { log } from '@/lib/logger';
 import { NextRequest } from 'next/server';
 import { deleteFile } from '@/lib/blob';
@@ -17,11 +17,7 @@ export async function deleteProduct(
   params: Promise<{ id: string }>
 ) {
   const { id } = await params;
-  const productId = parseInt(id);
-
-  if (isNaN(productId)) {
-    throw new ValidationError('無効な商品IDです');
-  }
+  const productId = parseProductId(id);
 
   const existingProduct = await safePrismaOperation(
     () => prisma.product.findUnique({ where: { id: productId } }),

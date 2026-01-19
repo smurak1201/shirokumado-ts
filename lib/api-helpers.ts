@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { AppError, getUserFriendlyMessage } from './errors';
+import { AppError, getUserFriendlyMessage, ValidationError } from './errors';
 import { log } from './logger';
 
 /**
@@ -85,4 +85,18 @@ export function withErrorHandling<T extends unknown[]>(
       return handleApiError(error);
     }
   };
+}
+
+/**
+ * 商品ID文字列を数値に変換し、バリデーションを行います
+ * @param id 商品ID文字列
+ * @returns 変換された商品ID（数値）
+ * @throws ValidationError 無効な商品IDの場合
+ */
+export function parseProductId(id: string): number {
+  const productId = parseInt(id);
+  if (isNaN(productId)) {
+    throw new ValidationError('無効な商品IDです');
+  }
+  return productId;
 }
