@@ -344,11 +344,18 @@ interface ProductModalProps {
 
 **このアプリでの使用箇所**:
 
-1. **[`app/utils/format.ts`](../../app/utils/format.ts) (`formatPrice`関数)** - 価格フォーマット関数
+1. **[`lib/product-utils.ts`](../../lib/product-utils.ts) (`formatPrice`関数)** - 価格フォーマット関数
 
 ```typescript
-export function formatPrice(price: number): string {
-  return `¥${price.toLocaleString()}`;
+export function formatPrice(value: string | number | null | undefined): string {
+  if (value === null || value === undefined || value === "") {
+    return "";
+  }
+  const numValue = typeof value === "string" ? parseFloat(value.replace(/,/g, "")) : value;
+  if (isNaN(numValue)) {
+    return "";
+  }
+  return `¥${numValue.toLocaleString("ja-JP")}`;
 }
 ```
 
@@ -846,7 +853,7 @@ console.log(product.invalidField); // コンパイルエラー
 - **自動補完**: IDE で自動補完が利用可能
 - **リファクタリング**: スキーマ変更時に型エラーで影響範囲を把握
 
-**詳細は [Prisma ガイド - 型生成](doc/guides/prisma-guide.md#型生成) を参照してください。async/await の使用方法については [Async/Await ガイド](doc/guides/async-await-guide.md) を参照してください。**
+**詳細は [Prisma ガイド - 型生成](./prisma-guide.md#型生成) を参照してください。async/await の使用方法については [Async/Await ガイド](./async-await-guide.md) を参照してください。**
 
 ## API Routes での型安全性
 
@@ -882,7 +889,7 @@ export const POST = withErrorHandling(async (request: NextRequest) => {
 });
 ```
 
-**async/await の詳細な使用方法については [Async/Await ガイド](doc/guides/async-await-guide.md) を参照してください。**
+**async/await の詳細な使用方法については [Async/Await ガイド](./async-await-guide.md) を参照してください。**
 
 ### レスポンスの型定義
 
@@ -982,12 +989,18 @@ const categories = [
 
 **このアプリでの使用箇所**:
 
-[`app/utils/format.ts`](../../app/utils/format.ts) (`formatPrice`関数)
+[`lib/product-utils.ts`](../../lib/product-utils.ts) (`formatPrice`関数)
 
 ```typescript
-export function formatPrice(price: number) {
-  return `¥${price.toLocaleString()}`;
-  // 戻り値の型は string と推論される
+export function formatPrice(value: string | number | null | undefined): string {
+  if (value === null || value === undefined || value === "") {
+    return "";
+  }
+  const numValue = typeof value === "string" ? parseFloat(value.replace(/,/g, "")) : value;
+  if (isNaN(numValue)) {
+    return "";
+  }
+  return `¥${numValue.toLocaleString("ja-JP")}`;
 }
 ```
 
@@ -1082,7 +1095,7 @@ export async function safePrismaOperation<T>(
   try {
     return await operation();
   } catch (error) {
-    logError(error, context);
+    log.error('Database operation failed', { error, context });
     throw new DatabaseError(
       `Failed to execute database operation${context ? ` in ${context}` : ""}`,
       error
@@ -1777,10 +1790,10 @@ export function determinePublishedStatus(
 
 ## 参考リンク
 
-- **[Prisma ガイド](doc/guides/prisma-guide.md)**: Prisma との型統合の詳細
-- **[React ガイド](doc/guides/react-guide.md)**: React での TypeScript の使用方法
-- **[JSX ガイド](doc/guides/jsx-guide.md)**: TypeScript での JSX の使用方法
-- **[Next.js ガイド](doc/guides/nextjs-guide.md)**: Next.js での TypeScript の使用方法
-- **[Async/Await ガイド](doc/guides/async-await-guide.md)**: async/await と Promise の使用方法
-- **[ユーティリティ関数ガイド](doc/guides/utilities-guide.md)**: 環境変数の型安全な管理（`lib/env.ts`）の詳細
+- **[Prisma ガイド](./prisma-guide.md)**: Prisma との型統合の詳細
+- **[React ガイド](./react-guide.md)**: React での TypeScript の使用方法
+- **[JSX ガイド](./jsx-guide.md)**: TypeScript での JSX の使用方法
+- **[Next.js ガイド](./nextjs-guide.md)**: Next.js での TypeScript の使用方法
+- **[Async/Await ガイド](./async-await-guide.md)**: async/await と Promise の使用方法
+- **[ユーティリティ関数ガイド](./utilities-guide.md)**: 環境変数の型安全な管理（`lib/env.ts`）の詳細
 - **[TypeScript 公式ドキュメント](https://www.typescriptlang.org/docs/)**: TypeScript の包括的なドキュメント

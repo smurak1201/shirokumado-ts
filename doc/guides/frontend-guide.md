@@ -89,7 +89,7 @@
 ];
 ```
 
-**注意**: プロジェクト全体のディレクトリ構造の詳細については、[プロジェクト構造ドキュメント](doc/project-structure.md)を参照してください。App Router のディレクトリ構造については、[App Router ガイド](doc/guides/app-router-guide.md#app-router-のディレクトリ構造)を参照してください。
+**注意**: プロジェクト全体のディレクトリ構造の詳細については、[プロジェクト構造ドキュメント](../project-structure.md)を参照してください。App Router のディレクトリ構造については、[App Router ガイド](./app-router-guide.md#app-router-のディレクトリ構造)を参照してください。
 
 ## ディレクトリ構造
 
@@ -108,8 +108,6 @@
 │   ├── ProductGrid.tsx        # 商品グリッドコンポーネント
 │   ├── ProductTile.tsx        # 商品タイルコンポーネント
 │   └── ProductModal.tsx       # 商品詳細モーダルコンポーネント
-├── utils/                      # ユーティリティ関数
-│   └── format.ts              # フォーマット関数
 ├── page.tsx                    # ホームページ
 └── faq/
     └── page.tsx               # FAQページ
@@ -160,16 +158,19 @@
 useProductModal();
 ```
 
-#### formatPrice (`utils/format.ts`)
+#### formatPrice (`lib/product-utils.ts`)
 
 価格をフォーマットして表示用の文字列を返す関数です。
 
-[`app/utils/format.ts`](../../app/utils/format.ts) (`formatPrice`関数)
+[`lib/product-utils.ts`](../../lib/product-utils.ts) (`formatPrice`関数)
 
 **機能**:
 
-- 数値を 3 桁区切りの文字列に変換
-- 円記号を付与
+- 数値を 3 桁区切りの文字列に変換（`1,000`形式）
+- 円記号を付与（`¥1,000`形式）
+- `null`や`undefined`の場合は`'-'`を返す
+
+**補足**: 入力フィールド用には`formatPriceForInput`関数も提供されており、こちらは円記号なしの数値文字列のみを返します。
 
 **使用例**:
 
@@ -646,13 +647,13 @@ const { config } = await import("@/lib/config");
 
 ## 参考リンク
 
-- **[React ガイド](doc/guides/react-guide.md)**: React の包括的なガイド
-- **[JSX ガイド](doc/guides/jsx-guide.md)**: JSX の構文と使用方法
-- **[Next.js ガイド](doc/guides/nextjs-guide.md)**: Next.js の詳細な使用方法
-- **[App Router ガイド](doc/guides/app-router-guide.md)**: App Router の詳細な使用方法
-- **[shadcn/ui ガイド](doc/guides/shadcn-ui-guide.md)**: shadcn/ui の使用方法とラッパーコンポーネントの作成
-- **[スタイリングのベストプラクティス](doc/guides/styling-best-practices.md)**: Tailwind CSS と shadcn/ui を使用したスタイリングのベストプラクティス
-- **[Async/Await ガイド](doc/guides/async-await-guide.md)**: async/await と Promise の使用方法
+- **[React ガイド](./react-guide.md)**: React の包括的なガイド
+- **[JSX ガイド](./jsx-guide.md)**: JSX の構文と使用方法
+- **[Next.js ガイド](./nextjs-guide.md)**: Next.js の詳細な使用方法
+- **[App Router ガイド](./app-router-guide.md)**: App Router の詳細な使用方法
+- **[shadcn/ui ガイド](./shadcn-ui-guide.md)**: shadcn/ui の使用方法とラッパーコンポーネントの作成
+- **[スタイリングのベストプラクティス](./styling-best-practices.md)**: Tailwind CSS と shadcn/ui を使用したスタイリングのベストプラクティス
+- **[Async/Await ガイド](./async-await-guide.md)**: async/await と Promise の使用方法
 - [Next.js App Router](https://nextjs.org/docs/app)
 - [React Server Components](https://react.dev/blog/2023/03/22/react-labs-what-we-have-been-working-on-march-2023#react-server-components)
 - [Tailwind CSS](https://tailwindcss.com/docs)

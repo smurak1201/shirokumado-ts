@@ -38,7 +38,7 @@
 
 コードを読む際は、**Server Component**と**Client Component**の違いを理解することが重要です。
 
-**勉強を始める方へ**: このプロジェクトで使用されている技術スタックを勉強したい方は、[勉強用ガイド](doc/guides/learning-guide.md)を参照してください。学習の進め方、ガイドドキュメントの読み順序、ファイルの読み順序、ソースコードを読むときのコツ、技術スタック別のおすすめファイルなどが詳しく説明されています。
+**勉強を始める方へ**: このプロジェクトで使用されている技術スタックを勉強したい方は、[勉強用ガイド](./guides/learning-guide.md)を参照してください。学習の進め方、ガイドドキュメントの読み順序、ファイルの読み順序、ソースコードを読むときのコツ、技術スタック別のおすすめファイルなどが詳しく説明されています。
 
 ## 読み始める順序
 
@@ -102,7 +102,7 @@ API Routes で使用する共通のヘルパー関数を確認します。
 - [`lib/blob.ts`](../lib/blob.ts): Blob Storage ユーティリティ
 - [`lib/env.ts`](../lib/env.ts): 環境変数の型安全な管理
 
-**詳細**: ユーティリティ関数の詳細については、[ユーティリティ関数ガイド](doc/guides/utilities-guide.md)を参照してください。
+**詳細**: ユーティリティ関数の詳細については、[ユーティリティ関数ガイド](./guides/utilities-guide.md)を参照してください。
 
 #### [`lib/prisma.ts`](../lib/prisma.ts)
 
@@ -271,11 +271,7 @@ app/dashboard/
 │   └── useScrollPosition.ts     # スクロール位置監視
 └── utils/                # ユーティリティ関数（ビジネスロジック）
     ├── productUtils.ts           # 商品のグループ化・フィルタリング
-    ├── productFormActions.ts    # 商品フォームアクション
-    ├── productFormCreateHandler.ts # 商品作成ハンドラー
-    ├── productFormUpdateHandler.ts # 商品更新ハンドラー
-    ├── productFormInitialData.ts # 商品フォーム初期データ
-    └── productFormSubmit.ts     # 商品フォーム送信
+    └── productFormHandlers.ts   # 商品フォーム処理（作成・更新・送信・初期データ）
 ```
 
 **設計思想**:
@@ -315,9 +311,7 @@ app/dashboard/
 
 フロントエンドで使用するユーティリティ関数を配置します。
 
-**主要な関数**:
-
-- **[`format.ts`](../app/utils/format.ts)**: フォーマット関数（価格フォーマットなど）
+**注意**: フォーマット関数は [`lib/product-utils.ts`](../lib/product-utils.ts) に統合されています。
 
 #### `app/components/` - フロントエンド共通コンポーネント
 
@@ -484,15 +478,15 @@ export default function ProductList() {
 
 コードを読みながら、必要に応じて以下の技術ガイドを参照してください：
 
-- **[開発ガイドライン](doc/development-guide.md)** - コーディング規約とベストプラクティス。コードを読む前に主要なポイントを把握しておくと理解が深まります。
-- **[App Router ガイド](doc/guides/app-router-guide.md)** - Next.js App Router の詳細な使用方法。Server Components、Client Components、API Routes などの説明と、このアプリでの実際の使用箇所を説明します。
-- **[React ガイド](doc/guides/react-guide.md)** - React の詳細な使用方法。Hooks、カスタムフック、コンポーネント設計などの説明と、このアプリでの実際の使用箇所を説明します。
-- **[TypeScript ガイド](doc/guides/typescript-guide.md)** - TypeScript の詳細な使用方法。型定義、型安全性、Prisma との統合などの説明と、このアプリでの実際の使用箇所を説明します。
-- **[Async/Await ガイド](doc/guides/async-await-guide.md)** - async/await と Promise の使用方法。基本的な構文、エラーハンドリング、Promise.all などの便利なメソッド、このアプリでの実際の使用例を説明します。
-- **[Prisma ガイド](doc/guides/prisma-guide.md)** - Prisma の詳細な使用方法。各関数の説明と、このアプリでの実際の使用箇所を説明します。
-- **[JSX ガイド](doc/guides/jsx-guide.md)** - JSX の構文と使用方法。HTML との違い、基本的な構文、ベストプラクティスなどの説明と、このアプリでの実際の使用例を説明します。
-- **[Next.js ガイド](doc/guides/nextjs-guide.md)** - Next.js の詳細な使用方法。画像最適化、フォント最適化、メタデータ、ビルドとデプロイなどの説明と、このアプリでの実際の使用箇所を説明します。
-- **[ユーティリティ関数ガイド](doc/guides/utilities-guide.md)** - `lib/` ディレクトリのユーティリティ関数の詳細。商品関連ユーティリティ、画像圧縮、Blob Storage、設定管理、環境変数の型安全な管理などを説明します。
+- **[開発ガイドライン](./development-guide.md)** - コーディング規約とベストプラクティス。コードを読む前に主要なポイントを把握しておくと理解が深まります。
+- **[App Router ガイド](./guides/app-router-guide.md)** - Next.js App Router の詳細な使用方法。Server Components、Client Components、API Routes などの説明と、このアプリでの実際の使用箇所を説明します。
+- **[React ガイド](./guides/react-guide.md)** - React の詳細な使用方法。Hooks、カスタムフック、コンポーネント設計などの説明と、このアプリでの実際の使用箇所を説明します。
+- **[TypeScript ガイド](./guides/typescript-guide.md)** - TypeScript の詳細な使用方法。型定義、型安全性、Prisma との統合などの説明と、このアプリでの実際の使用箇所を説明します。
+- **[Async/Await ガイド](./guides/async-await-guide.md)** - async/await と Promise の使用方法。基本的な構文、エラーハンドリング、Promise.all などの便利なメソッド、このアプリでの実際の使用例を説明します。
+- **[Prisma ガイド](./guides/prisma-guide.md)** - Prisma の詳細な使用方法。各関数の説明と、このアプリでの実際の使用箇所を説明します。
+- **[JSX ガイド](./guides/jsx-guide.md)** - JSX の構文と使用方法。HTML との違い、基本的な構文、ベストプラクティスなどの説明と、このアプリでの実際の使用例を説明します。
+- **[Next.js ガイド](./guides/nextjs-guide.md)** - Next.js の詳細な使用方法。画像最適化、フォント最適化、メタデータ、ビルドとデプロイなどの説明と、このアプリでの実際の使用箇所を説明します。
+- **[ユーティリティ関数ガイド](./guides/utilities-guide.md)** - `lib/` ディレクトリのユーティリティ関数の詳細。商品関連ユーティリティ、画像圧縮、Blob Storage、設定管理、環境変数の型安全な管理などを説明します。
 
 ### 外部ドキュメント
 

@@ -27,11 +27,11 @@
 
 このセクションでは、プロジェクトで使用するコーディング規約を説明します。各技術スタックごとに推奨される書き方と避けるべき書き方を示しています。
 
-**詳細**: 各技術スタックの詳細な使用方法については、[ガイドドキュメント](doc/guides/)を参照してください。
+**詳細**: 各技術スタックの詳細な使用方法については、[ガイドドキュメント](./guides/)を参照してください。
 
 ### Next.js App Router
 
-**説明**: Next.js App Router を使用して、Server Components を優先し、パフォーマンスと SEO を最適化します。詳細については、[App Router ガイド](doc/guides/app-router-guide.md)を参照してください。
+**説明**: Next.js App Router を使用して、Server Components を優先し、パフォーマンスと SEO を最適化します。詳細については、[App Router ガイド](./guides/app-router-guide.md)を参照してください。
 
 #### Server Components を優先し、直接データフェッチ
 
@@ -178,7 +178,7 @@ const products = await prisma.product.findMany({
 - **レスポンスタイム**: クエリ回数が削減され、レスポンスタイムが大幅に短縮される
 - **スケーラビリティ**: データ件数が増えてもクエリ回数が一定のため、パフォーマンスが安定する
 - **コードの簡潔性**: ループ内でのクエリ実行が不要で、コードがシンプルになる
-- **N+1 問題の回避**: データが N 件ある場合、`include`を使用することで 1 回のクエリで済む（[Prisma ガイド - N+1 問題の詳細解説](doc/guides/prisma-guide.md#n1-問題の詳細解説)）
+- **N+1 問題の回避**: データが N 件ある場合、`include`を使用することで 1 回のクエリで済む（[Prisma ガイド - N+1 問題の詳細解説](./guides/prisma-guide.md#n1-問題の詳細解説)）
 
 **避ける**: ループ内でクエリを実行。
 
@@ -198,7 +198,7 @@ for (const product of products) {
 - **レスポンスタイムの悪化**: クエリ回数が増加し、各クエリの実行時間が累積されるため、レスポンスタイムが大幅に悪化する
 - **スケーラビリティの問題**: データ件数が増えるほどクエリ回数が増加し、パフォーマンスが悪化する
 - **コードの複雑性**: ループ内でクエリを実行する必要があり、コードが複雑になる
-- **N+1 問題の発生**: データが N 件ある場合、合計 N+1 回のクエリが実行される（[Prisma ガイド - N+1 問題の詳細解説](doc/guides/prisma-guide.md#n1-問題の詳細解説)）
+- **N+1 問題の発生**: データが N 件ある場合、合計 N+1 回のクエリが実行される（[Prisma ガイド - N+1 問題の詳細解説](./guides/prisma-guide.md#n1-問題の詳細解説)）
 
 **このアプリでの実装**:
 
@@ -206,7 +206,7 @@ for (const product of products) {
 
 **`select`について**:
 
-`select`は必要なフィールドのみを取得できる便利な機能ですが、このアプリでは使用していません。詳細は [Prisma ガイド - select（このアプリでは未使用）](doc/guides/prisma-guide.md#selectこのアプリでは未使用) を参照してください。
+`select`は必要なフィールドのみを取得できる便利な機能ですが、このアプリでは使用していません。詳細は [Prisma ガイド - select（このアプリでは未使用）](./guides/prisma-guide.md#selectこのアプリでは未使用) を参照してください。
 
 #### エラーハンドリング
 
@@ -223,7 +223,7 @@ const user = await safePrismaOperation(
 ); // ジェネリクスにより、userの型が推論される
 ```
 
-**詳細**: `withErrorHandling`と`safePrismaOperation`はジェネリクスを使用しています。詳細については、[TypeScript ガイド - ジェネリクス](doc/guides/typescript-guide.md#ジェネリクス)を参照してください。
+**詳細**: `withErrorHandling`と`safePrismaOperation`はジェネリクスを使用しています。詳細については、[TypeScript ガイド - ジェネリクス](./guides/typescript-guide.md#ジェネリクス)を参照してください。
 
 **理由**:
 
@@ -290,11 +290,11 @@ await prisma.order.create({ data: { userId: user.id, ...orderData } });
 
 **このアプリでの実装**:
 
-このアプリでは、商品の表示順序を一括更新する際にトランザクションを使用しています。詳細は [Prisma ガイド - $transaction](doc/guides/prisma-guide.md#transaction) を参照してください。
+このアプリでは、商品の表示順序を一括更新する際にトランザクションを使用しています。詳細は [Prisma ガイド - $transaction](./guides/prisma-guide.md#transaction) を参照してください。
 
 ### TypeScript
 
-**説明**: TypeScript を使用して型安全性を確保し、コードの品質を向上させます。詳細な使用方法については、[TypeScript ガイド](doc/guides/typescript-guide.md)を参照してください。
+**説明**: TypeScript を使用して型安全性を確保し、コードの品質を向上させます。詳細な使用方法については、[TypeScript ガイド](./guides/typescript-guide.md)を参照してください。
 
 #### 型安全性
 
@@ -951,7 +951,7 @@ app/dashboard/utils/   # camelCase で統一
 └── productUtils.ts    # ダッシュボード専用の商品操作関数
 ```
 
-**詳細**: ユーティリティ関数の詳細については、[ユーティリティ関数ガイド](doc/guides/utilities-guide.md)を参照してください。
+**詳細**: ユーティリティ関数の詳細については、[ユーティリティ関数ガイド](./guides/utilities-guide.md)を参照してください。
 
 **機能別ディレクトリのユーティリティ**:
 
@@ -1553,15 +1553,15 @@ export function apiSuccess<T>(data: T, status: number = 200): NextResponse {
 
 ### プロジェクト内のドキュメント
 
-- **[アーキテクチャドキュメント](doc/architecture.md)**: アーキテクチャと設計思想
-- **[Async/Await ガイド](doc/guides/async-await-guide.md)**: async/await と Promise の使用方法
-- **[ユーティリティ関数ガイド](doc/guides/utilities-guide.md)**: エラーハンドリング、ログ、API 型定義などの詳細
-- **[React ガイド](doc/guides/react-guide.md)**: React の包括的なガイド
-- **[JSX ガイド](doc/guides/jsx-guide.md)**: JSX の構文とベストプラクティス
-- **[TypeScript ガイド](doc/guides/typescript-guide.md)**: TypeScript の使用方法
-- **[Next.js ガイド](doc/guides/nextjs-guide.md)**: Next.js の使用方法
-- **[App Router ガイド](doc/guides/app-router-guide.md)**: App Router の使用方法
-- **[shadcn/ui ガイド](doc/guides/shadcn-ui-guide.md)**: shadcn/ui の使用方法とラッパーコンポーネントの作成
+- **[アーキテクチャドキュメント](./architecture.md)**: アーキテクチャと設計思想
+- **[Async/Await ガイド](./guides/async-await-guide.md)**: async/await と Promise の使用方法
+- **[ユーティリティ関数ガイド](./guides/utilities-guide.md)**: エラーハンドリング、ログ、API 型定義などの詳細
+- **[React ガイド](./guides/react-guide.md)**: React の包括的なガイド
+- **[JSX ガイド](./guides/jsx-guide.md)**: JSX の構文とベストプラクティス
+- **[TypeScript ガイド](./guides/typescript-guide.md)**: TypeScript の使用方法
+- **[Next.js ガイド](./guides/nextjs-guide.md)**: Next.js の使用方法
+- **[App Router ガイド](./guides/app-router-guide.md)**: App Router の使用方法
+- **[shadcn/ui ガイド](./guides/shadcn-ui-guide.md)**: shadcn/ui の使用方法とラッパーコンポーネントの作成
 
 ### 外部ドキュメント
 

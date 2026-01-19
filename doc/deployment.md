@@ -84,7 +84,7 @@ BLOB_READ_WRITE_TOKEN=vercel_blob_rw_...
 
 - `DATABASE_URL`: PostgreSQL 接続文字列（アプリケーション用・マイグレーション用）
 
-詳細は [Prisma & Blob セットアップガイド](doc/setup-prisma-blob.md) を参照してください。
+詳細は [Prisma & Blob セットアップガイド](./setup-prisma-blob.md) を参照してください。
 
 #### オプション環境変数
 

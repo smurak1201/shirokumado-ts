@@ -35,7 +35,7 @@ Next.js App Router は、Next.js 13 以降で導入された新しいルーテ�
 
 ## App Router とは
 
-**Next.js 全体の説明については、[Next.js ガイド](doc/guides/nextjs-guide.md) を参照してください。**
+**Next.js 全体の説明については、[Next.js ガイド](./nextjs-guide.md) を参照してください。**
 
 **App Router の主な特徴**:
 
@@ -50,7 +50,7 @@ Next.js App Router は、Next.js 13 以降で導入された新しいルーテ�
 
 App Router では、`app/` ディレクトリ内のファイル構造がそのまま URL ルートになります。
 
-**注意**: プロジェクト全体のディレクトリ構造の詳細については、[プロジェクト構造ドキュメント](doc/project-structure.md)を参照してください。設計思想については、[アーキテクチャドキュメント](doc/architecture.md#ディレクトリ構造の設計思想)を参照してください。
+**注意**: プロジェクト全体のディレクトリ構造の詳細については、[プロジェクト構造ドキュメント](../project-structure.md)を参照してください。設計思想については、[アーキテクチャドキュメント](../architecture.md#ディレクトリ構造の設計思想)を参照してください。
 
 **このアプリでの App Router のディレクトリ構造**:
 
@@ -373,7 +373,7 @@ async function getDashboardData() {
 }
 ```
 
-**async/await と Promise.all の詳細な使用方法は [Async/Await ガイド](doc/guides/async-await-guide.md) を参照してください。**
+**async/await と Promise.all の詳細な使用方法は [Async/Await ガイド](./async-await-guide.md) を参照してください。**
 
 ### Client Components でのデータフェッチング（fetch API）
 
@@ -695,15 +695,15 @@ export const dynamic = "force-dynamic";
 - **`app/api/products/[id]/route.ts`**: 商品 ID に基づく動的ルーティング
 
 ```typescript
+import { parseProductId } from '@/lib/api-helpers';
+
+// ...
+
   _request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) => {
   const { id } = await params;
-  const productId = parseInt(id);
-
-  if (isNaN(productId)) {
-    throw new ValidationError('無効な商品IDです');
-  }
+  const productId = parseProductId(id);
 
   const product = await safePrismaOperation(
     () =>
@@ -842,16 +842,16 @@ export const dynamic = "force-dynamic";
 2. **[`app/api/products/[id]/route.ts`](../../app/api/products/[id]/route.ts) (`PUT`エクスポート)** - 個別商品の操作
 
 ```typescript
+import { parseProductId } from '@/lib/api-helpers';
+
+// ...
+
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) => {
   const { id } = await params;
-  const productId = parseInt(id);
+  const productId = parseProductId(id);
   const body = await request.json();
-
-  if (isNaN(productId)) {
-    throw new ValidationError('無効な商品IDです');
-  }
 
   // 商品の存在確認
   const existingProduct = await safePrismaOperation(
@@ -1160,8 +1160,8 @@ Next.js App Router を使用することで、以下のメリットが得られ�
 
 ## 参考リンク
 
-- **[Next.js ガイド](doc/guides/nextjs-guide.md)**: Next.js 全体の説明（画像最適化、フォント最適化、メタデータ、ビルドとデプロイなど）
-- **[React ガイド](doc/guides/react-guide.md)**: React の詳細な使用方法
-- **[JSX ガイド](doc/guides/jsx-guide.md)**: JSX の構文と使用方法
-- **[Async/Await ガイド](doc/guides/async-await-guide.md)**: async/await と Promise の使用方法
+- **[Next.js ガイド](./nextjs-guide.md)**: Next.js 全体の説明（画像最適化、フォント最適化、メタデータ、ビルドとデプロイなど）
+- **[React ガイド](./react-guide.md)**: React の詳細な使用方法
+- **[JSX ガイド](./jsx-guide.md)**: JSX の構文と使用方法
+- **[Async/Await ガイド](./async-await-guide.md)**: async/await と Promise の使用方法
 - **[Next.js 公式ドキュメント - App Router](https://nextjs.org/docs/app)**: App Router の包括的なドキュメント

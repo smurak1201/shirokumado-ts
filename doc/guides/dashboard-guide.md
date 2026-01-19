@@ -106,11 +106,7 @@ app/dashboard/
 │   └── useScrollPosition.ts    # スクロール位置監視
 └── utils/                      # ユーティリティ関数
     ├── productUtils.ts         # 商品のグループ化・フィルタリング
-    ├── productFormActions.ts  # 商品フォームアクション
-    ├── productFormCreateHandler.ts # 商品作成ハンドラー
-    ├── productFormUpdateHandler.ts # 商品更新ハンドラー
-    ├── productFormInitialData.ts # 商品フォーム初期データ
-    └── productFormSubmit.ts   # 商品フォーム送信
+    └── productFormHandlers.ts  # 商品フォーム処理（作成・更新・送信・初期データ）
 ```
 
 ## 主要機能
@@ -161,10 +157,10 @@ app/dashboard/
 
 **実装例**:
 
-**注意**: このコード例は簡潔化したものです。実際の実装では、`_getDashboardData()`という内部関数で`Promise.all`と`safePrismaOperation`を使用してデータを取得しています。詳細は [`app/dashboard/page.tsx`](../../app/dashboard/page.tsx) を参照してください。
+**注意**: このコード例は簡潔化したものです。実際の実装では、`getDashboardData()`という関数で`Promise.all`と`safePrismaOperation`を使用してデータを取得しています。詳細は [`app/dashboard/page.tsx`](../../app/dashboard/page.tsx) を参照してください。
 
 ```typescript
-const data = await _getDashboardData();
+const data = await getDashboardData();
 const { categories, products } = data;
 
 return (
@@ -448,7 +444,7 @@ interface ProductListProps {
 
 ```
 page.tsx (Server Component)
-  ↓ _getDashboardData()
+  ↓ getDashboardData()
   ↓ Promise.all + safePrismaOperation
   ↓ Prismaクエリ
 Database
@@ -956,9 +952,9 @@ const products = await prisma.product.findMany({
 
 ## 参考リンク
 
-- **[App Router ガイド](doc/guides/app-router-guide.md)**: Next.js App Router の詳細な使用方法
-- **[Async/Await ガイド](doc/guides/async-await-guide.md)**: async/await と Promise の使用方法
-- **[Prisma ガイド](doc/guides/prisma-guide.md)**: Prisma の詳細な使用方法
+- **[App Router ガイド](./app-router-guide.md)**: Next.js App Router の詳細な使用方法
+- **[Async/Await ガイド](./async-await-guide.md)**: async/await と Promise の使用方法
+- **[Prisma ガイド](./prisma-guide.md)**: Prisma の詳細な使用方法
 - [Next.js App Router](https://nextjs.org/docs/app)
 - [React Server Components](https://react.dev/blog/2023/03/22/react-labs-what-we-have-been-working-on-march-2023#react-server-components)
 - [Prisma Documentation](https://www.prisma.io/docs)

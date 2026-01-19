@@ -2,7 +2,7 @@
 
 白熊堂プロジェクトのディレクトリ構造と各ファイルの役割を説明します。
 
-**注意**: App Router のディレクトリ構造については、[App Router ガイド](doc/guides/app-router-guide.md#app-router-のディレクトリ構造)を参照してください。設計思想については、[アーキテクチャドキュメント](doc/architecture.md#ディレクトリ構造の設計思想)を参照してください。
+**注意**: App Router のディレクトリ構造については、[App Router ガイド](./guides/app-router-guide.md#app-router-のディレクトリ構造)を参照してください。設計思想については、[アーキテクチャドキュメント](./architecture.md#ディレクトリ構造の設計思想)を参照してください。
 
 ## 目次
 
@@ -58,8 +58,7 @@ shirokumado-ts/
 │   ├── types.ts          # フロントエンド共通型定義
 │   ├── hooks/            # カスタムフック
 │   │   └── useProductModal.ts # 商品モーダル管理フック
-│   ├── utils/            # ユーティリティ関数
-│   │   └── format.ts     # フォーマット関数
+│   ├── utils/            # ユーティリティ関数（現在は使用されていません）
 │   ├── components/       # フロントエンド共通コンポーネント
 │   │   ├── ui/          # shadcn/ui コンポーネントとラッパーコンポーネント
 │   │   ├── ErrorBoundary.tsx # エラーバウンダリーコンポーネント
@@ -193,7 +192,7 @@ app/hooks/
 
 ```
 app/utils/
-└── [format.ts](../app/utils/format.ts)            # フォーマット関数（価格フォーマットなど）
+（現在は使用されていません。フォーマット関数は lib/product-utils.ts に統合されています）
 ```
 
 **設計の特徴**:
@@ -282,11 +281,7 @@ app/dashboard/
 │   └── [useScrollPosition.ts](../app/dashboard/hooks/useScrollPosition.ts)  # スクロール位置監視
 └── utils/                # ユーティリティ関数
     ├── [productUtils.ts](../app/dashboard/utils/productUtils.ts)           # 商品のグループ化・フィルタリング
-    ├── [productFormActions.ts](../app/dashboard/utils/productFormActions.ts)  # 商品フォームアクション
-    ├── [productFormCreateHandler.ts](../app/dashboard/utils/productFormCreateHandler.ts)  # 商品作成ハンドラー
-    ├── [productFormUpdateHandler.ts](../app/dashboard/utils/productFormUpdateHandler.ts)  # 商品更新ハンドラー
-    ├── [productFormInitialData.ts](../app/dashboard/utils/productFormInitialData.ts)  # 商品フォーム初期データ
-    └── [productFormSubmit.ts](../app/dashboard/utils/productFormSubmit.ts)  # 商品フォーム送信
+    └── [productFormHandlers.ts](../app/dashboard/utils/productFormHandlers.ts)  # 商品フォーム処理（作成・更新・送信・初期データ）
 ```
 
 **設計の特徴**:
@@ -428,7 +423,7 @@ lib/
 - API 設定（キャッシュ期間など）
 - 表示設定（グリッド列数など）
 
-**詳細**: ユーティリティ関数の詳細については、[ユーティリティ関数ガイド](doc/guides/utilities-guide.md)を参照してください。
+**詳細**: ユーティリティ関数の詳細については、[ユーティリティ関数ガイド](./guides/utilities-guide.md)を参照してください。
 
 ### `prisma/` - Prisma 設定
 
@@ -490,7 +485,7 @@ public/
 - **ユーティリティ**: kebab-case（例: `product-utils.ts`）または camelCase（例: `formatDate.ts`）
 - **型定義**: PascalCase（例: `User.ts`）
 
-**注意**: 各ディレクトリ内で一貫性を保つことが重要です。詳細は [開発ガイドライン](doc/development-guide.md#命名規則) を参照してください。
+**注意**: 各ディレクトリ内で一貫性を保つことが重要です。詳細は [開発ガイドライン](./development-guide.md#命名規則) を参照してください。
 
 ## ファイルの役割
 

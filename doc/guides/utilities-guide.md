@@ -1000,7 +1000,7 @@ const projectId = env.NEXT_PUBLIC_STACK_PROJECT_ID; // 型安全
 
 ### 構造化ログ
 
-1. **エラーログの出力**: [`lib/errors.ts`](../../lib/errors.ts) の `logError()` 関数で使用（将来的には `log.error()` に移行予定）
+1. **エラーログの出力**: [`lib/logger.ts`](../../lib/logger.ts) の `log.error()` 関数を使用
 
 ### 設定管理
 
@@ -1032,11 +1032,11 @@ const projectId = env.NEXT_PUBLIC_STACK_PROJECT_ID; // 型安全
 
 ### プロジェクト内のドキュメント
 
-- **[開発ガイドライン](doc/development-guide.md)**: コーディング規約とベストプラクティス（エラーハンドリング、セキュリティなど）
-- **[アーキテクチャドキュメント](doc/architecture.md)**: アーキテクチャと設計思想（エラーハンドリング、設定管理など）
-- **[Prisma & Blob セットアップガイド](doc/setup-prisma-blob.md)**: Blob Storage のセットアップ方法
-- **[TypeScript ガイド](doc/guides/typescript-guide.md)**: TypeScript の使用方法
-- **[App Router ガイド](doc/guides/app-router-guide.md)**: API Routes の使用方法
+- **[開発ガイドライン](../development-guide.md)**: コーディング規約とベストプラクティス（エラーハンドリング、セキュリティなど）
+- **[アーキテクチャドキュメント](../architecture.md)**: アーキテクチャと設計思想（エラーハンドリング、設定管理など）
+- **[Prisma & Blob セットアップガイド](../setup-prisma-blob.md)**: Blob Storage のセットアップ方法
+- **[TypeScript ガイド](./typescript-guide.md)**: TypeScript の使用方法
+- **[App Router ガイド](./app-router-guide.md)**: API Routes の使用方法
 
 ### 外部ドキュメント
 

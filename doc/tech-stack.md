@@ -68,7 +68,7 @@
   - Next.js Image コンポーネントで画像の自動最適化と WebP 変換を実現
   - メタデータとフォント最適化により、SEO とパフォーマンスを向上
 
-  **詳細な使用方法については、[Next.js ガイド](doc/guides/nextjs-guide.md) と [App Router ガイド](doc/guides/app-router-guide.md) を参照してください。**
+  **詳細な使用方法については、[Next.js ガイド](./guides/nextjs-guide.md) と [App Router ガイド](./guides/app-router-guide.md) を参照してください。**
 
 ### UI ライブラリ
 
@@ -91,7 +91,7 @@
   - カスタムフックで状態管理ロジックを分離
   - コンポーネントの再利用性を重視した設計
 
-  **詳細な使用方法については、[React ガイド](doc/guides/react-guide.md) と [JSX ガイド](doc/guides/jsx-guide.md) を参照してください。**
+  **詳細な使用方法については、[React ガイド](./guides/react-guide.md) と [JSX ガイド](./guides/jsx-guide.md) を参照してください。**
 
 - **shadcn/ui**
 
@@ -112,7 +112,7 @@
   - アクセシビリティの向上
   - ラッパーコンポーネントを作成して、アプリ固有のデフォルトスタイルを適用
 
-  **詳細な使用方法については、[shadcn/ui ガイド](doc/guides/shadcn-ui-guide.md) を参照してください。**
+  **詳細な使用方法については、[shadcn/ui ガイド](./guides/shadcn-ui-guide.md) を参照してください。**
 
 - **React DOM** `19.2.3`
 
@@ -225,7 +225,7 @@
   - マイグレーション機能でスキーマ変更を管理
   - N+1 問題を回避するためのクエリ最適化
 
-  **詳細な使用方法については、[Prisma ガイド](doc/guides/prisma-guide.md) を参照してください。**
+  **詳細な使用方法については、[Prisma ガイド](./guides/prisma-guide.md) を参照してください。**
 
 ### ストレージ
 
@@ -248,7 +248,7 @@
   - クライアントサイドで画像を圧縮（[`lib/image-compression.ts`](../lib/image-compression.ts)）してからアップロードし、ストレージ容量を最適化
   - 開発環境と本番環境で同じストレージサービスを使用し、環境の一貫性を確保
 
-  **詳細**: Blob Storage と画像圧縮の詳細については、[ユーティリティ関数ガイド](doc/guides/utilities-guide.md)を参照してください。
+  **詳細**: Blob Storage と画像圧縮の詳細については、[ユーティリティ関数ガイド](./guides/utilities-guide.md)を参照してください。
 
 - **@vercel/blob** `^2.0.0`
 
@@ -277,7 +277,7 @@
   - Prisma の型生成機能と統合し、データベーススキーマから自動的に型を生成
   - API Routes のリクエスト・レスポンスの型を定義
 
-  **詳細な使用方法については、[TypeScript ガイド](doc/guides/typescript-guide.md) を参照してください。**
+  **詳細な使用方法については、[TypeScript ガイド](./guides/typescript-guide.md) を参照してください。**
 
 ### 型定義
 
@@ -365,7 +365,7 @@
 
 ## プロジェクト構造
 
-プロジェクトのディレクトリ構造の詳細については、[プロジェクト構造ドキュメント](doc/project-structure.md) を参照してください。
+プロジェクトのディレクトリ構造の詳細については、[プロジェクト構造ドキュメント](./project-structure.md) を参照してください。
 
 主要なディレクトリ:
 
@@ -379,10 +379,10 @@
 
 フロントエンド実装の詳細については、以下のガイドを参照してください：
 
-- **[フロントエンドガイド](doc/guides/frontend-guide.md)**: ページ構成、コンポーネント、データフローなどの詳細
-- **[ダッシュボードガイド](doc/guides/dashboard-guide.md)**: ダッシュボード機能の詳細
-- **[Next.js ガイド](doc/guides/nextjs-guide.md)**: 画像最適化などの詳細
-- **[shadcn/ui ガイド](doc/guides/shadcn-ui-guide.md)**: UI コンポーネントライブラリの使用方法
+- **[フロントエンドガイド](./guides/frontend-guide.md)**: ページ構成、コンポーネント、データフローなどの詳細
+- **[ダッシュボードガイド](./guides/dashboard-guide.md)**: ダッシュボード機能の詳細
+- **[Next.js ガイド](./guides/nextjs-guide.md)**: 画像最適化などの詳細
+- **[shadcn/ui ガイド](./guides/shadcn-ui-guide.md)**: UI コンポーネントライブラリの使用方法
 
 ## 今後の追加予定
 

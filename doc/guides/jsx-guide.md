@@ -31,7 +31,7 @@ JSX（JavaScript XML）は、React で UI を記述するための構文拡張�
 
 このアプリケーションでは、JSX を使用してすべての React コンポーネントを実装しています。
 
-**関連ドキュメント**: React の概念（Hooks、状態管理、パフォーマンス最適化など）について詳しく知りたい場合は、[React ガイド](doc/guides/react-guide.md)を参照してください。このガイドでは、JSX の構文と書き方に焦点を当てています。
+**関連ドキュメント**: React の概念（Hooks、状態管理、パフォーマンス最適化など）について詳しく知りたい場合は、[React ガイド](./react-guide.md)を参照してください。このガイドでは、JSX の構文と書き方に焦点を当てています。
 
 **JSX の主な特徴**:
 
@@ -391,7 +391,7 @@ JSX では、HTML と同様に要素を記述できます。
 </header>
 
 
-[`app/components/Header.ts`](../../app/components/Header.ts)
+[`app/components/Header.tsx`](../../app/components/Header.tsx)
 ### 属性（Props）
 
 JSX では、HTML の属性と同様に props を指定できます。HTML との違いについては、[JSX と HTML の違い](#jsx-と-html-の違い)セクションを参照してください。
@@ -417,7 +417,7 @@ JSX では、HTML の属性と同様に props を指定できます。HTML と�
 </button>
 ```
 
-[`app/components/ProductTile.ts`](../../app/components/ProductTile.ts)
+[`app/components/ProductTile.tsx`](../../app/components/ProductTile.tsx)
 
 ### 子要素
 
@@ -432,7 +432,7 @@ JSX では、要素の中に他の要素やテキストを配置できます。
 </div>
 
 
-[`app/components/ProductTile.ts`](../../app/components/ProductTile.ts)
+[`app/components/ProductTile.tsx`](../../app/components/ProductTile.tsx)
 ### children prop（子要素を受け取る）
 
 コンポーネントは、`children` prop を使用して子要素を受け取ることができます。これにより、コンポーネントをラッパーとして使用できます。
@@ -505,11 +505,11 @@ const element = <h1>Hello, {name}!</h1>;
 
 // 式も使用可能
 const element = <h1>1 + 1 = {1 + 1}</h1>;
-[`app/components/ProductGrid.ts`](../../app/components/ProductGrid.ts)
+[`app/components/ProductGrid.tsx`](../../app/components/ProductGrid.tsx)
 
 <h2 className="text-center text-lg font-light">{category.name}</h2>
 
-[`app/components/ProductGrid.ts`](../../app/components/ProductGrid.ts)
+[`app/components/ProductGrid.tsx`](../../app/components/ProductGrid.tsx)
 
 **JSX 式の制限**:
 
@@ -606,7 +606,7 @@ const handleClick = () => console.log("clicked");
 
 JSX では、条件に応じて要素を表示/非表示できます。
 
-**注意**: このセクションでは JSX 構文での条件付きレンダリングに焦点を当てています。React での実装パターンについては、[React ガイド](doc/guides/react-guide.md)も参照してください。
+**注意**: このセクションでは JSX 構文での条件付きレンダリングに焦点を当てています。React での実装パターンについては、[React ガイド](./react-guide.md)も参照してください。
 
 **方法 1: 三項演算子**
 
@@ -623,7 +623,7 @@ JSX では、条件に応じて要素を表示/非表示できます。
 
 JSX では、配列をマップしてリストをレンダリングできます。各要素には `key` プロップが必要です。
 
-**注意**: このセクションでは JSX 構文でのリストのレンダリングに焦点を当てています。React での実装パターンについては、[React ガイド](doc/guides/react-guide.md)も参照してください。
+**注意**: このセクションでは JSX 構文でのリストのレンダリングに焦点を当てています。React での実装パターンについては、[React ガイド](./react-guide.md)も参照してください。
 
 ```tsx
 <ul>
@@ -638,7 +638,7 @@ JSX では、配列をマップしてリストをレンダリングできます�
 products.map((product) => <ProductTile key={product.id} product={product} />);
 }
 
-[`app/components/ProductGrid.ts`](../../app/components/ProductGrid.ts)
+[`app/components/ProductGrid.tsx`](../../app/components/ProductGrid.tsx)
 **詳細な使用例**: このアプリでのリストのレンダリングの実装例（`key` の使用方法、空配列の扱いなど）については、[このアプリでの JSX の使用例 - リストのレンダリング](#リストのレンダリング-1)セクションを参照してください。
 
 **空配列のレンダリング**:
@@ -863,7 +863,7 @@ L: {formatPrice(product.priceL)}
 );
 }
 
-[`app/components/ProductModal.ts`](../../app/components/ProductModal.ts)
+[`app/components/ProductModal.tsx`](../../app/components/ProductModal.tsx)
 
 ### リストのレンダリング {#リストのレンダリング-1}
 
@@ -905,7 +905,7 @@ L: {formatPrice(product.priceL)}
 
 **インライン関数**:
 
-[`app/components/ProductGrid.ts`](../../app/components/ProductGrid.ts)
+[`app/components/ProductGrid.tsx`](../../app/components/ProductGrid.tsx)
 
 {
 products.map((product) => (
@@ -917,7 +917,7 @@ onClick={() => handleTileClick(product)}
 ));
 }
 
-[`app/components/ProductGrid.ts`](../../app/components/ProductGrid.ts)
+[`app/components/ProductGrid.tsx`](../../app/components/ProductGrid.tsx)
 **注意**: インライン関数は、`React.memo` でメモ化されたコンポーネントでは、毎回新しい関数が作成されるため、メモ化の効果が失われる可能性があります。このアプリでは、`useCallback` を使用してコールバック関数をメモ化しています。
 
 ### フラグメント
