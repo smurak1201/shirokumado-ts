@@ -5,7 +5,7 @@ import type { Category, Product } from "./types";
 
 export const dynamic = "force-dynamic";
 
-async function _getDashboardData(): Promise<{
+async function getDashboardData(): Promise<{
   categories: Category[];
   products: Product[];
 }> {
@@ -78,11 +78,11 @@ export default async function DashboardPage() {
   let products: Product[] = [];
 
   try {
-    const data = await _getDashboardData();
+    const data = await getDashboardData();
     categories = data.categories;
     products = data.products;
   } catch (error) {
-    // _getDashboardData内でエラーログは記録済み
+    // getDashboardData内でエラーログは記録済み
     // error.tsxでエラーUIが表示される
     categories = [];
     products = [];

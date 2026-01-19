@@ -13,7 +13,7 @@ let heic2any: any = null;
 /**
  * heic2anyライブラリを取得します
  */
-async function _getHeic2Any() {
+async function getHeic2Any() {
   if (!heic2any && typeof window !== 'undefined') {
     try {
       // @ts-ignore - heic2anyには型定義がないため
@@ -21,7 +21,7 @@ async function _getHeic2Any() {
       heic2any = heic2anyModule.default || heic2anyModule;
     } catch (error) {
       log.warn('heic2anyの読み込みに失敗しました', {
-        context: '_getHeic2Any',
+        context: 'getHeic2Any',
         error,
       });
     }
@@ -47,7 +47,7 @@ export function isHeicFile(file: File): boolean {
  * @returns JPEG形式のBlob
  */
 export async function convertHeicToJpeg(file: File): Promise<Blob> {
-  const heic2anyLib = await _getHeic2Any();
+  const heic2anyLib = await getHeic2Any();
   if (!heic2anyLib) {
     throw new Error('HEIC形式の変換ライブラリが読み込めませんでした');
   }

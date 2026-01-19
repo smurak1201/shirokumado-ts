@@ -18,7 +18,7 @@ export type CategoryWithProducts = {
  * @param price - 変換する価格（Prisma.Decimal | null | undefined）
  * @returns 変換後の価格（number | null）
  */
-function _convertPrice(price: Prisma.Decimal | null | undefined): number | null {
+function convertPrice(price: Prisma.Decimal | null | undefined): number | null {
   if (price === null || price === undefined) {
     return null;
   }
@@ -136,8 +136,8 @@ export async function getPublishedProductsByCategory(): Promise<
           name: product.name,
           description: product.description,
           imageUrl: product.imageUrl,
-          priceS: _convertPrice(product.priceS),
-          priceL: _convertPrice(product.priceL),
+          priceS: convertPrice(product.priceS),
+          priceL: convertPrice(product.priceL),
         })
       );
 
