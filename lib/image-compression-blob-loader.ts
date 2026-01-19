@@ -6,8 +6,7 @@
 
 import { getFileSizeMB, createErrorMessage } from './image-compression-utils';
 import { handleImageLoad, handleImageError } from './image-compression-blob-handlers';
-
-const IMAGE_LOAD_TIMEOUT_MS = 60000; // 60秒
+import { config } from './config';
 
 /**
  * Blob URLを使用して画像を読み込むヘルパー関数
@@ -38,10 +37,10 @@ export function loadImageWithBlobURL(
       }
       reject(
         new Error(
-          `画像の読み込みがタイムアウトしました（${IMAGE_LOAD_TIMEOUT_MS / 1000}秒）。ファイルサイズが大きすぎる可能性があります（${getFileSizeMB(file.size).toFixed(2)}MB）。`
+          `画像の読み込みがタイムアウトしました（${config.imageConfig.IMAGE_LOAD_TIMEOUT_MS / 1000}秒）。ファイルサイズが大きすぎる可能性があります（${getFileSizeMB(file.size).toFixed(2)}MB）。`
         )
       );
-    }, IMAGE_LOAD_TIMEOUT_MS);
+    }, config.imageConfig.IMAGE_LOAD_TIMEOUT_MS);
 
     img.onload = () => {
       handleImageLoad(

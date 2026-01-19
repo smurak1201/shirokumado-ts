@@ -1,6 +1,8 @@
 import { useState, useCallback } from "react";
 import { log } from "@/lib/logger";
 import { compressImage, isImageFile } from "@/lib/image-compression";
+import { getFileSizeMB } from "@/lib/image-compression-utils";
+import { config } from "@/lib/config";
 
 /**
  * 画像圧縮処理を行うカスタムフック
@@ -17,11 +19,11 @@ export function useImageCompression() {
         return null;
       }
 
-      const fileSizeMB = file.size / 1024 / 1024;
-      if (fileSizeMB > 10) {
+      const fileSizeMB = getFileSizeMB(file.size);
+      if (fileSizeMB > config.imageConfig.RECOMMENDED_FILE_SIZE_MB) {
         const proceed = confirm(
           `選択された画像は${fileSizeMB.toFixed(2)}MBです。\n` +
-          `推奨サイズは10MB以下です。\n` +
+          `推奨サイズは${config.imageConfig.RECOMMENDED_FILE_SIZE_MB}MB以下です。\n` +
           `処理に時間がかかるか、失敗する可能性があります。\n\n` +
           `続行しますか？`
         );
@@ -32,12 +34,11 @@ export function useImageCompression() {
 
       setCompressing(true);
       try {
-        const { config } = await import("@/lib/config");
         const processedFile = await compressImage(file, {
           maxSizeMB: config.imageConfig.COMPRESSION_TARGET_SIZE_MB,
         });
-        const originalSizeMB = (file.size / 1024 / 1024).toFixed(2);
-        const compressedSizeMB = (processedFile.size / 1024 / 1024).toFixed(2);
+        const originalSizeMB = getFileSizeMB(file.size).toFixed(2);
+        const compressedSizeMB = getFileSizeMB(processedFile.size).toFixed(2);
         log.debug("画像を圧縮しました", {
           context: "useImageCompression.compressImageFile",
           metadata: {

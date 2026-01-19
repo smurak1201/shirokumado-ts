@@ -44,6 +44,42 @@ export const config = {
      * 0.85 は高品質を保ちながらファイルサイズを削減するバランスの良い値です
      */
     COMPRESSION_QUALITY: 0.85,
+
+    /**
+     * 入力ファイルの最大サイズ（MB）
+     * これより大きいファイルは処理を拒否します
+     */
+    MAX_INPUT_SIZE_MB: 50,
+
+    /**
+     * 入力ファイルの最大サイズ（バイト）
+     * ファイルサイズの検証時に使用します
+     */
+    MAX_INPUT_SIZE_BYTES: 50 * 1024 * 1024, // 50MB
+
+    /**
+     * 推奨ファイルサイズ（MB）
+     * このサイズを超える場合は警告を表示します
+     */
+    RECOMMENDED_FILE_SIZE_MB: 10,
+
+    /**
+     * 画像読み込みのタイムアウト時間（ミリ秒）
+     * 60秒でタイムアウトします
+     */
+    IMAGE_LOAD_TIMEOUT_MS: 60000, // 60秒
+
+    /**
+     * ImageBitmapを使用する閾値（MB）
+     * このサイズを超える場合はImageBitmapを使用します
+     */
+    CREATE_IMAGE_BITMAP_THRESHOLD_MB: 5,
+
+    /**
+     * ImageBitmapを使用する閾値（バイト）
+     * ファイルサイズの検証時に使用します
+     */
+    CREATE_IMAGE_BITMAP_THRESHOLD_BYTES: 5 * 1024 * 1024, // 5MB
   },
 
   /**
@@ -101,5 +137,11 @@ export const config = {
      * 3列表示で商品をタイル状に配置します
      */
     GRID_COLUMNS: 3,
+
+    /**
+     * モーダルを閉じる際のアニメーション遅延時間（ミリ秒）
+     * アニメーション完了後に状態をクリアします
+     */
+    MODAL_CLOSE_DELAY_MS: 300,
   },
 };

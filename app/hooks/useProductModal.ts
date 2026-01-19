@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import type { Product } from "../types";
+import { config } from "@/lib/config";
 
 /**
  * 商品モーダルの状態管理を行うカスタムフック
@@ -25,7 +26,7 @@ export function useProductModal() {
     timeoutRef.current = setTimeout(() => {
       setSelectedProduct(null);
       timeoutRef.current = null;
-    }, 300);
+    }, config.displayConfig.MODAL_CLOSE_DELAY_MS);
   }, []);
 
   useEffect(() => {

@@ -12,9 +12,6 @@ import { isHeicFile, convertHeicToJpeg } from './image-compression-heic';
 import { supportsWebP, getFileSizeMB, createErrorMessage } from './image-compression-utils';
 import { loadImage } from './image-compression-load';
 
-// 定数定義
-const MAX_INPUT_SIZE_BYTES = 50 * 1024 * 1024; // 50MB
-
 /**
  * 画像ファイルかどうかを判定します（HEIC形式も含む）
  * iPhoneの写真など、file.typeが空の場合でもファイル拡張子で判定します
@@ -78,7 +75,7 @@ export async function compressImage(
   }
 
   // ファイルサイズの検証（大きすぎるファイルは処理を避ける）
-  if (file.size > MAX_INPUT_SIZE_BYTES) {
+  if (file.size > config.imageConfig.MAX_INPUT_SIZE_BYTES) {
     throw new Error(`ファイルサイズが大きすぎます: ${getFileSizeMB(file.size).toFixed(2)}MB`);
   }
 
