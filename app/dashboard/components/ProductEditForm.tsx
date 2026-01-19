@@ -4,8 +4,10 @@ import { useProductForm } from "../hooks/useProductForm";
 import ProductFormFields from "./ProductFormFields";
 import ProductFormModal from "./ProductFormModal";
 import ProductFormFooter from "./ProductFormFooter";
-import { handleProductUpdateSubmit } from "../utils/productFormUpdateHandler";
-import { createInitialFormDataFromProduct } from "../utils/productFormInitialData";
+import {
+  handleProductUpdateSubmit,
+  createInitialFormDataFromProduct,
+} from "../utils/productFormHandlers";
 import type { Category, Product } from "../types";
 
 interface ProductEditFormProps {

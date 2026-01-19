@@ -4,8 +4,10 @@ import { useProductForm } from "../hooks/useProductForm";
 import ProductFormFields from "./ProductFormFields";
 import ProductFormModal from "./ProductFormModal";
 import ProductFormFooter from "./ProductFormFooter";
-import { handleProductCreateSubmit } from "../utils/productFormCreateHandler";
-import { resetProductFormData } from "../utils/productFormActions";
+import {
+  handleProductCreateSubmit,
+  resetProductFormData,
+} from "../utils/productFormHandlers";
 import type { Category } from "../types";
 
 interface DashboardFormProps {
