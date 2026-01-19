@@ -1,4 +1,4 @@
-import { formatPrice, parsePrice, isNumericKey } from "@/lib/product-utils";
+import { formatPriceForInput, parsePrice, isNumericKey } from "@/lib/product-utils";
 import type { ProductFormData } from "../hooks/useProductForm";
 
 interface ProductPriceFieldsProps {
@@ -30,7 +30,7 @@ export default function ProductPriceFields({
           type="text"
           id={`${fieldPrefix}priceS`}
           inputMode="numeric"
-          value={formatPrice(formData.priceS)}
+          value={formatPriceForInput(formData.priceS)}
           onKeyDown={(e) => {
             if (!isNumericKey(e)) {
               e.preventDefault();
@@ -54,7 +54,7 @@ export default function ProductPriceFields({
           type="text"
           id={`${fieldPrefix}priceL`}
           inputMode="numeric"
-          value={formatPrice(formData.priceL)}
+          value={formatPriceForInput(formData.priceL)}
           onKeyDown={(e) => {
             if (!isNumericKey(e)) {
               e.preventDefault();

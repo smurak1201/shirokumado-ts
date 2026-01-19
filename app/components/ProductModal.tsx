@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import type { Product } from "../types";
-import { formatPrice } from "../utils/format";
+import { formatPrice } from "@/lib/product-utils";
 import {
   Dialog,
   DialogContent,

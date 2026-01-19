@@ -113,9 +113,25 @@ export function determinePublishedStatus(
 }
 
 /**
- * 数値をカンマ区切りの文字列に変換
+ * 数値をカンマ区切りの文字列に変換（入力フィールド用）
  * @param value 数値または数値文字列
  * @returns カンマ区切りの文字列（空の場合は空文字列）
+ */
+export function formatPriceForInput(value: string | number | null | undefined): string {
+  if (value === null || value === undefined || value === "") {
+    return "";
+  }
+  const numValue = typeof value === "string" ? parseFloat(value.replace(/,/g, "")) : value;
+  if (isNaN(numValue)) {
+    return "";
+  }
+  return numValue.toLocaleString("ja-JP");
+}
+
+/**
+ * 価格をフォーマットして表示用の文字列を返す
+ * @param value 価格（数値、数値文字列、null、undefined）
+ * @returns フォーマットされた価格文字列（例: "¥1,000"、空の場合は空文字列）
  */
 export function formatPrice(value: string | number | null | undefined): string {
   if (value === null || value === undefined || value === "") {
@@ -125,7 +141,7 @@ export function formatPrice(value: string | number | null | undefined): string {
   if (isNaN(numValue)) {
     return "";
   }
-  return numValue.toLocaleString("ja-JP");
+  return `¥${numValue.toLocaleString("ja-JP")}`;
 }
 
 /**
