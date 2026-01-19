@@ -1,6 +1,7 @@
 import { put, list, head, del } from '@vercel/blob';
-import { BlobStorageError, logError } from './errors';
+import { BlobStorageError } from './errors';
 import { config } from './config';
+import { log } from './logger';
 
 /**
  * Vercel Blob Storage ユーティリティ
@@ -44,7 +45,10 @@ export async function uploadFile(
     });
     return blob;
   } catch (error) {
-    logError(error, 'uploadFile');
+    log.error('ファイルのアップロードに失敗しました', {
+      context: 'uploadFile',
+      error,
+    });
     if (error instanceof BlobStorageError) {
       throw error;
     }
@@ -88,7 +92,10 @@ export async function listFiles(options?: {
     const { blobs, cursor } = await list(options);
     return { blobs, cursor };
   } catch (error) {
-    logError(error, 'listFiles');
+    log.error('ファイル一覧の取得に失敗しました', {
+      context: 'listFiles',
+      error,
+    });
     throw new BlobStorageError('Failed to list files', error);
   }
 }
@@ -106,7 +113,11 @@ export async function getBlobInfo(url: string) {
     const blob = await head(url);
     return blob;
   } catch (error) {
-    logError(error, 'getBlobInfo');
+    log.error('Blob情報の取得に失敗しました', {
+      context: 'getBlobInfo',
+      error,
+      metadata: { url },
+    });
     throw new BlobStorageError(`Failed to get blob info: ${url}`, error);
   }
 }
@@ -124,7 +135,11 @@ export async function deleteFile(url: string) {
     await del(url);
     return true;
   } catch (error) {
-    logError(error, 'deleteFile');
+    log.error('ファイルの削除に失敗しました', {
+      context: 'deleteFile',
+      error,
+      metadata: { url },
+    });
     throw new BlobStorageError(`Failed to delete file: ${url}`, error);
   }
 }
@@ -142,7 +157,10 @@ export async function deleteFiles(urls: string[]) {
     await Promise.all(urls.map(url => del(url)));
     return true;
   } catch (error) {
-    logError(error, 'deleteFiles');
+    log.error('複数ファイルの削除に失敗しました', {
+      context: 'deleteFiles',
+      error,
+    });
     throw new BlobStorageError('Failed to delete files', error);
   }
 }

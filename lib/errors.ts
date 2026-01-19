@@ -72,40 +72,6 @@ export class NotFoundError extends AppError {
   }
 }
 
-/**
- * エラーを安全にログに記録します
- *
- * 注意: この関数は後方互換性のために残されています。
- * 新しいコードでは `lib/logger.ts` の `log.error()` を直接使用することを推奨します。
- */
-export function logError(error: unknown, context?: string): void {
-  const prefix = context ? `[${context}]` : '';
-
-  if (error instanceof AppError) {
-    console.error(`${prefix} ${error.name}:`, {
-      message: error.message,
-      statusCode: error.statusCode,
-      code: error.code,
-      stack: process.env.NODE_ENV === 'development' ? error.stack : undefined,
-      cause: error.cause,
-    });
-  } else if (error instanceof Error) {
-    console.error(`${prefix} Error:`, {
-      message: error.message,
-      name: error.name,
-      stack: error.stack,
-      cause: error.cause,
-      // エラーオブジェクトの全てのプロパティを記録
-      ...(error as any),
-    });
-  } else {
-    console.error(`${prefix} Unknown error:`, {
-      error,
-      errorType: typeof error,
-      errorString: String(error),
-    });
-  }
-}
 
 /**
  * エラーをユーザー向けのメッセージに変換します

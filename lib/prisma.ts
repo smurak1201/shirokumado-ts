@@ -1,6 +1,7 @@
 import { PrismaClient } from '@prisma/client';
 import { PrismaNeon } from '@prisma/adapter-neon';
-import { DatabaseError, logError } from './errors';
+import { DatabaseError } from './errors';
+import { log } from './logger';
 
 /**
  * Prisma Client シングルトンインスタンス
@@ -69,7 +70,10 @@ export async function safePrismaOperation<T>(
   try {
     return await operation();
   } catch (error) {
-    logError(error, context);
+    log.error('データベース操作に失敗しました', {
+      context: context || 'safePrismaOperation',
+      error,
+    });
     throw new DatabaseError(
       `Failed to execute database operation${context ? ` in ${context}` : ''}`,
       error
@@ -87,7 +91,10 @@ export async function disconnectPrisma(): Promise<void> {
   try {
     await prisma.$disconnect();
   } catch (error) {
-    logError(error, 'disconnectPrisma');
+    log.error('データベース接続の切断に失敗しました', {
+      context: 'disconnectPrisma',
+      error,
+    });
     // 切断エラーは無視（既に切断されている可能性がある）
   }
 }

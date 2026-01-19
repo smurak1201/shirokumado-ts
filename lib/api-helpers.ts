@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
-import { AppError, getUserFriendlyMessage, logError } from './errors';
+import { AppError, getUserFriendlyMessage } from './errors';
+import { log } from './logger';
 
 /**
  * API Routes用のエラーハンドリングヘルパー
@@ -11,7 +12,10 @@ import { AppError, getUserFriendlyMessage, logError } from './errors';
  * エラーを適切に処理し、NextResponseを返します
  */
 export function handleApiError(error: unknown): NextResponse {
-  logError(error, 'API Route');
+  log.error('API Routeでエラーが発生しました', {
+    context: 'API Route',
+    error,
+  });
 
   if (error instanceof AppError) {
     const response = NextResponse.json(
