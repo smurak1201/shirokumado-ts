@@ -284,7 +284,7 @@ export default function ProductCategoryTabs({ categoriesWithProducts }) {
       </TabsList>
       {categoriesWithProducts.map(({ category, products }) => (
         <TabsContent key={category.id} value={category.id.toString()}>
-          <ProductGrid category={category} products={products} hideCategoryTitle={true} />
+          <ProductGrid category={category} products={products} showCategoryTitle={false} />
         </TabsContent>
       ))}
     </Tabs>
@@ -306,7 +306,7 @@ export default function ProductCategoryTabs({ categoriesWithProducts }) {
 - Client Component（`'use client'`）
 - 商品がない場合は非表示
 - モーダル状態管理をカスタムフックに分離
-- `hideCategoryTitle` プロップでカテゴリータイトルの表示を制御可能
+- `showCategoryTitle` プロップでカテゴリータイトルの表示を制御可能（デフォルト: `true`）
 
 **実装例**:
 

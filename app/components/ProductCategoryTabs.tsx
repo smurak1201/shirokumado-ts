@@ -81,7 +81,7 @@ export default function ProductCategoryTabs({
           <ProductGrid
             category={category}
             products={products}
-            hideCategoryTitle={true}
+            showCategoryTitle={false}
           />
         </TabsContent>
       ))}

@@ -8,7 +8,7 @@ import { useProductModal } from "../hooks/useProductModal";
 interface ProductGridProps {
   category: Category;
   products: Product[];
-  hideCategoryTitle?: boolean;
+  showCategoryTitle?: boolean;
 }
 
 /**
@@ -20,7 +20,7 @@ interface ProductGridProps {
 export default function ProductGrid({
   category,
   products,
-  hideCategoryTitle = false,
+  showCategoryTitle = true,
 }: ProductGridProps) {
   const { selectedProduct, isModalOpen, handleProductClick, handleCloseModal } =
     useProductModal();
@@ -32,7 +32,7 @@ export default function ProductGrid({
   return (
     <>
       <section className="mb-12 md:mb-20 lg:mb-24">
-        {!hideCategoryTitle && (
+        {showCategoryTitle && (
           <div className="mb-8 flex items-center justify-center md:mb-12 lg:mb-16">
             <div className="flex flex-col items-center gap-3 md:gap-4">
               <h2 className="text-center text-xl font-normal tracking-wide text-muted-foreground md:text-4xl lg:text-5xl">
