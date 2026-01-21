@@ -9,6 +9,9 @@ interface ProductDateInputProps {
 
 /**
  * 日付入力フィールドコンポーネント
+ *
+ * 公開日・終了日の入力に使用する日時入力フィールドを提供します。
+ * 値が設定されている場合はクリアボタンが表示されます。
  */
 export default function ProductDateInput({
   id,

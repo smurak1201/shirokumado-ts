@@ -5,6 +5,12 @@ import type { Category, Product } from "./types";
 
 export const dynamic = "force-dynamic";
 
+/**
+ * ダッシュボードに表示するデータを取得する関数
+ *
+ * カテゴリー一覧と商品一覧を並列で取得します。
+ * エラーが発生した場合はログに記録してからエラーを再スローします。
+ */
 async function getDashboardData(): Promise<{
   categories: Category[];
   products: Product[];
@@ -73,6 +79,12 @@ async function getDashboardData(): Promise<{
   }
 }
 
+/**
+ * ダッシュボードページコンポーネント
+ *
+ * 商品管理ダッシュボードのメインページです。
+ * サーバーサイドでデータを取得し、DashboardContentコンポーネントに渡します。
+ */
 export default async function DashboardPage() {
   let categories: Category[] = [];
   let products: Product[] = [];
