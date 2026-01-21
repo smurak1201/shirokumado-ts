@@ -5,7 +5,6 @@ import ProductFormFields from "./ProductFormFields";
 import ProductFormModal from "./ProductFormModal";
 import ProductFormFooter from "./ProductFormFooter";
 import { handleProductCreateSubmit } from "../utils/productFormSubmit";
-import { resetProductFormData } from "../utils/productFormData";
 import type { Category } from "../types";
 
 interface DashboardFormProps {
