@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useCallback } from "react";
+import { getUserFriendlyMessageJa } from "@/lib/errors";
 import {
   DndContext,
   closestCorners,
@@ -94,9 +95,7 @@ export default function ProductLayoutTab({
       try {
         await reorderProducts(categoryGroup, oldIndex, newIndex);
       } catch (error) {
-        alert(
-          error instanceof Error ? error.message : "順序の更新に失敗しました"
-        );
+        alert(getUserFriendlyMessageJa(error));
       }
     },
     [publishedProductsByCategory, reorderProducts]

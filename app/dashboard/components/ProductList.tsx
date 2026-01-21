@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useMemo, useCallback } from "react";
 import { log } from "@/lib/logger";
+import { getUserFriendlyMessageJa } from "@/lib/errors";
 import ProductEditForm from "./ProductEditForm";
 import ProductListTabs from "./ProductListTabs";
 import ProductListContent from "./ProductListContent";
@@ -81,9 +82,7 @@ export default function ProductList({
           error,
           metadata: { productId },
         });
-        alert(
-          error instanceof Error ? error.message : "商品の削除に失敗しました"
-        );
+        alert(getUserFriendlyMessageJa(error));
       }
     },
     [refreshProducts]

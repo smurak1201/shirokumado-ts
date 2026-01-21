@@ -4,10 +4,8 @@ import { useProductForm } from "../hooks/useProductForm";
 import ProductFormFields from "./ProductFormFields";
 import ProductFormModal from "./ProductFormModal";
 import ProductFormFooter from "./ProductFormFooter";
-import {
-  handleProductUpdateSubmit,
-  createInitialFormDataFromProduct,
-} from "../utils/productFormHandlers";
+import { handleProductUpdateSubmit } from "../utils/productFormSubmit";
+import { createInitialFormDataFromProduct } from "../utils/productFormData";
 import type { Category, Product } from "../types";
 
 interface ProductEditFormProps {

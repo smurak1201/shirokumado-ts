@@ -271,7 +271,8 @@ app/dashboard/
 │   └── useScrollPosition.ts     # スクロール位置監視
 └── utils/                # ユーティリティ関数（ビジネスロジック）
     ├── productUtils.ts           # 商品のグループ化・フィルタリング
-    └── productFormHandlers.ts   # 商品フォーム処理（作成・更新・送信・初期データ）
+    ├── productFormData.ts        # 商品フォームデータ変換（リセット・初期化・準備）
+    └── productFormSubmit.ts      # 商品フォーム送信処理（作成・更新）
 ```
 
 **設計思想**:

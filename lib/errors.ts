@@ -87,3 +87,18 @@ export function getUserFriendlyMessage(error: unknown): string {
   }
   return 'An unexpected error occurred';
 }
+
+/**
+ * エラーを日本語のユーザー向けメッセージに変換します
+ *
+ * クライアント側のエラーハンドリングで使用します。
+ */
+export function getUserFriendlyMessageJa(error: unknown): string {
+  if (error instanceof AppError) {
+    return error.message;
+  }
+  if (error instanceof Error) {
+    return error.message;
+  }
+  return "処理に失敗しました";
+}

@@ -1,5 +1,6 @@
 import { useState, useCallback } from "react";
 import { log } from "@/lib/logger";
+import { getUserFriendlyMessageJa } from "@/lib/errors";
 import { compressImage, isImageFile } from "@/lib/image-compression";
 import { getFileSizeMB } from "@/lib/image-compression-utils";
 import { config } from "@/lib/config";
@@ -60,8 +61,7 @@ export function useImageCompression() {
           context: "useImageCompression.compressImageFile",
           error,
         });
-        const errorMessage =
-          error instanceof Error ? error.message : "不明なエラー";
+        const errorMessage = getUserFriendlyMessageJa(error);
         alert(
           `画像の圧縮に失敗しました: ${errorMessage}\n別の画像を選択してください。`
         );

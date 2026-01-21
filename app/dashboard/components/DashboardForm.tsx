@@ -4,10 +4,8 @@ import { useProductForm } from "../hooks/useProductForm";
 import ProductFormFields from "./ProductFormFields";
 import ProductFormModal from "./ProductFormModal";
 import ProductFormFooter from "./ProductFormFooter";
-import {
-  handleProductCreateSubmit,
-  resetProductFormData,
-} from "../utils/productFormHandlers";
+import { handleProductCreateSubmit } from "../utils/productFormSubmit";
+import { resetProductFormData } from "../utils/productFormData";
 import type { Category } from "../types";
 
 interface DashboardFormProps {
@@ -51,7 +49,6 @@ export default function DashboardForm({
       imagePreview,
       setSubmitting,
       setFormData,
-      resetProductFormData,
       onProductCreated,
       onClose,
     });
