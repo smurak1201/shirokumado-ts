@@ -119,16 +119,17 @@ const [isFormOpen, setIsFormOpen] = useState(false);
 3. **[`app/dashboard/hooks/useTabState.ts`](../../app/dashboard/hooks/useTabState.ts) (`useTabState`フック)** - タブ状態の管理（localStorage と同期）
 
 ```typescript
-    if (typeof window !== "undefined") {
-      const saved = localStorage.getItem(STORAGE_KEYS.ACTIVE_TAB);
-      // 保存された値が有効なタブタイプか確認
-      if (saved === "list" || saved === "layout") {
-        return saved;
-      }
+const [activeTab, setActiveTab] = useState<TabType>(() => {
+  if (typeof window !== "undefined") {
+    const saved = localStorage.getItem(STORAGE_KEYS.ACTIVE_TAB);
+    // 保存された値が有効なタブタイプか確認
+    if (saved === "list" || saved === "layout") {
+      return saved;
     }
-    // デフォルトは "list" タブ
-    return "list";
-  });
+  }
+  // デフォルトは "list" タブ
+  return "list";
+});
 ```
 
 **useState の特徴**:
@@ -179,6 +180,7 @@ React では、副作用を `useEffect` Hook を使用して処理します。`u
 **基本的な使い方**:
 
 ```typescript
+useEffect(() => {
   // 副作用の処理
   return () => {
     // クリーンアップ処理（オプション）
@@ -207,6 +209,7 @@ React では、副作用を `useEffect` Hook を使用して処理します。`u
 **基本的な使い方**:
 
 ```typescript
+const memoizedValue = useMemo(() => {
   // 計算コストの高い処理
   return computedValue;
 }, [dependencies]);
@@ -247,6 +250,7 @@ const filteredProducts = useMemo(
 **基本的な使い方**:
 
 ```typescript
+const memoizedCallback = useCallback(() => {
   // コールバック関数の処理
 }, [dependencies]);
 ```
@@ -329,7 +333,7 @@ function ProductTile({ product, onClick }: ProductTileProps) {
           <div className="absolute inset-0 bg-white/0 transition-colors duration-300 group-hover:bg-white/5" />
         </div>
       ) : (
-        <div className="aspect-square w-full bg-gradient-to-br from-gray-50 to-gray-100" />
+        <div className="aspect-square w-full bg-linear-to-br from-gray-50 to-gray-100" />
       )}
 
       {/* 商品名 */}
@@ -416,6 +420,7 @@ function Component() {
 **使用例**:
 
 ```typescript
+function reducer(state: { count: number }, action: { type: string }) {
   switch (action.type) {
     case "increment":
       return { count: state.count + 1 };
@@ -655,6 +660,7 @@ export default function ProductGrid({ category, products }: ProductGridProps) {
 [`app/dashboard/hooks/useTabState.ts`](../../app/dashboard/hooks/useTabState.ts) (`useCategoryTabState`フック)
 
 ```typescript
+export function useCategoryTabState(
   products: Product[],
   categories: Category[]
 ) {
@@ -728,6 +734,7 @@ export default function ProductGrid({ category, products }: ProductGridProps) {
 [`app/dashboard/hooks/useProductReorder.ts`](../../app/dashboard/hooks/useProductReorder.ts) (`useProductReorder`フック)
 
 ```typescript
+export function useProductReorder(
   setProducts: React.Dispatch<React.SetStateAction<Product[]>>,
   refreshProducts: () => Promise<void>
 ) {
@@ -1053,16 +1060,22 @@ export function useScrollPosition() {
 **フロントエンドコンポーネント**:
 
 ```
-  └── ProductCategoryTabs (Client Component)
-      └── ProductGrid (Client Component)
-          ├── ProductTile (Client Component)
-          └── ProductModal (Client Component)
+page.tsx (Server Component)
+└── ProductCategoryTabs (Client Component)
+    └── ProductGrid (Client Component)
+        ├── ProductTile (Client Component)
+        └── ProductModal (Client Component)
 ```
 
+**ダッシュボードコンポーネント**:
+
+```
+dashboard/page.tsx (Server Component)
 └── DashboardContent (Client Component)
-└── ProductList (Client Component)
-├── ProductCategoryTabs (Client Component)
-└── SortableProductItem (Client Component)
+    └── ProductList (Client Component)
+        ├── ProductCategoryTabs (Client Component)
+        └── SortableProductItem (Client Component)
+```
 
 1. **[`app/components/ProductGrid.tsx`](../../app/components/ProductGrid.tsx) (`ProductGrid`コンポーネント)** - 商品グリッドコンポーネント
 
@@ -1139,58 +1152,43 @@ export default function ProductModal({
             {/* 画像部分 */}
             <ModalImageCard>
               <ModalCardHeader>
-                <div className="relative h-[40vh] min-h-[200px] max-h-[450px] md:h-[45vh] md:max-h-[500px] overflow-hidden bg-muted">
+                <div className="relative h-[40vh] overflow-hidden bg-muted">
                   {product.imageUrl ? (
-                    <Image
-                      src={product.imageUrl}
-                      alt={product.name}
-                      fill
-                      className="object-contain"
-              sizes="(max-width: 768px) 100vw, (max-width: 1024px) 90vw, 800px"
-              priority
-            />
+                    <Image src={product.imageUrl} alt={product.name} fill className="object-contain" />
+                  ) : (
+                    <div className="h-full w-full bg-linear-to-br from-muted" />
+                  )}
+                </div>
+              </ModalCardHeader>
+            </ModalImageCard>
+
+            {/* 商品情報部分 */}
+            <ModalContentCard>
+              <ModalCardContent>
+                <DialogHeader>
+                  <DialogTitle>{product.name}</DialogTitle>
+                  {product.description && (
+                    <DialogDescription>{product.description}</DialogDescription>
+                  )}
+                </DialogHeader>
+              </ModalCardContent>
+            </ModalContentCard>
+
+            {/* 価格部分 */}
+            {(product.priceS || product.priceL) && (
+              <ModalPriceCard>
+                <ModalCardContent>
+                  <div className="flex items-center justify-center gap-3">
+                    {product.priceS && <PriceBadge>{formatPrice(product.priceS)}</PriceBadge>}
+                    {product.priceL && <PriceBadge>{formatPrice(product.priceL)}</PriceBadge>}
+                  </div>
+                </ModalCardContent>
+              </ModalPriceCard>
+            )}
           </div>
-        ) : (
-          <div className="aspect-square w-full bg-gradient-to-br from-gray-50 to-gray-100" />
-        )}
-
-        {/* 商品情報 */}
-        <div className="p-6 md:p-8">
-          {/* 商品名 */}
-          <div className="mb-4 flex h-[4em] items-center justify-center md:h-[4.25em]">
-            <h2 className="line-clamp-2 whitespace-pre-wrap text-center text-2xl font-medium leading-relaxed text-gray-800 md:text-3xl">
-              {product.name}
-            </h2>
-          </div>
-
-          {/* 商品説明 */}
-          {product.description && (
-            <p className="mb-6 whitespace-pre-wrap text-base leading-relaxed text-gray-600 md:text-lg">
-              {product.description}
-            </p>
-          )}
-
-          {/* 価格 */}
-          {(product.priceS || product.priceL) && (
-            <div className="flex items-baseline gap-3 border-t border-gray-200 pt-6">
-              {product.priceS && (
-                <span className="text-2xl font-medium tracking-wide text-gray-800 md:text-3xl">
-                  S: {formatPrice(product.priceS)}
-                </span>
-              )}
-              {product.priceS && product.priceL && (
-                <span className="text-xl text-gray-300">/</span>
-              )}
-              {product.priceL && (
-                <span className="text-2xl font-medium tracking-wide text-gray-800 md:text-3xl">
-                  L: {formatPrice(product.priceL)}
-                </span>
-              )}
-            </div>
-          )}
-        </div>
-      </div>
-    </div>
+        </ScrollArea>
+      </DialogContent>
+    </Dialog>
   );
 }
 ```
@@ -1269,7 +1267,7 @@ function ProductTile({ product, onClick }: ProductTileProps) {
           <div className="absolute inset-0 bg-white/0 transition-colors duration-300 group-hover:bg-white/5" />
         </div>
       ) : (
-        <div className="aspect-square w-full bg-gradient-to-br from-gray-50 to-gray-100" />
+        <div className="aspect-square w-full bg-linear-to-br from-gray-50 to-gray-100" />
       )}
 
       {/* 商品名 */}
@@ -1436,6 +1434,7 @@ export default memo(ProductTile);
 **例**: [`app/components/ErrorBoundary.tsx`](../../app/components/ErrorBoundary.tsx)
 
 ```tsx
+<ErrorBoundary>
   <YourComponent />
 </ErrorBoundary>
 ```
