@@ -2,16 +2,14 @@
  * ダッシュボードで使用する共通型定義
  */
 
-/**
- * カテゴリーの型定義
- */
-export interface Category {
-  id: number; // カテゴリーID
-  name: string; // カテゴリー名
-}
+// 共通のCategory型を再エクスポート
+export type { Category } from "../types";
+import type { Category } from "../types";
 
 /**
- * 商品の型定義
+ * 商品の型定義（ダッシュボード用）
+ *
+ * フロントエンド用のProductを拡張し、管理機能に必要なフィールドを追加しています。
  */
 export interface Product {
   id: number; // 商品ID
