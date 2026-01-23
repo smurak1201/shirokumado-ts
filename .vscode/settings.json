@@ -16,5 +16,6 @@
   "tailwindCSS.lint.invalidVariant": "error",
   "tailwindCSS.lint.recommendedVariantOrder": "warning",
   "tailwindCSS.experimental.configFile": "app/globals.css",
-  "tailwindCSS.rootFontSize": 16
+  "tailwindCSS.rootFontSize": 16,
+  "tailwindCSS.suggestCanonicalClasses": false
 }
