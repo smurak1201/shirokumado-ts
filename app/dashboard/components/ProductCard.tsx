@@ -1,3 +1,4 @@
+import Image from "next/image";
 import type { Product } from "../types";
 
 interface ProductCardProps {
@@ -23,14 +24,15 @@ export default function ProductCard({
       }`}
     >
       {product.imageUrl ? (
-        <img
-          src={product.imageUrl}
-          alt={product.name}
-          className={`h-20 w-full rounded object-cover sm:h-32 md:h-48 ${
-            !product.published ? "opacity-50" : ""
-          }`}
-          loading="lazy"
-        />
+        <div className={`relative h-20 w-full sm:h-32 md:h-48 ${!product.published ? "opacity-50" : ""}`}>
+          <Image
+            src={product.imageUrl}
+            alt={product.name}
+            fill
+            className="rounded object-cover"
+            sizes="(max-width: 640px) 33vw, (max-width: 768px) 25vw, 20vw"
+          />
+        </div>
       ) : (
         <div
           className={`h-20 w-full rounded bg-gray-200 sm:h-32 md:h-48 ${

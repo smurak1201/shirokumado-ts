@@ -90,7 +90,7 @@ export default function ProductCategoryTabs({
         inline: "center",
       });
     }
-  }, [activeCategoryTab]);
+  }, [activeCategoryTab, scrollContainerRef]);
 
   return (
     <div className="mb-6">

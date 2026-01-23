@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import type { Product } from "../types";
@@ -46,12 +47,15 @@ export default function SortableProductItem({
       {...listeners}
     >
       {product.imageUrl ? (
-        <img
-          src={product.imageUrl}
-          alt={product.name}
-          className="h-20 w-full rounded object-cover sm:h-32 md:h-48"
-          loading="lazy"
-        />
+        <div className="relative h-20 w-full sm:h-32 md:h-48">
+          <Image
+            src={product.imageUrl}
+            alt={product.name}
+            fill
+            className="rounded object-cover"
+            sizes="(max-width: 640px) 33vw, (max-width: 768px) 25vw, 20vw"
+          />
+        </div>
       ) : (
         <div className="h-20 w-full rounded bg-gray-200 sm:h-32 md:h-48" />
       )}

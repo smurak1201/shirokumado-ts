@@ -1,3 +1,5 @@
+import Image from "next/image";
+
 interface ProductImageFieldProps {
   fieldPrefix?: string;
   submitting: boolean;
@@ -46,11 +48,15 @@ export default function ProductImageField({
       )}
       {imagePreview && (
         <div className="mt-2">
-          <img
-            src={imagePreview}
-            alt="プレビュー"
-            className="h-32 w-32 rounded object-cover"
-          />
+          <div className="relative h-32 w-32">
+            <Image
+              src={imagePreview}
+              alt="プレビュー"
+              fill
+              className="rounded object-cover"
+              unoptimized
+            />
+          </div>
           <p className="mt-1 text-xs text-gray-500">プレビュー</p>
         </div>
       )}

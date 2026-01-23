@@ -93,7 +93,7 @@ export default async function DashboardPage() {
     const data = await getDashboardData();
     categories = data.categories;
     products = data.products;
-  } catch (error) {
+  } catch {
     // getDashboardData内でエラーログは記録済み
     // error.tsxでエラーUIが表示される
     categories = [];

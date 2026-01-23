@@ -88,5 +88,5 @@ export function handleImageError(
     URL.revokeObjectURL(blobUrl);
   }
   logImageLoadError(file, blobUrl, event);
-  reject(new Error(createImageLoadErrorMessage(file, event)));
+  reject(new Error(createImageLoadErrorMessage(file)));
 }

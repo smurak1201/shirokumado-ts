@@ -11,10 +11,7 @@ import { config } from './config';
 /**
  * 画像読み込みエラーメッセージを生成します
  */
-export function createImageLoadErrorMessage(
-  file: File,
-  _event: Event | null
-): string {
+export function createImageLoadErrorMessage(file: File): string {
   const fileSizeMB = getFileSizeMB(file.size);
 
   if (fileSizeMB > config.imageConfig.RECOMMENDED_FILE_SIZE_MB) {

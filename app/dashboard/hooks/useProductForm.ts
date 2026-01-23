@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useCallback, type SetStateAction } from "react";
 import { calculatePublishedStatus, hasDateRange } from "@/lib/product-utils";
 import { useImageUpload } from "./useImageUpload";
 
@@ -36,7 +36,7 @@ export function useProductForm(options: UseProductFormOptions = {}) {
   const [imagePreview, setImagePreview] = useState<string | null>(initialImageUrl);
   const { uploading, compressing, handleImageChange: handleImageChangeInternal, uploadImage: uploadImageInternal } = useImageUpload();
 
-  const [formData, setFormData] = useState<ProductFormData>({
+  const [formData, setFormDataInternal] = useState<ProductFormData>({
     name: initialFormData.name || "",
     description: initialFormData.description || "",
     imageFile: null,
@@ -48,6 +48,34 @@ export function useProductForm(options: UseProductFormOptions = {}) {
     publishedAt: initialFormData.publishedAt || "",
     endedAt: initialFormData.endedAt || "",
   });
+
+  // publishedAt/endedAtが変更された場合、publishedを自動計算するsetFormData
+  const setFormData = useCallback(
+    (updater: SetStateAction<ProductFormData>) => {
+      setFormDataInternal((prev) => {
+        const next = typeof updater === "function" ? updater(prev) : updater;
+        // publishedAt/endedAtが変更された場合のみ再計算
+        if (
+          next.publishedAt !== prev.publishedAt ||
+          next.endedAt !== prev.endedAt
+        ) {
+          const publishedAt = next.publishedAt
+            ? new Date(next.publishedAt)
+            : null;
+          const endedAt = next.endedAt ? new Date(next.endedAt) : null;
+          // 日付が設定されている場合のみ公開状態を自動計算
+          if (publishedAt || endedAt) {
+            return {
+              ...next,
+              published: calculatePublishedStatus(publishedAt, endedAt),
+            };
+          }
+        }
+        return next;
+      });
+    },
+    []
+  );
 
   const handleImageChange = async (
     e: React.ChangeEvent<HTMLInputElement>,
@@ -69,20 +97,6 @@ export function useProductForm(options: UseProductFormOptions = {}) {
   const uploadImage = async (): Promise<string | null> => {
     return uploadImageInternal(formData.imageFile, formData.imageUrl);
   };
-
-  useEffect(() => {
-    if (formData.publishedAt || formData.endedAt) {
-      const publishedAt = formData.publishedAt
-        ? new Date(formData.publishedAt)
-        : null;
-      const endedAt = formData.endedAt ? new Date(formData.endedAt) : null;
-      const calculatedPublished = calculatePublishedStatus(
-        publishedAt,
-        endedAt
-      );
-      setFormData((prev) => ({ ...prev, published: calculatedPublished }));
-    }
-  }, [formData.publishedAt, formData.endedAt, setFormData]);
 
   const hasDateRangeValue = hasDateRange(
     formData.publishedAt ? new Date(formData.publishedAt) : null,

@@ -21,7 +21,9 @@ export function useTabState() {
   const [isHydrated, setIsHydrated] = useState(false);
 
   // クライアント側でのみlocalStorageから値を読み込む
+  // localStorageは外部システムであり、hydration対応のためマウント時に同期が必要
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- hydration対応のための初期化処理
     setIsHydrated(true);
     const saved = localStorage.getItem(STORAGE_KEYS.ACTIVE_TAB);
     if (saved === "list" || saved === "layout") {
@@ -70,7 +72,9 @@ export function useCategoryTabState(
   const [isHydrated, setIsHydrated] = useState(false);
 
   // クライアント側でのみlocalStorageから値を読み込む
+  // localStorageは外部システムであり、hydration対応のためマウント時に同期が必要
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- hydration対応のための初期化処理
     setIsHydrated(true);
     const saved = localStorage.getItem(STORAGE_KEYS.ACTIVE_CATEGORY_TAB);
     if (saved) {

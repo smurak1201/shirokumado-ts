@@ -7,8 +7,7 @@
 import { log } from './logger';
 
 // heic2anyを動的インポート（コード分割のため）
-// @ts-ignore - heic2anyには型定義がないため
-let heic2any: any = null;
+let heic2any: ((options: { blob: Blob; toType: string; quality: number }) => Promise<Blob | Blob[]>) | null = null;
 
 /**
  * heic2anyライブラリを取得します
@@ -16,7 +15,6 @@ let heic2any: any = null;
 async function getHeic2Any() {
   if (!heic2any && typeof window !== 'undefined') {
     try {
-      // @ts-ignore - heic2anyには型定義がないため
       const heic2anyModule = await import('heic2any');
       heic2any = heic2anyModule.default || heic2anyModule;
     } catch (error) {

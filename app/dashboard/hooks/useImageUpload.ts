@@ -58,7 +58,7 @@ export function useImageUpload() {
               const text = await uploadResponse.text();
               errorMessage = text || errorMessage;
             }
-          } catch (parseError) {
+          } catch {
             errorMessage = `画像のアップロードに失敗しました (${uploadResponse.status})`;
           }
           throw new Error(errorMessage);
