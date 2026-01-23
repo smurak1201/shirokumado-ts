@@ -251,7 +251,7 @@ const filteredProducts = useMemo(
 }, [dependencies]);
 ```
 
-1. **[`app/dashboard/components/ProductCategoryTabs.tsx`](../../app/dashboard/components/ProductCategoryTabs.tsx) (`checkScrollPosition`関数)** - スクロール位置のチェック
+1. **[`app/dashboard/components/LayoutCategoryTabs.tsx`](../../app/dashboard/components/LayoutCategoryTabs.tsx) (`checkScrollPosition`関数)** - スクロール位置のチェック
 
 ```typescript
 const checkScrollPosition = useCallback(() => {
@@ -358,7 +358,7 @@ export default memo(ProductTile);
 
 **基本的な使い方**:
 
-1. **[`app/dashboard/components/ProductCategoryTabs.tsx`](../../app/dashboard/components/ProductCategoryTabs.tsx) (`scrollContainerRef`)** - DOM 要素への参照
+1. **[`app/dashboard/components/LayoutCategoryTabs.tsx`](../../app/dashboard/components/LayoutCategoryTabs.tsx) (`scrollContainerRef`)** - DOM 要素への参照
 
 ```typescript
 // useRef を使用して DOM 要素に直接アクセスします
@@ -989,7 +989,7 @@ export function useImageUpload() {
 **このアプリでの使用箇所**:
 
 - [`app/dashboard/hooks/useScrollPosition.ts`](../../app/dashboard/hooks/useScrollPosition.ts): フックの実装
-- [`app/dashboard/components/ProductCategoryTabs.tsx`](../../app/dashboard/components/ProductCategoryTabs.tsx): カテゴリータブで使用
+- [`app/dashboard/components/LayoutCategoryTabs.tsx`](../../app/dashboard/components/LayoutCategoryTabs.tsx): 配置変更用カテゴリータブで使用
 
 **実装コード**:
 
@@ -1308,7 +1308,7 @@ function ProductTile({ product, onClick }: ProductTileProps) {
 
    - [`DashboardContent.tsx`](../../app/dashboard/components/DashboardContent.tsx): ダッシュボードコンテンツ（フォーム送信、状態管理）
    - [`ProductList.tsx`](../../app/dashboard/components/ProductList.tsx): 商品一覧（タブ切り替え、ドラッグ&ドロップ）
-   - [`ProductCategoryTabs.tsx`](../../app/dashboard/components/ProductCategoryTabs.tsx): カテゴリータブ（タブ切り替え UI）
+   - [`LayoutCategoryTabs.tsx`](../../app/dashboard/components/LayoutCategoryTabs.tsx): 配置変更用カテゴリータブ（タブ切り替え UI）
    - [`SortableProductItem.tsx`](../../app/dashboard/components/SortableProductItem.tsx): ドラッグ&ドロップ可能な商品アイテム
 
 ### カスタムフック構成
@@ -1377,7 +1377,7 @@ export default memo(ProductTile);
 
 - shadcn/ui の Dialog コンポーネントが自動的に ESC キーのイベントリスナーを削除
 - `useProductModal` で `setTimeout` のタイマーをクリーンアップ
-- `ProductCategoryTabs` でスクロールイベントリスナーを削除
+- `LayoutCategoryTabs` でスクロールイベントリスナーを削除
 
 ### 5. 状態のリフトアップ
 
@@ -1409,7 +1409,7 @@ export default memo(ProductTile);
 
 **useCallback の使用例**:
 
-- `ProductCategoryTabs` で `checkScrollPosition` を `useCallback` でメモ化
+- `LayoutCategoryTabs` で `checkScrollPosition` を `useCallback` でメモ化
 - `useProductModal` フック内の `handleProductClick` と `handleCloseModal` を `useCallback` でメモ化
 - `ProductList` の `handleEdit`, `handleDelete`, `handleUpdated`, `handleDragEnd` を `useCallback` でメモ化
 
