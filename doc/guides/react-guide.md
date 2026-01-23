@@ -329,7 +329,7 @@ function ProductTile({ product, onClick }: ProductTileProps) {
           <div className="absolute inset-0 bg-white/0 transition-colors duration-300 group-hover:bg-white/5" />
         </div>
       ) : (
-        <div className="aspect-square w-full bg-linear-to-br from-gray-50 to-gray-100" />
+        <div className="aspect-square w-full bg-gradient-to-br from-gray-50 to-gray-100" />
       )}
 
       {/* 商品名 */}
@@ -1151,7 +1151,7 @@ export default function ProductModal({
             />
           </div>
         ) : (
-          <div className="aspect-square w-full bg-linear-to-br from-gray-50 to-gray-100" />
+          <div className="aspect-square w-full bg-gradient-to-br from-gray-50 to-gray-100" />
         )}
 
         {/* 商品情報 */}
@@ -1269,7 +1269,7 @@ function ProductTile({ product, onClick }: ProductTileProps) {
           <div className="absolute inset-0 bg-white/0 transition-colors duration-300 group-hover:bg-white/5" />
         </div>
       ) : (
-        <div className="aspect-square w-full bg-linear-to-br from-gray-50 to-gray-100" />
+        <div className="aspect-square w-full bg-gradient-to-br from-gray-50 to-gray-100" />
       )}
 
       {/* 商品名 */}

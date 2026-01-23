@@ -38,7 +38,7 @@ export default async function Home() {
       <div className="h-20" />
 
       {/* ヒーローバナー */}
-      <section className="relative h-[40vh] min-h-75 w-full overflow-hidden md:h-[60vh] md:min-h-125 lg:h-[70vh] lg:min-h-150">
+      <section className="relative h-[40vh] min-h-[75px] w-full overflow-hidden md:h-[60vh] md:min-h-[125px] lg:h-[70vh] lg:min-h-[150px]">
         <Image
           src="/hero.webp"
           alt="白熊堂"
