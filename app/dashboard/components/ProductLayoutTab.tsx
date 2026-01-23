@@ -17,7 +17,7 @@ import {
   sortableKeyboardCoordinates,
   rectSortingStrategy,
 } from "@dnd-kit/sortable";
-import ProductCategoryTabs from "./ProductCategoryTabs";
+import LayoutCategoryTabs from "./LayoutCategoryTabs";
 import SortableProductItem from "./SortableProductItem";
 import { useProductReorder } from "../hooks/useProductReorder";
 import { groupProductsByCategory } from "../utils/productUtils";
@@ -115,7 +115,7 @@ export default function ProductLayoutTab({
 
   return (
     <div>
-      <ProductCategoryTabs
+      <LayoutCategoryTabs
         categories={categories}
         publishedProductsByCategory={publishedProductsByCategory}
         activeCategoryTab={activeCategoryTab}

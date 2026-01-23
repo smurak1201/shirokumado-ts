@@ -4,7 +4,7 @@ import { useEffect } from "react";
 import { useScrollPosition } from "../hooks/useScrollPosition";
 import type { Category, Product } from "../types";
 
-interface ProductCategoryTabsProps {
+interface LayoutCategoryTabsProps {
   categories: Category[];
   publishedProductsByCategory: Array<{ name: string; products: Product[] }>;
   activeCategoryTab: string;
@@ -51,7 +51,7 @@ function ProductCategoryTabButton({
 }
 
 /**
- * 商品カテゴリータブコンポーネント
+ * 配置変更タブ用のカテゴリータブコンポーネント
  *
  * 配置変更タブで使用される、スクロール可能なカテゴリータブです。
  * 以下の機能を提供します：
@@ -61,12 +61,12 @@ function ProductCategoryTabButton({
  * - スクロール可能な場合の視覚的インジケーター（グラデーション）
  * - アクティブなタブの自動スクロール
  */
-export default function ProductCategoryTabs({
+export default function LayoutCategoryTabs({
   categories,
   publishedProductsByCategory,
   activeCategoryTab,
   onCategoryTabChange,
-}: ProductCategoryTabsProps) {
+}: LayoutCategoryTabsProps) {
   const {
     scrollContainerRef,
     showLeftGradient,
