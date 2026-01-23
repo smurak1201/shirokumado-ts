@@ -4,9 +4,9 @@
  * Blob URLを使用して画像を読み込む機能を提供します。
  */
 
-import { getFileSizeMB, createErrorMessage } from './image-compression-utils';
-import { handleImageLoad, handleImageError } from './image-compression-blob-handlers';
-import { config } from './config';
+import { getFileSizeMB, createErrorMessage } from './utils';
+import { handleImageLoad, handleImageError } from './blob-handlers';
+import { config } from '../config';
 
 /**
  * Blob URLを使用して画像を読み込むヘルパー関数

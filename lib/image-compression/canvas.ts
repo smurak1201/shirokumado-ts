@@ -4,7 +4,7 @@
  * Canvasを圧縮してFileに変換する機能を提供します。
  */
 
-import { getFileSizeMB } from './image-compression-utils';
+import { getFileSizeMB } from './utils';
 
 // 定数定義
 const MIN_COMPRESSION_QUALITY = 0.5;

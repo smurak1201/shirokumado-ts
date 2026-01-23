@@ -4,18 +4,18 @@
  * Blob URLを使用した画像読み込み時のイベント処理を提供します。
  */
 
-import { log } from './logger';
+import { log } from '../logger';
 import {
   calculateResizedDimensions,
   drawImageToCanvas,
   getFileSizeMB,
   createErrorMessage,
-} from './image-compression-utils';
-import { compressCanvasToFile } from './image-compression-canvas';
+} from './utils';
+import { compressCanvasToFile } from './canvas';
 import {
   createImageLoadErrorMessage,
   logImageLoadError,
-} from './image-compression-errors';
+} from './errors';
 
 /**
  * 画像読み込み成功時の処理

@@ -4,7 +4,7 @@
  * HEIC形式（iPhoneのデフォルト形式）をJPEGに変換する機能を提供します。
  */
 
-import { log } from './logger';
+import { log } from '../logger';
 
 // heic2anyを動的インポート（コード分割のため）
 let heic2any: ((options: { blob: Blob; toType: string; quality: number }) => Promise<Blob | Blob[]>) | null = null;

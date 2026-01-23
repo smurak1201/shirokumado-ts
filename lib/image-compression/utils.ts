@@ -4,7 +4,7 @@
  * 画像圧縮処理で使用する共通のユーティリティ関数を提供します。
  */
 
-import { log } from './logger';
+import { log } from '../logger';
 
 /**
  * ファイルサイズをMB単位で取得します

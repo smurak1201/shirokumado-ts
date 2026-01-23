@@ -4,9 +4,9 @@
  * ファイルサイズに応じて適切な読み込み方法を選択します。
  */
 
-import { loadImageWithBlobURL } from './image-compression-blob-loader';
-import { loadImageWithImageBitmap } from './image-compression-bitmap-loader';
-import { config } from './config';
+import { loadImageWithBlobURL } from './blob-loader';
+import { loadImageWithImageBitmap } from './bitmap-loader';
+import { config } from '../config';
 
 /**
  * ファイルサイズに応じて適切な読み込み方法を選択します

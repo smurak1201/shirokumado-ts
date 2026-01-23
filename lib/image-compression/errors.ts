@@ -4,9 +4,9 @@
  * 画像読み込み時のエラーメッセージ生成を提供します。
  */
 
-import { log } from './logger';
-import { getFileSizeMB } from './image-compression-utils';
-import { config } from './config';
+import { log } from '../logger';
+import { getFileSizeMB } from './utils';
+import { config } from '../config';
 
 /**
  * 画像読み込みエラーメッセージを生成します

@@ -1,8 +1,7 @@
 import { useState, useCallback } from "react";
 import { log } from "@/lib/logger";
 import { getUserFriendlyMessageJa } from "@/lib/errors";
-import { compressImage, isImageFile } from "@/lib/image-compression";
-import { getFileSizeMB } from "@/lib/image-compression-utils";
+import { compressImage, isImageFile, getFileSizeMB } from "@/lib/image-compression";
 import { config } from "@/lib/config";
 
 /**

@@ -4,15 +4,15 @@
  * createImageBitmapを使用して画像を読み込む機能を提供します。
  */
 
-import { log } from './logger';
+import { log } from '../logger';
 import {
   calculateResizedDimensions,
   drawImageToCanvas,
   getFileSizeMB,
   createErrorMessage,
-} from './image-compression-utils';
-import { compressCanvasToFile } from './image-compression-canvas';
-import { loadImageWithBlobURL } from './image-compression-blob-loader';
+} from './utils';
+import { compressCanvasToFile } from './canvas';
+import { loadImageWithBlobURL } from './blob-loader';
 
 /**
  * createImageBitmapを使用して画像を読み込むヘルパー関数

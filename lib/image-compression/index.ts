@@ -7,10 +7,13 @@
  * HEIC形式（iPhoneのデフォルト形式）にも対応しています。
  */
 
-import { config } from './config';
-import { isHeicFile, convertHeicToJpeg } from './image-compression-heic';
-import { supportsWebP, getFileSizeMB, createErrorMessage } from './image-compression-utils';
-import { loadImage } from './image-compression-load';
+import { config } from '../config';
+import { isHeicFile, convertHeicToJpeg } from './heic';
+import { supportsWebP, getFileSizeMB, createErrorMessage } from './utils';
+import { loadImage } from './load';
+
+// ユーティリティ関数を再エクスポート
+export { getFileSizeMB } from './utils';
 
 /**
  * 画像ファイルかどうかを判定します（HEIC形式も含む）
