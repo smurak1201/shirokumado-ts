@@ -34,7 +34,11 @@ shirokumado-ts/
 │   │   │   ├── reorder/  # 商品順序変更
 │   │   │   │   └── route.ts
 │   │   │   └── [id]/     # 個別商品操作
-│   │   │       └── route.ts
+│   │   │       ├── route.ts      # GET, PUT, DELETE /api/products/[id]
+│   │   │       ├── get.ts        # GET処理
+│   │   │       ├── put.ts        # PUT処理
+│   │   │       ├── put-validation.ts  # PUT用バリデーション
+│   │   │       └── delete.ts     # DELETE処理
 │   │   └── categories/   # カテゴリーAPI
 │   │       └── route.ts
 │   ├── dashboard/         # ダッシュボード
@@ -47,7 +51,7 @@ shirokumado-ts/
 │   │   │   ├── ProductEditForm.tsx
 │   │   │   ├── ProductFormFields.tsx
 │   │   │   ├── ProductSearchFilters.tsx
-│   │   │   ├── ProductCategoryTabs.tsx
+│   │   │   ├── LayoutCategoryTabs.tsx
 │   │   │   └── SortableProductItem.tsx
 │   │   ├── hooks/        # カスタムフック
 │   │   │   ├── useTabState.ts
@@ -83,8 +87,19 @@ shirokumado-ts/
 │   ├── api-types.ts      # API レスポンスの型定義
 │   ├── config.ts         # アプリケーション設定
 │   ├── logger.ts         # 構造化ログユーティリティ
-│   ├── image-compression.ts # 画像圧縮ユーティリティ
-│   └── product-utils.ts  # 商品関連ユーティリティ
+│   ├── utils.ts          # 汎用ユーティリティ（clsx/tailwind-merge）
+│   ├── products.ts       # 商品データ取得関数
+│   ├── product-utils.ts  # 商品関連ユーティリティ
+│   └── image-compression/ # 画像圧縮ユーティリティ
+│       ├── index.ts      # エントリーポイント
+│       ├── heic.ts       # HEIC変換処理
+│       ├── utils.ts      # 圧縮用ユーティリティ
+│       ├── load.ts       # 画像読み込み処理
+│       ├── blob-loader.ts # Blob URL読み込み
+│       ├── bitmap-loader.ts # ImageBitmap読み込み
+│       ├── blob-handlers.ts # Blob変換処理
+│       ├── canvas.ts     # Canvas描画処理
+│       └── errors.ts     # エラー定義
 │
 ├── prisma/                 # Prisma設定
 │   ├── schema.prisma     # データベーススキーマ定義
@@ -270,7 +285,7 @@ app/dashboard/
 │   ├── [ProductPublishedField.tsx](../app/dashboard/components/ProductPublishedField.tsx)  # 公開情報フィールド
 │   ├── [ProductSearchFilters.tsx](../app/dashboard/components/ProductSearchFilters.tsx)  # 商品検索フィルター
 │   ├── [ProductLayoutTab.tsx](../app/dashboard/components/ProductLayoutTab.tsx)  # 商品配置変更タブ
-│   ├── [ProductCategoryTabs.tsx](../app/dashboard/components/ProductCategoryTabs.tsx)          # カテゴリータブ
+│   ├── [LayoutCategoryTabs.tsx](../app/dashboard/components/LayoutCategoryTabs.tsx)  # 配置変更用カテゴリータブ
 │   └── [SortableProductItem.tsx](../app/dashboard/components/SortableProductItem.tsx)  # ドラッグ&ドロップ可能な商品アイテム
 ├── hooks/                # カスタムフック
 │   ├── [useTabState.ts](../app/dashboard/hooks/useTabState.ts)            # タブ状態管理（localStorage連携）
@@ -413,8 +428,10 @@ log.error("Database operation failed", { context: "getProducts", error });
 ```
 lib/
 ├── [config.ts](../lib/config.ts)              # アプリケーション設定（画像サイズ、キャッシュなど）
-├── [image-compression.ts](../lib/image-compression.ts)   # クライアントサイド画像圧縮
-└── [product-utils.ts](../lib/product-utils.ts)       # 商品関連ユーティリティ（公開状態計算など）
+├── [utils.ts](../lib/utils.ts)                # 汎用ユーティリティ（clsx/tailwind-merge）
+├── [products.ts](../lib/products.ts)          # 商品データ取得関数
+├── [product-utils.ts](../lib/product-utils.ts)       # 商品関連ユーティリティ（公開状態計算など）
+└── [image-compression/](../lib/image-compression/)   # クライアントサイド画像圧縮（ディレクトリ）
 ```
 
 **設定の一元管理** ([`lib/config.ts`](../lib/config.ts)):

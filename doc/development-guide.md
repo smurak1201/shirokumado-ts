@@ -944,7 +944,7 @@ lib/                    # kebab-case で統一
 ├── errors.ts          # エラーハンドリング
 ├── api-helpers.ts     # API Routesヘルパー
 ├── config.ts          # アプリケーション設定
-├── image-compression.ts # 画像圧縮
+├── image-compression/   # 画像圧縮（ディレクトリ）
 └── product-utils.ts   # 商品関連ユーティリティ
 
 app/dashboard/utils/   # camelCase で統一

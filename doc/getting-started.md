@@ -98,7 +98,7 @@ API Routes で使用する共通のヘルパー関数を確認します。
 #### その他のユーティリティ
 
 - [`lib/product-utils.ts`](../lib/product-utils.ts): 商品関連のユーティリティ関数（公開状態判定、価格フォーマットなど）
-- [`lib/image-compression.ts`](../lib/image-compression.ts): 画像圧縮ユーティリティ
+- [`lib/image-compression/`](../lib/image-compression/): 画像圧縮ユーティリティ
 - [`lib/blob.ts`](../lib/blob.ts): Blob Storage ユーティリティ
 - [`lib/env.ts`](../lib/env.ts): 環境変数の型安全な管理
 
@@ -175,9 +175,9 @@ API Routes で使用する共通のヘルパー関数を確認します。
 
 商品名、カテゴリー、公開状態による検索・フィルタリング機能を提供するコンポーネントです。
 
-#### [`app/dashboard/components/ProductCategoryTabs.tsx`](../app/dashboard/components/ProductCategoryTabs.tsx)
+#### [`app/dashboard/components/LayoutCategoryTabs.tsx`](../app/dashboard/components/LayoutCategoryTabs.tsx)
 
-カテゴリータブの UI コンポーネントです。スクロール可能なタブの実装を確認します。
+配置変更用のカテゴリータブの UI コンポーネントです。スクロール可能なタブの実装を確認します。
 
 #### [`app/dashboard/components/SortableProductItem.tsx`](../app/dashboard/components/SortableProductItem.tsx)
 
@@ -260,7 +260,7 @@ app/dashboard/
 │   ├── ProductPublishedField.tsx # 公開情報フィールド
 │   ├── ProductSearchFilters.tsx # 商品検索フィルター
 │   ├── ProductLayoutTab.tsx     # 商品配置変更タブ
-│   ├── ProductCategoryTabs.tsx          # カテゴリータブ
+│   ├── LayoutCategoryTabs.tsx   # 配置変更用カテゴリータブ
 │   └── SortableProductItem.tsx   # ドラッグ&ドロップ可能な商品アイテム
 ├── hooks/                # カスタムフック（状態管理ロジック）
 │   ├── useTabState.ts           # タブ状態管理（localStorage連携）
@@ -346,7 +346,7 @@ app/dashboard/
 - **[`blob.ts`](../lib/blob.ts)**: Vercel Blob Storage への画像アップロード・削除
 - **[`errors.ts`](../lib/errors.ts)**: 統一されたエラークラス（ValidationError, NotFoundError など）
 - **[`api-helpers.ts`](../lib/api-helpers.ts)**: API Routes 用ヘルパー（`withErrorHandling`, `apiSuccess` など）
-- **[`image-compression.ts`](../lib/image-compression.ts)**: クライアントサイドでの画像圧縮（Canvas API を使用）
+- **[`image-compression/`](../lib/image-compression/)**: クライアントサイドでの画像圧縮（Canvas API を使用）
 - **[`product-utils.ts`](../lib/product-utils.ts)**: 商品関連ユーティリティ（公開状態の計算など）
 
 **設計思想**:

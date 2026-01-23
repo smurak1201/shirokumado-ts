@@ -245,7 +245,7 @@
 
   - 商品画像をアップロード・保存し、CDN 経由で配信
   - [`lib/blob.ts`](../lib/blob.ts) にユーティリティ関数を実装し、画像アップロードと削除を簡潔に処理
-  - クライアントサイドで画像を圧縮（[`lib/image-compression.ts`](../lib/image-compression.ts)）してからアップロードし、ストレージ容量を最適化
+  - クライアントサイドで画像を圧縮（[`lib/image-compression/`](../lib/image-compression/)）してからアップロードし、ストレージ容量を最適化
   - 開発環境と本番環境で同じストレージサービスを使用し、環境の一貫性を確保
 
   **詳細**: Blob Storage と画像圧縮の詳細については、[ユーティリティ関数ガイド](./guides/utilities-guide.md)を参照してください。
@@ -281,7 +281,7 @@
 
 ### 型定義
 
-- `@types/node` `^20`: Node.js の型定義
+- `@types/node` `^24`: Node.js の型定義
 - `@types/react` `^19`: React の型定義
 - `@types/react-dom` `^19`: React DOM の型定義
 

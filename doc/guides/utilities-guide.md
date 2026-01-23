@@ -10,7 +10,7 @@
   - [formatPrice](#formatprice)
   - [parsePrice](#parseprice)
   - [isNumericKey](#isnumerickey)
-- [画像圧縮ユーティリティ (`lib/image-compression.ts`)](#画像圧縮ユーティリティ-libimage-compressionts)
+- [画像圧縮ユーティリティ (`lib/image-compression/`)](#画像圧縮ユーティリティ-libimage-compression)
   - [compressImage](#compressimage)
   - [画像圧縮の仕組み](#画像圧縮の仕組み)
   - [画像ファイルサイズの制限と推奨サイズ](#画像ファイルサイズの制限と推奨サイズ)
@@ -312,9 +312,24 @@ import { isNumericKey } from "@/lib/product-utils";
 - **入力検証**: 価格入力フィールドで数字以外の入力を防止
 - **ユーザー体験**: コピー&ペーストなどの操作は許可し、使いやすさを維持
 
-## 画像圧縮ユーティリティ (`lib/image-compression.ts`)
+## 画像圧縮ユーティリティ (`lib/image-compression/`)
 
-クライアントサイドで画像を圧縮・リサイズするユーティリティです。
+クライアントサイドで画像を圧縮・リサイズするユーティリティです。複数のファイルに分割されています。
+
+**ディレクトリ構造**:
+
+```
+lib/image-compression/
+├── index.ts          # エントリーポイント（compressImage関数をエクスポート）
+├── heic.ts           # HEIC形式の変換処理
+├── utils.ts          # 圧縮用ユーティリティ関数
+├── load.ts           # 画像読み込み処理
+├── blob-loader.ts    # Blob URL経由の読み込み
+├── bitmap-loader.ts  # ImageBitmap経由の読み込み
+├── blob-handlers.ts  # Blob変換処理
+├── canvas.ts         # Canvas描画処理
+└── errors.ts         # エラー定義
+```
 
 **このアプリでの使用箇所**:
 
@@ -324,7 +339,7 @@ import { isNumericKey } from "@/lib/product-utils";
 
 画像ファイルを圧縮・リサイズします。
 
-[`lib/image-compression.ts`](../../lib/image-compression.ts) (`compressImage`関数)
+[`lib/image-compression/index.ts`](../../lib/image-compression/index.ts) (`compressImage`関数)
 
 ```typescript
 export async function compressImage(
@@ -809,7 +824,7 @@ ERROR [getProducts] Database operation failed
 
 **このアプリでの使用箇所**:
 
-- [`lib/image-compression.ts`](../../lib/image-compression.ts): 画像圧縮の設定
+- [`lib/image-compression/`](../../lib/image-compression/): 画像圧縮の設定
 - [`lib/blob.ts`](../../lib/blob.ts): Blob Storage の設定
 - [`app/api/products/route.ts`](../../app/api/products/route.ts): API キャッシュの設定
 - [`app/api/categories/route.ts`](../../app/api/categories/route.ts): API キャッシュの設定
@@ -1004,7 +1019,7 @@ const projectId = env.NEXT_PUBLIC_STACK_PROJECT_ID; // 型安全
 
 ### 設定管理
 
-1. **画像サイズの制限**: [`lib/image-compression.ts`](../../lib/image-compression.ts) で `config.imageConfig` を使用
+1. **画像サイズの制限**: [`lib/image-compression/`](../../lib/image-compression/) で `config.imageConfig` を使用
 2. **API キャッシュの設定**: [`app/api/products/route.ts`](../../app/api/products/route.ts) で `config.apiConfig` を使用
 
 ## まとめ

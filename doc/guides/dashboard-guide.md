@@ -61,7 +61,7 @@ DashboardContent (Client Component)
       │   ├── ProductSearchFilters
       │   └── ProductCard
       ├── ProductLayoutTab
-      │   ├── ProductCategoryTabs
+      │   ├── LayoutCategoryTabs
       │   └── SortableProductItem
       └── ProductEditForm
           ├── useProductForm (カスタムフック)
@@ -95,7 +95,7 @@ app/dashboard/
 │   ├── ProductPublishedField.tsx # 公開情報フィールド
 │   ├── ProductSearchFilters.tsx # 商品検索フィルター
 │   ├── ProductLayoutTab.tsx  # 商品配置変更タブ
-│   ├── ProductCategoryTabs.tsx       # カテゴリータブ
+│   ├── LayoutCategoryTabs.tsx # 配置変更用カテゴリータブ
 │   └── SortableProductItem.tsx # ドラッグ&ドロップ可能な商品アイテム
 ├── hooks/                      # カスタムフック
 │   ├── useTabState.ts          # タブ状態管理
@@ -286,7 +286,7 @@ interface ProductListProps {
 - `@dnd-kit`を使用したドラッグ&ドロップ
 - 楽観的 UI 更新
 - タブ状態の localStorage 連携
-- コンポーネントの分割（`ProductListTabs`、`ProductListContent`、`ProductSearchFilters`、`ProductLayoutTab`、`ProductCategoryTabs`）
+- コンポーネントの分割（`ProductListTabs`、`ProductListContent`、`ProductSearchFilters`、`ProductLayoutTab`、`LayoutCategoryTabs`）
 
 ### ProductListTabs ([`components/ProductListTabs.tsx`](../../app/dashboard/components/ProductListTabs.tsx))
 
@@ -414,9 +414,9 @@ interface ProductListProps {
 **主な機能**:
 
 - ドラッグ&ドロップによる商品の順序変更
-- カテゴリーごとのタブ表示（`ProductCategoryTabs`を使用）
+- カテゴリーごとのタブ表示（`LayoutCategoryTabs`を使用）
 
-### ProductCategoryTabs ([`components/ProductCategoryTabs.tsx`](../../app/dashboard/components/ProductCategoryTabs.tsx))
+### LayoutCategoryTabs ([`components/LayoutCategoryTabs.tsx`](../../app/dashboard/components/LayoutCategoryTabs.tsx))
 
 カテゴリータブの UI コンポーネントです。
 

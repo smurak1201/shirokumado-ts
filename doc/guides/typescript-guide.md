@@ -596,7 +596,7 @@ if (isType(data)) {
 
 **このアプリでの使用箇所**:
 
-1. **画像ファイルのチェック** ([`lib/image-compression.ts`](../../lib/image-compression.ts))
+1. **画像ファイルのチェック** ([`lib/image-compression/utils.ts`](../../lib/image-compression/utils.ts))
 
 ```typescript
 export function isImageFile(file: File): boolean {

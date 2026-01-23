@@ -128,7 +128,7 @@ DashboardPage (Server Component)
           │   ├── ProductSearchFilters
           │   └── ProductCard
           ├── ProductLayoutTab
-          │   ├── ProductCategoryTabs
+          │   ├── LayoutCategoryTabs
           │   └── SortableProductItem
           └── ProductEditForm
               ├── useProductForm (カスタムフック)
@@ -140,7 +140,7 @@ DashboardPage (Server Component)
 ### コンポーネント分割の原則
 
 1. **単一責任の原則**: 各コンポーネントは 1 つの責務を持つ
-2. **再利用性**: 汎用的なコンポーネントは分離（例: `ProductCategoryTabs`, `SortableProductItem`）
+2. **再利用性**: 汎用的なコンポーネントは分離（例: `LayoutCategoryTabs`, `SortableProductItem`）
 3. **関心の分離**: UI とロジックを分離（カスタムフックを使用）
 
 ### 例: ProductList の分割
@@ -156,7 +156,7 @@ DashboardPage (Server Component)
 **After** (分割後):
 
 - [`ProductList.tsx`](../app/dashboard/components/ProductList.tsx): メインロジック（約 490 行）
-- [`ProductCategoryTabs.tsx`](../app/dashboard/components/ProductCategoryTabs.tsx): カテゴリータブ UI
+- [`LayoutCategoryTabs.tsx`](../app/dashboard/components/LayoutCategoryTabs.tsx): 配置変更用カテゴリータブ UI
 - [`SortableProductItem.tsx`](../app/dashboard/components/SortableProductItem.tsx): ドラッグ&ドロップ可能な商品アイテム
 - [`useTabState.ts`](../app/dashboard/hooks/useTabState.ts): タブ状態管理フック
 - [`useProductReorder.ts`](../app/dashboard/hooks/useProductReorder.ts): 商品順序変更フック
@@ -426,7 +426,7 @@ export const GET = withErrorHandling(async () => {
 
 ### 画像最適化
 
-- **クライアントサイド圧縮**: [`lib/image-compression.ts`](../lib/image-compression.ts)
+- **クライアントサイド圧縮**: [`lib/image-compression/`](../lib/image-compression/)
 - **WebP 形式**: デフォルトで WebP 形式に変換
 - **サイズ制限**: 4MB 以下に制限
 
