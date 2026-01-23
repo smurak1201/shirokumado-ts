@@ -14,5 +14,7 @@
   "tailwindCSS.lint.invalidScreen": "error",
   "tailwindCSS.lint.invalidTailwindDirective": "error",
   "tailwindCSS.lint.invalidVariant": "error",
-  "tailwindCSS.lint.recommendedVariantOrder": "warning"
+  "tailwindCSS.lint.recommendedVariantOrder": "warning",
+  "tailwindCSS.experimental.configFile": null,
+  "tailwindCSS.rootFontSize": 16
 }
