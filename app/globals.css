@@ -139,10 +139,10 @@ body {
   background-repeat: no-repeat;
 }
 
-/* スマホではセクションの高さに合わせて画像全体を表示 */
+/* スマホでは高さを自動調整して画像全体を表示 */
 @media (max-width: 767px) {
   .hero-bg {
-    background-size: contain;
+    background-size: auto 100%;
     background-position: center top;
   }
 }
