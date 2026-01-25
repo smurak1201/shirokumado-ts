@@ -140,7 +140,8 @@ body {
 /* スマホでの背景位置調整 */
 @media (max-width: 768px) {
   .hero-bg {
-    background-position: 20% top;
+    background-position: center center;
+    background-size: cover;
   }
 }
 
