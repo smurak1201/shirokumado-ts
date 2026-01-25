@@ -78,7 +78,7 @@ npm install framer-motion
 
 ---
 
-### タスク3: ヒーローセクションのアニメーション
+### タスク3: ヒーローセクションのアニメーション [完了]
 
 **ファイル**: `app/page.tsx`
 
@@ -139,7 +139,7 @@ import HeroSection from "./components/HeroSection";
 
 ---
 
-### タスク4: ヘッダーのアニメーション
+### タスク4: ヘッダーのアニメーション [完了]
 
 **ファイル**: `app/components/Header.tsx`
 
