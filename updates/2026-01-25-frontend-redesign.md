@@ -3,8 +3,7 @@
 **日付**: 2026-01-25
 **ブランチ**: feature/frontend-redesign
 **対象**: トップページ（app/page.tsx）
-**ステータス**: 完了
-**完了日**: 2026-01-25
+**ステータス**: 進行中
 
 ---
 
@@ -19,7 +18,7 @@
 | 5   | 商品タイルのスクロールアニメーション |    [o]     |      |
 | 6   | タブ切り替えアニメーション           |    [o]     |      |
 | 7   | 商品カードのホバー色調整             |    [o]     | 既にprimaryカラーを使用した設定済み、変更不要と確認 |
-| 8   | 動作確認・ビルドテスト               |    [o]     | ビルド成功、TypeScriptエラーなし、アクセシビリティ対応追加 |
+| 8   | 動作確認・ビルドテスト               |    [ ]     |      |
 
 **凡例**: `[ ]` 未着手 / `[~]` 作業中 / `[o]` 完了
 
@@ -236,10 +235,11 @@ const containerVariants: Variants = {
 };
 
 const itemVariants: Variants = {
-  hidden: { opacity: 0 },
+  hidden: { opacity: 0, y: 20 },
   visible: {
     opacity: 1,
-    transition: { duration: 0.8, ease: "easeOut" },
+    y: 0,
+    transition: { duration: 0.4, ease: "easeOut" },
   },
 };
 
@@ -296,16 +296,6 @@ export default function ProductGrid({
   );
 }
 ```
-
-**修正履歴** (2026-01-25):
-
-スマホでの商品画像アニメーションのちらつき問題を修正:
-
-- `y` アニメーションを削除（`y: 10` → 削除、`opacity` のみに変更） - ちらつきの原因となる移動アニメーションを完全に削除
-- `viewport` の `margin` を `"-50px"` → `"0px 0px -100px 0px"` に変更（下方向のみマージンを設定）
-- `willChange: "opacity"` に変更（yアニメーション削除に伴い `transform` を削除）
-- アニメーション時間を `0.5秒` → `0.8秒` に変更（ヒーロー画像のフェードインに合わせる）
-- イージング関数を `[0.16, 1, 0.3, 1]` → `"easeOut"` に変更（ヒーロー画像と同じイージング関数に統一）
 
 ---
 
@@ -395,7 +385,7 @@ export default function ProductCategoryTabs({
 
 ---
 
-### タスク8: 動作確認・ビルドテスト [完了]
+### タスク8: 動作確認・ビルドテスト
 
 **確認項目**:
 

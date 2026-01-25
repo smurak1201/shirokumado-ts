@@ -98,18 +98,3 @@ body {
   animation: fade-in 0.8s ease-out;
 }
 
-/* アクセシビリティ: アニメーション軽減設定 */
-@media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
-    animation-duration: 0.01ms !important;
-    transition-duration: 0.01ms !important;
-  }
-  
-  /* Framer Motionのアニメーションは除外 */
-  [data-framer-motion] {
-    animation-duration: revert !important;
-    transition-duration: revert !important;
-  }
-}
