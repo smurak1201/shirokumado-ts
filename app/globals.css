@@ -98,7 +98,7 @@ body {
   animation: fade-in 0.8s ease-out;
 }
 
-/* アコーディオンアニメーション（ふわっとした滑らかな動き） */
+/* アコーディオンアニメーション（表示アニメーションと同じ0.4秒） */
 @keyframes accordion-down {
   from {
     height: 0;
@@ -118,10 +118,10 @@ body {
 }
 
 .animate-accordion-down {
-  animation: accordion-down 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  animation: accordion-down 0.4s ease-out;
 }
 
 .animate-accordion-up {
-  animation: accordion-up 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  animation: accordion-up 0.4s ease-out;
 }
 
