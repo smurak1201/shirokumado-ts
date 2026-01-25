@@ -1,7 +1,12 @@
 @import "tailwindcss";
 
 :root {
-  /* ヘッダーの高さ（固定ヘッダー下のスペーサーやパララックス計算で使用） */
+  /*
+   * ヘッダーの高さ
+   * 使用箇所:
+   * - page.tsx: ヘッダースペーサーの高さ
+   * - .hero-image-container: パララックス画像の高さ計算
+   */
   --header-height: 5rem;
   --background: #ffffff;
   --foreground: #171717;
@@ -128,13 +133,37 @@ body {
   animation: accordion-up 0.4s ease-out;
 }
 
-/* パララックス効果（スマホ対応） */
-/* 参考: https://daian-kichijitsu.com/parallax/ */
+/*
+ * パララックス効果（スマホ対応）
+ * 参考: https://daian-kichijitsu.com/parallax/
+ *
+ * ## 仕組み
+ * 1. .hero-image-container: position: fixedで画像を固定
+ * 2. .section-inner: clip-path: inset(0)で「窓」として機能
+ * 3. スクロール時、窓（セクション）が動き、固定画像の異なる部分が見える
+ *
+ * ## スマホでの課題と解決策
+ * 課題: セクションはヘッダースペーサー分（--header-height）下にあるが、
+ *       画像はtop: 0から始まるため、画像の高さが足りないと下に余白ができる
+ *
+ * ビューポート構造:
+ * ┌─────────────────┐ 0px
+ * │ ヘッダー(80px)   │
+ * ├─────────────────┤ 80px ← セクション開始
+ * │ セクション       │        ↑ 画像はここをカバーする必要がある
+ * ├─────────────────┤        ← セクション終了
+ * │                 │
+ *
+ * 解決策: 画像の高さ = セクション高さ + ヘッダー高さ
+ */
+
+/* clip-pathで切り抜き、「窓」として機能させる */
 .section-inner {
   clip-path: inset(0 0 0 0);
 }
 
-/* ヒーローセクション
+/*
+ * ヒーローセクション
  * --hero-width, --hero-height: HeroSection.tsxから画像サイズが渡される
  */
 .hero-section {
@@ -143,12 +172,16 @@ body {
   aspect-ratio: var(--hero-width) / var(--hero-height);
 }
 
+/* パララックス用の画像コンテナ */
 .hero-image-container {
   position: fixed;
   top: 0;
   left: 0;
   width: 100vw;
-  /* スマホ: セクションの高さ + ヘッダー分の高さで、セクション全体をカバー */
+  /*
+   * スマホ: セクションの高さ + ヘッダー分の高さ
+   * これにより、ヘッダー下から始まるセクション全体を画像がカバーできる
+   */
   height: calc(100vw * var(--hero-height) / var(--hero-width) + var(--header-height));
 }
 

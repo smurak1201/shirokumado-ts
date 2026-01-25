@@ -34,7 +34,11 @@ export default async function Home() {
     <div className="min-h-screen bg-background overflow-x-hidden">
       {/* ヘッダー */}
       <Header />
-      {/* ヘッダーの高さ分のスペーサー（--header-heightと同じ値） */}
+      {/*
+       * ヘッダーの高さ分のスペーサー
+       * CSS変数 --header-height（globals.cssで定義）を使用
+       * この高さはHeroSectionのパララックス効果の計算にも使用される
+       */}
       <div style={{ height: "var(--header-height)" }} />
 
       {/* ヒーローバナー */}
