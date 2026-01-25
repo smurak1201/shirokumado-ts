@@ -106,13 +106,7 @@ export default function ProductLayoutTab({
     (g) => g.name === activeCategoryTab
   );
 
-  if (!activeCategoryGroup || activeCategoryGroup.products.length === 0) {
-    return (
-      <p className="py-8 text-center text-gray-500">
-        {activeCategoryTab}に公開されている商品がありません
-      </p>
-    );
-  }
+  const hasProducts = activeCategoryGroup && activeCategoryGroup.products.length > 0;
 
   return (
     <div>
@@ -123,22 +117,28 @@ export default function ProductLayoutTab({
         onCategoryTabChange={onCategoryTabChange}
       />
 
-      <DndContext
-        sensors={sensors}
-        collisionDetection={closestCorners}
-        onDragEnd={(event) => handleDragEnd(event, activeCategoryTab)}
-      >
-        <SortableContext
-          items={activeCategoryGroup.products.map((p) => p.id)}
-          strategy={rectSortingStrategy}
+      {!hasProducts ? (
+        <p className="py-8 text-center text-gray-500">
+          {activeCategoryTab}に公開されている商品がありません
+        </p>
+      ) : (
+        <DndContext
+          sensors={sensors}
+          collisionDetection={closestCorners}
+          onDragEnd={(event) => handleDragEnd(event, activeCategoryTab)}
         >
-          <div className="grid grid-cols-3 gap-1 sm:gap-2 md:gap-4">
-            {activeCategoryGroup.products.map((product) => (
-              <SortableProductItem key={product.id} product={product} />
-            ))}
-          </div>
-        </SortableContext>
-      </DndContext>
+          <SortableContext
+            items={activeCategoryGroup.products.map((p) => p.id)}
+            strategy={rectSortingStrategy}
+          >
+            <div className="grid grid-cols-3 gap-1 sm:gap-2 md:gap-4">
+              {activeCategoryGroup.products.map((product) => (
+                <SortableProductItem key={product.id} product={product} />
+              ))}
+            </div>
+          </SortableContext>
+        </DndContext>
+      )}
     </div>
   );
 }
