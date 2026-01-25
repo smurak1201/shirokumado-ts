@@ -31,24 +31,30 @@ export default function HeroSection() {
 
   return (
     <section className="relative h-[40vh] min-h-[75px] w-full overflow-hidden md:h-[60vh] md:min-h-[125px] lg:h-[70vh] lg:min-h-[150px]">
-      <motion.div
-        initial={{ opacity: 0, scale: 1.1 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 0.8, ease: "easeOut" }}
+      {/* パララックス効果用のコンテナ */}
+      <div
         className="absolute inset-0"
         style={{
           transform: `translateY(${parallaxY}px)`,
         }}
       >
-        <Image
-          src="/hero.webp"
-          alt="白熊堂"
-          fill
-          priority
-          className="object-cover"
-          sizes="100vw"
-        />
-      </motion.div>
+        {/* フェードインアニメーション用のmotion.div */}
+        <motion.div
+          initial={{ opacity: 0, scale: 1.1 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.8, ease: "easeOut" }}
+          className="absolute inset-0"
+        >
+          <Image
+            src="/hero.webp"
+            alt="白熊堂"
+            fill
+            priority
+            className="object-cover"
+            sizes="100vw"
+          />
+        </motion.div>
+      </div>
       {/* グラデーションオーバーレイ - 淡いブルー系 */}
       <motion.div
         initial={{ opacity: 0 }}
