@@ -14,6 +14,8 @@ import { motion } from "framer-motion";
 export default function HeroSection() {
   const [scrollY, setScrollY] = useState(0);
   const sectionRef = useRef<HTMLElement>(null);
+  const rafIdRef = useRef<number | null>(null);
+  const lastScrollYRef = useRef(0);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -21,28 +23,33 @@ export default function HeroSection() {
         const rect = sectionRef.current.getBoundingClientRect();
         // セクションがビューポート内にある場合のみパララックス効果を適用
         if (rect.bottom >= 0 && rect.top <= window.innerHeight) {
-          setScrollY(window.scrollY);
+          const currentScrollY = window.scrollY;
+          // スクロール位置の変化が小さい場合は更新をスキップ（モバイル最適化）
+          if (Math.abs(currentScrollY - lastScrollYRef.current) > 1) {
+            setScrollY(currentScrollY);
+            lastScrollYRef.current = currentScrollY;
+          }
         }
       }
     };
 
     // 初期値を設定
     handleScroll();
+    lastScrollYRef.current = window.scrollY;
 
     // requestAnimationFrameでスムーズに更新
-    let rafId: number;
     const onScroll = () => {
-      if (rafId) {
-        cancelAnimationFrame(rafId);
+      if (rafIdRef.current !== null) {
+        cancelAnimationFrame(rafIdRef.current);
       }
-      rafId = requestAnimationFrame(handleScroll);
+      rafIdRef.current = requestAnimationFrame(handleScroll);
     };
 
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => {
       window.removeEventListener("scroll", onScroll);
-      if (rafId) {
-        cancelAnimationFrame(rafId);
+      if (rafIdRef.current !== null) {
+        cancelAnimationFrame(rafIdRef.current);
       }
     };
   }, []);
@@ -59,8 +66,10 @@ export default function HeroSection() {
       <div
         className="absolute inset-0"
         style={{
-          transform: `translateY(${parallaxY}px)`,
+          transform: `translate3d(0, ${parallaxY}px, 0)`,
           willChange: "transform",
+          backfaceVisibility: "hidden",
+          WebkitBackfaceVisibility: "hidden",
         }}
       >
         {/* フェードインアニメーション用のmotion.div */}
@@ -69,6 +78,10 @@ export default function HeroSection() {
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.8, ease: "easeOut" }}
           className="absolute inset-0"
+          style={{
+            backfaceVisibility: "hidden",
+            WebkitBackfaceVisibility: "hidden",
+          }}
         >
           <Image
             src="/hero.webp"
