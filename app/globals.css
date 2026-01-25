@@ -142,6 +142,7 @@ body {
 @media (max-width: 768px) {
   .hero-bg {
     background-size: contain;
+    background-position: center center;
   }
 }
 
