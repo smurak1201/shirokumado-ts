@@ -346,11 +346,11 @@ export default function HeroSection() {
 
 ```tsx
 // 変更前
-<Header />
+<FixedHeader />
 <div className="h-20" /> {/* ヘッダーの高さ分のスペーサー */}
 
 // 変更後
-<Header />
+<FixedHeader />
 {/*
  * ヘッダーの高さ分のスペーサー
  * CSS変数 --header-height（globals.cssで定義）を使用

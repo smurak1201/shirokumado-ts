@@ -165,12 +165,12 @@ import HeroSection from "./components/HeroSection";
 
 ```tsx
 // 変更前
-<Header />
+<FixedHeader />
 <div className="h-20" />
 {/* ヒーローセクションなし */}
 
 // 変更後
-<Header />
+<FixedHeader />
 <div className="h-20" /> {/* ヘッダーの高さ分のスペーサー */}
 
 {/* ヒーローバナー */}

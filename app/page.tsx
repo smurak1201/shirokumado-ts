@@ -3,7 +3,7 @@ import {
   type CategoryWithProducts,
 } from "@/lib/products";
 import ProductCategoryTabs from "./components/ProductCategoryTabs";
-import Header from "./components/Header";
+import FixedHeader from "./components/FixedHeader";
 import Footer from "./components/Footer";
 import HeroSection from "./components/HeroSection";
 import { Separator } from "./components/ui/separator";
@@ -32,10 +32,13 @@ export default async function Home() {
 
   return (
     <div className="min-h-screen bg-background overflow-x-hidden">
-      {/* ヘッダー */}
-      <Header />
+      {/* ヘッダー（position: fixedで画面上部に固定） */}
+      <FixedHeader />
       {/*
-       * ヘッダーの高さ分のスペーサー
+       * ヘッダースペーサー
+       * ヘッダーはposition: fixedで固定されているため、通常のフローから外れる
+       * このスペーサーがないと、下のコンテンツがヘッダーの裏に隠れてしまう
+       *
        * CSS変数 --header-height（globals.cssで定義）を使用
        * この高さはHeroSectionのパララックス効果の計算にも使用される
        */}

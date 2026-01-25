@@ -27,14 +27,30 @@ const itemVariants: Variants = {
 };
 
 /**
- * ヘッダーコンポーネント
+ * 固定ヘッダーコンポーネント
  *
- * 全ページ共通のヘッダーを表示します。
- * ロゴ画像（トップページへのリンク）、Instagramアイコン、ナビゲーションリンクを含みます。
- * Framer Motionを使用してロード時のアニメーションを実装しています。
- * アニメーションはトップページ（/）を開いたときのみ実行されます。
+ * position: fixed で画面上部に固定されるヘッダーです。
+ * このコンポーネントは通常のドキュメントフローから外れるため、
+ * 使用する際は直後にヘッダーの高さ分のスペーサーが必要です。
+ *
+ * 高さ: 5rem (80px) - CSS変数 --header-height で管理（globals.css）
+ *
+ * 含まれる要素:
+ * - ロゴ画像（トップページへのリンク）
+ * - Instagramアイコン
+ * - ナビゲーションリンク
+ *
+ * アニメーション:
+ * - Framer Motionを使用
+ * - トップページ（/）を開いたときのみ実行
+ *
+ * @example
+ * // 使用例（page.tsx）
+ * <FixedHeader />
+ * <div style={{ height: "var(--header-height)" }} /> // スペーサー必須
+ * <main>...</main>
  */
-export default function Header() {
+export default function FixedHeader() {
   const pathname = usePathname();
   const isHomePage = pathname === "/";
 

@@ -211,7 +211,7 @@ export default function FAQSection({ faqs }: FAQSectionProps) {
 
 ```tsx
 // app/faq/page.tsx
-import Header from "../components/Header";
+import FixedHeader from "../components/FixedHeader";
 import Footer from "../components/Footer";
 import { Separator } from "../components/ui/separator";
 import FAQSection from "../components/FAQSection";
@@ -220,7 +220,7 @@ import { faqs } from "./data";
 export default function FAQPage() {
   return (
     <div className="min-h-screen bg-background">
-      <Header />
+      <FixedHeader />
       <div className="h-20" />
 
       <main className="mx-auto max-w-4xl px-4 py-8 md:px-6 md:py-12 lg:px-8 lg:py-16">
