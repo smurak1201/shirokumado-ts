@@ -3,8 +3,8 @@
 **日付**: 2026-01-25
 **ブランチ**: feature/product-modal-redesign
 **対象**: 商品モーダル（`app/components/ProductModal.tsx`）
-**ステータス**: 未着手
-**完了日**: -
+**ステータス**: 完了
+**完了日**: 2026-01-25
 
 ---
 
@@ -12,11 +12,11 @@
 
 | #   | タスク                                         | 優先度 | ステータス | 備考 |
 | --- | ---------------------------------------------- | :----: | :--------: | ---- |
-| 1   | Framer Motion によるモーダルアニメーション追加 |   高   |    [ ]     |      |
-| 2   | 各セクションのスタガーアニメーション追加       |   高   |    [ ]     |      |
-| 3   | 閉じるボタンのスタイル改善                     |   中   |    [ ]     |      |
-| 4   | 画像セクションのホバーエフェクト追加           |   中   |    [ ]     |      |
-| 5   | 価格セクションのデザイン改善                   |   中   |    [ ]     |      |
+| 1   | Framer Motion によるモーダルアニメーション追加 |   高   |    [o]     |      |
+| 2   | 各セクションのスタガーアニメーション追加       |   高   |    [o]     |      |
+| 3   | 閉じるボタンのスタイル改善                     |   中   |    [o]     |      |
+| 4   | 画像セクションのホバーエフェクト追加           |   中   |    [o]     |      |
+| 5   | 価格セクションのデザイン改善                   |   中   |    [o]     |      |
 | 6   | 動作確認・ビルドテスト                         |   -    |    [ ]     |      |
 
 **凡例**: `[ ]` 未着手 / `[~]` 作業中 / `[o]` 完了
@@ -49,7 +49,7 @@ FAQページのモダン改修が完了し、アコーディオン形式とFrame
 
 ## タスク詳細
 
-### タスク1: Framer Motion によるモーダルアニメーション追加
+### タスク1: Framer Motion によるモーダルアニメーション追加 [完了]
 
 **対象ファイル**:
 
@@ -123,13 +123,13 @@ const itemVariants: Variants = {
 
 **チェックリスト**:
 
-- [ ] `framer-motion` のインポート追加
-- [ ] `containerVariants` と `itemVariants` を定義
-- [ ] `config.animationConfig` から設定値を参照
+- [o] `framer-motion` のインポート追加
+- [o] `containerVariants` と `itemVariants` を定義
+- [o] `config.animationConfig` から設定値を参照
 
 ---
 
-### タスク2: 各セクションのスタガーアニメーション追加
+### タスク2: 各セクションのスタガーアニメーション追加 [完了]
 
 **対象ファイル**:
 
@@ -183,13 +183,13 @@ const itemVariants: Variants = {
 
 **チェックリスト**:
 
-- [ ] 親コンテナに `motion.div` と `containerVariants` を適用
-- [ ] 各セクションを `motion.div` でラップ
-- [ ] `itemVariants` を適用して順次表示
+- [o] 親コンテナに `motion.div` と `containerVariants` を適用
+- [o] 各セクションを `motion.div` でラップ
+- [o] `itemVariants` を適用して順次表示
 
 ---
 
-### タスク3: 閉じるボタンのスタイル改善
+### タスク3: 閉じるボタンのスタイル改善 [完了]
 
 **対象ファイル**:
 
@@ -234,13 +234,13 @@ const itemVariants: Variants = {
 
 **チェックリスト**:
 
-- [ ] 閉じるボタンのタップ領域を拡大
-- [ ] 背景色とblurエフェクトを追加
-- [ ] ホバー時のスケールアニメーションを追加
+- [o] 閉じるボタンのタップ領域を拡大
+- [o] 背景色とblurエフェクトを追加
+- [o] ホバー時のスケールアニメーションを追加
 
 ---
 
-### タスク4: 画像セクションのホバーエフェクト追加
+### タスク4: 画像セクションのホバーエフェクト追加 [完了]
 
 **対象ファイル**:
 
@@ -293,13 +293,13 @@ Framer Motionの `whileHover` を使用して、滑らかなトランジショ�
 
 **チェックリスト**:
 
-- [ ] 画像カードに `whileHover` スケールエフェクトを追加
-- [ ] 画像自体にも別のスケールエフェクトを追加（カードより大きめ）
-- [ ] `transition` でアニメーション時間を指定
+- [o] 画像カードに `whileHover` スケールエフェクトを追加
+- [o] 画像自体にも別のスケールエフェクトを追加（カードより大きめ）
+- [o] `transition` でアニメーション時間を指定
 
 ---
 
-### タスク5: 価格セクションのデザイン改善
+### タスク5: 価格セクションのデザイン改善 [完了]
 
 **対象ファイル**:
 
@@ -392,10 +392,10 @@ export function ModalPriceCard({ className, ...props }: ModalCardProps) {
 
 **チェックリスト**:
 
-- [ ] ModalPriceCard の背景にグラデーションを追加
-- [ ] サイズラベルの表記を `Small` / `Large` に変更
-- [ ] 価格部分にホバーエフェクトを追加
-- [ ] ギャップを調整してゆとりを持たせる
+- [o] ModalPriceCard の背景にグラデーションを追加
+- [o] サイズラベルの表記を `Small` / `Large` に変更
+- [o] 価格部分にホバーエフェクトを追加
+- [o] ギャップを調整してゆとりを持たせる
 
 ---
 
@@ -431,9 +431,9 @@ export function ModalPriceCard({ className, ...props }: ModalCardProps) {
 
 | ファイル                           | 変更内容                            | ステータス |
 | ---------------------------------- | ----------------------------------- | :--------: |
-| `app/components/ProductModal.tsx`  | Framer Motion アニメーション追加    |    [ ]     |
-| `app/components/ui/card-modal.tsx` | ModalPriceCard のグラデーション追加 |    [ ]     |
-| `app/components/ui/dialog.tsx`     | 閉じるボタンのスタイル改善          |    [ ]     |
+| `app/components/ProductModal.tsx`  | Framer Motion アニメーション追加    |    [o]     |
+| `app/components/ui/card-modal.tsx` | ModalPriceCard のグラデーション追加 |    [o]     |
+| `app/components/ui/dialog.tsx`     | 閉じるボタンのスタイル改善          |    [o]     |
 
 ---
 

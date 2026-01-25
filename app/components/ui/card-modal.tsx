@@ -29,7 +29,14 @@ export function ModalContentCard({ className, ...props }: ModalCardProps) {
  */
 export function ModalPriceCard({ className, ...props }: ModalCardProps) {
   return (
-    <Card className={cn("border-0 shadow-sm bg-muted/30", className)} {...props} />
+    <Card
+      className={cn(
+        "border-0 shadow-sm",
+        "bg-linear-to-br from-primary/5 via-background to-primary/5",
+        className,
+      )}
+      {...props}
+    />
   );
 }
 
