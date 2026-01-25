@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
+import { usePathname } from "next/navigation";
 import { motion, type Variants } from "framer-motion";
 import { cn } from "@/lib/utils";
 
@@ -31,11 +32,15 @@ const itemVariants: Variants = {
  * 全ページ共通のヘッダーを表示します。
  * ロゴ画像（トップページへのリンク）、Instagramアイコン、ナビゲーションリンクを含みます。
  * Framer Motionを使用してロード時のアニメーションを実装しています。
+ * アニメーションはトップページ（/）を開いたときのみ実行されます。
  */
 export default function Header() {
+  const pathname = usePathname();
+  const isHomePage = pathname === "/";
+
   return (
     <motion.header
-      initial="hidden"
+      initial={isHomePage ? "hidden" : "visible"}
       animate="visible"
       variants={containerVariants}
       className="fixed top-0 left-0 right-0 z-50 h-20 border-b border-border bg-background"
