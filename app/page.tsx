@@ -1,4 +1,3 @@
-import Image from "next/image";
 import {
   getPublishedProductsByCategory,
   type CategoryWithProducts,
@@ -6,6 +5,7 @@ import {
 import ProductCategoryTabs from "./components/ProductCategoryTabs";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
+import HeroSection from "./components/HeroSection";
 import { Separator } from "./components/ui/separator";
 import { log } from "@/lib/logger";
 
@@ -38,18 +38,7 @@ export default async function Home() {
       <div className="h-20" />
 
       {/* ヒーローバナー */}
-      <section className="relative h-[40vh] min-h-[75px] w-full overflow-hidden md:h-[60vh] md:min-h-[125px] lg:h-[70vh] lg:min-h-[150px]">
-        <Image
-          src="/hero.webp"
-          alt="白熊堂"
-          fill
-          priority
-          className="object-cover"
-          sizes="100vw"
-        />
-        {/* グラデーションオーバーレイ - 軽減 */}
-        <div className="absolute inset-0 bg-linear-to-b from-background/20 via-transparent to-background/40" />
-      </section>
+      <HeroSection />
 
       {/* ヒーローとコンテンツの区切り */}
       <div className="mx-auto max-w-7xl px-2 md:px-6 lg:px-8">
