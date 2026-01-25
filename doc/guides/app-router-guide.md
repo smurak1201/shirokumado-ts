@@ -205,7 +205,7 @@ export default function Template({ children }: { children: React.ReactNode }) {
           sizes="100vw"
         />
         {/* オーバーレイ */}
-        <div className="absolute inset-0 bg-gradient-to-b from-white/20 via-white/8 to-white/25" />
+        <div className="absolute inset-0 bg-linear-to-b from-white/20 via-white/8 to-white/25" />
       </section>
 
       {/* メインコンテンツ */}
