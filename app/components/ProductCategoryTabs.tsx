@@ -1,10 +1,26 @@
 "use client";
 
 import { useState } from "react";
+import dynamic from "next/dynamic";
 import { motion, AnimatePresence } from "framer-motion";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
-import ProductGrid from "./ProductGrid";
 import type { CategoryWithProducts } from "@/lib/products";
+
+const ProductGrid = dynamic(
+  () => import("./ProductGrid"),
+  {
+    loading: () => (
+      <div className="grid grid-cols-3 gap-4 md:gap-6 lg:gap-8">
+        {[...Array(6)].map((_, i) => (
+          <div
+            key={i}
+            className="aspect-square animate-pulse rounded-lg bg-muted"
+          />
+        ))}
+      </div>
+    ),
+  }
+);
 
 interface ProductCategoryTabsProps {
   categoriesWithProducts: CategoryWithProducts[];

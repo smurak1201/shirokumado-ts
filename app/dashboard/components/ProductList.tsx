@@ -1,15 +1,27 @@
 "use client";
 
 import { useState, useEffect, useMemo, useCallback } from "react";
+import dynamic from "next/dynamic";
 import { log } from "@/lib/logger";
 import { getUserFriendlyMessageJa } from "@/lib/errors";
 import ProductEditForm from "./ProductEditForm";
 import ProductListTabs from "./ProductListTabs";
 import ProductListContent from "./ProductListContent";
-import ProductLayoutTab from "./ProductLayoutTab";
 import { useTabState, useCategoryTabState } from "../hooks/useTabState";
 import { filterProducts } from "../utils/productUtils";
 import type { Category, Product } from "../types";
+
+const ProductLayoutTab = dynamic(
+  () => import("./ProductLayoutTab"),
+  {
+    loading: () => (
+      <div className="flex items-center justify-center py-8">
+        <div className="text-muted-foreground">読み込み中...</div>
+      </div>
+    ),
+    ssr: false,
+  }
+);
 
 interface ProductListProps {
   products: Product[];

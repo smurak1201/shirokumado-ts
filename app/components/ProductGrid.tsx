@@ -1,10 +1,16 @@
 "use client";
 
+import dynamic from "next/dynamic";
 import { motion, type Variants } from "framer-motion";
+import { config } from "@/lib/config";
 import ProductTile from "./ProductTile";
-import ProductModal from "./ProductModal";
 import type { Category, Product } from "../types";
 import { useProductModal } from "../hooks/useProductModal";
+
+const ProductModal = dynamic(
+  () => import("./ProductModal"),
+  { ssr: false }
+);
 
 interface ProductGridProps {
   category: Category;
@@ -17,7 +23,7 @@ const containerVariants: Variants = {
   visible: {
     opacity: 1,
     transition: {
-      staggerChildren: 0.08,
+      staggerChildren: config.animationConfig.STAGGER_CHILDREN_SECONDS,
     },
   },
 };
@@ -27,7 +33,10 @@ const itemVariants: Variants = {
   visible: {
     opacity: 1,
     y: 0,
-    transition: { duration: 0.4, ease: "easeOut" },
+    transition: {
+      duration: config.animationConfig.FADE_IN_DURATION_SECONDS,
+      ease: "easeOut",
+    },
   },
 };
 

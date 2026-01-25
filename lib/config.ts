@@ -144,4 +144,48 @@ export const config = {
      */
     MODAL_CLOSE_DELAY_MS: 300,
   },
-};
+
+  /**
+   * ドラッグ&ドロップに関する設定
+   */
+  dndConfig: {
+    /**
+     * ポインターセンサーのアクティベーション距離（ピクセル）
+     * クリックとドラッグを区別するための最小移動距離
+     */
+    POINTER_ACTIVATION_DISTANCE: 5,
+
+    /**
+     * タッチセンサーのアクティベーション遅延（ミリ秒）
+     * 長押しでドラッグを開始するまでの待機時間
+     */
+    TOUCH_ACTIVATION_DELAY: 200,
+
+    /**
+     * タッチセンサーの許容誤差（ピクセル）
+     * ドラッグ中に許容される指のブレ
+     */
+    TOUCH_TOLERANCE: 5,
+  },
+
+  /**
+   * アニメーションに関する設定
+   */
+  animationConfig: {
+    /**
+     * 子要素のスタガー間隔（秒）
+     * 連続する要素の表示遅延
+     */
+    STAGGER_CHILDREN_SECONDS: 0.08,
+
+    /**
+     * フェードインアニメーションの時間（秒）
+     */
+    FADE_IN_DURATION_SECONDS: 0.4,
+
+    /**
+     * スクロールアニメーションの時間（秒）
+     */
+    SCROLL_ANIMATION_DURATION_SECONDS: 0.5,
+  },
+} as const;

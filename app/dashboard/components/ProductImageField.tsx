@@ -54,6 +54,8 @@ export default function ProductImageField({
               alt="プレビュー"
               fill
               className="rounded object-cover"
+              // プレビュー画像は Blob URL のため、next/image の最適化対象外
+              // クライアントサイドで圧縮済みのため、unoptimized を使用
               unoptimized
             />
           </div>

@@ -2,6 +2,7 @@
 
 import { useMemo, useCallback } from "react";
 import { getUserFriendlyMessageJa } from "@/lib/errors";
+import { config } from "@/lib/config";
 import {
   DndContext,
   closestCorners,
@@ -49,13 +50,13 @@ export default function ProductLayoutTab({
   const sensors = useSensors(
     useSensor(PointerSensor, {
       activationConstraint: {
-        distance: 5,
+        distance: config.dndConfig.POINTER_ACTIVATION_DISTANCE,
       },
     }),
     useSensor(TouchSensor, {
       activationConstraint: {
-        delay: 200,
-        tolerance: 5,
+        delay: config.dndConfig.TOUCH_ACTIVATION_DELAY,
+        tolerance: config.dndConfig.TOUCH_TOLERANCE,
       },
     }),
     useSensor(KeyboardSensor, {
