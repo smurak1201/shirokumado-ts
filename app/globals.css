@@ -139,10 +139,10 @@ body {
   background-repeat: no-repeat;
 }
 
-/* スマホでは画像を適切に縮小 */
+/* スマホでは余白を削除して表示 */
 @media (max-width: 768px) {
   .hero-bg {
-    background-size: contain;
+    background-size: cover;
     background-position: center top;
   }
 }
