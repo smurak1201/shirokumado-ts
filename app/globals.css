@@ -131,3 +131,31 @@ body {
 .section-inner {
   clip-path: inset(0 0 0 0);
 }
+
+/* ヒーローセクション */
+.hero-section {
+  height: calc(100vw * var(--hero-aspect-ratio));
+}
+
+.hero-image-container {
+  height: calc(100vw * var(--hero-aspect-ratio));
+}
+
+/* デスクトップではvhベースの高さに切り替え */
+@media (min-width: 768px) {
+  .hero-section {
+    height: 60vh;
+    min-height: 125px;
+  }
+
+  .hero-image-container {
+    height: 100vh;
+  }
+}
+
+@media (min-width: 1024px) {
+  .hero-section {
+    height: 70vh;
+    min-height: 150px;
+  }
+}
