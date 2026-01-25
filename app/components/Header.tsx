@@ -1,19 +1,50 @@
+"use client";
+
 import Link from "next/link";
 import Image from "next/image";
+import { motion, type Variants } from "framer-motion";
 import { cn } from "@/lib/utils";
+
+const containerVariants: Variants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.1,
+      delayChildren: 0.2,
+    },
+  },
+};
+
+const itemVariants: Variants = {
+  hidden: { opacity: 0, y: -10 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.4, ease: "easeOut" },
+  },
+};
 
 /**
  * ヘッダーコンポーネント
  *
  * 全ページ共通のヘッダーを表示します。
  * ロゴ画像（トップページへのリンク）、Instagramアイコン、ナビゲーションリンクを含みます。
- * shadcn/uiのSeparatorコンポーネントを使用して実装されています。
+ * Framer Motionを使用してロード時のアニメーションを実装しています。
  */
 export default function Header() {
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 h-20 border-b border-border bg-background">
+    <motion.header
+      initial="hidden"
+      animate="visible"
+      variants={containerVariants}
+      className="fixed top-0 left-0 right-0 z-50 h-20 border-b border-border bg-background"
+    >
       <div className="mx-auto flex h-full max-w-6xl items-center justify-between px-2 md:px-6 overflow-x-hidden">
-        <div className="relative flex items-center gap-4 overflow-visible">
+        <motion.div
+          variants={itemVariants}
+          className="relative flex items-center gap-4 overflow-visible"
+        >
           <Link
             href="/"
             className="transition-all hover:opacity-80 hover:scale-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded-sm"
@@ -46,9 +77,12 @@ export default function Header() {
               className="h-6 w-6 md:h-7 md:w-7"
             />
           </a>
-        </div>
+        </motion.div>
 
-        <nav className="flex items-center gap-4 md:gap-6">
+        <motion.nav
+          variants={itemVariants}
+          className="flex items-center gap-4 md:gap-6"
+        >
           <Link
             href="/faq"
             className={cn(
@@ -61,8 +95,8 @@ export default function Header() {
           >
             よくある質問
           </Link>
-        </nav>
+        </motion.nav>
       </div>
-    </header>
+    </motion.header>
   );
 }
