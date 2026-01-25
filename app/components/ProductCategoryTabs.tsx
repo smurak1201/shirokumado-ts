@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
 import ProductGrid from "./ProductGrid";
 import type { CategoryWithProducts } from "@/lib/products";
@@ -72,19 +73,31 @@ export default function ProductCategoryTabs({
         </div>
       </TabsList>
 
-      {categoriesWithProducts.map(({ category, products }) => (
-        <TabsContent
-          key={category.id}
-          value={category.id.toString()}
-          className="mt-0"
-        >
-          <ProductGrid
-            category={category}
-            products={products}
-            showCategoryTitle={false}
-          />
-        </TabsContent>
-      ))}
+      <AnimatePresence mode="wait">
+        {categoriesWithProducts.map(({ category, products }) => (
+          <TabsContent
+            key={category.id}
+            value={category.id.toString()}
+            className="mt-0"
+            forceMount
+          >
+            {activeTab === category.id.toString() && (
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                transition={{ duration: 0.3 }}
+              >
+                <ProductGrid
+                  category={category}
+                  products={products}
+                  showCategoryTitle={false}
+                />
+              </motion.div>
+            )}
+          </TabsContent>
+        ))}
+      </AnimatePresence>
     </Tabs>
   );
 }
