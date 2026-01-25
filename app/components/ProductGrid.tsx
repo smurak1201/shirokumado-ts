@@ -1,5 +1,6 @@
 "use client";
 
+import { motion, type Variants } from "framer-motion";
 import ProductTile from "./ProductTile";
 import ProductModal from "./ProductModal";
 import type { Category, Product } from "../types";
@@ -10,6 +11,25 @@ interface ProductGridProps {
   products: Product[];
   showCategoryTitle?: boolean;
 }
+
+const containerVariants: Variants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.08,
+    },
+  },
+};
+
+const itemVariants: Variants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.4, ease: "easeOut" },
+  },
+};
 
 /**
  * カテゴリーごとの商品グリッドコンポーネント
@@ -33,29 +53,42 @@ export default function ProductGrid({
     <>
       <section className="mb-12 md:mb-20 lg:mb-24">
         {showCategoryTitle && (
-          <div className="mb-8 flex items-center justify-center md:mb-12 lg:mb-16">
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5 }}
+            className="mb-8 flex items-center justify-center md:mb-12 lg:mb-16"
+          >
             <div className="flex flex-col items-center gap-3 md:gap-4">
               <h2 className="text-center text-xl font-normal tracking-wide text-muted-foreground md:text-4xl lg:text-5xl">
                 {category.name}
               </h2>
               <div className="h-px w-20 bg-linear-to-r from-transparent via-border/60 to-transparent md:w-32" />
             </div>
-          </div>
+          </motion.div>
         )}
 
-        <div className="grid grid-cols-3 gap-4 md:gap-6 lg:gap-8">
+        <motion.div
+          variants={containerVariants}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-50px" }}
+          className="grid grid-cols-3 gap-4 md:gap-6 lg:gap-8"
+        >
           {products.map((product) => (
-            <ProductTile
-              key={product.id}
-              product={{
-                id: product.id,
-                name: product.name,
-                imageUrl: product.imageUrl,
-              }}
-              onClick={() => handleProductClick(product)}
-            />
+            <motion.div key={product.id} variants={itemVariants}>
+              <ProductTile
+                product={{
+                  id: product.id,
+                  name: product.name,
+                  imageUrl: product.imageUrl,
+                }}
+                onClick={() => handleProductClick(product)}
+              />
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
       </section>
 
       <ProductModal
