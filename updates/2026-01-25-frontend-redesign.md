@@ -236,11 +236,10 @@ const containerVariants: Variants = {
 };
 
 const itemVariants: Variants = {
-  hidden: { opacity: 0, y: 10 },
+  hidden: { opacity: 0 },
   visible: {
     opacity: 1,
-    y: 0,
-    transition: { duration: 0.5, ease: [0.16, 1, 0.3, 1] },
+    transition: { duration: 0.8, ease: "easeOut" },
   },
 };
 
@@ -277,7 +276,7 @@ export default function ProductGrid({
             <motion.div
               key={product.id}
               variants={itemVariants}
-              style={{ willChange: "opacity, transform" }}
+              style={{ willChange: "opacity" }}
             >
               <ProductTile
                 product={{
@@ -302,11 +301,11 @@ export default function ProductGrid({
 
 スマホでの商品画像アニメーションのちらつき問題を修正:
 
-- `y` の値を `20` → `10` に調整（移動量を減らしてちらつきを軽減）
+- `y` アニメーションを削除（`y: 10` → 削除、`opacity` のみに変更） - ちらつきの原因となる移動アニメーションを完全に削除
 - `viewport` の `margin` を `"-50px"` → `"0px 0px -100px 0px"` に変更（下方向のみマージンを設定）
-- `willChange: "opacity, transform"` を追加（GPUアクセラレーションを有効化）
-- イージング関数を `"easeOut"` → `[0.16, 1, 0.3, 1]` に変更（より滑らかなアニメーション）
-- アニメーション時間を `0.4秒` → `0.5秒` に調整
+- `willChange: "opacity"` に変更（yアニメーション削除に伴い `transform` を削除）
+- アニメーション時間を `0.5秒` → `0.8秒` に変更（ヒーロー画像のフェードインに合わせる）
+- イージング関数を `[0.16, 1, 0.3, 1]` → `"easeOut"` に変更（ヒーロー画像と同じイージング関数に統一）
 
 ---
 

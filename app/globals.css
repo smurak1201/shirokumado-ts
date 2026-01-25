@@ -106,4 +106,10 @@ body {
     animation-duration: 0.01ms !important;
     transition-duration: 0.01ms !important;
   }
+  
+  /* Framer Motionのアニメーションは除外 */
+  [data-framer-motion] {
+    animation-duration: revert !important;
+    transition-duration: revert !important;
+  }
 }

@@ -17,7 +17,8 @@ const containerVariants: Variants = {
   visible: {
     opacity: 1,
     transition: {
-      staggerChildren: 0.08,
+      staggerChildren: 0.15,
+      delayChildren: 0.2,
     },
   },
 };
@@ -72,7 +73,7 @@ export default function ProductGrid({
           variants={containerVariants}
           initial="hidden"
           whileInView="visible"
-          viewport={{ once: true, margin: "0px 0px -100px 0px" }}
+          viewport={{ once: true, margin: "0px 0px -20% 0px" }}
           className="grid grid-cols-3 gap-4 md:gap-6 lg:gap-8"
         >
           {products.map((product) => (
