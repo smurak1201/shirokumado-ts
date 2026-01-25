@@ -86,7 +86,7 @@ export default function ProductModal({
               whileHover={{ scale: 1.02 }}
               transition={{ duration: 0.3 }}
             >
-              <ModalImageCard className="cursor-pointer">
+              <ModalImageCard>
                 <ModalCardHeader>
                   <div className="relative h-[40vh] min-h-[200px] max-h-[450px] md:h-[45vh] md:max-h-[500px] overflow-hidden bg-muted">
                     {product.imageUrl ? (
