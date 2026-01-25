@@ -237,13 +237,6 @@ useProductModal();
 - レスポンシブなフォントサイズとスペーシング
 - Google マップの埋め込み
 
-#### ProductGrid (`ProductGrid.tsx`)
-
-カテゴリーごとの商品グリッド表示コンポーネントです。
-
-**機能**:
-
-- カテゴリータイトルの表示
 #### ProductCategoryTabs (`ProductCategoryTabs.tsx`)
 
 カテゴリーを Tabs で切り替えて表示するコンポーネントです。
@@ -522,111 +515,13 @@ ProductModal
 });
 ````
 
-### Next.js Image コンポーネント
+## パフォーマンス最適化
 
-すべての画像は `next/image` を使用して最適化されています。
+- **Server Components**: デフォルトで使用し、必要な場合のみClient Components
+- **画像最適化**: `next/image`でWebP形式、遅延読み込み、レスポンシブ対応
+- **コード分割**: Next.jsの自動コード分割を活用
 
-**特徴**:
-
-- 自動的な画像最適化
-- 遅延読み込み（`loading="lazy"`）
-- レスポンシブ画像（`sizes`属性）
-- WebP 形式への自動変換
-
-**実装例**:
-
-```typescript
-  src="/logo.webp"
-  alt="白熊堂"
-  width={120}
-  height={45}
-  className="h-auto w-auto max-h-20"
-  priority // 優先読み込み（ヘッダーのロゴなど）
-/>
-```
-
-### Server Components
-
-- デフォルトで Server Components を使用
-- データベースへの直接アクセス
-- クライアントサイドの JavaScript を最小化
-
-**詳細な説明**: Server Components の詳細については、[App Router ガイド - Server Components と Client Components](./app-router-guide.md#server-components-と-client-components) を参照してください。
-
-### 画像最適化
-
-画像最適化の詳細については、[Next.js ガイド - 画像最適化](./nextjs-guide.md#画像最適化) を参照してください。
-
-**このアプリでの実装**:
-
-- WebP 形式の使用
-- 適切なサイズ指定
-- 優先読み込みの設定
-
-**詳細な説明**: 画像最適化の詳細については、[Next.js ガイド - 画像最適化](./nextjs-guide.md#画像最適化) を参照してください。
-
-### コード分割
-
-- ページごとの自動コード分割 - **このアプリで使用中**
-- コンポーネントの動的インポート（`React.lazy`や`next/dynamic`） - **このアプリでは未使用**
-- モジュールの動的インポート（`await import()`） - **このアプリで使用中**
-
-**コンポーネントの動的インポートについて**:
-
-このアプリでは、コンポーネントの動的インポート（`React.lazy`や`next/dynamic`）は使用されていませんが、知っておくと便利な機能です。
-
-**使用例**:
-
-```typescript
-import dynamic from "next/dynamic";
-
-const HeavyComponent = dynamic(() => import("./HeavyComponent"), {
-  loading: () => <div>読み込み中...</div>,
-  ssr: false, // サーバーサイドレンダリングを無効化
-});
-
-// React.lazyを使用した動的インポート
-import { lazy, Suspense } from "react";
-
-const LazyComponent = lazy(() => import("./LazyComponent"));
-
-function App() {
-  return (
-    <Suspense fallback={<div>読み込み中...</div>}>
-      <LazyComponent />
-    </Suspense>
-  );
-}
-```
-
-- 初期バンドルサイズを削減できる
-- 必要な時だけコンポーネントを読み込める
-- パフォーマンスの向上
-
-**このアプリで使用しない理由**:
-
-- コンポーネント数が比較的少なく、コード分割の必要性が低い
-- Next.js の自動コード分割で十分に対応できている
-- すべてのコンポーネントを初期ロードしてもパフォーマンスへの影響が小さい
-
-**モジュールの動的インポート**:
-
-このアプリでは、`await import()`を使用したモジュールの動的インポートが**フロントエンド（Client Components）**で使用されています。
-
-**使用箇所**:
-
-- [`app/dashboard/hooks/useProductForm.ts`](../../app/dashboard/hooks/useProductForm.ts): `config`モジュールの動的インポート（`DashboardForm`と`ProductEditForm`の両方で使用）
-
-**注意**: これらは Client Components（`'use client'`）内で使用されているため、フロントエンドで実行されます。バックエンド（Server Components、API Routes）では使用されていません。
-
-**使用例**:
-
-```typescript
-const { config } = await import("@/lib/config");
-```
-
-- 必要な時だけモジュールを読み込める
-- コード分割により、初期バンドルサイズを削減
+詳細は[Next.js ガイド](./nextjs-guide.md)を参照。
 
 ## アクセシビリティ
 
@@ -647,14 +542,8 @@ const { config } = await import("@/lib/config");
 
 ## 参考リンク
 
-- **[React ガイド](./react-guide.md)**: React の包括的なガイド
-- **[JSX ガイド](./jsx-guide.md)**: JSX の構文と使用方法
-- **[Next.js ガイド](./nextjs-guide.md)**: Next.js の詳細な使用方法
-- **[App Router ガイド](./app-router-guide.md)**: App Router の詳細な使用方法
-- **[shadcn/ui ガイド](./shadcn-ui-guide.md)**: shadcn/ui の使用方法とラッパーコンポーネントの作成
-- **[スタイリングのベストプラクティス](./styling-best-practices.md)**: Tailwind CSS と shadcn/ui を使用したスタイリングのベストプラクティス
-- **[Async/Await ガイド](./async-await-guide.md)**: async/await と Promise の使用方法
-- [Next.js App Router](https://nextjs.org/docs/app)
-- [React Server Components](https://react.dev/blog/2023/03/22/react-labs-what-we-have-been-working-on-march-2023#react-server-components)
-- [Tailwind CSS](https://tailwindcss.com/docs)
-- [Next.js Image Optimization](https://nextjs.org/docs/app/building-your-application/optimizing/images)
+- [React ガイド](./react-guide.md)
+- [Next.js ガイド](./nextjs-guide.md)
+- [App Router ガイド](./app-router-guide.md)
+- [shadcn/ui ガイド](./shadcn-ui-guide.md)
+- [スタイリングのベストプラクティス](./styling-best-practices.md)

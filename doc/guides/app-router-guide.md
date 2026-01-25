@@ -1134,34 +1134,20 @@ Next.js の `Image` コンポーネントを使用すると、画像の自動最
 
 ### ベストプラクティス
 
-1. **Server Components を優先**: データフェッチングや静的なコンテンツは Server Components で実装
-2. **Client Components は必要最小限**: インタラクティブな機能が必要な場合のみ Client Components を使用
-3. **データフェッチングの使い分け**:
-   - **Server Components**: 初期データの取得は Prisma で直接データベースにアクセス
-   - **Client Components**: ユーザーの操作に応じた動的なデータ取得は `fetch` API で API Routes を呼び出し
-4. **並列データフェッチング**: `Promise.all` を使用して複数のデータを並列で取得（詳細は [Async/Await ガイド - Promise.all](./async-await-guide.md#promiseall---このアプリで使用中) を参照）
-5. **動的レンダリングの適切な使用**: 最新のデータが必要な場合や、時刻に依存する処理（公開状態の自動判定など）がある場合は `export const dynamic = "force-dynamic"` を設定
-6. **キャッシュの制御**: Client Components で最新データを取得する場合は、タイムスタンプと `cache: "no-store"` を使用
-7. **画像最適化**: `Image` コンポーネントを使用して画像を最適化
-8. **エラーハンドリング**: API Routes では `withErrorHandling` を使用して統一されたエラーハンドリングを実装
-9. **ファイルアップロード**: `FormData` を使用してファイルをアップロードする際は、`Content-Type` ヘッダーを設定しない
+**データフェッチング**:
+- Server Components: Prismaで直接データベースにアクセス
+- Client Components: `fetch` APIでAPI Routesを呼び出し
+- 独立した操作は`Promise.all`で並列化
 
-## まとめ
+**キャッシュ制御**:
+- 最新データが必要: `export const dynamic = "force-dynamic"`
+- Client側: タイムスタンプと`cache: "no-store"`を使用
 
-Next.js App Router を使用することで、以下のメリットが得られます:
-
-- **パフォーマンス**: Server Components により、クライアントサイドの JavaScript を最小化
-- **開発効率**: ファイルベースのルーティングにより、直感的なページ構造を実現
-- **型安全性**: TypeScript との統合により、型安全な開発が可能
-- **最適化**: 画像最適化、コード分割、バンドル最適化が自動で行われる
-- **スケーラビリティ**: API Routes により、フロントエンドとバックエンドを同じプロジェクトで管理可能
-
-このアプリケーションでは、App Router の機能を最大限に活用し、パフォーマンスと開発効率を両立した実装を行っています。
+**エラーハンドリング**:
+- API Routesでは`withErrorHandling`で統一
 
 ## 参考リンク
 
-- **[Next.js ガイド](./nextjs-guide.md)**: Next.js 全体の説明（画像最適化、フォント最適化、メタデータ、ビルドとデプロイなど）
-- **[React ガイド](./react-guide.md)**: React の詳細な使用方法
-- **[JSX ガイド](./jsx-guide.md)**: JSX の構文と使用方法
-- **[Async/Await ガイド](./async-await-guide.md)**: async/await と Promise の使用方法
-- **[Next.js 公式ドキュメント - App Router](https://nextjs.org/docs/app)**: App Router の包括的なドキュメント
+- [Next.js ガイド](./nextjs-guide.md)
+- [React ガイド](./react-guide.md)
+- [Next.js 公式ドキュメント - App Router](https://nextjs.org/docs/app)

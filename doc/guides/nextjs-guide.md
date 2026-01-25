@@ -482,39 +482,18 @@ Server Components により、クライアントサイドの JavaScript を最�
 - **コード分割**: ページごとに自動的にコードを分割
 - **Server Components**: クライアントサイドの JavaScript を最小化
 
-## Next.js のベストプラクティス
-
-**詳細なベストプラクティスについては、[Next.js 公式ドキュメント - ベストプラクティス](https://nextjs.org/docs/app/building-your-application/routing) を参照してください。**
-
-このアプリで実践している主なベストプラクティス：
-
-1. **Server Components を優先**: デフォルトで Server Components を使用し、インタラクティブな機能が必要な場合のみ Client Components を使用
-2. **画像最適化**: クライアントサイドで画像を圧縮・WebP形式に変換し、`next/image`コンポーネントで表示（Edge Requestを削減するため、`unoptimized: true`を設定）
-3. **フォント最適化**: `next/font/google` を使用してフォントを最適化
-4. **メタデータの設定**: 適切なメタデータを設定して SEO を最適化
-5. **型安全性**: TypeScript を使用して、型安全な開発を行う
-6. **パフォーマンス最適化**: Next.js の自動最適化機能を活用し、パフォーマンスを向上
-
-**App Router のベストプラクティスについては、[App Router ガイド - ベストプラクティス](./app-router-guide.md#ベストプラクティス) を参照してください。**
-
 ## まとめ
 
-このアプリケーションでは、**Next.js 16.1.1** を使用して以下の機能を実装しています：
+このアプリケーションでは、**Next.js 16** を使用して以下を実装しています：
 
-1. **App Router**: ファイルベースのルーティングシステムで、直感的なページ構造を実現
-2. **画像最適化**: クライアントサイドで画像を圧縮・WebP形式に変換し、`next/image`コンポーネントで表示（Edge Requestを削減するため、サーバーサイド最適化は無効化）
-3. **フォント最適化**: Google Fonts を最適化して読み込み
-4. **メタデータと SEO**: 適切なメタデータを設定して SEO を最適化
-5. **パフォーマンス最適化**: 自動的な最適化機能を活用し、パフォーマンスを向上
-
-すべての機能は TypeScript で型安全に実装され、Next.js のベストプラクティスに従っています。また、Vercel にデプロイされ、グローバル CDN により高速な配信を実現しています。
+- **App Router**: ファイルベースのルーティング
+- **Server Components**: デフォルトで使用し、必要な場合のみClient Components
+- **画像最適化**: クライアントサイドで圧縮・WebP変換、`next/image`で表示
+- **フォント最適化**: `next/font/google`でNoto Sans JPを最適化
+- **メタデータ**: SEO用のタイトル・説明・OGPを設定
 
 ## 参考リンク
 
-- **[App Router ガイド](./app-router-guide.md)**: App Router の詳細な使用方法（Server Components、Client Components、API Routes、データフェッチングなど）
-- **[React ガイド](./react-guide.md)**: React の詳細な使用方法
-- **[JSX ガイド](./jsx-guide.md)**: JSX の構文と使用方法
-- **[ユーティリティ関数ガイド](./utilities-guide.md)**: 設定ファイル（`lib/config.ts`）の詳細
-- **[デプロイメントガイド](../deployment.md)**: デプロイ手順
-- **[Next.js 公式ドキュメント](https://nextjs.org/docs)**: Next.js の包括的なドキュメント
-```
+- [App Router ガイド](./app-router-guide.md)
+- [React ガイド](./react-guide.md)
+- [Next.js 公式ドキュメント](https://nextjs.org/docs)

@@ -1328,136 +1328,53 @@ function ProductTile({ product, onClick }: ProductTileProps) {
 
 ## React のベストプラクティス
 
-### 1. コンポーネントの分割
+### コンポーネント設計
 
-**原則**: 単一責任の原則に従い、各コンポーネントは 1 つの責務を持つ
+- **単一責任**: 各コンポーネントは1つの責務を持つ
+- **状態のリフトアップ**: 共有状態は親コンポーネントで管理し、propsで渡す
+- **カスタムフック**: 状態管理ロジックを分離して再利用性を向上
 
-**例**: `ProductGrid` は商品グリッドの表示とモーダルの管理、`ProductTile` は個別商品の表示を担当
+### メモ化の適切な使用
 
-### 2. カスタムフックの活用
+**使用すべき場面**:
+- `useMemo`: フィルタリング、ソート、グループ化などの計算コストが高い処理
+- `useCallback`: メモ化されたコンポーネントに渡すコールバック関数
+- `React.memo`: 頻繁に再レンダリングされるコンポーネント
 
-**原則**: 状態管理ロジックをカスタムフックに分離し、再利用性を向上
+**使用すべきでない場面**:
+- 単純な式や文字列結合（オーバーヘッドが利益を上回る）
+- 依存配列が頻繁に変わる場合
 
-**例**: `useProductModal`、`useTabState`、`useProductReorder`
-
-### 3. パフォーマンスの最適化
-
-**原則**: パフォーマンス最適化のためのメモ化を適切に使用する
-
-**コンポーネントのメモ化**:
-
-- `React.memo` を使用してコンポーネントをメモ化し、props が変更されない限り再レンダリングを防止
-- **例**: `ProductTile` コンポーネントを `React.memo` でメモ化
+### 派生状態の計算
 
 ```tsx
-function ProductTile({ product, onClick }: ProductTileProps) {
-  // ...
-}
+// 悪い例: 派生状態をuseStateで管理
+const [fullName, setFullName] = useState("");
+useEffect(() => {
+  setFullName(`${firstName} ${lastName}`);
+}, [firstName, lastName]);
 
-export default memo(ProductTile);
+// 良い例: レンダリング中に計算
+const fullName = `${firstName} ${lastName}`;
 ```
 
-- `useMemo` を使用して計算コストの高い値をメモ化
-- **例**: `useCategoryTabState` で初期カテゴリータブの計算をメモ化
-- **例**: `ProductList` で `filteredProducts` を `useMemo` でメモ化
+### クリーンアップ処理
 
-**コールバック関数のメモ化**:
+`useEffect`のクリーンアップ関数で、イベントリスナーやタイマーを適切に削除すること。
 
-- `useCallback` を使用してコールバック関数をメモ化し、子コンポーネントの不要な再レンダリングを防止
-- **例**: `useProductModal` フック内の `handleProductClick` と `handleCloseModal` を `useCallback` でメモ化
-- **例**: `ProductList` の `handleEdit`, `handleDelete`, `handleUpdated`, `handleDragEnd` を `useCallback` でメモ化
+### エラーバウンダリー
 
-### 4. クリーンアップ処理
-
-**原則**: `useEffect` のクリーンアップ関数で、イベントリスナーやタイマーを適切に削除
-
-**例**:
-
-- shadcn/ui の Dialog コンポーネントが自動的に ESC キーのイベントリスナーを削除
-- `useProductModal` で `setTimeout` のタイマーをクリーンアップ
-- `LayoutCategoryTabs` でスクロールイベントリスナーを削除
-
-### 5. 状態のリフトアップ
-
-**原則**: 共有状態は親コンポーネントで管理し、props で子コンポーネントに渡す
-
-**例**: `DashboardContent` で商品一覧の状態を管理し、`ProductList` に props で渡す
-
-**利点**:
-
-- データフローが明確になる
-- `forwardRef`や`useImperativeHandle`を使わない宣言的な実装
-- コンポーネント間の結合が緩くなる
-
-### 6. 型安全性
-
-**原則**: TypeScript を使用して、コンポーネントの props と状態に型を付ける
-
-**例**: `ProductGridProps`、`ProductModalProps`、`ProductListProps` などの型定義
-
-### 7. アクセシビリティ
-
-**原則**: `aria-label` などの属性を使用して、アクセシビリティを向上
-
-**例**: `ProductTile` で `aria-label` を設定
-
-### 8. useCallback と useMemo の適切な使用
-
-**原則**: パフォーマンス最適化が必要な場合のみ使用する
-
-**useCallback の使用例**:
-
-- `LayoutCategoryTabs` で `checkScrollPosition` を `useCallback` でメモ化
-- `useProductModal` フック内の `handleProductClick` と `handleCloseModal` を `useCallback` でメモ化
-- `ProductList` の `handleEdit`, `handleDelete`, `handleUpdated`, `handleDragEnd` を `useCallback` でメモ化
-
-**useMemo の使用例**:
-
-- `ProductList` で `filteredProducts` を `useMemo` でメモ化
-- `ProductList` で `publishedProductsByCategory` を `useMemo` でメモ化
-- `useCategoryTabState` で `initialCategoryTab` を `useMemo` でメモ化
-
-**React.memo の使用例**:
-
-- `ProductTile` コンポーネントを `React.memo` でメモ化し、props が変更されない限り再レンダリングを防止
-
-### 9. エラーバウンダリー
-
-**原則**: 予期しないエラーからアプリケーションを保護するためにエラーバウンダリーを実装する
-
-**実装**:
-
-- `ErrorBoundary` コンポーネントをクラスコンポーネントとして実装（関数コンポーネントではエラーバウンダリーを実装できないため）
-- 子コンポーネントで発生したエラーをキャッチし、エラー UI を表示
-- 開発環境ではエラー詳細を表示し、本番環境ではユーザーフレンドリーなメッセージを表示
-
-**例**: [`app/components/ErrorBoundary.tsx`](../../app/components/ErrorBoundary.tsx)
-
-```tsx
-<ErrorBoundary>
-  <YourComponent />
-</ErrorBoundary>
-```
-
-- エラーのキャッチと表示
-- 再試行機能
-- 開発環境でのエラー詳細表示
+[`app/components/ErrorBoundary.tsx`](../../app/components/ErrorBoundary.tsx) で予期しないエラーをキャッチし、エラーUIを表示する。
 
 ## まとめ
 
-このアプリケーションでは、**React 19.2.3** を使用して以下の機能を実装しています：
+このアプリケーションでは、**React 19** を使用して以下を実装しています：
 
-1. **コンポーネントベースの設計**: UI を独立したコンポーネントに分割し、再利用性と保守性を向上
-2. **Hooks の活用**: `useState`、`useEffect`、`useMemo`、`useRef`、`useCallback` を使用して状態管理と副作用を処理
-3. **カスタムフック**: 状態管理ロジックをカスタムフックに分離し、再利用性を向上
-4. **状態のリフトアップ**: 共有状態を親コンポーネントで管理し、props で子コンポーネントに渡す（React のベストプラクティスに準拠）
-5. **Next.js との統合**: Server Components と Client Components を適切に使い分け、パフォーマンスを最適化
-6. **楽観的 UI 更新**: API 呼び出し前に UI を更新し、ユーザーに即座にフィードバックを提供
-7. **メモリリーク対策**: `useEffect` のクリーンアップ関数で、イベントリスナーやタイマーを適切に削除
-8. **パフォーマンス最適化**: `React.memo`、`useCallback`、`useMemo` を適切に使用して、不要な再レンダリングを防止
-9. **エラーハンドリング**: エラーバウンダリーを実装し、予期しないエラーからアプリケーションを保護
-
-すべてのコンポーネントは TypeScript で型安全に実装され、アクセシビリティにも配慮されています。また、カスタムフックを使用してロジックを分離し、コンポーネントの再利用性と保守性を向上させています。`forwardRef`や`useImperativeHandle`を使わず、React の推奨パターンに沿った実装となっています。
+- **Server Components / Client Components**: Next.js App Routerと統合し、適切に使い分け
+- **カスタムフック**: `useProductModal`、`useTabState`などで状態管理ロジックを分離
+- **楽観的UI更新**: `useProductReorder`でAPI呼び出し前にUIを更新
+- **メモ化**: 計算コストの高い処理に`useMemo`、コールバックに`useCallback`を適用
+- **エラーバウンダリー**: 予期しないエラーからアプリケーションを保護
 
 ## 参考リンク
 
