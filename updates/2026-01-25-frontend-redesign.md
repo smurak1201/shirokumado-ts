@@ -38,75 +38,367 @@
 - **スマホファースト**: スマホでの操作性・視認性を最優先
 - カテゴリータブは上部に配置（サイドバーはスマホで操作しにくいため現状維持）
 - アニメーションは控えめに（スマホのパフォーマンス考慮）
-
-### 改修のポイント
-1. **色調変更**: 白を基調とし、淡いブルーをアクセントに使用
-2. **アニメーション追加**: ページロード時・スクロール時のモダンなアニメーション
-3. **アクセシビリティ対応**: 動きを減らす設定のユーザーへの配慮
+- 既存のホバーアニメーション（CSSベース）は維持
 
 ---
 
-## 変更内容
+## 実装仕様
 
-### 1. 色調変更（白基調 + 淡いブルーアクセント）
+### タスク1: Framer Motionインストール [完了]
 
-白を基調とし、ホバーや区切り線などのアクセントに淡いブルーを使用。清潔感と涼しさを両立。
-
-| 要素 | 変更前 | 変更後 |
-|------|--------|--------|
-| 背景 | 白 | 白（維持） |
-| プライマリ | グレー | 淡いブルー |
-| アクセント | グレー | 淡いブルー |
-| オーバーレイ | background色 | 淡いブルー系グラデーション |
-
-```css
-/* 変更後のカラーパレット */
---primary: 200 60% 65%;        /* 淡いブルー */
---accent: 200 40% 96%;         /* とても淡いブルー */
-```
-
-### 2. アニメーション追加（Framer Motion使用）
-
-**使用ライブラリ**: [Framer Motion](https://www.framer.com/motion/)
+**ファイル**: `package.json`
 
 ```bash
 npm install framer-motion
 ```
 
-#### 2.1 ページロード時
-- ヒーロー画像: フェードイン + 微細なズーム効果（`motion.div` + `initial`/`animate`）
-- ヘッダー: ロゴとナビゲーションの順次フェードイン（`staggerChildren`）
+---
 
-#### 2.2 スクロール連動
-- 商品タイル: 画面内に入ったら順次フェードイン（`whileInView` + `staggerChildren`）
-- Framer Motionの`whileInView`を使用（Intersection Observer内蔵）
+### タスク2: 色調変更（CSS変数更新） [完了]
 
-#### 2.3 タブ切り替え
-- カテゴリー切り替え時にコンテンツがフェードイン（`AnimatePresence`）
+**ファイル**: `app/globals.css`
 
-```tsx
-// 使用例: スクロールアニメーション
-<motion.div
-  initial={{ opacity: 0, y: 20 }}
-  whileInView={{ opacity: 1, y: 0 }}
-  viewport={{ once: true }}
-  transition={{ duration: 0.5 }}
->
-  {/* コンテンツ */}
-</motion.div>
+**変更内容**: グレースケール → 白基調 + 淡いブルーアクセント
+
+```css
+/* 変更後 */
+--primary: 200 60% 55%;
+--primary-foreground: 0 0% 100%;
+--secondary: 200 30% 97%;
+--secondary-foreground: 200 50% 30%;
+--muted: 200 20% 96%;
+--accent: 200 40% 96%;
+--accent-foreground: 200 50% 30%;
+--border: 200 20% 90%;
+--input: 200 20% 90%;
+--ring: 200 60% 55%;
 ```
 
-### 3. アクセシビリティ対応
+---
 
-Framer Motionは`prefers-reduced-motion`を自動的にサポート。追加でCSSでも対応。
+### タスク3: ヒーローセクションのアニメーション
+
+**ファイル**: `app/page.tsx`
+
+**変更内容**:
+- Server ComponentからClient Componentへの変更が必要
+- または、ヒーローセクションを別コンポーネントとして切り出す
+
+**推奨**: ヒーロー部分を `HeroSection.tsx` として切り出す
+
+**新規ファイル**: `app/components/HeroSection.tsx`
 
 ```tsx
-// Framer Motionの設定（自動対応）
-// ユーザーが動きを減らす設定にしている場合、アニメーションは自動的に無効化される
+"use client";
 
-// 追加のCSS対応
+import Image from "next/image";
+import { motion } from "framer-motion";
+
+export default function HeroSection() {
+  return (
+    <section className="relative h-[40vh] min-h-[75px] w-full overflow-hidden md:h-[60vh] md:min-h-[125px] lg:h-[70vh] lg:min-h-[150px]">
+      <motion.div
+        initial={{ opacity: 0, scale: 1.1 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.8, ease: "easeOut" }}
+        className="absolute inset-0"
+      >
+        <Image
+          src="/hero.webp"
+          alt="白熊堂"
+          fill
+          priority
+          className="object-cover"
+          sizes="100vw"
+        />
+      </motion.div>
+      {/* グラデーションオーバーレイ - 淡いブルー系 */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 1, delay: 0.3 }}
+        className="absolute inset-0 bg-linear-to-b from-sky-100/20 via-transparent to-white/40"
+      />
+    </section>
+  );
+}
+```
+
+**page.tsx の変更**:
+```tsx
+// import文追加
+import HeroSection from "./components/HeroSection";
+
+// ヒーローセクション部分を置き換え
+<HeroSection />
+```
+
+---
+
+### タスク4: ヘッダーのアニメーション
+
+**ファイル**: `app/components/Header.tsx`
+
+**変更内容**:
+- `"use client"` 追加
+- `motion` コンポーネントでラップ
+- ロゴとナビゲーションを順次フェードイン
+
+```tsx
+"use client";
+
+import Link from "next/link";
+import Image from "next/image";
+import { motion } from "framer-motion";
+import { cn } from "@/lib/utils";
+
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.1,
+      delayChildren: 0.2,
+    },
+  },
+};
+
+const itemVariants = {
+  hidden: { opacity: 0, y: -10 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.4, ease: "easeOut" },
+  },
+};
+
+export default function Header() {
+  return (
+    <motion.header
+      initial="hidden"
+      animate="visible"
+      variants={containerVariants}
+      className="fixed top-0 left-0 right-0 z-50 h-20 border-b border-border bg-background"
+    >
+      <div className="mx-auto flex h-full max-w-6xl items-center justify-between px-2 md:px-6 overflow-x-hidden">
+        <motion.div variants={itemVariants} className="relative flex items-center gap-4 overflow-visible">
+          {/* ロゴとInstagramアイコン（既存のまま） */}
+        </motion.div>
+
+        <motion.nav variants={itemVariants} className="flex items-center gap-4 md:gap-6">
+          {/* ナビゲーション（既存のまま） */}
+        </motion.nav>
+      </div>
+    </motion.header>
+  );
+}
+```
+
+---
+
+### タスク5: 商品タイルのスクロールアニメーション
+
+**ファイル**: `app/components/ProductGrid.tsx`
+
+**変更内容**:
+- `motion` コンポーネントを追加
+- グリッド全体を `motion.div` でラップ
+- `whileInView` で画面内に入ったらアニメーション
+
+```tsx
+"use client";
+
+import { motion } from "framer-motion";
+import ProductTile from "./ProductTile";
+// ... 他のimport
+
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.08,
+    },
+  },
+};
+
+const itemVariants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.4, ease: "easeOut" },
+  },
+};
+
+export default function ProductGrid({ category, products, showCategoryTitle = true }: ProductGridProps) {
+  // ... 既存のロジック
+
+  return (
+    <>
+      <section className="mb-12 md:mb-20 lg:mb-24">
+        {showCategoryTitle && (
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5 }}
+            className="mb-8 flex items-center justify-center md:mb-12 lg:mb-16"
+          >
+            {/* カテゴリータイトル（既存のまま） */}
+          </motion.div>
+        )}
+
+        <motion.div
+          variants={containerVariants}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-50px" }}
+          className="grid grid-cols-3 gap-4 md:gap-6 lg:gap-8"
+        >
+          {products.map((product) => (
+            <motion.div key={product.id} variants={itemVariants}>
+              <ProductTile
+                product={{
+                  id: product.id,
+                  name: product.name,
+                  imageUrl: product.imageUrl,
+                }}
+                onClick={() => handleProductClick(product)}
+              />
+            </motion.div>
+          ))}
+        </motion.div>
+      </section>
+
+      {/* モーダル（既存のまま） */}
+    </>
+  );
+}
+```
+
+---
+
+### タスク6: タブ切り替えアニメーション
+
+**ファイル**: `app/components/ProductCategoryTabs.tsx`
+
+**変更内容**:
+- `AnimatePresence` でタブコンテンツをラップ
+- タブ切り替え時にフェードアニメーション
+
+```tsx
+"use client";
+
+import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
+// ... 他のimport
+
+export default function ProductCategoryTabs({ categoriesWithProducts }: ProductCategoryTabsProps) {
+  const [activeTab, setActiveTab] = useState<string>(
+    categoriesWithProducts[0]?.category.id.toString() || ""
+  );
+
+  // ... 既存のロジック
+
+  return (
+    <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+      <TabsList className="...">
+        {/* タブリスト（既存のまま） */}
+      </TabsList>
+
+      <AnimatePresence mode="wait">
+        {categoriesWithProducts.map(({ category, products }) => (
+          <TabsContent
+            key={category.id}
+            value={category.id.toString()}
+            className="mt-0"
+            forceMount
+          >
+            {activeTab === category.id.toString() && (
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                transition={{ duration: 0.3 }}
+              >
+                <ProductGrid
+                  category={category}
+                  products={products}
+                  showCategoryTitle={false}
+                />
+              </motion.div>
+            )}
+          </TabsContent>
+        ))}
+      </AnimatePresence>
+    </Tabs>
+  );
+}
+```
+
+**注意**: `forceMount` を使用してアニメーションを正しく動作させる
+
+---
+
+### タスク7: 商品カードのホバー色調整
+
+**ファイル**: `app/components/ui/card-product.tsx`
+
+**変更内容**:
+- ホバー時の影の色を `primary` に統一（既に設定済み）
+- 必要に応じて微調整
+
+```tsx
+// 現在の設定（変更不要の可能性あり）
+"hover:shadow-2xl hover:shadow-primary/10 hover:-translate-y-2",
+"hover:border-primary/40 border-border/60",
+```
+
+**確認ポイント**:
+- 色調変更後、`primary` が淡いブルーになっているため、ホバー時の影も淡いブルーになる
+- 見た目を確認し、必要に応じて `shadow-primary/10` の透明度を調整
+
+---
+
+### タスク8: 動作確認・ビルドテスト
+
+**確認項目**:
+
+1. **ローカル確認** (`npm run dev`)
+   - [ ] 色調がアイスブルー系に変わっていること
+   - [ ] ページロード時にヒーロー画像がフェードイン
+   - [ ] ページロード時にヘッダーが順次フェードイン
+   - [ ] スクロール時に商品タイルが順次フェードイン
+   - [ ] タブ切り替え時にコンテンツがフェードイン
+   - [ ] 商品カードのホバー時の影が淡いブルー
+
+2. **アクセシビリティ確認**
+   - [ ] 開発者ツールで `prefers-reduced-motion: reduce` を設定
+   - [ ] アニメーションが無効化されること
+
+3. **ビルド確認** (`npm run build`)
+   - [ ] ビルドエラーがないこと
+   - [ ] TypeScriptエラーがないこと
+
+4. **スマホ確認**
+   - [ ] スマホサイズでアニメーションが正常に動作すること
+   - [ ] パフォーマンスに問題がないこと
+
+---
+
+## アクセシビリティ対応
+
+Framer Motionは `prefers-reduced-motion` を自動的にサポート。
+
+追加で `globals.css` に以下を追加（任意）:
+
+```css
 @media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after {
+  *,
+  *::before,
+  *::after {
     animation-duration: 0.01ms !important;
     transition-duration: 0.01ms !important;
   }
@@ -115,37 +407,24 @@ Framer Motionは`prefers-reduced-motion`を自動的にサポート。追加でC
 
 ---
 
-## 変更対象ファイル
+## 変更対象ファイル一覧
 
 | ファイル | 変更内容 |
 |----------|----------|
-| `package.json` | Framer Motionの追加 |
-| `app/globals.css` | 色調・アニメーション定義 |
-| `app/page.tsx` | ヒーローセクションのスタイル・アニメーション |
-| `app/components/Header.tsx` | ロードアニメーション |
-| `app/components/ProductCategoryTabs.tsx` | タブ切り替えアニメーション |
-| `app/components/ProductGrid.tsx` | スクロールアニメーション |
-| `app/components/ProductTile.tsx` | タイルアニメーション |
-| `app/components/ui/card-product.tsx` | ホバー色調整 |
-
----
-
-## 検証方法
-
-1. `npm run dev` でローカル開発サーバー起動
-2. ブラウザでトップページを確認
-   - 白基調のデザインで、アクセントに淡いブルーが使われていることを確認
-   - ページロード時のアニメーションを確認
-   - スクロールして商品タイルのアニメーションを確認
-   - カテゴリータブを切り替えてアニメーションを確認
-3. 開発者ツールで「prefers-reduced-motion: reduce」を設定し、アニメーションが無効になることを確認
-4. `npm run build` でビルドエラーがないことを確認
+| `package.json` | Framer Motion追加 [完了] |
+| `app/globals.css` | 色調変更 [完了] |
+| `app/page.tsx` | HeroSectionコンポーネントの使用 |
+| `app/components/HeroSection.tsx` | **新規作成** - ヒーローアニメーション |
+| `app/components/Header.tsx` | ロードアニメーション追加 |
+| `app/components/ProductGrid.tsx` | スクロールアニメーション追加 |
+| `app/components/ProductCategoryTabs.tsx` | タブ切り替えアニメーション追加 |
+| `app/components/ui/card-product.tsx` | ホバー色確認（変更不要の可能性） |
 
 ---
 
 ## 備考
 
-- 既存のホバーアニメーション（商品カードの影・浮き上がり効果など）は維持
-- Framer Motionを使用し、宣言的で保守しやすいアニメーションを実装
-- 過度なアニメーションを避け、ユーザー体験を損なわないよう配慮
-- `prefers-reduced-motion`への対応はFramer Motionが自動的に処理
+- 既存のホバーアニメーション（CSSベース）は維持
+- Framer Motionの `whileInView` で `viewport: { once: true }` を設定し、一度だけアニメーション
+- `staggerChildren` で子要素を順次アニメーション
+- パフォーマンスを考慮し、アニメーションは控えめに設定
