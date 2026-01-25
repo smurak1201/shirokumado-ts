@@ -131,18 +131,3 @@ body {
 .section-inner {
   clip-path: inset(0 0 0 0);
 }
-
-.hero-bg {
-  background-image: url("/hero.webp");
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-}
-
-/* スマホでは横幅100%で画像全体を表示 */
-@media (max-width: 767px) {
-  .hero-bg {
-    background-size: 100% auto;
-    background-position: center top;
-  }
-}
