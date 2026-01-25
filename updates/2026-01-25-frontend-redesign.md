@@ -9,16 +9,16 @@
 
 ## 進捗状況
 
-| # | タスク | ステータス | 備考 |
-|---|--------|:----------:|------|
-| 1 | Framer Motionインストール | [o] | |
-| 2 | 色調変更（CSS変数更新） | [o] | |
-| 3 | ヒーローセクションのアニメーション | [ ] | |
-| 4 | ヘッダーのアニメーション | [ ] | |
-| 5 | 商品タイルのスクロールアニメーション | [ ] | |
-| 6 | タブ切り替えアニメーション | [ ] | |
-| 7 | 商品カードのホバー色調整 | [ ] | |
-| 8 | 動作確認・ビルドテスト | [ ] | |
+| #   | タスク                               | ステータス | 備考 |
+| --- | ------------------------------------ | :--------: | ---- |
+| 1   | Framer Motionインストール            |    [o]     |      |
+| 2   | 色調変更（CSS変数更新）              |    [o]     |      |
+| 3   | ヒーローセクションのアニメーション   |    [ ]     |      |
+| 4   | ヘッダーのアニメーション             |    [ ]     |      |
+| 5   | 商品タイルのスクロールアニメーション |    [ ]     |      |
+| 6   | タブ切り替えアニメーション           |    [ ]     |      |
+| 7   | 商品カードのホバー色調整             |    [ ]     |      |
+| 8   | 動作確認・ビルドテスト               |    [ ]     |      |
 
 **凡例**: `[ ]` 未着手 / `[~]` 作業中 / `[o]` 完了
 
@@ -29,12 +29,14 @@
 かき氷屋「白熊堂」のトップページを、より涼しげでモダンな印象に改善する。
 
 ### 背景
+
 - Instagramで既に運用中、ホームページを新規作成
 - Instagramからの流入がメイン
 - **スマホからの閲覧が多くなる想定**
 - デスクトップ/スマホで見た目に大きな差がない設計
 
 ### 設計方針
+
 - **スマホファースト**: スマホでの操作性・視認性を最優先
 - カテゴリータブは上部に配置（サイドバーはスマホで操作しにくいため現状維持）
 - アニメーションは控えめに（スマホのパフォーマンス考慮）
@@ -81,6 +83,7 @@ npm install framer-motion
 **ファイル**: `app/page.tsx`
 
 **変更内容**:
+
 - Server ComponentからClient Componentへの変更が必要
 - または、ヒーローセクションを別コンポーネントとして切り出す
 
@@ -125,12 +128,13 @@ export default function HeroSection() {
 ```
 
 **page.tsx の変更**:
+
 ```tsx
 // import文追加
 import HeroSection from "./components/HeroSection";
 
 // ヒーローセクション部分を置き換え
-<HeroSection />
+<HeroSection />;
 ```
 
 ---
@@ -140,6 +144,7 @@ import HeroSection from "./components/HeroSection";
 **ファイル**: `app/components/Header.tsx`
 
 **変更内容**:
+
 - `"use client"` 追加
 - `motion` コンポーネントでラップ
 - ロゴとナビゲーションを順次フェードイン
@@ -181,11 +186,17 @@ export default function Header() {
       className="fixed top-0 left-0 right-0 z-50 h-20 border-b border-border bg-background"
     >
       <div className="mx-auto flex h-full max-w-6xl items-center justify-between px-2 md:px-6 overflow-x-hidden">
-        <motion.div variants={itemVariants} className="relative flex items-center gap-4 overflow-visible">
+        <motion.div
+          variants={itemVariants}
+          className="relative flex items-center gap-4 overflow-visible"
+        >
           {/* ロゴとInstagramアイコン（既存のまま） */}
         </motion.div>
 
-        <motion.nav variants={itemVariants} className="flex items-center gap-4 md:gap-6">
+        <motion.nav
+          variants={itemVariants}
+          className="flex items-center gap-4 md:gap-6"
+        >
           {/* ナビゲーション（既存のまま） */}
         </motion.nav>
       </div>
@@ -201,6 +212,7 @@ export default function Header() {
 **ファイル**: `app/components/ProductGrid.tsx`
 
 **変更内容**:
+
 - `motion` コンポーネントを追加
 - グリッド全体を `motion.div` でラップ
 - `whileInView` で画面内に入ったらアニメーション
@@ -231,7 +243,11 @@ const itemVariants = {
   },
 };
 
-export default function ProductGrid({ category, products, showCategoryTitle = true }: ProductGridProps) {
+export default function ProductGrid({
+  category,
+  products,
+  showCategoryTitle = true,
+}: ProductGridProps) {
   // ... 既存のロジック
 
   return (
@@ -284,6 +300,7 @@ export default function ProductGrid({ category, products, showCategoryTitle = tr
 **ファイル**: `app/components/ProductCategoryTabs.tsx`
 
 **変更内容**:
+
 - `AnimatePresence` でタブコンテンツをラップ
 - タブ切り替え時にフェードアニメーション
 
@@ -295,18 +312,18 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
 // ... 他のimport
 
-export default function ProductCategoryTabs({ categoriesWithProducts }: ProductCategoryTabsProps) {
+export default function ProductCategoryTabs({
+  categoriesWithProducts,
+}: ProductCategoryTabsProps) {
   const [activeTab, setActiveTab] = useState<string>(
-    categoriesWithProducts[0]?.category.id.toString() || ""
+    categoriesWithProducts[0]?.category.id.toString() || "",
   );
 
   // ... 既存のロジック
 
   return (
     <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-      <TabsList className="...">
-        {/* タブリスト（既存のまま） */}
-      </TabsList>
+      <TabsList className="...">{/* タブリスト（既存のまま） */}</TabsList>
 
       <AnimatePresence mode="wait">
         {categoriesWithProducts.map(({ category, products }) => (
@@ -347,6 +364,7 @@ export default function ProductCategoryTabs({ categoriesWithProducts }: ProductC
 **ファイル**: `app/components/ui/card-product.tsx`
 
 **変更内容**:
+
 - ホバー時の影の色を `primary` に統一（既に設定済み）
 - 必要に応じて微調整
 
@@ -357,6 +375,7 @@ export default function ProductCategoryTabs({ categoriesWithProducts }: ProductC
 ```
 
 **確認ポイント**:
+
 - 色調変更後、`primary` が淡いブルーになっているため、ホバー時の影も淡いブルーになる
 - 見た目を確認し、必要に応じて `shadow-primary/10` の透明度を調整
 
@@ -409,16 +428,16 @@ Framer Motionは `prefers-reduced-motion` を自動的にサポート。
 
 ## 変更対象ファイル一覧
 
-| ファイル | 変更内容 |
-|----------|----------|
-| `package.json` | Framer Motion追加 [完了] |
-| `app/globals.css` | 色調変更 [完了] |
-| `app/page.tsx` | HeroSectionコンポーネントの使用 |
-| `app/components/HeroSection.tsx` | **新規作成** - ヒーローアニメーション |
-| `app/components/Header.tsx` | ロードアニメーション追加 |
-| `app/components/ProductGrid.tsx` | スクロールアニメーション追加 |
-| `app/components/ProductCategoryTabs.tsx` | タブ切り替えアニメーション追加 |
-| `app/components/ui/card-product.tsx` | ホバー色確認（変更不要の可能性） |
+| ファイル                                 | 変更内容                              |
+| ---------------------------------------- | ------------------------------------- |
+| `package.json`                           | Framer Motion追加 [完了]              |
+| `app/globals.css`                        | 色調変更 [完了]                       |
+| `app/page.tsx`                           | HeroSectionコンポーネントの使用       |
+| `app/components/HeroSection.tsx`         | **新規作成** - ヒーローアニメーション |
+| `app/components/Header.tsx`              | ロードアニメーション追加              |
+| `app/components/ProductGrid.tsx`         | スクロールアニメーション追加          |
+| `app/components/ProductCategoryTabs.tsx` | タブ切り替えアニメーション追加        |
+| `app/components/ui/card-product.tsx`     | ホバー色確認（変更不要の可能性）      |
 
 ---
 
@@ -428,3 +447,36 @@ Framer Motionは `prefers-reduced-motion` を自動的にサポート。
 - Framer Motionの `whileInView` で `viewport: { once: true }` を設定し、一度だけアニメーション
 - `staggerChildren` で子要素を順次アニメーション
 - パフォーマンスを考慮し、アニメーションは控えめに設定
+
+---
+
+## 実装後の更新
+
+### 進捗状況の更新
+
+各タスク完了時に進捗状況テーブルを更新する:
+
+- `[ ]` → `[~]` : 作業開始時
+- `[~]` → `[o]` : 作業完了時
+- 備考欄に補足情報があれば記載
+
+### 仕様変更があった場合
+
+実装中に仕様変更があった場合は、該当タスクのセクションを更新する:
+
+- コード例を実際の実装に合わせて修正
+- 変更理由を備考として追記
+
+### 完了時の更新
+
+全タスク完了後:
+
+1. ステータスを「進行中」→「完了」に変更
+2. 完了日を追記
+3. 実際に変更したファイル一覧を確認・更新
+4. 検証結果をチェックリストに記入
+
+```markdown
+**ステータス**: 完了
+**完了日**: YYYY-MM-DD
+```
