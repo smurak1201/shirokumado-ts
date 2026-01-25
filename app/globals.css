@@ -125,3 +125,22 @@ body {
   animation: accordion-up 0.4s ease-out;
 }
 
+/* パララックス効果（スマホ対応） */
+/* 参考: https://daian-kichijitsu.com/parallax/ */
+.section-inner {
+  clip-path: inset(0 0 0 0);
+}
+
+.hero-bg {
+  background-image: url("/hero.webp");
+  background-size: cover;
+  background-position: center;
+}
+
+/* スマホでの背景位置調整 */
+@media (max-width: 768px) {
+  .hero-bg {
+    background-position: 20% top;
+  }
+}
+
