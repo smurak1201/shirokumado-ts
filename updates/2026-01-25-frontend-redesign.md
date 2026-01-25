@@ -415,9 +415,10 @@ export default function ProductCategoryTabs({
 
 Framer Motionは `prefers-reduced-motion` を自動的にサポート。
 
-追加で `globals.css` に以下を追加（任意）:
+**注意**: 以下のCSSは追加しないこと。Framer Motionのアニメーションと競合し、スマホでちらつきが発生する原因になる。
 
 ```css
+/* 追加しないこと */
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
@@ -427,6 +428,8 @@ Framer Motionは `prefers-reduced-motion` を自動的にサポート。
   }
 }
 ```
+
+Framer Motionが自動的に対応するため、追加のCSS設定は不要。
 
 ---
 
