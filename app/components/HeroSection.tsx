@@ -13,21 +13,20 @@ import heroImage from "@/public/hero.webp";
  * 参考: https://daian-kichijitsu.com/parallax/
  */
 export default function HeroSection() {
-  const aspectRatio = heroImage.height / heroImage.width;
-
   return (
     <section
       className="hero-section relative w-full"
       style={
         {
-          "--hero-aspect-ratio": aspectRatio,
+          "--hero-width": heroImage.width,
+          "--hero-height": heroImage.height,
         } as React.CSSProperties
       }
     >
       {/* セクションの内側コンテナ（clip-pathで切り抜き） */}
       <div className="section-inner absolute inset-0 w-full h-full">
         {/* パララックス効果用の背景画像（position: fixedで固定） */}
-        <div className="hero-image-container fixed top-0 left-0 z-[-1] w-full">
+        <div className="hero-image-container z-[-1]">
           <Image
             src={heroImage}
             alt="ヒーロー画像"

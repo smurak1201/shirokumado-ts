@@ -1,6 +1,8 @@
 @import "tailwindcss";
 
 :root {
+  /* ヘッダーの高さ（固定ヘッダー下のスペーサーやパララックス計算で使用） */
+  --header-height: 5rem;
   --background: #ffffff;
   --foreground: #171717;
 
@@ -132,27 +134,39 @@ body {
   clip-path: inset(0 0 0 0);
 }
 
-/* ヒーローセクション */
+/* ヒーローセクション
+ * --hero-width, --hero-height: HeroSection.tsxから画像サイズが渡される
+ */
 .hero-section {
-  height: calc(100vw * var(--hero-aspect-ratio));
+  width: 100vw;
+  /* スマホ: 画像のアスペクト比に合わせてセクションの高さを決定 */
+  aspect-ratio: var(--hero-width) / var(--hero-height);
 }
 
 .hero-image-container {
-  height: calc(100vw * var(--hero-aspect-ratio));
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  /* スマホ: セクションの高さ + ヘッダー分の高さで、セクション全体をカバー */
+  height: calc(100vw * var(--hero-height) / var(--hero-width) + var(--header-height));
 }
 
-/* デスクトップではvhベースの高さに切り替え */
+/* デスクトップ（768px以上）: vhベースの高さに切り替え */
 @media (min-width: 768px) {
   .hero-section {
+    aspect-ratio: unset;
     height: 60vh;
     min-height: 125px;
   }
 
   .hero-image-container {
+    /* デスクトップ: 画面全体をカバーしてパララックス効果を実現 */
     height: 100vh;
   }
 }
 
+/* 大画面（1024px以上）: セクションを大きく表示 */
 @media (min-width: 1024px) {
   .hero-section {
     height: 70vh;

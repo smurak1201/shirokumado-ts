@@ -34,8 +34,8 @@ export default async function Home() {
     <div className="min-h-screen bg-background overflow-x-hidden">
       {/* ヘッダー */}
       <Header />
-      {/* ヘッダーの高さ分のスペーサー */}
-      <div className="h-20" />
+      {/* ヘッダーの高さ分のスペーサー（--header-heightと同じ値） */}
+      <div style={{ height: "var(--header-height)" }} />
 
       {/* ヒーローバナー */}
       <HeroSection />
