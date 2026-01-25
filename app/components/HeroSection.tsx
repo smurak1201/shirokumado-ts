@@ -49,7 +49,12 @@ export default function HeroSection() {
          * position: fixedで固定され、スクロールしても動かない
          * スタイルはglobals.cssの.hero-image-containerで定義
          */}
-        <div className="hero-image-container z-[-1]">
+        <motion.div
+          className="hero-image-container z-[-1]"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 1, ease: "easeOut" }}
+        >
           <Image
             src={heroImage}
             alt="ヒーロー画像"
@@ -58,7 +63,7 @@ export default function HeroSection() {
             className="object-cover object-center"
             sizes="100vw"
           />
-        </div>
+        </motion.div>
 
         {/* フェードインアニメーション用のmotion.div */}
         <motion.div
