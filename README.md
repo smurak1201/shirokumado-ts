@@ -26,6 +26,7 @@
 - **TypeScript 5** - 型安全性
 - **Tailwind CSS 4** - スタイリング
 - **shadcn/ui** - UI コンポーネントライブラリ
+- **Framer Motion** - アニメーションライブラリ
 
 ### バックエンド
 
