@@ -1,6 +1,8 @@
 "use client";
 
 import { motion } from "framer-motion";
+import Image from "next/image";
+import heroImage from "@/public/hero.webp";
 
 /**
  * ヒーローセクションコンポーネント
@@ -11,14 +13,34 @@ import { motion } from "framer-motion";
  * 参考: https://daian-kichijitsu.com/parallax/
  */
 export default function HeroSection() {
+  const aspectRatio = heroImage.height / heroImage.width;
+
   return (
-    <section className="relative aspect-[1477/1108] w-full md:aspect-auto md:h-[60vh] md:min-h-[125px] lg:h-[70vh] lg:min-h-[150px]">
+    <section
+      className="relative w-full md:h-[60vh] md:min-h-[125px] lg:h-[70vh] lg:min-h-[150px]"
+      style={{
+        height: `calc(100vw * ${aspectRatio})`,
+      }}
+    >
       {/* セクションの内側コンテナ（clip-pathで切り抜き） */}
       <div className="section-inner absolute inset-0 w-full h-full">
         {/* パララックス効果用の背景画像（position: fixedで固定） */}
-        {/* デスクトップ: h-screen、スマホ: h-[40vh]でセクションに合わせる */}
-        <div className="hero-bg fixed top-0 left-0 z-[-1] w-full aspect-[1477/1108] md:aspect-auto md:h-screen" />
-        
+        <div
+          className="fixed top-0 left-0 z-[-1] w-full md:h-screen"
+          style={{
+            height: `calc(100vw * ${aspectRatio})`,
+          }}
+        >
+          <Image
+            src={heroImage}
+            alt="ヒーロー画像"
+            fill
+            priority
+            className="object-cover object-center md:object-cover"
+            sizes="100vw"
+          />
+        </div>
+
         {/* フェードインアニメーション用のmotion.div */}
         <motion.div
           initial={{ opacity: 0 }}
