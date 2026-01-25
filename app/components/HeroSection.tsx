@@ -12,7 +12,7 @@ import { motion } from "framer-motion";
  */
 export default function HeroSection() {
   return (
-    <section className="relative h-[100vh] w-full">
+    <section className="relative h-screen w-full">
       {/* セクションの内側コンテナ（clip-pathで切り抜き） */}
       <div className="section-inner absolute inset-0 w-full h-full">
         {/* パララックス効果用の背景画像（position: fixedで固定） */}
@@ -26,7 +26,7 @@ export default function HeroSection() {
           className="absolute inset-0"
         >
           {/* グラデーションオーバーレイ - 淡いブルー系 */}
-          <div className="absolute inset-0 bg-gradient-to-b from-sky-100/20 via-transparent to-white/40" />
+          <div className="absolute inset-0 bg-linear-to-b from-sky-100/20 via-transparent to-white/40" />
         </motion.div>
       </div>
     </section>
