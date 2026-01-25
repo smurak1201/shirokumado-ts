@@ -67,8 +67,9 @@ html {
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: var(--font-noto-sans-jp), "Hiragino Kaku Gothic ProN",
-    "Hiragino Sans", Meiryo, sans-serif;
+  font-family:
+    var(--font-noto-sans-jp), "Hiragino Kaku Gothic ProN", "Hiragino Sans",
+    Meiryo, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   letter-spacing: 0.02em;
@@ -142,7 +143,6 @@ body {
 @media (max-width: 768px) {
   .hero-bg {
     background-size: contain;
-    background-position: center center;
+    background-position: center top;
   }
 }
-
