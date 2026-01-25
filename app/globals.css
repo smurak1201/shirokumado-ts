@@ -133,15 +133,23 @@ body {
 
 .hero-bg {
   background-image: url("/hero.webp");
-  background-size: cover;
+  background-size: contain;
   background-position: center;
+  background-repeat: no-repeat;
 }
 
-/* スマホでの背景位置調整 */
+/* デスクトップではcoverを使用（従来の見た目を維持） */
+@media (min-width: 769px) {
+  .hero-bg {
+    background-size: cover;
+  }
+}
+
+/* スマホではcontainを使用（画像全体を表示） */
 @media (max-width: 768px) {
   .hero-bg {
+    background-size: contain;
     background-position: center center;
-    background-size: cover;
   }
 }
 
