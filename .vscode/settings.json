@@ -2,5 +2,6 @@
   "css.lint.unknownAtRules": "ignore",
   "files.associations": {
     "*.css": "tailwindcss"
-  }
+  },
+  "github.copilot.chat.commitMessageGeneration.locale": "ja"
 }
