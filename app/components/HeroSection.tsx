@@ -10,7 +10,6 @@ import { motion } from "framer-motion";
  * トップページのヒーロー画像を表示します。
  * Framer Motionを使用してフェードインアニメーションを実装しています。
  * スクロールに応じてパララックス効果を適用します。
- * モバイルでもスムーズに動作するよう最適化されています。
  */
 export default function HeroSection() {
   const sectionRef = useRef<HTMLElement>(null);
@@ -42,9 +41,8 @@ export default function HeroSection() {
       const scrollY = window.scrollY;
       const scrollDelta = Math.abs(scrollY - lastScrollYRef.current);
 
-      // モバイルでは更新頻度を下げる（スクロール変化が3px以上の場合のみ更新）
-      const threshold = window.innerWidth < 768 ? 3 : 1;
-      if (scrollDelta < threshold) {
+      // スクロール変化が1px以上の場合のみ更新
+      if (scrollDelta < 1) {
         return;
       }
 
@@ -52,9 +50,8 @@ export default function HeroSection() {
       if (sectionRect) {
         // セクションがビューポート内にある場合のみパララックス効果を適用
         if (sectionRect.bottom >= 0 && sectionRect.top <= window.innerHeight) {
-          // モバイルでは係数を小さくして滑らかに
-          const parallaxSpeed = window.innerWidth < 768 ? 0.3 : 0.5;
-          const parallaxY = scrollY * parallaxSpeed;
+          // パララックス効果: スクロール量の50%だけ画像を移動
+          const parallaxY = scrollY * 0.5;
 
           // refを直接操作してReactの再レンダリングを避ける
           parallaxElement.style.transform = `translate3d(0, ${parallaxY}px, 0)`;
