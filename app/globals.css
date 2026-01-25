@@ -142,7 +142,7 @@ body {
 /* スマホでは横幅100%で画像全体を表示 */
 @media (max-width: 767px) {
   .hero-bg {
-    background-size: 100% auto;
-    background-position: center top;
+    background-size: 100% 100%;
+    background-position: center;
   }
 }
