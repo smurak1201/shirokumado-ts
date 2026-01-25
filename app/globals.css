@@ -138,3 +138,10 @@ body {
   background-repeat: no-repeat;
 }
 
+/* スマホでは画像を適切に縮小 */
+@media (max-width: 768px) {
+  .hero-bg {
+    background-size: contain;
+  }
+}
+
