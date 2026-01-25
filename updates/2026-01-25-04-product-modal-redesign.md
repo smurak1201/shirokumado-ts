@@ -10,14 +10,14 @@
 
 ## 進捗状況
 
-| #   | タスク                                   | 優先度 | ステータス | 備考 |
-| --- | ---------------------------------------- | :----: | :--------: | ---- |
+| #   | タスク                                         | 優先度 | ステータス | 備考 |
+| --- | ---------------------------------------------- | :----: | :--------: | ---- |
 | 1   | Framer Motion によるモーダルアニメーション追加 |   高   |    [ ]     |      |
-| 2   | 各セクションのスタガーアニメーション追加      |   高   |    [ ]     |      |
-| 3   | 閉じるボタンのスタイル改善                   |   中   |    [ ]     |      |
-| 4   | 画像セクションのホバーエフェクト追加          |   中   |    [ ]     |      |
-| 5   | 価格セクションのデザイン改善                 |   中   |    [ ]     |      |
-| 6   | 動作確認・ビルドテスト                       |   -    |    [ ]     |      |
+| 2   | 各セクションのスタガーアニメーション追加       |   高   |    [ ]     |      |
+| 3   | 閉じるボタンのスタイル改善                     |   中   |    [ ]     |      |
+| 4   | 画像セクションのホバーエフェクト追加           |   中   |    [ ]     |      |
+| 5   | 価格セクションのデザイン改善                   |   中   |    [ ]     |      |
+| 6   | 動作確認・ビルドテスト                         |   -    |    [ ]     |      |
 
 **凡例**: `[ ]` 未着手 / `[~]` 作業中 / `[o]` 完了
 
@@ -161,24 +161,18 @@ const itemVariants: Variants = {
       >
         {/* 画像部分 */}
         <motion.div variants={itemVariants}>
-          <ModalImageCard>
-            {/* 既存の画像コンテンツ */}
-          </ModalImageCard>
+          <ModalImageCard>{/* 既存の画像コンテンツ */}</ModalImageCard>
         </motion.div>
 
         {/* 商品情報部分 */}
         <motion.div variants={itemVariants}>
-          <ModalContentCard>
-            {/* 既存の商品情報コンテンツ */}
-          </ModalContentCard>
+          <ModalContentCard>{/* 既存の商品情報コンテンツ */}</ModalContentCard>
         </motion.div>
 
         {/* 価格部分 */}
         {(product.priceS || product.priceL) && (
           <motion.div variants={itemVariants}>
-            <ModalPriceCard>
-              {/* 既存の価格コンテンツ */}
-            </ModalPriceCard>
+            <ModalPriceCard>{/* 既存の価格コンテンツ */}</ModalPriceCard>
           </motion.div>
         )}
       </motion.div>
@@ -210,6 +204,7 @@ const itemVariants: Variants = {
 **修正内容**:
 
 閉じるボタンのスタイルを改善し、以下を実現：
+
 - タップ領域を大きく（44x44px以上）
 - 背景色とホバーエフェクトを追加
 - アイコンサイズを少し大きく
@@ -229,13 +224,13 @@ const itemVariants: Variants = {
 
 **変更点**:
 
-| 項目 | 変更前 | 変更後 |
-| ---- | ------ | ------ |
-| サイズ | 指定なし（アイコンサイズのみ） | `h-8 w-8`（32x32px） |
-| 背景 | なし | `bg-background/80 backdrop-blur-sm` |
-| ボーダー | なし | `border border-border/50` |
-| ホバー | `hover:opacity-100` | `hover:opacity-100 hover:bg-accent hover:scale-110` |
-| アイコン | `h-4 w-4` | `h-5 w-5` |
+| 項目     | 変更前                         | 変更後                                              |
+| -------- | ------------------------------ | --------------------------------------------------- |
+| サイズ   | 指定なし（アイコンサイズのみ） | `h-8 w-8`（32x32px）                                |
+| 背景     | なし                           | `bg-background/80 backdrop-blur-sm`                 |
+| ボーダー | なし                           | `border border-border/50`                           |
+| ホバー   | `hover:opacity-100`            | `hover:opacity-100 hover:bg-accent hover:scale-110` |
+| アイコン | `h-4 w-4`                      | `h-5 w-5`                                           |
 
 **チェックリスト**:
 
@@ -330,8 +325,8 @@ export function ModalPriceCard({ className, ...props }: ModalCardProps) {
     <Card
       className={cn(
         "border-0 shadow-sm",
-        "bg-gradient-to-br from-primary/5 via-background to-primary/5",
-        className
+        "bg-liner-to-br from-primary/5 via-background to-primary/5",
+        className,
       )}
       {...props}
     />
@@ -360,7 +355,10 @@ export function ModalPriceCard({ className, ...props }: ModalCardProps) {
       )}
       {product.priceS && product.priceL && (
         <div className="flex flex-col items-center">
-          <Separator orientation="vertical" className="h-12 md:h-16 bg-border/50" />
+          <Separator
+            orientation="vertical"
+            className="h-12 md:h-16 bg-border/50"
+          />
         </div>
       )}
       {product.priceL && (
@@ -384,13 +382,13 @@ export function ModalPriceCard({ className, ...props }: ModalCardProps) {
 
 **変更点**:
 
-| 項目 | 変更前 | 変更後 |
-| ---- | ------ | ------ |
-| 背景 | `bg-muted/30` | グラデーション `from-primary/5 via-background to-primary/5` |
-| サイズラベル | `S` / `L` | `Small` / `Large` |
-| ラベルスタイル | `font-normal` | `font-medium tracking-widest` |
-| 価格ホバー | なし | `whileHover={{ scale: 1.05 }}` |
-| ギャップ | `gap-3 md:gap-6` | `gap-6 md:gap-10` |
+| 項目           | 変更前           | 変更後                                                      |
+| -------------- | ---------------- | ----------------------------------------------------------- |
+| 背景           | `bg-muted/30`    | グラデーション `from-primary/5 via-background to-primary/5` |
+| サイズラベル   | `S` / `L`        | `Small` / `Large`                                           |
+| ラベルスタイル | `font-normal`    | `font-medium tracking-widest`                               |
+| 価格ホバー     | なし             | `whileHover={{ scale: 1.05 }}`                              |
+| ギャップ       | `gap-3 md:gap-6` | `gap-6 md:gap-10`                                           |
 
 **チェックリスト**:
 
@@ -431,11 +429,11 @@ export function ModalPriceCard({ className, ...props }: ModalCardProps) {
 
 ## 変更対象ファイル一覧
 
-| ファイル                            | 変更内容                               | ステータス |
-| ----------------------------------- | -------------------------------------- | :--------: |
-| `app/components/ProductModal.tsx`   | Framer Motion アニメーション追加       |    [ ]     |
-| `app/components/ui/card-modal.tsx`  | ModalPriceCard のグラデーション追加    |    [ ]     |
-| `app/components/ui/dialog.tsx`      | 閉じるボタンのスタイル改善             |    [ ]     |
+| ファイル                           | 変更内容                            | ステータス |
+| ---------------------------------- | ----------------------------------- | :--------: |
+| `app/components/ProductModal.tsx`  | Framer Motion アニメーション追加    |    [ ]     |
+| `app/components/ui/card-modal.tsx` | ModalPriceCard のグラデーション追加 |    [ ]     |
+| `app/components/ui/dialog.tsx`     | 閉じるボタンのスタイル改善          |    [ ]     |
 
 ---
 
