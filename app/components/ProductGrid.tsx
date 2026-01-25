@@ -23,11 +23,10 @@ const containerVariants: Variants = {
 };
 
 const itemVariants: Variants = {
-  hidden: { opacity: 0, y: 10 },
+  hidden: { opacity: 0 },
   visible: {
     opacity: 1,
-    y: 0,
-    transition: { duration: 0.5, ease: [0.16, 1, 0.3, 1] },
+    transition: { duration: 0.8, ease: "easeOut" },
   },
 };
 
@@ -80,7 +79,7 @@ export default function ProductGrid({
             <motion.div
               key={product.id}
               variants={itemVariants}
-              style={{ willChange: "opacity, transform" }}
+              style={{ willChange: "opacity" }}
             >
               <ProductTile
                 product={{

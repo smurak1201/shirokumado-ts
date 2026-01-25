@@ -221,11 +221,11 @@ export default function Header() {
 ```tsx
 "use client";
 
-import { motion } from "framer-motion";
+import { motion, type Variants } from "framer-motion";
 import ProductTile from "./ProductTile";
 // ... 他のimport
 
-const containerVariants = {
+const containerVariants: Variants = {
   hidden: { opacity: 0 },
   visible: {
     opacity: 1,
@@ -235,12 +235,12 @@ const containerVariants = {
   },
 };
 
-const itemVariants = {
-  hidden: { opacity: 0, y: 20 },
+const itemVariants: Variants = {
+  hidden: { opacity: 0, y: 10 },
   visible: {
     opacity: 1,
     y: 0,
-    transition: { duration: 0.4, ease: "easeOut" },
+    transition: { duration: 0.5, ease: [0.16, 1, 0.3, 1] },
   },
 };
 
@@ -270,11 +270,15 @@ export default function ProductGrid({
           variants={containerVariants}
           initial="hidden"
           whileInView="visible"
-          viewport={{ once: true, margin: "-50px" }}
+          viewport={{ once: true, margin: "0px 0px -100px 0px" }}
           className="grid grid-cols-3 gap-4 md:gap-6 lg:gap-8"
         >
           {products.map((product) => (
-            <motion.div key={product.id} variants={itemVariants}>
+            <motion.div
+              key={product.id}
+              variants={itemVariants}
+              style={{ willChange: "opacity, transform" }}
+            >
               <ProductTile
                 product={{
                   id: product.id,
@@ -293,6 +297,16 @@ export default function ProductGrid({
   );
 }
 ```
+
+**修正履歴** (2026-01-25):
+
+スマホでの商品画像アニメーションのちらつき問題を修正:
+
+- `y` の値を `20` → `10` に調整（移動量を減らしてちらつきを軽減）
+- `viewport` の `margin` を `"-50px"` → `"0px 0px -100px 0px"` に変更（下方向のみマージンを設定）
+- `willChange: "opacity, transform"` を追加（GPUアクセラレーションを有効化）
+- イージング関数を `"easeOut"` → `[0.16, 1, 0.3, 1]` に変更（より滑らかなアニメーション）
+- アニメーション時間を `0.4秒` → `0.5秒` に調整
 
 ---
 
