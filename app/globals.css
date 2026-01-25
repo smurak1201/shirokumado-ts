@@ -97,3 +97,13 @@ body {
 .animate-fade-in {
   animation: fade-in 0.8s ease-out;
 }
+
+/* アクセシビリティ: アニメーション軽減設定 */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
