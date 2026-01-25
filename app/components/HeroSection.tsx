@@ -15,10 +15,9 @@ export default function HeroSection() {
     <section className="relative h-[40vh] min-h-[75px] w-full md:h-[60vh] md:min-h-[125px] lg:h-[70vh] lg:min-h-[150px]">
       {/* セクションの内側コンテナ（clip-pathで切り抜き） */}
       <div className="section-inner absolute inset-0 w-full h-full">
-        {/* パララックス効果用の背景画像 */}
-        {/* デスクトップ: position: fixed、スマホ: position: absolute */}
-        <div className="hero-bg hero-bg-desktop fixed top-0 left-0 z-[-1] w-full h-screen bg-cover bg-center bg-no-repeat md:block hidden" />
-        <div className="hero-bg hero-bg-mobile absolute inset-0 z-[-1] w-full h-full bg-cover bg-center bg-no-repeat md:hidden" />
+        {/* パララックス効果用の背景画像（position: fixedで固定） */}
+        {/* デスクトップ: h-screen、スマホ: h-[40vh]でセクションに合わせる */}
+        <div className="hero-bg fixed top-0 left-0 z-[-1] w-full h-[40vh] md:h-screen" />
         
         {/* フェードインアニメーション用のmotion.div */}
         <motion.div
