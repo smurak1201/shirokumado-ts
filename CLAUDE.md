@@ -5,14 +5,6 @@
 - すべての出力は日本語で行ってください
 - コミットメッセージ、コードコメント、説明文はすべて日本語で記述してください
 
-## コミットメッセージ
-
-- コミットメッセージは必ず日本語で記述してください
-- 変更内容を簡潔に日本語で記述してください
-- 例: "商品名の表示を2行固定に変更"
-- 例: "スマホでも3列タイル表示を維持するように修正"
-- 例: "商品タイルコンポーネントのスタイルを調整"
-
 ## コードコメント
 
 - コードコメントは日本語で記述してください
@@ -56,7 +48,159 @@
 - 修正を行う場合は可能な限り最小限の修正で済ませること
 - **ハードコードとマジックナンバーを避けること**: 設定値や定数は `lib/config.ts` などで一元管理すること
 
-## React のベストプラクティス
+## React / Next.js のベストプラクティス
+
+> 参考: [Vercel React Best Practices](https://vercel.com/blog/introducing-react-best-practices)
+
+パフォーマンスへの影響度順に優先度を設定:
+- **CRITICAL**: 2-10倍の改善が見込める
+- **HIGH**: 15-70%の改善
+- **MEDIUM**: 意味のある改善
+- **LOW**: 特定ケースでの最適化
+
+---
+
+### [CRITICAL] 非同期ウォーターフォールの排除
+
+リクエストのウォーターフォールで600ms待たされる場合、`useMemo`の最適化は意味がない。
+
+```tsx
+// 悪い例: 不要なフェッチが先に実行される
+async function handleRequest(userId: string, skipProcessing: boolean) {
+  const userData = await fetchUserData(userId);
+  if (skipProcessing) return { skipped: true };
+  return processUserData(userData);
+}
+
+// 良い例: 必要な場合のみフェッチ
+async function handleRequest(userId: string, skipProcessing: boolean) {
+  if (skipProcessing) return { skipped: true };
+  const userData = await fetchUserData(userId);
+  return processUserData(userData);
+}
+```
+
+- **独立した操作は`Promise.all()`で並列実行すること**
+- **awaitは実際に値が必要になるまで遅延させること**
+- **Suspense境界を戦略的に配置すること**: データ読み込み中もラッパーUIを表示
+
+---
+
+### [CRITICAL] バンドルサイズの最適化
+
+300KBの余分なJavaScriptは、ループの最適化を無意味にする。
+
+- **バレルファイルからのインポートを避けること**: 直接インポートで200-800ms削減
+
+```tsx
+// 悪い例: バレルファイル経由
+import { Check } from "lucide-react";
+
+// 良い例: 直接インポート
+import Check from "lucide-react/dist/esm/icons/check";
+```
+
+- **重いコンポーネントは`next/dynamic`で動的インポートすること**
+- **サードパーティライブラリはハイドレーション後に遅延読み込みすること**
+- **ホバー/フォーカス時にプリロードして体感速度を向上させること**
+
+---
+
+### [HIGH] サーバーサイドパフォーマンス
+
+- **Server Actionsでも認証を検証すること**: ミドルウェアだけでは不十分
+
+```tsx
+// 必須: Server Action内で認証確認
+async function updateProfile(data: FormData) {
+  "use server";
+  await verifySession(); // 必ず検証
+  // 処理続行
+}
+```
+
+- **RSC境界でのシリアライズを最小化すること**: クライアントが使用するフィールドのみ渡す
+- **`React.cache()`でリクエスト内の重複を排除すること**
+- **`after()`でログやアナリティクスをノンブロッキングで実行すること**
+
+---
+
+### [MEDIUM-HIGH] クライアントサイドデータフェッチ
+
+- **SWRで自動的にリクエストを重複排除すること**: 複数インスタンスで1リクエストを共有
+- **パッシブイベントリスナーを使用すること**: `{ passive: true }`でスクロールパフォーマンス向上
+- **localStorageはバージョン管理し、最小限のデータを保存すること**
+
+---
+
+### [MEDIUM] 再レンダリング最適化
+
+- **派生状態はレンダリング中に計算すること**: state/effectではなく
+
+```tsx
+// 悪い例: 派生状態をuseStateで管理
+const [fullName, setFullName] = useState("");
+useEffect(() => {
+  setFullName(`${firstName} ${lastName}`);
+}, [firstName, lastName]);
+
+// 良い例: レンダリング中に計算
+const fullName = `${firstName} ${lastName}`;
+```
+
+- **単純な式を`useMemo`でラップしないこと**: オーバーヘッドが利益を上回る
+- **関数型の`setState`を使用すること**: クロージャの古い値を防止
+
+```tsx
+// 良い例: 関数型更新
+setItems((curr) => [...curr, ...newItems]);
+```
+
+- **遅延状態初期化を使用すること**: 高価な初期値は関数で渡す
+
+```tsx
+// 良い例: JSONパースを遅延
+const [data] = useState(() => JSON.parse(stored));
+```
+
+- **頻繁に変わる非UI値は`useRef`に保存すること**
+- **非緊急の更新は`startTransition()`でマークすること**
+
+---
+
+### [MEDIUM] レンダリングパフォーマンス
+
+- **静的なJSX要素をコンポーネント外に抽出すること**: 再作成を防止
+- **長いリストに`content-visibility: auto`を適用すること**: 画面外を遅延レンダリング
+- **ハイドレーションミスマッチを防ぐ同期スクリプトを使用すること**
+- **`suppressHydrationWarning`で既知の差異を抑制すること**
+- **頻繁に切り替えるコンポーネントはActivityを使用すること**: state/DOMを保持
+
+---
+
+### [LOW-MEDIUM] JavaScriptパフォーマンス
+
+- **レイアウトスラッシングを避けること**: スタイル書き込みをバッチ処理してから読み取り
+- **繰り返しルックアップにはインデックスMapを構築すること**: O(1)アクセス
+- **複数の配列イテレーションを1つに統合すること**
+
+```tsx
+// 悪い例: 2回のイテレーション
+const filtered = items.filter((x) => x.active);
+const mapped = filtered.map((x) => x.name);
+
+// 良い例: 1回のイテレーション
+const result = items.reduce<string[]>((acc, x) => {
+  if (x.active) acc.push(x.name);
+  return acc;
+}, []);
+```
+
+- **配列比較前に長さをチェックすること**: 早期リターン
+- **`array.includes()`の代わりに`Set.has()`を使用すること**: O(1)ルックアップ
+- **`sort()`の代わりに`toSorted()`を使用すること**: イミュータブルなソート
+
+---
 
 ### Server Components と Client Components
 
@@ -75,13 +219,14 @@
 - **useState**: コンポーネント内のローカル状態管理に使用
 - **useEffect**: 副作用の処理に使用。クリーンアップ処理を忘れないこと
 - **useCallback**: propsとして子コンポーネントに渡す関数に使用
-- **useMemo**: フィルタリング、ソート、グループ化などの重い計算処理に使用
+- **useMemo**: フィルタリング、ソート、グループ化などの重い計算処理に使用（ただし単純な式には不要）
 - **カスタムフック**: `use`で始める命名規則（例: `useProductForm`, `useTabState`）
 
 ### イベントハンドリング
 
 - **イベントハンドラーの命名**: `handle`で始めること（例: `handleClick`, `handleSubmit`）
 - **非同期処理**: エラーハンドリングを必ず実装すること
+- **副作用はイベントハンドラーで実行すること**: effect + stateではなく
 
 ### アクセシビリティ
 
@@ -128,9 +273,7 @@
 ```tsx
 // 良い例
 export function ProductCard({ className, ...props }: ProductCardProps) {
-  return (
-    <Card className={cn("カスタムクラス", className)} {...props} />
-  );
+  return <Card className={cn("カスタムクラス", className)} {...props} />;
 }
 ```
 
@@ -146,7 +289,19 @@ export function ProductCard({ className, ...props }: ProductCardProps) {
 
 実装前に以下を確認すること：
 
+### 設計原則
 - [ ] この機能は**今**必要か？（YAGNI）
 - [ ] もっとシンプルな方法はないか？（KISS）
 - [ ] 同じロジックが複数箇所に存在しないか？（DRY）
 - [ ] 設定値や定数は一元管理されているか？
+
+### パフォーマンス（CRITICAL）
+- [ ] 非同期ウォーターフォールが発生していないか？
+- [ ] 独立した非同期処理は`Promise.all()`で並列化しているか？
+- [ ] バレルファイルからの大量インポートを避けているか？
+- [ ] 重いコンポーネントは動的インポートしているか？
+
+### パフォーマンス（その他）
+- [ ] Server Actionsで認証を検証しているか？
+- [ ] 派生状態をstate/effectで管理していないか？
+- [ ] 単純な式を不必要に`useMemo`でラップしていないか？
