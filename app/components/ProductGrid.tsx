@@ -23,11 +23,11 @@ const containerVariants: Variants = {
 };
 
 const itemVariants: Variants = {
-  hidden: { opacity: 0, y: 20 },
+  hidden: { opacity: 0, y: 10 },
   visible: {
     opacity: 1,
     y: 0,
-    transition: { duration: 0.4, ease: "easeOut" },
+    transition: { duration: 0.5, ease: [0.16, 1, 0.3, 1] },
   },
 };
 
@@ -73,11 +73,15 @@ export default function ProductGrid({
           variants={containerVariants}
           initial="hidden"
           whileInView="visible"
-          viewport={{ once: true, margin: "-50px" }}
+          viewport={{ once: true, margin: "0px 0px -100px 0px" }}
           className="grid grid-cols-3 gap-4 md:gap-6 lg:gap-8"
         >
           {products.map((product) => (
-            <motion.div key={product.id} variants={itemVariants}>
+            <motion.div
+              key={product.id}
+              variants={itemVariants}
+              style={{ willChange: "opacity, transform" }}
+            >
               <ProductTile
                 product={{
                   id: product.id,
