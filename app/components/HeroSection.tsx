@@ -12,7 +12,7 @@ import { motion } from "framer-motion";
  */
 export default function HeroSection() {
   return (
-    <section className="relative h-screen w-full">
+    <section className="relative h-[40vh] min-h-[75px] w-full md:h-[60vh] md:min-h-[125px] lg:h-[70vh] lg:min-h-[150px]">
       {/* セクションの内側コンテナ（clip-pathで切り抜き） */}
       <div className="section-inner absolute inset-0 w-full h-full">
         {/* パララックス効果用の背景画像（position: fixedで固定） */}
