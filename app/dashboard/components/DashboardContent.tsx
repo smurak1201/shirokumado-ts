@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { log } from "@/lib/logger";
-import DashboardForm from "./DashboardForm";
+import ProductForm from "./ProductForm";
 import ProductList from "./ProductList";
 import type { Category, Product } from "../types";
 
@@ -49,11 +49,12 @@ export default function DashboardContent({
 
   return (
     <>
-      <DashboardForm
+      <ProductForm
         categories={categories}
-        onProductCreated={handleProductCreated}
-        onClose={() => setIsFormOpen(false)}
         isOpen={isFormOpen}
+        onClose={() => setIsFormOpen(false)}
+        onSuccess={handleProductCreated}
+        mode="create"
       />
       <ProductList
         products={products}

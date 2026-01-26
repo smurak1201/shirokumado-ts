@@ -4,7 +4,7 @@ import { useState, useEffect, useCallback } from "react";
 import dynamic from "next/dynamic";
 import { log } from "@/lib/logger";
 import { getUserFriendlyMessageJa } from "@/lib/errors";
-import ProductEditForm from "./ProductEditForm";
+import ProductForm from "./ProductForm";
 import ProductListTabs from "./ProductListTabs";
 import ProductListContent from "./ProductListContent";
 import { useTabState, useCategoryTabState } from "../hooks/useTabState";
@@ -141,11 +141,13 @@ export default function ProductList({
       </div>
 
       {editingProduct && (
-        <ProductEditForm
-          product={editingProduct}
+        <ProductForm
           categories={categories}
+          isOpen={true}
           onClose={() => setEditingProduct(null)}
-          onUpdated={handleUpdated}
+          onSuccess={handleUpdated}
+          mode="edit"
+          product={editingProduct}
         />
       )}
     </>
