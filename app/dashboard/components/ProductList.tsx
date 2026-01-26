@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useMemo, useCallback } from "react";
+import { useState, useEffect, useCallback } from "react";
 import dynamic from "next/dynamic";
 import { log } from "@/lib/logger";
 import { getUserFriendlyMessageJa } from "@/lib/errors";
@@ -8,7 +8,7 @@ import ProductEditForm from "./ProductEditForm";
 import ProductListTabs from "./ProductListTabs";
 import ProductListContent from "./ProductListContent";
 import { useTabState, useCategoryTabState } from "../hooks/useTabState";
-import { filterProducts } from "../utils/productUtils";
+import { useProductSearch } from "../hooks/useProductSearch";
 import type { Category, Product } from "../types";
 
 const ProductLayoutTab = dynamic(
@@ -50,21 +50,21 @@ export default function ProductList({
     useCategoryTabState(products, categories);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
 
+  const {
+    searchName,
+    setSearchName,
+    searchPublished,
+    setSearchPublished,
+    searchCategoryId,
+    setSearchCategoryId,
+    filteredProducts,
+  } = useProductSearch(products);
+
   useEffect(() => {
     if (activeTab === "layout" && initialCategoryTab) {
       setActiveCategoryTab(initialCategoryTab);
     }
   }, [activeTab, initialCategoryTab, setActiveCategoryTab]);
-
-  const [searchName, setSearchName] = useState("");
-  const [searchPublished, setSearchPublished] = useState<boolean | null>(null);
-  const [searchCategoryId, setSearchCategoryId] = useState<number | null>(null);
-
-  const filteredProducts = useMemo(
-    () =>
-      filterProducts(products, searchName, searchPublished, searchCategoryId),
-    [products, searchName, searchPublished, searchCategoryId]
-  );
 
   const handleEdit = useCallback((product: Product) => {
     setEditingProduct(product);
