@@ -46,7 +46,7 @@ export default function SortableProductItem({
       {...attributes}
       {...listeners}
     >
-      <ProductCardContent product={product} showCategoryBadge />
+      <ProductCardContent product={product} />
     </div>
   );
 }

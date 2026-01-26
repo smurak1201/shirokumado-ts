@@ -93,7 +93,7 @@ export default function LayoutCategoryTabs({
   }, [activeCategoryTab, scrollContainerRef]);
 
   return (
-    <div className="mb-6">
+    <div className="mb-6 min-h-[140px]">
       <div className="mb-4 text-sm text-gray-600">
         <p>カテゴリーごとに公開している商品の配置を変更できます</p>
         <p>非公開の商品は表示されません</p>
