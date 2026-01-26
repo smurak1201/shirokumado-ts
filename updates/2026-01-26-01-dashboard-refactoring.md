@@ -58,7 +58,7 @@
 
 ## タスク詳細
 
-### タスク1: ProductCardContent コンポーネントの抽出
+### タスク1: ProductCardContent コンポーネントの抽出 [完了]
 
 **対象ファイル**:
 
@@ -293,16 +293,16 @@ export default function SortableProductItem({
 
 **チェックリスト**:
 
-- [ ] `ProductCardContent.tsx` を新規作成
-- [ ] `ProductCard.tsx` で `ProductCardContent` を使用するよう変更
-- [ ] `SortableProductItem.tsx` で `ProductCardContent` を使用するよう変更
-- [ ] ビルドエラーがないこと
+- [o] `ProductCardContent.tsx` を新規作成
+- [o] `ProductCard.tsx` で `ProductCardContent` を使用するよう変更
+- [o] `SortableProductItem.tsx` で `ProductCardContent` を使用するよう変更
+- [o] ビルドエラーがないこと
 - [ ] 商品一覧の表示が変わらないこと
 - [ ] ドラッグ&ドロップが正常に動作すること
 
 ---
 
-### タスク2: useProductSearch フックの抽出
+### タスク2: useProductSearch フックの抽出 [完了]
 
 **対象ファイル**:
 
@@ -391,16 +391,16 @@ const {
 
 **チェックリスト**:
 
-- [ ] `useProductSearch.ts` を新規作成
-- [ ] `ProductList.tsx` でフックを使用するよう変更
-- [ ] `useState`, `useMemo` の未使用インポートを削除
-- [ ] `filterProducts` のインポートを `ProductList.tsx` から削除
-- [ ] ビルドエラーがないこと
+- [o] `useProductSearch.ts` を新規作成
+- [o] `ProductList.tsx` でフックを使用するよう変更
+- [o] `useState`, `useMemo` の未使用インポートを削除
+- [o] `filterProducts` のインポートを `ProductList.tsx` から削除
+- [o] ビルドエラーがないこと
 - [ ] 検索・フィルタリング機能が正常に動作すること
 
 ---
 
-### タスク3: DashboardForm と ProductEditForm の統合
+### タスク3: DashboardForm と ProductEditForm の統合 [完了]
 
 **対象ファイル**:
 
@@ -553,18 +553,18 @@ export default function ProductForm({
 
 **チェックリスト**:
 
-- [ ] `ProductForm.tsx` を新規作成
-- [ ] `DashboardContent.tsx` で `ProductForm` を使用するよう変更
-- [ ] `ProductList.tsx` で `ProductForm` を使用するよう変更
-- [ ] `DashboardForm.tsx` を削除
-- [ ] `ProductEditForm.tsx` を削除
-- [ ] ビルドエラーがないこと
+- [o] `ProductForm.tsx` を新規作成
+- [o] `DashboardContent.tsx` で `ProductForm` を使用するよう変更
+- [o] `ProductList.tsx` で `ProductForm` を使用するよう変更
+- [o] `DashboardForm.tsx` を削除
+- [o] `ProductEditForm.tsx` を削除
+- [o] ビルドエラーがないこと
 - [ ] 商品の新規作成が正常に動作すること
 - [ ] 商品の編集が正常に動作すること
 
 ---
 
-### タスク4: ファイル構造のサブディレクトリ分割
+### タスク4: ファイル構造のサブディレクトリ分割 [完了]
 
 **対象ファイル**:
 
@@ -623,16 +623,16 @@ app/dashboard/
 
 **チェックリスト**:
 
-- [ ] `components/form/` ディレクトリを作成し、フォーム関連ファイルを移動
-- [ ] `components/list/` ディレクトリを作成し、一覧表示関連ファイルを移動
-- [ ] `components/layout/` ディレクトリを作成し、配置変更関連ファイルを移動
-- [ ] 全ファイルのインポートパスを更新
-- [ ] ビルドエラーがないこと
+- [o] `components/form/` ディレクトリを作成し、フォーム関連ファイルを移動
+- [o] `components/list/` ディレクトリを作成し、一覧表示関連ファイルを移動
+- [o] `components/layout/` ディレクトリを作成し、配置変更関連ファイルを移動
+- [o] 全ファイルのインポートパスを更新
+- [o] ビルドエラーがないこと
 - [ ] 全機能が正常に動作すること
 
 ---
 
-### タスク5: 型定義の整理と共通化
+### タスク5: 型定義の整理と共通化 [完了]
 
 **対象ファイル**:
 
@@ -690,10 +690,10 @@ interface ProductListTabsProps {
 
 **チェックリスト**:
 
-- [ ] `types.ts` に `TabType` を追加
-- [ ] `useTabState.ts` で型をインポートするよう変更
-- [ ] `ProductListTabs.tsx` で型をインポートするよう変更
-- [ ] ビルドエラーがないこと
+- [o] `types.ts` に `TabType` を追加
+- [o] `useTabState.ts` で型をインポートするよう変更
+- [o] `ProductListTabs.tsx` で型をインポートするよう変更
+- [o] ビルドエラーがないこと
 
 ---
 
@@ -720,20 +720,23 @@ interface ProductListTabsProps {
 
 ## 変更対象ファイル一覧
 
-| ファイル                                                | 変更内容               | ステータス |
-| ------------------------------------------------------- | ---------------------- | :--------: |
-| `app/dashboard/components/ProductCardContent.tsx`       | **新規作成**           |    [ ]     |
-| `app/dashboard/components/ProductCard.tsx`              | ProductCardContent使用 |    [ ]     |
-| `app/dashboard/components/SortableProductItem.tsx`      | ProductCardContent使用 |    [ ]     |
-| `app/dashboard/hooks/useProductSearch.ts`               | **新規作成**           |    [ ]     |
-| `app/dashboard/components/ProductList.tsx`              | useProductSearch使用   |    [ ]     |
-| `app/dashboard/components/ProductForm.tsx`              | **新規作成**           |    [ ]     |
-| `app/dashboard/components/DashboardForm.tsx`            | 削除                   |    [ ]     |
-| `app/dashboard/components/ProductEditForm.tsx`          | 削除                   |    [ ]     |
-| `app/dashboard/components/DashboardContent.tsx`         | ProductForm使用        |    [ ]     |
-| `app/dashboard/types.ts`                                | TabType追加            |    [ ]     |
-| `app/dashboard/hooks/useTabState.ts`                    | 型インポート           |    [ ]     |
-| `app/dashboard/components/ProductListTabs.tsx`          | 型インポート           |    [ ]     |
+| ファイル                                                     | 変更内容                    | ステータス |
+| ------------------------------------------------------------ | --------------------------- | :--------: |
+| `app/dashboard/components/list/ProductCardContent.tsx`       | **新規作成**                |    [o]     |
+| `app/dashboard/components/list/ProductCard.tsx`              | ProductCardContent使用      |    [o]     |
+| `app/dashboard/components/layout/SortableProductItem.tsx`    | ProductCardContent使用      |    [o]     |
+| `app/dashboard/hooks/useProductSearch.ts`                    | **新規作成**                |    [o]     |
+| `app/dashboard/components/list/ProductList.tsx`              | useProductSearch使用        |    [o]     |
+| `app/dashboard/components/form/ProductForm.tsx`              | **新規作成**                |    [o]     |
+| `app/dashboard/components/DashboardForm.tsx`                 | 削除                        |    [o]     |
+| `app/dashboard/components/ProductEditForm.tsx`               | 削除                        |    [o]     |
+| `app/dashboard/components/DashboardContent.tsx`              | ProductForm使用             |    [o]     |
+| `app/dashboard/types.ts`                                     | TabType追加                 |    [o]     |
+| `app/dashboard/hooks/useTabState.ts`                         | 型インポート                |    [o]     |
+| `app/dashboard/components/list/ProductListTabs.tsx`          | 型インポート                |    [o]     |
+| `app/dashboard/components/form/*`                            | インポートパス更新          |    [o]     |
+| `app/dashboard/components/list/*`                            | インポートパス更新          |    [o]     |
+| `app/dashboard/components/layout/*`                          | インポートパス更新          |    [o]     |
 
 ---
 
