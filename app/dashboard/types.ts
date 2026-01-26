@@ -24,3 +24,8 @@ export interface Product {
   endedAt: string | null; // 公開終了日時（ISO文字列形式）
   displayOrder: number | null; // 表示順序（小さい順に表示、nullの場合は最後に配置）
 }
+
+/**
+ * ダッシュボードのタブ種別
+ */
+export type TabType = "list" | "layout";

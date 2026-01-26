@@ -1,12 +1,10 @@
 import { useState, useEffect, useMemo } from "react";
-import type { Category, Product } from "../types";
+import type { Category, Product, TabType } from "../types";
 
 const STORAGE_KEYS = {
   ACTIVE_TAB: "dashboard_active_tab",
   ACTIVE_CATEGORY_TAB: "dashboard_active_category_tab",
 } as const;
-
-type TabType = "list" | "layout";
 
 /**
  * ダッシュボードのタブ状態を管理するカスタムフック

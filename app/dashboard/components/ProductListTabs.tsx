@@ -1,8 +1,10 @@
 "use client";
 
+import type { TabType } from "../types";
+
 interface ProductListTabsProps {
-  activeTab: "list" | "layout";
-  onTabChange: (tab: "list" | "layout") => void;
+  activeTab: TabType;
+  onTabChange: (tab: TabType) => void;
 }
 
 /**
