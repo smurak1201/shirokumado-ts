@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect } from "react";
-import { useScrollPosition } from "../hooks/useScrollPosition";
-import type { Category, Product } from "../types";
+import { useScrollPosition } from "../../hooks/useScrollPosition";
+import type { Category, Product } from "../../types";
 
 interface LayoutCategoryTabsProps {
   categories: Category[];

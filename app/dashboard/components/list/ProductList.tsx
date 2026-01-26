@@ -4,15 +4,15 @@ import { useState, useEffect, useCallback } from "react";
 import dynamic from "next/dynamic";
 import { log } from "@/lib/logger";
 import { getUserFriendlyMessageJa } from "@/lib/errors";
-import ProductForm from "./ProductForm";
+import ProductForm from "../form/ProductForm";
 import ProductListTabs from "./ProductListTabs";
 import ProductListContent from "./ProductListContent";
-import { useTabState, useCategoryTabState } from "../hooks/useTabState";
-import { useProductSearch } from "../hooks/useProductSearch";
-import type { Category, Product } from "../types";
+import { useTabState, useCategoryTabState } from "../../hooks/useTabState";
+import { useProductSearch } from "../../hooks/useProductSearch";
+import type { Category, Product } from "../../types";
 
 const ProductLayoutTab = dynamic(
-  () => import("./ProductLayoutTab"),
+  () => import("../layout/ProductLayoutTab"),
   {
     loading: () => (
       <div className="flex items-center justify-center py-8">

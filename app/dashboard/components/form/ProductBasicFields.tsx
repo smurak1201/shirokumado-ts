@@ -1,5 +1,5 @@
-import type { Category } from "../types";
-import type { ProductFormData } from "../hooks/useProductForm";
+import type { Category } from "../../types";
+import type { ProductFormData } from "../../hooks/useProductForm";
 
 interface ProductBasicFieldsProps {
   formData: ProductFormData;

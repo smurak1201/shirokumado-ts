@@ -2,8 +2,8 @@
 
 import { useState } from "react";
 import { log } from "@/lib/logger";
-import ProductForm from "./ProductForm";
-import ProductList from "./ProductList";
+import ProductForm from "./form/ProductForm";
+import ProductList from "./list/ProductList";
 import type { Category, Product } from "../types";
 
 interface DashboardContentProps {

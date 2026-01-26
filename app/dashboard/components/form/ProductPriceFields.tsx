@@ -1,5 +1,5 @@
 import { formatPriceForInput, parsePrice, isNumericKey } from "@/lib/product-utils";
-import type { ProductFormData } from "../hooks/useProductForm";
+import type { ProductFormData } from "../../hooks/useProductForm";
 
 interface ProductPriceFieldsProps {
   formData: ProductFormData;

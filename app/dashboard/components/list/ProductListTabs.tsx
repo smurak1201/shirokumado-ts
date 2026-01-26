@@ -1,6 +1,6 @@
 "use client";
 
-import type { TabType } from "../types";
+import type { TabType } from "../../types";
 
 interface ProductListTabsProps {
   activeTab: TabType;

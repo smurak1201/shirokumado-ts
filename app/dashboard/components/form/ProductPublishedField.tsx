@@ -1,4 +1,4 @@
-import type { ProductFormData } from "../hooks/useProductForm";
+import type { ProductFormData } from "../../hooks/useProductForm";
 
 interface ProductPublishedFieldProps {
   formData: ProductFormData;

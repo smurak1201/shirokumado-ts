@@ -20,9 +20,9 @@ import {
 } from "@dnd-kit/sortable";
 import LayoutCategoryTabs from "./LayoutCategoryTabs";
 import SortableProductItem from "./SortableProductItem";
-import { useProductReorder } from "../hooks/useProductReorder";
-import { groupProductsByCategory } from "../utils/productUtils";
-import type { Category, Product } from "../types";
+import { useProductReorder } from "../../hooks/useProductReorder";
+import { groupProductsByCategory } from "../../utils/productUtils";
+import type { Category, Product } from "../../types";
 
 interface ProductLayoutTabProps {
   products: Product[];

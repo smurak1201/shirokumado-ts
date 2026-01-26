@@ -1,4 +1,4 @@
-import type { ProductFormData } from "../hooks/useProductForm";
+import type { ProductFormData } from "../../hooks/useProductForm";
 import ProductPublishedField from "./ProductPublishedField";
 import ProductDateInput from "./ProductDateInput";
 

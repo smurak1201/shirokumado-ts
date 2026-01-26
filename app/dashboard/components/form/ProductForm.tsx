@@ -1,15 +1,15 @@
 "use client";
 
-import { useProductForm } from "../hooks/useProductForm";
+import { useProductForm } from "../../hooks/useProductForm";
 import ProductFormFields from "./ProductFormFields";
 import ProductFormModal from "./ProductFormModal";
 import ProductFormFooter from "./ProductFormFooter";
 import {
   handleProductCreateSubmit,
   handleProductUpdateSubmit,
-} from "../utils/productFormSubmit";
-import { createInitialFormDataFromProduct } from "../utils/productFormData";
-import type { Category, Product } from "../types";
+} from "../../utils/productFormSubmit";
+import { createInitialFormDataFromProduct } from "../../utils/productFormData";
+import type { Category, Product } from "../../types";
 
 interface ProductFormProps {
   categories: Category[];

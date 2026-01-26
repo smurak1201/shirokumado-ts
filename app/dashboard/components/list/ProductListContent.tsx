@@ -2,7 +2,7 @@
 
 import ProductSearchFilters from "./ProductSearchFilters";
 import ProductCard from "./ProductCard";
-import type { Category, Product } from "../types";
+import type { Category, Product } from "../../types";
 
 interface ProductListContentProps {
   products: Product[];
