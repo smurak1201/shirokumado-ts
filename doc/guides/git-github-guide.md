@@ -33,6 +33,10 @@
 - [実務で役立つ Tips](#実務で役立つ-tips)
   - [コミットメッセージの書き方](#コミットメッセージの書き方)
   - [.gitignore の活用](#gitignore-の活用)
+    - [.gitignore とは](#gitignore-とは)
+    - [基本的な書き方](#基本的な書き方)
+    - [パターン記法一覧](#パターン記法一覧)
+    - [注意点](#注意点)
   - [差分の確認を習慣にする](#差分の確認を習慣にする)
 - [まとめ](#まとめ)
 - [参考リンク](#参考リンク)
@@ -679,8 +683,79 @@ update
 
 ### .gitignore の活用
 
-Git で管理しないファイルを指定します。
+#### .gitignore とは
 
+`.gitignore` は、**Git で管理しないファイルやフォルダを指定する**ための設定ファイルです。プロジェクトのルートディレクトリに配置します。
+
+**なぜ .gitignore が必要か**:
+- 機密情報（API キー、パスワード）を誤ってアップロードしない
+- 自動生成されるファイル（node_modules, ビルド成果物）を除外してリポジトリを軽量に保つ
+- 個人の環境設定（IDE 設定、OS 固有ファイル）を共有しない
+
+#### 基本的な書き方
+
+```gitignore
+# コメント（# で始まる行）
+# 何を除外しているか説明を書くと良い
+
+# ファイル名を直接指定
+secret.txt
+
+# ディレクトリを指定（末尾に /）
+node_modules/
+dist/
+
+# ワイルドカード（* = 任意の文字列）
+*.log
+*.tmp
+
+# 特定の拡張子を持つ全ファイル
+*.env
+
+# 特定ディレクトリ内の特定ファイル
+logs/*.log
+
+# 二重アスタリスク（** = 任意の階層）
+**/temp/
+**/*.bak
+```
+
+#### パターン記法一覧
+
+| パターン | 意味 | 例 |
+|----------|------|-----|
+| `file.txt` | 任意の場所の file.txt | 全階層の file.txt を除外 |
+| `/file.txt` | ルート直下の file.txt のみ | プロジェクト直下のみ |
+| `dir/` | ディレクトリを除外 | dir フォルダ全体を除外 |
+| `*` | 任意の文字列（/ を除く） | `*.log` → 全ての .log ファイル |
+| `**` | 任意の階層 | `**/temp/` → 全階層の temp フォルダ |
+| `?` | 任意の 1 文字 | `file?.txt` → file1.txt, fileA.txt |
+| `[abc]` | a, b, c のいずれか | `file[123].txt` → file1.txt 等 |
+| `!` | 除外の取り消し（後述） | `!important.log` |
+
+#### 除外の取り消し（!）
+
+一度除外したパターンの中から、特定のファイルだけを管理対象にしたい場合は `!` を使います。
+
+```gitignore
+# 全ての .env ファイルを除外
+*.env
+
+# ただし .env.example は管理する（テンプレートとして共有）
+!.env.example
+```
+
+```gitignore
+# logs フォルダを除外
+logs/
+
+# ただし .gitkeep は管理する（空フォルダを維持するため）
+!logs/.gitkeep
+```
+
+#### プロジェクト別の典型例
+
+**Node.js / Next.js プロジェクト**:
 ```gitignore
 # 依存関係
 node_modules/
@@ -688,10 +763,18 @@ node_modules/
 # ビルド成果物
 .next/
 dist/
+build/
+out/
 
 # 環境変数（機密情報）
 .env
 .env.local
+.env.*.local
+
+# ログ
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
 
 # OS 関連
 .DS_Store
@@ -700,7 +783,92 @@ Thumbs.db
 # IDE 設定
 .idea/
 .vscode/
+*.swp
+*.swo
+
+# テストカバレッジ
+coverage/
+
+# キャッシュ
+.cache/
+*.tsbuildinfo
 ```
+
+**Python プロジェクト**:
+```gitignore
+# 仮想環境
+venv/
+.venv/
+env/
+
+# キャッシュ
+__pycache__/
+*.pyc
+*.pyo
+
+# 配布用
+dist/
+build/
+*.egg-info/
+
+# 環境変数
+.env
+```
+
+#### 注意点
+
+**1. すでにコミットしたファイルは除外されない**
+
+.gitignore に追加しても、すでに Git で管理されているファイルは除外されません。
+
+```bash
+# 管理対象から外す（ファイルは残る）
+git rm --cached ファイル名
+
+# 例: .env を管理対象から外す
+git rm --cached .env
+git commit -m ".env を管理対象から除外"
+```
+
+**2. 空のディレクトリは管理できない**
+
+Git は空のディレクトリを管理しません。空のディレクトリを維持したい場合は `.gitkeep` という空ファイルを配置します。
+
+```bash
+# logs ディレクトリを維持する
+touch logs/.gitkeep
+```
+
+```gitignore
+# logs 内のファイルは除外するが、.gitkeep は管理
+logs/*
+!logs/.gitkeep
+```
+
+**3. グローバル .gitignore の設定**
+
+OS 固有のファイル（.DS_Store など）は、プロジェクトごとではなくグローバルに設定すると便利です。
+
+```bash
+# グローバル .gitignore を設定
+git config --global core.excludesfile ~/.gitignore_global
+```
+
+```gitignore
+# ~/.gitignore_global の内容例
+.DS_Store
+Thumbs.db
+*.swp
+.idea/
+.vscode/
+```
+
+#### .gitignore のテンプレート
+
+GitHub には言語・フレームワーク別のテンプレートが用意されています。
+
+- [github/gitignore](https://github.com/github/gitignore) - 公式テンプレート集
+- [gitignore.io](https://www.toptal.com/developers/gitignore) - Web ツールで生成
 
 **このプロジェクトの .gitignore**: [.gitignore](../../.gitignore)
 
