@@ -8,6 +8,7 @@
   - [リポジトリ（Repository）](#リポジトリrepository)
   - [コミット（commit）](#コミットcommit)
   - [ブランチ（branch）](#ブランチbranch)
+  - [checkout（チェックアウト）](#checkoutチェックアウト)
   - [HEAD](#head)
   - [main と origin/main の違い](#main-と-originmain-の違い)
 - [基本操作の解説](#基本操作の解説)
@@ -159,6 +160,78 @@ git switch ブランチ名
 
 # ブランチの作成と切り替えを同時に行う
 git switch -c ブランチ名
+```
+
+### checkout（チェックアウト）
+
+checkout は、**ブランチの切り替え**や**ファイルの復元**を行う操作です。Git の中でも特に多機能なコマンドです。
+
+**checkout の主な用途**:
+
+1. **ブランチの切り替え**
+```bash
+# 既存のブランチに切り替え
+git checkout ブランチ名
+
+# 新しいブランチを作成して切り替え
+git checkout -b 新しいブランチ名
+```
+
+2. **ファイルの変更を元に戻す**
+```bash
+# 特定のファイルを最新コミットの状態に戻す
+git checkout -- ファイル名
+
+# 全ての変更を元に戻す（注意: 変更が消える）
+git checkout -- .
+```
+
+3. **特定のコミットに移動**
+```bash
+# 過去のコミットを確認（detached HEAD 状態になる）
+git checkout コミットハッシュ
+```
+
+**switch と restore（Git 2.23 以降）**:
+
+`checkout` は機能が多すぎて混乱しやすいため、Git 2.23 で役割を分割した新しいコマンドが追加されました。
+
+| 旧コマンド（checkout） | 新コマンド | 用途 |
+|----------------------|-----------|------|
+| `git checkout ブランチ名` | `git switch ブランチ名` | ブランチ切り替え |
+| `git checkout -b ブランチ名` | `git switch -c ブランチ名` | ブランチ作成＆切り替え |
+| `git checkout -- ファイル名` | `git restore ファイル名` | ファイルを元に戻す |
+| `git checkout HEAD -- ファイル名` | `git restore --source=HEAD ファイル名` | 特定コミットから復元 |
+
+**推奨**: 新しいプロジェクトでは `switch` と `restore` を使うことをおすすめします。ただし、`checkout` も引き続き使えるため、古いドキュメントやチュートリアルでは `checkout` がよく登場します。
+
+```
+checkout の機能分割
+
+                    ┌─────────────────┐
+                    │  git checkout   │
+                    │  （多機能）       │
+                    └────────┬────────┘
+                             │
+              ┌──────────────┼──────────────┐
+              │              │              │
+              ▼              ▼              ▼
+      ┌───────────┐  ┌───────────┐  ┌───────────┐
+      │ git switch│  │git restore│  │  checkout │
+      │ブランチ切替│  │ファイル復元│  │コミット移動│
+      └───────────┘  └───────────┘  └───────────┘
+```
+
+**detached HEAD 状態とは**:
+
+特定のコミットを直接 checkout すると、「detached HEAD」（切り離された HEAD）状態になります。この状態では、どのブランチにも属していません。
+
+```bash
+# detached HEAD 状態になる
+git checkout abc1234
+
+# この状態で作業を保存したい場合はブランチを作成
+git switch -c 新しいブランチ名
 ```
 
 ### HEAD
@@ -654,6 +727,7 @@ git status
 | GitHub | Git リポジトリのホスティングサービス |
 | commit | 変更を記録するスナップショット |
 | branch | 開発の分岐 |
+| checkout | ブランチ切り替え・ファイル復元（switch/restore に分割） |
 | HEAD | 現在の位置を示すポインタ |
 | main | ローカルのメインブランチ |
 | origin/main | リモートの main を追跡するブランチ |
