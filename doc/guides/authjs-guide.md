@@ -234,9 +234,9 @@ AUTH_SECRET=your-secret-key-here
 AUTH_GOOGLE_ID=your-google-client-id
 AUTH_GOOGLE_SECRET=your-google-client-secret
 
-# OAuth プロバイダーの設定（例：GitHub）
-AUTH_GITHUB_ID=your-github-client-id
-AUTH_GITHUB_SECRET=your-github-client-secret
+# OAuth プロバイダーの設定（例：Apple）
+AUTH_APPLE_ID=your-apple-client-id
+AUTH_APPLE_SECRET=your-apple-client-secret
 ```
 
 **AUTH_SECRET の生成方法**:
@@ -259,10 +259,10 @@ openssl rand -base64 32
 // auth.ts
 import NextAuth from "next-auth";
 import Google from "next-auth/providers/google";
-import GitHub from "next-auth/providers/github";
+import Apple from "next-auth/providers/apple";
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
-  providers: [Google, GitHub],
+  providers: [Google, Apple],
 });
 ```
 
@@ -279,14 +279,13 @@ export const { GET, POST } = handlers;
 
 ### OAuth プロバイダー
 
-OAuth プロバイダーを使用すると、Google、GitHub などの外部サービスを使った認証が可能です。
+OAuth プロバイダーを使用すると、Google、Apple などの外部サービスを使った認証が可能です。
 
 ```typescript
 // auth.ts
 import NextAuth from "next-auth";
 import Google from "next-auth/providers/google";
-import GitHub from "next-auth/providers/github";
-import Discord from "next-auth/providers/discord";
+import Apple from "next-auth/providers/apple";
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   providers: [
@@ -294,13 +293,9 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       clientId: process.env.AUTH_GOOGLE_ID,
       clientSecret: process.env.AUTH_GOOGLE_SECRET,
     }),
-    GitHub({
-      clientId: process.env.AUTH_GITHUB_ID,
-      clientSecret: process.env.AUTH_GITHUB_SECRET,
-    }),
-    Discord({
-      clientId: process.env.AUTH_DISCORD_ID,
-      clientSecret: process.env.AUTH_DISCORD_SECRET,
+    Apple({
+      clientId: process.env.AUTH_APPLE_ID,
+      clientSecret: process.env.AUTH_APPLE_SECRET,
     }),
   ],
 });
@@ -315,6 +310,74 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 5. 承認済みの JavaScript 生成元: `http://localhost:3000`
 6. 承認済みのリダイレクト URI: `http://localhost:3000/api/auth/callback/google`
 7. クライアント ID とシークレットを環境変数に設定
+
+**Apple OAuth（Sign in with Apple）の設定手順**:
+
+Apple の認証設定は Google に比べて複雑です。以下の手順に従ってください。
+
+1. **Apple Developer Program への登録**
+   - [Apple Developer](https://developer.apple.com/) に登録（年間 $99）
+   - 個人または組織として登録が必要
+
+2. **App ID の作成**
+   - Apple Developer Console → 「Certificates, Identifiers & Profiles」
+   - 「Identifiers」→「App IDs」→「+」ボタン
+   - 「Sign in with Apple」を有効化
+
+3. **Services ID の作成**（これが OAuth の Client ID になります）
+   - 「Identifiers」→「Services IDs」→「+」ボタン
+   - Description: アプリ名（例：白熊堂）
+   - Identifier: リバースドメイン形式（例：`com.shirokumado.auth`）
+   - 「Sign in with Apple」を有効化し、Configure をクリック
+   - Primary App ID: 先ほど作成した App ID を選択
+   - Domains: `localhost`（開発用）、`yourdomain.com`（本番用）
+   - Return URLs: `http://localhost:3000/api/auth/callback/apple`
+
+4. **秘密鍵の作成**
+   - 「Keys」→「+」ボタン
+   - 「Sign in with Apple」を有効化
+   - キーをダウンロード（`.p8` ファイル）
+   - **重要**: このファイルは一度しかダウンロードできません
+
+5. **Client Secret の生成**
+   Apple は通常の Client Secret ではなく、JWT を使用します。以下のスクリプトで生成できます。
+
+   ```typescript
+   // scripts/generate-apple-secret.ts
+   import jwt from "jsonwebtoken";
+   import fs from "fs";
+
+   const privateKey = fs.readFileSync("path/to/AuthKey_XXXXXXXXXX.p8", "utf8");
+
+   const secret = jwt.sign({}, privateKey, {
+     algorithm: "ES256",
+     expiresIn: "180d", // 最大6ヶ月
+     audience: "https://appleid.apple.com",
+     issuer: "YOUR_TEAM_ID", // Apple Developer の Team ID
+     subject: "com.shirokumado.auth", // Services ID の Identifier
+     keyid: "XXXXXXXXXX", // Key ID（キー作成時に表示される）
+   });
+
+   console.log(secret);
+   ```
+
+   ```bash
+   npm install jsonwebtoken
+   npx ts-node scripts/generate-apple-secret.ts
+   ```
+
+6. **環境変数の設定**
+
+   ```env
+   AUTH_APPLE_ID=com.shirokumado.auth  # Services ID の Identifier
+   AUTH_APPLE_SECRET=生成したJWT
+   ```
+
+**Apple 認証の注意点**:
+
+- Client Secret（JWT）は最大 6 ヶ月で期限切れになるため、定期的に再生成が必要
+- Apple はユーザーのメールアドレスを「Hide My Email」で隠すオプションを提供するため、リレーメールアドレス（`xxxxx@privaterelay.appleid.com`）が返される場合がある
+- 初回ログイン時のみユーザー名が取得でき、2 回目以降は取得できない（必要なら初回で保存する）
 
 ### Credentials プロバイダー
 
