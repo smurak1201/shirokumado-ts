@@ -399,7 +399,7 @@ JSX では、HTML と同様に要素を記述できます。
 </header>
 
 
-[`app/components/Header.tsx`](../../app/components/Header.tsx)
+[`app/components/FixedHeader.tsx`](../../app/components/FixedHeader.tsx)
 ### 属性（Props）
 
 JSX では、HTML の属性と同様に props を指定できます。HTML との違いについては、[JSX と HTML の違い](#jsx-と-html-の違い)セクションを参照してください。
@@ -762,7 +762,7 @@ export default function Header() {
 }
 ```
 
-[`app/components/Header.tsx`](../../app/components/Header.tsx)
+[`app/components/FixedHeader.tsx`](../../app/components/FixedHeader.tsx)
 
 **Client Component の例**:
 

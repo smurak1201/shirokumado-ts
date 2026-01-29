@@ -628,7 +628,7 @@ export function isImageFile(file: File): boolean {
 }
 ```
 
-**使用例** ([`app/dashboard/components/DashboardForm.tsx`](../../app/dashboard/components/DashboardForm.tsx)):
+**使用例** ([`app/dashboard/components/form/ProductForm.tsx`](../../app/dashboard/components/form/ProductForm.tsx)):
 
 ```typescript
 if (!isImageFile(file)) {
@@ -665,7 +665,7 @@ export function isNumericKey(
 }
 ```
 
-**使用例** ([`app/dashboard/components/DashboardForm.tsx`](../../app/dashboard/components/DashboardForm.tsx)):
+**使用例** ([`app/dashboard/components/form/ProductForm.tsx`](../../app/dashboard/components/form/ProductForm.tsx)):
 
 ```typescript
 onKeyDown={(e) => {

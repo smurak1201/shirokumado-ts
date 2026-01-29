@@ -131,9 +131,8 @@ Java、PHP、Laravel の経験がある方は、以下のような知識を活�
 **推奨ファイル**:
 
 - [`app/dashboard/page.tsx`](../../app/dashboard/page.tsx) - ダッシュボードページ
-- [`app/dashboard/components/DashboardForm.tsx`](../../app/dashboard/components/DashboardForm.tsx) - 新規商品登録フォーム（`useProductForm`フックと`ProductFormFields`コンポーネントを使用）
-- [`app/dashboard/components/ProductEditForm.tsx`](../../app/dashboard/components/ProductEditForm.tsx) - 商品編集フォーム（`useProductForm`フックと`ProductFormFields`コンポーネントを使用）
-- [`app/dashboard/components/ProductFormFields.tsx`](../../app/dashboard/components/ProductFormFields.tsx) - 商品フォームフィールド（共通コンポーネント）
+- [`app/dashboard/components/form/ProductForm.tsx`](../../app/dashboard/components/form/ProductForm.tsx) - 商品作成・編集フォーム（`useProductForm`フックと`ProductFormFields`コンポーネントを使用）
+- [`app/dashboard/components/form/ProductFormFields.tsx`](../../app/dashboard/components/form/ProductFormFields.tsx) - 商品フォームフィールド（共通コンポーネント）
 - [`app/dashboard/hooks/useProductForm.ts`](../../app/dashboard/hooks/useProductForm.ts) - 商品フォームの状態管理フック
 - [`app/components/ProductGrid.tsx`](../../app/components/ProductGrid.tsx) - コンポーネント実装
 
@@ -301,7 +300,7 @@ Java、PHP、Laravel の経験がある方は、以下のような知識を活�
     - シンプルなコンポーネントの例
     - props、JSX、スタイリング
 
-12. [`app/components/Header.tsx`](../../app/components/Header.tsx)
+12. [`app/components/FixedHeader.tsx`](../../app/components/FixedHeader.tsx)
     - レイアウトコンポーネントの例
     - ナビゲーション、リンク
 
@@ -369,27 +368,21 @@ Java、PHP、Laravel の経験がある方は、以下のような知識を活�
     - ダッシュボードページの実装
     - Server Component と Client Component の連携
 
-22. [`app/dashboard/components/DashboardForm.tsx`](../../app/dashboard/components/DashboardForm.tsx)
+22. [`app/dashboard/components/form/ProductForm.tsx`](../../app/dashboard/components/form/ProductForm.tsx)
 
-    - フォーム実装の詳細
+    - 商品作成・編集フォームの実装
     - `useProductForm`フックの使用
     - `ProductFormFields`コンポーネントの使用
     - 画像アップロード、バリデーション
 
-23. [`app/dashboard/components/ProductEditForm.tsx`](../../app/dashboard/components/ProductEditForm.tsx)
-
-    - 商品編集フォームの実装
-    - `useProductForm`フックの使用（初期値設定）
-    - `ProductFormFields`コンポーネントの使用
-
-24. [`app/dashboard/hooks/useProductForm.ts`](../../app/dashboard/hooks/useProductForm.ts)
+23. [`app/dashboard/hooks/useProductForm.ts`](../../app/dashboard/hooks/useProductForm.ts)
 
     - カスタムフックの実装例
     - フォーム状態管理
     - 画像の圧縮とアップロード
     - 公開状態の自動計算
 
-25. [`app/dashboard/components/ProductList.tsx`](../../app/dashboard/components/ProductList.tsx)
+24. [`app/dashboard/components/list/ProductList.tsx`](../../app/dashboard/components/list/ProductList.tsx)
 
     - 複雑な状態管理
     - コンポーネントの分割（`ProductListContent`、`ProductSearchFilters`）
@@ -404,8 +397,8 @@ Java、PHP、Laravel の経験がある方は、以下のような知識を活�
 **良い例**:
 
 - 「商品一覧を表示する機能を理解したい」→ [`app/page.tsx`](../../app/page.tsx)、[`app/components/ProductCategoryTabs.tsx`](../../app/components/ProductCategoryTabs.tsx)、[`app/components/ProductGrid.tsx`](../../app/components/ProductGrid.tsx)を読む
-- 「商品を追加する機能を理解したい」→ [`app/dashboard/components/DashboardForm.tsx`](../../app/dashboard/components/DashboardForm.tsx)、[`app/dashboard/hooks/useProductForm.ts`](../../app/dashboard/hooks/useProductForm.ts)、[`app/dashboard/components/ProductFormFields.tsx`](../../app/dashboard/components/ProductFormFields.tsx)を読む
-- 「商品を編集する機能を理解したい」→ [`app/dashboard/components/ProductEditForm.tsx`](../../app/dashboard/components/ProductEditForm.tsx)、[`app/dashboard/hooks/useProductForm.ts`](../../app/dashboard/hooks/useProductForm.ts)を読む
+- 「商品を追加する機能を理解したい」→ [`app/dashboard/components/form/ProductForm.tsx`](../../app/dashboard/components/form/ProductForm.tsx)、[`app/dashboard/hooks/useProductForm.ts`](../../app/dashboard/hooks/useProductForm.ts)、[`app/dashboard/components/form/ProductFormFields.tsx`](../../app/dashboard/components/form/ProductFormFields.tsx)を読む
+- 「商品を編集する機能を理解したい」→ [`app/dashboard/components/form/ProductForm.tsx`](../../app/dashboard/components/form/ProductForm.tsx)、[`app/dashboard/hooks/useProductForm.ts`](../../app/dashboard/hooks/useProductForm.ts)を読む
 - 「商品一覧の検索機能を理解したい」→ [`app/dashboard/components/ProductList.tsx`](../../app/dashboard/components/ProductList.tsx)、[`app/dashboard/components/ProductSearchFilters.tsx`](../../app/dashboard/components/ProductSearchFilters.tsx)、[`app/dashboard/utils/productUtils.ts`](../../app/dashboard/utils/productUtils.ts)を読む
 - 「データベースから商品を取得する方法を知りたい」→ [`app/api/products/route.ts`](../../app/api/products/route.ts)を読む
 
@@ -701,7 +694,7 @@ import { ValidationError } from "@/lib/errors";
    - グリッドレイアウト（`grid-cols-3`）
    - スペーシング（`gap-3`, `mb-8`）
 
-3. **[`app/components/Header.tsx`](../../app/components/Header.tsx)**
+3. **[`app/components/FixedHeader.tsx`](../../app/components/FixedHeader.tsx)**
 
    - フレックスボックスレイアウト（`flex`）
    - ナビゲーションのスタイリング

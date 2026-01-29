@@ -479,7 +479,7 @@ if (!response.ok) {
 }
 ```
 
-4. **`app/dashboard/components/DashboardForm.tsx`** - 商品の作成と画像アップロード
+4. **`app/dashboard/components/form/ProductForm.tsx`** - 商品の作成と画像アップロード
 
 **画像アップロード（FormData を使用）**:
 
@@ -528,7 +528,7 @@ const uploadImage = useCallback(async (): Promise<string | null> => {
 }, [formData.imageFile, formData.imageUrl]);
 ```
 
-[`app/dashboard/components/DashboardForm.tsx`](../../app/dashboard/components/DashboardForm.tsx) (商品登録処理)
+[`app/dashboard/components/form/ProductForm.tsx`](../../app/dashboard/components/form/ProductForm.tsx) (商品登録処理)
 
 ```typescript
 const handleSubmit = async (e: React.FormEvent) => {

@@ -96,8 +96,8 @@ React Hooks は、関数コンポーネントで状態管理や副作用を扱�
   - [`app/components/ProductGrid.tsx`](../../app/components/ProductGrid.tsx): `useProductModal` カスタムフックを使用
   - [`app/components/ProductModal.tsx`](../../app/components/ProductModal.tsx): shadcn/ui の Dialog コンポーネントを使用
   - [`app/dashboard/components/DashboardContent.tsx`](../../app/dashboard/components/DashboardContent.tsx): `useState` を使用
-  - [`app/dashboard/components/DashboardForm.tsx`](../../app/dashboard/components/DashboardForm.tsx): `useProductForm` カスタムフックを使用
-  - [`app/dashboard/components/ProductEditForm.tsx`](../../app/dashboard/components/ProductEditForm.tsx): `useProductForm` カスタムフックを使用
+  - [`app/dashboard/components/form/ProductForm.tsx`](../../app/dashboard/components/form/ProductForm.tsx): `useProductForm` カスタムフックを使用
+  - [`app/dashboard/components/form/ProductForm.tsx`](../../app/dashboard/components/form/ProductForm.tsx): `useProductForm` カスタムフックを使用
   - [`app/dashboard/hooks/useTabState.ts`](../../app/dashboard/hooks/useTabState.ts): `useState`、`useEffect`、`localStorage` を使用
   - [`app/dashboard/hooks/useProductForm.ts`](../../app/dashboard/hooks/useProductForm.ts): `useState`、`useEffect`、`useCallback` を使用
   - [`app/hooks/useProductModal.ts`](../../app/hooks/useProductModal.ts): `useState` を使用
@@ -659,8 +659,8 @@ export default function ProductGrid({ category, products }: ProductGridProps) {
 **このアプリでの使用箇所**:
 
 - [`app/dashboard/hooks/useProductForm.ts`](../../app/dashboard/hooks/useProductForm.ts): フックの実装
-- [`app/dashboard/components/DashboardForm.tsx`](../../app/dashboard/components/DashboardForm.tsx): 新規商品登録フォームで使用
-- [`app/dashboard/components/ProductEditForm.tsx`](../../app/dashboard/components/ProductEditForm.tsx): 商品編集フォームで使用
+- [`app/dashboard/components/form/ProductForm.tsx`](../../app/dashboard/components/form/ProductForm.tsx): 新規商品登録フォームで使用
+- [`app/dashboard/components/form/ProductForm.tsx`](../../app/dashboard/components/form/ProductForm.tsx): 商品編集フォームで使用
 
 **詳細**: このフックの詳細な説明については、[ダッシュボードガイド - useProductForm](./dashboard-guide.md#useproductform)を参照してください。
 
@@ -1308,7 +1308,7 @@ function ProductTile({ product, onClick }: ProductTileProps) {
    - [`ProductGrid.tsx`](../../app/components/ProductGrid.tsx): 商品グリッド（モーダル表示などのインタラクティブ機能）
    - [`ProductTile.tsx`](../../app/components/ProductTile.tsx): 商品タイル（クリックイベント処理）
    - [`ProductModal.tsx`](../../app/components/ProductModal.tsx): 商品詳細モーダル（ESC キー処理、背景スクロール無効化）
-   - [`Header.tsx`](../../app/components/Header.tsx): ヘッダー（Server Component）
+   - [`FixedHeader.tsx`](../../app/components/FixedHeader.tsx): ヘッダー（Server Component）
    - [`Footer.tsx`](../../app/components/Footer.tsx): フッター（Server Component）
 
 2. **ダッシュボードコンポーネント** (`app/dashboard/components/`)
