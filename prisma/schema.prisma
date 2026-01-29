@@ -67,15 +67,6 @@ model VerificationToken {
   @@map("verification_tokens")
 }
 
-// 管理者許可メールアドレステーブル
-model AllowedAdmin {
-  id        String   @id @default(cuid())
-  email     String   @unique
-  createdAt DateTime @default(now()) @map("created_at")
-
-  @@map("allowed_admins")
-}
-
 // カテゴリーテーブル
 model Category {
   id        Int       @id @default(autoincrement())
