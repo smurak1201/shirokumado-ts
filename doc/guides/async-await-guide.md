@@ -1,5 +1,13 @@
 # Async/Await ガイド
 
+## このドキュメントの役割
+
+このドキュメントは「**非同期処理の書き方**」を説明します。Promise、async/await、並列処理など、非同期処理の基礎を理解したいときに参照してください。
+
+**関連ドキュメント**:
+- [開発ガイドライン](../development-guide.md#prisma): Prisma での非同期データベース操作
+- [App Router ガイド](./app-router-guide.md): Server Components でのデータフェッチ
+
 ## 目次
 
 - [概要](#概要)

@@ -1,5 +1,14 @@
 # React ガイド
 
+## このドキュメントの役割
+
+このドキュメントは「**React の基礎とフック**」を説明します。useState、useEffect、カスタムフックなど、React でのコンポーネント開発を理解したいときに参照してください。
+
+**関連ドキュメント**:
+- [JSX ガイド](./jsx-guide.md): JSX の構文
+- [Next.js ガイド](./nextjs-guide.md): Next.js との統合
+- [App Router ガイド](./app-router-guide.md): Server/Client Components
+
 ## 目次
 
 - [概要](#概要)

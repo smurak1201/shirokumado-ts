@@ -1,5 +1,14 @@
 # Next.js App Router ガイド
 
+## このドキュメントの役割
+
+このドキュメントは「**App Router の使い方**」を説明します。Server/Client Components、データフェッチ、ルーティングなど、App Router の詳細を理解したいときに参照してください。
+
+**関連ドキュメント**:
+- [Next.js ガイド](./nextjs-guide.md): フレームワークの全体像
+- [開発ガイドライン](../development-guide.md#nextjs-app-router): コーディング規約
+- [プロジェクト構造](../project-structure.md): ディレクトリ構造
+
 ## 目次
 
 - [概要](#概要)
