@@ -424,6 +424,7 @@ npm run db:migrate
 **対象ファイル**:
 
 - `prisma/seed.ts`（既存・変更済み）
+- データベース（`allowed_admins` テーブル）
 
 **問題点**:
 
@@ -431,9 +432,9 @@ npm run db:migrate
 
 **修正内容**:
 
-シーダーを実行して初期の管理者メールアドレスを登録する。
+シーダーまたは Neon コンソールから初期の管理者メールアドレスを登録する。
 
-**実行手順**:
+**実行手順（シーダー）**:
 
 ```bash
 npm run db:seed
@@ -441,20 +442,19 @@ npm run db:seed
 
 シーダーは `upsert` を使用しているため、既にデータが存在する場合でも安全に再実行可能。
 
-**管理者を追加する場合**:
+**実行手順（Neon コンソール）**:
 
-`prisma/seed.ts` の `ALLOWED_ADMIN_EMAILS` 配列にメールアドレスを追加し、シーダーを再実行する。
+1. [Neon Console](https://console.neon.tech/) にログイン
+2. プロジェクトを選択 → SQL Editor
+3. 以下のSQLを実行:
 
-```typescript
-const ALLOWED_ADMIN_EMAILS = [
-  's.murakoshi1201@gmail.com',
-  'newadmin@example.com', // 追加
-];
+```sql
+INSERT INTO allowed_admins (id, email, created_at)
+VALUES (gen_random_uuid(), 's.murakoshi1201@gmail.com', NOW());
 ```
 
 **チェックリスト**:
 
-- [ ] `npm run db:seed` が正常に完了すること
 - [ ] `allowed_admins` テーブルに初期データが登録されていること
 
 ---
