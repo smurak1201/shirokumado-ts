@@ -421,9 +421,9 @@ npm run db:migrate
 
 ### タスク7: 初期データ登録
 
-**対象**:
+**対象ファイル**:
 
-- データベース（`allowed_admins` テーブル）
+- `prisma/seed.ts`（既存・変更済み）
 
 **問題点**:
 
@@ -431,32 +431,30 @@ npm run db:migrate
 
 **修正内容**:
 
-Neon コンソールまたは Prisma Studio から初期の管理者メールアドレスを登録する。
+シーダーを実行して初期の管理者メールアドレスを登録する。
 
-**実行手順（Neon コンソール）**:
-
-1. [Neon Console](https://console.neon.tech/) にログイン
-2. プロジェクトを選択 → SQL Editor
-3. 以下のSQLを実行:
-
-```sql
-INSERT INTO allowed_admins (id, email, created_at)
-VALUES (gen_random_uuid(), 's.murakoshi1201@gmail.com', NOW());
-```
-
-**実行手順（Prisma Studio）**:
+**実行手順**:
 
 ```bash
-npm run db:studio
+npm run db:seed
 ```
 
-1. ブラウザで `AllowedAdmin` テーブルを開く
-2. 「Add record」をクリック
-3. `email` に `s.murakoshi1201@gmail.com` を入力
-4. 「Save 1 change」をクリック
+シーダーは `upsert` を使用しているため、既にデータが存在する場合でも安全に再実行可能。
+
+**管理者を追加する場合**:
+
+`prisma/seed.ts` の `ALLOWED_ADMIN_EMAILS` 配列にメールアドレスを追加し、シーダーを再実行する。
+
+```typescript
+const ALLOWED_ADMIN_EMAILS = [
+  's.murakoshi1201@gmail.com',
+  'newadmin@example.com', // 追加
+];
+```
 
 **チェックリスト**:
 
+- [ ] `npm run db:seed` が正常に完了すること
 - [ ] `allowed_admins` テーブルに初期データが登録されていること
 
 ---
@@ -504,22 +502,16 @@ npm run db:studio
 
 ### 管理者の追加・削除方法
 
-**Neon コンソールから**:
+**シーダーから（推奨）**:
 
-1. [Neon Console](https://console.neon.tech/) にログイン
-2. プロジェクトを選択 → SQL Editor
-3. 以下のSQLを実行:
+1. `prisma/seed.ts` の `ALLOWED_ADMIN_EMAILS` 配列を編集
+2. `npm run db:seed` を実行
 
-```sql
--- 管理者を追加
-INSERT INTO allowed_admins (id, email, created_at)
-VALUES (gen_random_uuid(), 'newadmin@example.com', NOW());
-
--- 管理者を削除
-DELETE FROM allowed_admins WHERE email = 'oldadmin@example.com';
-
--- 管理者一覧を確認
-SELECT * FROM allowed_admins;
+```typescript
+const ALLOWED_ADMIN_EMAILS = [
+  's.murakoshi1201@gmail.com',
+  'newadmin@example.com', // 追加
+];
 ```
 
 **Prisma Studio から**（ローカル開発時）:
@@ -529,6 +521,17 @@ npm run db:studio
 ```
 
 ブラウザで `AllowedAdmin` テーブルを直接編集
+
+**Neon コンソールから**（緊急時）:
+
+```sql
+-- 管理者を追加
+INSERT INTO allowed_admins (id, email, created_at)
+VALUES (gen_random_uuid(), 'newadmin@example.com', NOW());
+
+-- 管理者を削除
+DELETE FROM allowed_admins WHERE email = 'oldadmin@example.com';
+```
 
 ### 参考
 
