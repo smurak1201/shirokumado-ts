@@ -18,8 +18,9 @@
 | 4   | ログインページの作成             |   高   |    [ ]     |      |
 | 5   | ダッシュボードにログアウト機能   |   中   |    [ ]     |      |
 | 6   | Prisma マイグレーション実行      |   高   |    [ ]     |      |
-| 7   | 初期データ登録                   |   高   |    [ ]     |      |
-| 8   | 動作確認・ビルドテスト           |   -    |    [ ]     |      |
+| 7   | シーダーに初期データ登録処理追加 |   高   |    [ ]     |      |
+| 8   | 初期データ登録                   |   高   |    [ ]     |      |
+| 9   | 動作確認・ビルドテスト           |   -    |    [ ]     |      |
 
 **凡例**: `[ ]` 未着手 / `[~]` 作業中 / `[o]` 完了
 
@@ -419,11 +420,59 @@ npm run db:migrate
 
 ---
 
-### タスク7: 初期データ登録
+### タスク7: シーダーに初期データ登録処理追加
 
 **対象ファイル**:
 
-- `prisma/seed.ts`（既存・変更済み）
+- `prisma/seed.ts`（既存・変更）
+
+**問題点**:
+
+初期データをNeonコンソールから手動で登録するのは手間がかかり、再現性がない。
+
+**修正内容**:
+
+既存のシーダーに許可管理者メールアドレスの登録処理を追加する。
+
+**実装例**:
+
+```typescript
+// prisma/seed.ts に追加
+
+// 許可する管理者メールアドレス
+const ALLOWED_ADMIN_EMAILS = ['s.murakoshi1201@gmail.com'];
+
+async function main() {
+  console.log('シードデータの投入を開始します...');
+
+  // 許可管理者メールアドレスの作成
+  for (const email of ALLOWED_ADMIN_EMAILS) {
+    await prisma.allowedAdmin.upsert({
+      where: { email },
+      update: {},
+      create: { email },
+    });
+  }
+  console.log(
+    '許可管理者メールアドレスを作成しました:',
+    ALLOWED_ADMIN_EMAILS.join(', ')
+  );
+
+  // 既存のカテゴリー作成処理...
+}
+```
+
+**チェックリスト**:
+
+- [ ] `prisma/seed.ts` に `AllowedAdmin` のシード処理を追加
+- [ ] `upsert` を使用して冪等性を確保
+
+---
+
+### タスク8: 初期データ登録
+
+**対象**:
+
 - データベース（`allowed_admins` テーブル）
 
 **問題点**:
@@ -453,13 +502,24 @@ INSERT INTO allowed_admins (id, email, created_at)
 VALUES (gen_random_uuid(), 's.murakoshi1201@gmail.com', NOW());
 ```
 
+**実行手順（Prisma Studio）**:
+
+```bash
+npm run db:studio
+```
+
+1. ブラウザで `AllowedAdmin` テーブルを開く
+2. 「Add record」をクリック
+3. `email` に `s.murakoshi1201@gmail.com` を入力
+4. 「Save 1 change」をクリック
+
 **チェックリスト**:
 
 - [ ] `allowed_admins` テーブルに初期データが登録されていること
 
 ---
 
-### タスク8: 動作確認・ビルドテスト
+### タスク9: 動作確認・ビルドテスト
 
 **確認項目**:
 
@@ -480,15 +540,16 @@ VALUES (gen_random_uuid(), 's.murakoshi1201@gmail.com', NOW());
 
 ## 変更対象ファイル一覧
 
-| ファイル                                   | 変更内容                              | ステータス |
-| ------------------------------------------ | ------------------------------------- | :--------: |
-| `prisma/schema.prisma`                     | AllowedAdminモデル追加                |    [ ]     |
-| `lib/auth-config.ts`                       | **新規作成** - 許可メール判定（DB）   |    [ ]     |
-| `auth.ts`                                  | signInコールバック追加                |    [ ]     |
-| `middleware.ts`                            | **新規作成** - ルート保護             |    [ ]     |
-| `app/auth/signin/page.tsx`                 | **新規作成** - ログインページ         |    [ ]     |
-| `app/dashboard/components/DashboardHeader.tsx` | **新規作成** - ヘッダー           |    [ ]     |
-| `app/dashboard/page.tsx`                   | ヘッダーコンポーネント使用            |    [ ]     |
+| ファイル                                       | 変更内容                            | ステータス |
+| ---------------------------------------------- | ----------------------------------- | :--------: |
+| `prisma/schema.prisma`                         | AllowedAdminモデル追加              |    [ ]     |
+| `prisma/seed.ts`                               | AllowedAdminシード処理追加          |    [ ]     |
+| `lib/auth-config.ts`                           | **新規作成** - 許可メール判定（DB） |    [ ]     |
+| `auth.ts`                                      | signInコールバック追加              |    [ ]     |
+| `middleware.ts`                                | **新規作成** - ルート保護           |    [ ]     |
+| `app/auth/signin/page.tsx`                     | **新規作成** - ログインページ       |    [ ]     |
+| `app/dashboard/components/DashboardHeader.tsx` | **新規作成** - ヘッダー             |    [ ]     |
+| `app/dashboard/page.tsx`                       | ヘッダーコンポーネント使用          |    [ ]     |
 
 ---
 
@@ -514,15 +575,11 @@ const ALLOWED_ADMIN_EMAILS = [
 ];
 ```
 
-**Prisma Studio から**（ローカル開発時）:
+**Neon コンソールから**:
 
-```bash
-npm run db:studio
-```
-
-ブラウザで `AllowedAdmin` テーブルを直接編集
-
-**Neon コンソールから**（緊急時）:
+1. [Neon Console](https://console.neon.tech/) にログイン
+2. プロジェクトを選択 → SQL Editor
+3. 以下のSQLを実行:
 
 ```sql
 -- 管理者を追加
@@ -531,7 +588,18 @@ VALUES (gen_random_uuid(), 'newadmin@example.com', NOW());
 
 -- 管理者を削除
 DELETE FROM allowed_admins WHERE email = 'oldadmin@example.com';
+
+-- 管理者一覧を確認
+SELECT * FROM allowed_admins;
 ```
+
+**Prisma Studio から**（ローカル開発時）:
+
+```bash
+npm run db:studio
+```
+
+ブラウザで `AllowedAdmin` テーブルを直接編集
 
 ### 参考
 
