@@ -1,0 +1,25 @@
+import NextAuth from 'next-auth';
+import { PrismaAdapter } from '@auth/prisma-adapter';
+import Google from 'next-auth/providers/google';
+import { prisma } from '@/lib/prisma';
+import type { Adapter } from 'next-auth/adapters';
+
+export const { handlers, signIn, signOut, auth } = NextAuth({
+  adapter: PrismaAdapter(prisma) as Adapter,
+  providers: [Google],
+  session: {
+    strategy: 'database',
+    maxAge: 7 * 24 * 60 * 60, // 1週間
+  },
+  pages: {
+    signIn: '/auth/signin',
+    error: '/auth/error',
+  },
+  callbacks: {
+    async session({ session, user }) {
+      session.user.id = user.id;
+      session.user.role = user.role;
+      return session;
+    },
+  },
+});
