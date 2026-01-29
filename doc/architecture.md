@@ -424,37 +424,24 @@ export const GET = withErrorHandling(async () => {
 
 ## パフォーマンス最適化
 
-### 画像最適化
+パフォーマンス最適化の詳細なガイドライン（画像最適化、コード分割、データベースクエリの最適化、React コンポーネントの最適化など）については、[開発ガイドライン - パフォーマンス最適化](./development-guide.md#パフォーマンス最適化)を参照してください。
 
-- **クライアントサイド圧縮**: [`lib/image-compression/`](../lib/image-compression/)
-- **WebP 形式**: デフォルトで WebP 形式に変換
-- **サイズ制限**: 4MB 以下に制限
+### このプロジェクトでの主な最適化
 
-### データフェッチング
-
-- **Server Components**: デフォルトで Server Components を使用
-- **キャッシュ**: API Routes で適切なキャッシュヘッダーを設定
-- **N+1 問題の回避**: Prisma の`include`で関連データを一度に取得（`select`はこのアプリでは未使用）
+- **画像最適化**: クライアントサイド圧縮（[`lib/image-compression/`](../lib/image-compression/)）、WebP 形式への変換
+- **Server Components**: デフォルトで Server Components を使用し、クライアント JavaScript を最小化
+- **N+1 問題の回避**: Prisma の`include`で関連データを一度に取得
 
 ## セキュリティ
 
-### 入力検証
+セキュリティの詳細なガイドライン（環境変数の管理、入力検証、SQL インジェクション対策、セキュリティヘッダーなど）については、[開発ガイドライン - セキュリティ](./development-guide.md#セキュリティ)を参照してください。
 
-- **API Routes**: すべての入力を検証
-- **ファイルアップロード**: ファイルタイプとサイズを検証
-- **Prisma**: SQL インジェクション対策が自動的に適用
+### このプロジェクトでの主なセキュリティ対策
 
-### 環境変数
-
-- **機密情報**: 環境変数で管理
-- **型安全性**: [`lib/env.ts`](../lib/env.ts)で型定義
-- **使用時検証**: [`lib/env.ts`](../lib/env.ts)の`getServerEnv()`や[`lib/prisma.ts`](../lib/prisma.ts)で使用時に環境変数を検証
-
-### セキュリティヘッダー
-
-- **設定**: [`next.config.ts`](../next.config.ts)でセキュリティヘッダーを設定
-- **適用**: すべてのレスポンスに自動的に適用される
-- **ヘッダー**: `X-Frame-Options`, `X-Content-Type-Options`, `Referrer-Policy`, `X-XSS-Protection`, `Permissions-Policy`
+- **入力検証**: API Routes ですべての入力を検証、ファイルタイプとサイズを検証
+- **環境変数**: 機密情報は環境変数で管理し、[`lib/env.ts`](../lib/env.ts)で型安全に使用
+- **SQL インジェクション対策**: Prisma により自動的に適用
+- **セキュリティヘッダー**: [`next.config.ts`](../next.config.ts)で設定
 
 ## 参考リンク
 
