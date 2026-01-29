@@ -2,6 +2,14 @@
 
 白熊堂プロジェクトのフロントエンド実装について詳しく説明します。
 
+## このドキュメントの役割
+
+このドキュメントは「**公開ページのフロントエンド実装**」を説明します。ホームページ、FAQ ページ、共通コンポーネントなど、ユーザー向けページの実装を理解したいときに参照してください。
+
+**関連ドキュメント**:
+- [ダッシュボードガイド](./dashboard-guide.md): 管理画面の実装
+- [App Router ガイド](./app-router-guide.md): Server/Client Components
+
 ## 目次
 
 - [概要](#概要)
@@ -102,8 +110,10 @@
 ├── components/                 # フロントエンド共通コンポーネント
 │   ├── ui/                    # shadcn/ui コンポーネントとラッパーコンポーネント
 │   ├── ErrorBoundary.tsx     # エラーバウンダリーコンポーネント
-│   ├── Header.tsx             # ヘッダーコンポーネント
+│   ├── FixedHeader.tsx        # 固定ヘッダーコンポーネント
+│   ├── HeroSection.tsx        # ヒーローセクション
 │   ├── Footer.tsx             # フッターコンポーネント
+│   ├── FAQSection.tsx         # FAQセクション
 │   ├── ProductCategoryTabs.tsx # カテゴリーをTabsで切り替えるコンポーネント
 │   ├── ProductGrid.tsx        # 商品グリッドコンポーネント
 │   ├── ProductTile.tsx        # 商品タイルコンポーネント
@@ -174,7 +184,7 @@ useProductModal();
 
 **使用例**:
 
-#### Header (`Header.tsx`)
+#### Header (`FixedHeader.tsx`)
 
 全ページ共通のヘッダーコンポーネントです。
 
@@ -192,7 +202,7 @@ useProductModal();
 
 **実装例**:
 
-[`app/components/Header.tsx`](../../app/components/Header.tsx) (`Header`コンポーネント)
+[`app/components/FixedHeader.tsx`](../../app/components/FixedHeader.tsx) (`Header`コンポーネント)
 
 ```typescript
   <div className="mx-auto flex h-full max-w-6xl items-center justify-between">
@@ -434,20 +444,19 @@ className = "grid grid-cols-1 md:grid-cols-3";
 **フロントエンド（Client Components）で使用**:
 
 - **`fetch` API**: API Routes に HTTP リクエストを送信
-  - `app/dashboard/components/DashboardForm.tsx`: 商品作成時に `/api/products` に POST リクエスト
-  - `app/dashboard/components/ProductEditForm.tsx`: 商品更新時に `/api/products/[id]` に PUT リクエスト
+  - `app/dashboard/components/form/ProductForm.tsx`: 商品作成・更新時に `/api/products` に POST/PUT リクエスト
   - `app/dashboard/components/DashboardContent.tsx`: 商品一覧取得時に `/api/products` に GET リクエスト
   - `app/dashboard/hooks/useProductReorder.ts`: 商品並び替え時に `/api/products/reorder` に POST リクエスト
-  - `app/dashboard/components/ProductList.tsx`: 商品削除時に `/api/products/[id]` に DELETE リクエスト
+  - `app/dashboard/components/list/ProductList.tsx`: 商品削除時に `/api/products/[id]` に DELETE リクエスト
   - `app/dashboard/hooks/useProductForm.ts`: 画像アップロード時に `/api/products/upload` に POST リクエスト
 - **`FormData`**: 画像アップロード時に使用
-  - `app/dashboard/hooks/useProductForm.ts`: 画像ファイルを `FormData` に追加して `/api/products/upload` に送信（`DashboardForm`と`ProductEditForm`の両方で使用）
+  - `app/dashboard/hooks/useProductForm.ts`: 画像ファイルを `FormData` に追加して `/api/products/upload` に送信
 - **`localStorage`**: ブラウザのローカルストレージにデータを保存
   - `app/dashboard/hooks/useTabState.ts`: タブの状態を `localStorage` に保存
 - **`URL.createObjectURL`**: 画像プレビュー用の URL を生成
-  - `app/dashboard/hooks/useProductForm.ts`: 画像選択時にプレビュー用 URL を生成（`DashboardForm`と`ProductEditForm`の両方で使用）
+  - `app/dashboard/hooks/useProductForm.ts`: 画像選択時にプレビュー用 URL を生成
 - **動的インポート（`await import()`）**: モジュールの動的読み込み
-  - `app/dashboard/hooks/useProductForm.ts`: `config` モジュールを動的インポート（`DashboardForm`と`ProductEditForm`の両方で使用）
+  - `app/dashboard/hooks/useProductForm.ts`: `config` モジュールを動的インポート
 - **React Hooks**: 状態管理や副作用の処理
   - `useState`, `useEffect`, `useRef`, `useMemo`, `useCallback` など
 

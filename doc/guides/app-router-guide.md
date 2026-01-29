@@ -1,5 +1,14 @@
 # Next.js App Router ガイド
 
+## このドキュメントの役割
+
+このドキュメントは「**App Router の使い方**」を説明します。Server/Client Components、データフェッチ、ルーティングなど、App Router の詳細を理解したいときに参照してください。
+
+**関連ドキュメント**:
+- [Next.js ガイド](./nextjs-guide.md): フレームワークの全体像
+- [開発ガイドライン](../development-guide.md#nextjs-app-router): コーディング規約
+- [プロジェクト構造](../project-structure.md): ディレクトリ構造
+
 ## 目次
 
 - [概要](#概要)
@@ -470,7 +479,7 @@ if (!response.ok) {
 }
 ```
 
-4. **`app/dashboard/components/DashboardForm.tsx`** - 商品の作成と画像アップロード
+4. **`app/dashboard/components/form/ProductForm.tsx`** - 商品の作成と画像アップロード
 
 **画像アップロード（FormData を使用）**:
 
@@ -519,7 +528,7 @@ const uploadImage = useCallback(async (): Promise<string | null> => {
 }, [formData.imageFile, formData.imageUrl]);
 ```
 
-[`app/dashboard/components/DashboardForm.tsx`](../../app/dashboard/components/DashboardForm.tsx) (商品登録処理)
+[`app/dashboard/components/form/ProductForm.tsx`](../../app/dashboard/components/form/ProductForm.tsx) (商品登録処理)
 
 ```typescript
 const handleSubmit = async (e: React.FormEvent) => {

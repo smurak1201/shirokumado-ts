@@ -2,6 +2,16 @@
 
 白熊堂プロジェクトの開発ガイドラインです。コードの書き方から開発プロセスまで、プロジェクトで使用するベストプラクティスをまとめています。
 
+## このドキュメントの役割
+
+このドキュメントは「**どうコードを書くか**」を説明します。具体的なコーディング規約や良い例・悪い例を確認したいときに参照してください。
+
+| ドキュメント | 役割 |
+|---|---|
+| [architecture.md](./architecture.md) | 設計思想と全体像（「なぜ」） |
+| **development-guide.md（このドキュメント）** | コーディング規約の詳細（「どう書くか」） |
+| [project-structure.md](./project-structure.md) | ファイル配置のリファレンス（「何がどこに」） |
+
 ## 目次
 
 - [コーディング規約](#コーディング規約)
@@ -386,10 +396,6 @@ if (isUser(data)) {
   console.log(data.email);
 }
 ```
-
-**このアプリでの使用例**:
-
-[`app/page.tsx`](../../app/page.tsx) (行 104-125) で、型ガードを使用してフィルタリング時の型安全性を確保しています。
 
 **理由**:
 
@@ -910,20 +916,24 @@ export function ProductPage({ product }: { product: Product }) {
 
 ```
 app/
-├── components/        # フロントエンド共通コンポーネント
-│   ├── Header.tsx     # ヘッダー
-│   ├── Footer.tsx     # フッター
-│   ├── ProductGrid.tsx # 商品グリッド
-│   ├── ProductTile.tsx # 商品タイル
-│   └── ProductModal.tsx # 商品モーダル
-├── dashboard/         # ダッシュボード機能
-│   ├── components/    # ダッシュボード専用コンポーネント
-│   ├── hooks/         # カスタムフック
-│   ├── utils/         # ユーティリティ関数
-│   └── types.ts       # 共通型定義
-├── faq/               # FAQページ
+├── components/             # フロントエンド共通コンポーネント
+│   ├── FixedHeader.tsx     # 固定ヘッダー
+│   ├── Footer.tsx          # フッター
+│   ├── HeroSection.tsx     # ヒーローセクション
+│   ├── FAQSection.tsx      # FAQセクション
+│   ├── ProductGrid.tsx     # 商品グリッド
+│   ├── ProductTile.tsx     # 商品タイル
+│   ├── ProductModal.tsx    # 商品モーダル
+│   ├── ProductCategoryTabs.tsx  # 商品カテゴリータブ
+│   └── ErrorBoundary.tsx   # エラーバウンダリー
+├── dashboard/              # ダッシュボード機能
+│   ├── components/         # ダッシュボード専用コンポーネント
+│   ├── hooks/              # カスタムフック
+│   ├── utils/              # ユーティリティ関数
+│   └── types.ts            # 共通型定義
+├── faq/                    # FAQページ
 │   └── page.tsx
-└── api/               # API Routes
+└── api/                    # API Routes
     └── [resource]/
         └── route.ts
 ```
@@ -938,17 +948,24 @@ app/
 ### ユーティリティ
 
 ```
-lib/                    # kebab-case で統一
-├── prisma.ts          # Prisma Client
-├── blob.ts            # Blob Storage
-├── errors.ts          # エラーハンドリング
-├── api-helpers.ts     # API Routesヘルパー
-├── config.ts          # アプリケーション設定
-├── image-compression/   # 画像圧縮（ディレクトリ）
-└── product-utils.ts   # 商品関連ユーティリティ
+lib/                       # kebab-case で統一
+├── api-helpers.ts         # API Routesヘルパー
+├── api-types.ts           # API型定義
+├── blob.ts                # Blob Storage
+├── config.ts              # アプリケーション設定
+├── env.ts                 # 環境変数管理
+├── errors.ts              # エラーハンドリング
+├── image-compression/     # 画像圧縮（ディレクトリ）
+├── logger.ts              # ロギング
+├── prisma.ts              # Prisma Client
+├── product-utils.ts       # 商品関連ユーティリティ
+├── products.ts            # 商品データ取得
+└── utils.ts               # 汎用ユーティリティ
 
-app/dashboard/utils/   # camelCase で統一
-└── productUtils.ts    # ダッシュボード専用の商品操作関数
+app/dashboard/utils/       # camelCase で統一
+├── productUtils.ts        # ダッシュボード専用の商品操作関数
+├── productFormData.ts     # フォームデータ処理
+└── productFormSubmit.ts   # フォーム送信処理
 ```
 
 **詳細**: ユーティリティ関数の詳細については、[ユーティリティ関数ガイド](./guides/utilities-guide.md)を参照してください。

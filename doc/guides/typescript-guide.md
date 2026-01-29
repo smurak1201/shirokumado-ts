@@ -1,5 +1,13 @@
 # TypeScript ガイド
 
+## このドキュメントの役割
+
+このドキュメントは「**TypeScript の型システム**」を説明します。型定義、型ガード、ジェネリクスなど、型安全な開発の基礎を理解したいときに参照してください。
+
+**関連ドキュメント**:
+- [開発ガイドライン](../development-guide.md#typescript): コーディング規約としての TypeScript
+- [Prisma ガイド](./prisma-guide.md#型安全性): Prisma との型統合
+
 ## 目次
 
 - [概要](#概要)
@@ -620,7 +628,7 @@ export function isImageFile(file: File): boolean {
 }
 ```
 
-**使用例** ([`app/dashboard/components/DashboardForm.tsx`](../../app/dashboard/components/DashboardForm.tsx)):
+**使用例** ([`app/dashboard/components/form/ProductForm.tsx`](../../app/dashboard/components/form/ProductForm.tsx)):
 
 ```typescript
 if (!isImageFile(file)) {
@@ -657,7 +665,7 @@ export function isNumericKey(
 }
 ```
 
-**使用例** ([`app/dashboard/components/DashboardForm.tsx`](../../app/dashboard/components/DashboardForm.tsx)):
+**使用例** ([`app/dashboard/components/form/ProductForm.tsx`](../../app/dashboard/components/form/ProductForm.tsx)):
 
 ```typescript
 onKeyDown={(e) => {

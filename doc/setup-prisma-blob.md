@@ -1,33 +1,25 @@
 # Prisma & Blob セットアップガイド
 
+## このドキュメントの役割
+
+このドキュメントは Prisma と Blob Storage の**セットアップ方法**を説明します。環境構築や初期設定を行う際に参照してください。
+
+| 目的 | 参照するドキュメント |
+|---|---|
+| **セットアップ・初期設定** | **このドキュメント** |
+| Prisma の詳細な使用方法 | [Prisma ガイド](./guides/prisma-guide.md) |
+| Blob Storage の詳細な使用方法 | [ユーティリティ関数ガイド](./guides/utilities-guide.md#blob-storage-ユーティリティ-libblobts) |
+| 環境変数の型安全な管理 | [ユーティリティ関数ガイド](./guides/utilities-guide.md#環境変数の型安全な管理-libenvts) |
+
 ## 目次
 
 - [概要](#概要)
 - [インストール済みパッケージ](#インストール済みパッケージ)
 - [環境変数](#環境変数)
-- [Prisma の使用方法](#prismaの使用方法)
-  - [Prisma Client のインポート](#prisma-clientのインポート)
-  - [スキーマの定義](#スキーマの定義)
-  - [マイグレーション](#マイグレーション)
-  - [Prisma Client の生成](#prisma-clientの生成)
-  - [トランザクション](#トランザクション)
-  - [リレーション](#リレーション)
-- [Blob Storage の使用方法](#blob-storageの使用方法)
-  - [ファイルのアップロード](#ファイルのアップロード)
-  - [ファイル一覧の取得](#ファイル一覧の取得)
-  - [ファイル情報の取得](#ファイル情報の取得)
-  - [ファイルの削除](#ファイルの削除)
-- [API Routes での使用例](#api-routesでの使用例)
-  - [Prisma を使用する API Route（ベストプラクティス）](#prismaを使用するapi-routeベストプラクティス)
-  - [Blob Storage を使用する API Route（ベストプラクティス）](#blob-storageを使用するapi-routeベストプラクティス)
-  - [Prisma と Blob Storage を組み合わせた例](#prismaとblob-storageを組み合わせた例)
+- [Prisma のセットアップ](#prisma-のセットアップ)
+- [Blob Storage のセットアップ](#blob-storage-のセットアップ)
 - [Prisma Studio](#prisma-studio)
-- [ベストプラクティス](#ベストプラクティス)
-  - [Prisma](#prisma)
-  - [Blob Storage](#blob-storage)
 - [トラブルシューティング](#トラブルシューティング)
-  - [Prisma 関連](#prisma関連)
-  - [Blob Storage 関連](#blob-storage関連)
 - [参考リンク](#参考リンク)
 
 ## 概要
@@ -80,138 +72,34 @@ BLOB_READ_WRITE_TOKEN=vercel_blob_rw_...
 
 ### 環境変数の型安全な管理
 
-**説明**: このアプリでは、[`lib/env.ts`](../lib/env.ts) を使用して環境変数を型安全に取得します。
-
-**このアプリでの使用箇所**:
-
-- [`lib/prisma.ts`](../lib/prisma.ts): データベース接続情報の取得
-- [`lib/blob.ts`](../lib/blob.ts): Blob Storage トークンの取得
-
-**サーバーサイド環境変数の取得**:
-
-[`lib/env.ts`](../lib/env.ts) (`getServerEnv`関数)
+このアプリでは、[`lib/env.ts`](../lib/env.ts) を使用して環境変数を型安全に取得します。
 
 ```typescript
 import { getServerEnv } from "@/lib/env";
 
-// Server Component や API Route で使用
 const env = getServerEnv();
 const dbUrl = env.DATABASE_URL; // 型安全
-const blobToken = env.BLOB_READ_WRITE_TOKEN; // 型安全
 ```
 
-**クライアントサイド環境変数の取得**:
+**詳細**については、[ユーティリティ関数ガイド - 環境変数](./guides/utilities-guide.md#環境変数の型安全な管理-libenvts)を参照してください。
 
-[`lib/env.ts`](../lib/env.ts) (`getClientEnv`関数)
-
-```typescript
-import { getClientEnv } from "@/lib/env";
-
-// Client Component で使用
-const env = getClientEnv();
-const projectId = env.NEXT_PUBLIC_STACK_PROJECT_ID; // 型安全
-```
-
-**環境変数の使い分け**:
-
-- **`getServerEnv()`**: Server Components や API Routes で使用
-  - 機密情報（データベース URL、Blob Storage トークンなど）を含む
-  - `DATABASE_URL`, `BLOB_READ_WRITE_TOKEN` など
-- **`getClientEnv()`**: Client Components で使用
-  - `NEXT_PUBLIC_` プレフィックスが付いた公開可能な環境変数のみ
-  - `NEXT_PUBLIC_STACK_PROJECT_ID` など
-
-**理由**:
-
-- **型安全性**: 環境変数が型定義され、型安全なアクセスが可能
-- **バリデーション**: 必須の環境変数が設定されていない場合、エラーを早期に検出
-- **明確な分離**: サーバーサイドとクライアントサイドの環境変数を明確に分離
-- **セキュリティ**: クライアントサイドで機密情報が公開されることを防止
-
-**詳細**: 環境変数の管理方法の詳細については、[ユーティリティ関数ガイド](./guides/utilities-guide.md#環境変数の型安全な管理-libenvts)を参照してください。
-
-## Prisma の使用方法
+## Prisma のセットアップ
 
 ### Prisma Client のインポート
 
-[`lib/prisma.ts`](../lib/prisma.ts) (`prisma`エクスポート) から Prisma Client をインポートして使用します。
+[`lib/prisma.ts`](../lib/prisma.ts) から Prisma Client をインポートして使用します。
 
 ```typescript
 import { prisma } from "@/lib/prisma";
 
-// すべてのユーザーを取得
 const users = await prisma.user.findMany();
-
-// 条件付きで取得
-const activeUsers = await prisma.user.findMany({
-  where: {
-    active: true,
-  },
-});
-
-// 単一レコードを取得
-const user = await prisma.user.findUnique({
-  where: {
-    id: 1,
-  },
-});
-
-// レコードを作成
-const newUser = await prisma.user.create({
-  data: {
-    name: "山田太郎",
-    email: "yamada@example.com",
-  },
-});
-
-// レコードを更新
-const updatedUser = await prisma.user.update({
-  where: {
-    id: 1,
-  },
-  data: {
-    name: "山田花子",
-  },
-});
-
-// レコードを削除
-await prisma.user.delete({
-  where: {
-    id: 1,
-  },
-});
 ```
 
 ### スキーマの定義
 
-[`prisma/schema.prisma`](../prisma/schema.prisma)でデータベーススキーマを定義します。
+[`prisma/schema.prisma`](../prisma/schema.prisma) でデータベーススキーマを定義します。
 
-```prisma
-model User {
-  id        Int      @id @default(autoincrement())
-  name      String
-  email     String   @unique
-  active    Boolean  @default(true)
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-}
-
-model Product {
-  id          Int      @id @default(autoincrement())
-  name        String
-  description String?
-  price       Decimal  @db.Decimal(10, 2)
-  imageUrl    String?  @map("image_url")
-  createdAt   DateTime @default(now()) @map("created_at")
-  updatedAt   DateTime @updatedAt @map("updated_at")
-
-  @@map("products")
-}
-```
-
-### マイグレーション
-
-スキーマを変更した後、マイグレーションを作成・適用します。
+### マイグレーションコマンド
 
 ```bash
 # マイグレーションファイルを作成
@@ -222,276 +110,31 @@ npm run db:push
 
 # 本番環境でマイグレーションを適用
 npm run db:migrate:deploy
-```
 
-### Prisma Client の生成
-
-スキーマを変更した後、Prisma Client を再生成する必要があります。
-
-```bash
+# Prisma Client を再生成
 npm run db:generate
 ```
 
-ビルド時には自動的に実行されます。
+**詳細な使用方法**（CRUD 操作、トランザクション、リレーションなど）については、[Prisma ガイド](./guides/prisma-guide.md)を参照してください。
 
-### トランザクション
+## Blob Storage のセットアップ
 
-[`lib/prisma.ts`](../lib/prisma.ts) (`prisma`エクスポート)
+### 基本的な使用方法
 
-```typescript
-import { prisma } from "@/lib/prisma";
-
-// トランザクションを使用
-await prisma.$transaction(async (tx) => {
-  const user = await tx.user.create({
-    data: {
-      name: "山田太郎",
-      email: "yamada@example.com",
-    },
-  });
-
-  await tx.order.create({
-    data: {
-      userId: user.id,
-      total: 1000,
-    },
-  });
-});
-```
-
-### リレーション
-
-[`lib/prisma.ts`](../lib/prisma.ts) (`prisma`エクスポート)
+[`lib/blob.ts`](../lib/blob.ts) から必要な関数をインポートして使用します。
 
 ```typescript
-// リレーションを含めて取得
-const userWithOrders = await prisma.user.findUnique({
-  where: {
-    id: 1,
-  },
-  include: {
-    orders: true,
-  },
-});
+import { uploadImage, deleteFile } from "@/lib/blob";
 
-// ネストしたリレーション
-const userWithOrdersAndItems = await prisma.user.findUnique({
-  where: {
-    id: 1,
-  },
-  include: {
-    orders: {
-      include: {
-        items: true,
-      },
-    },
-  },
-});
-```
+// 画像のアップロード
+const imageBlob = await uploadImage("images/product.jpg", imageBuffer, "image/jpeg");
+console.log(imageBlob.url);
 
-## Blob Storage の使用方法
-
-### ファイルのアップロード
-
-[`lib/blob.ts`](../lib/blob.ts) (`uploadFile`関数など) から必要な関数をインポートして使用します。
-
-```typescript
-import { uploadFile, uploadImage } from "@/lib/blob";
-
-// 一般的なファイルのアップロード
-const blob = await uploadFile("documents/report.pdf", fileBuffer, {
-  contentType: "application/pdf",
-  access: "public",
-});
-
-// 画像のアップロード（推奨）
-const imageBlob = await uploadImage(
-  "images/product.jpg",
-  imageBuffer,
-  "image/jpeg"
-);
-
-console.log(blob.url); // アップロードされたファイルのURL
-```
-
-### ファイル一覧の取得
-
-[`lib/blob.ts`](../lib/blob.ts) (`listFiles`関数)
-
-```typescript
-import { listFiles } from "@/lib/blob";
-
-// すべてのファイルを取得
-const { blobs } = await listFiles();
-
-// プレフィックスでフィルタリング
-const { blobs: images } = await listFiles({
-  prefix: "images/",
-  limit: 100,
-});
-```
-
-### ファイル情報の取得
-
-[`lib/blob.ts`](../lib/blob.ts) (`getBlobInfo`関数)
-
-```typescript
-import { getBlobInfo } from "@/lib/blob";
-
-const info = await getBlobInfo("https://...blob.vercel-storage.com/...");
-console.log(info.size); // ファイルサイズ
-console.log(info.uploadedAt); // アップロード日時
-```
-
-### ファイルの削除
-
-[`lib/blob.ts`](../lib/blob.ts) (`deleteFile`関数)
-
-```typescript
-import { deleteFile, deleteFiles } from "@/lib/blob";
-
-// 単一ファイルの削除
+// ファイルの削除
 await deleteFile("https://...blob.vercel-storage.com/...");
-
-// 複数ファイルの削除
-await deleteFiles([
-  "https://...blob.vercel-storage.com/file1.jpg",
-  "https://...blob.vercel-storage.com/file2.jpg",
-]);
 ```
 
-## API Routes での使用例
-
-### Prisma を使用する API Route（ベストプラクティス）
-
-```typescript
-// app/api/users/route.ts
-import { prisma, safePrismaOperation } from "@/lib/prisma";
-import {
-  apiSuccess,
-  handleApiError,
-  withErrorHandling,
-} from "@/lib/api-helpers";
-import { NotFoundError, ValidationError } from "@/lib/errors";
-
-// エラーハンドリングを自動化
-export const GET = withErrorHandling(async () => {
-  const users = await safePrismaOperation(
-    () =>
-      prisma.user.findMany({
-        orderBy: {
-          createdAt: "desc",
-        },
-      }),
-    "GET /api/users"
-  );
-
-  return apiSuccess({ users });
-});
-
-export const POST = withErrorHandling(async (request: Request) => {
-  const body = await request.json();
-
-  // バリデーション
-  if (!body.name || !body.email) {
-    throw new ValidationError("Name and email are required");
-  }
-
-  const user = await safePrismaOperation(
-    () =>
-      prisma.user.create({
-        data: body,
-      }),
-    "POST /api/users"
-  );
-
-  return apiSuccess({ user }, 201);
-});
-```
-
-### Blob Storage を使用する API Route（ベストプラクティス）
-
-[`app/api/products/upload/route.ts`](../app/api/products/upload/route.ts) (`POST`エクスポート)
-
-```typescript
-// app/api/upload/route.ts
-import { NextRequest } from "next/server";
-import { uploadImage } from "@/lib/blob";
-import { apiSuccess, withErrorHandling } from "@/lib/api-helpers";
-import { ValidationError } from "@/lib/errors";
-
-// ファイルサイズ制限（5MB）
-const MAX_FILE_SIZE = 5 * 1024 * 1024;
-
-export const POST = withErrorHandling(async (request: NextRequest) => {
-  const formData = await request.formData();
-  const file = formData.get("file") as File | null;
-
-  if (!file) {
-    throw new ValidationError("No file provided");
-  }
-
-  // ファイルサイズの検証
-  if (file.size > MAX_FILE_SIZE) {
-    throw new ValidationError("File size exceeds 5MB limit");
-  }
-
-  const buffer = Buffer.from(await file.arrayBuffer());
-  const blob = await uploadImage(file.name, buffer, file.type);
-
-  return apiSuccess({ url: blob.url });
-});
-```
-
-### Prisma と Blob Storage を組み合わせた例
-
-```typescript
-// app/api/products/route.ts
-import { NextRequest, NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma";
-import { uploadImage } from "@/lib/blob";
-
-export async function POST(request: NextRequest) {
-  try {
-    const formData = await request.formData();
-    const name = formData.get("name") as string;
-    const description = formData.get("description") as string;
-    const price = parseFloat(formData.get("price") as string);
-    const file = formData.get("image") as File;
-
-    let imageUrl: string | undefined;
-
-    // 画像をアップロード
-    if (file) {
-      const buffer = Buffer.from(await file.arrayBuffer());
-      const blob = await uploadImage(
-        `products/${file.name}`,
-        buffer,
-        file.type
-      );
-      imageUrl = blob.url;
-    }
-
-    // データベースに保存
-    const product = await prisma.product.create({
-      data: {
-        name,
-        description,
-        price,
-        imageUrl,
-      },
-    });
-
-    return NextResponse.json({ product }, { status: 201 });
-  } catch (error) {
-    console.error("Error creating product:", error);
-    return NextResponse.json(
-      { error: "Failed to create product" },
-      { status: 500 }
-    );
-  }
-}
-```
+**詳細な使用方法**（ファイル一覧取得、ファイル情報取得など）については、[ユーティリティ関数ガイド - Blob Storage](./guides/utilities-guide.md#blob-storage-ユーティリティ-libblobts)を参照してください。
 
 ## Prisma Studio
 
@@ -502,34 +145,6 @@ npm run db:studio
 ```
 
 ブラウザで `http://localhost:5555` が開き、データベースの内容を確認できます。
-
-## ベストプラクティス
-
-### Prisma
-
-1. **スキーマの管理**: `prisma/schema.prisma`でスキーマを一元管理します。
-
-2. **マイグレーション**: 本番環境では必ずマイグレーションを使用してください。`db:push`は開発環境のみで使用します。
-
-3. **Prisma Client の生成**: スキーマを変更した後は必ず`npm run db:generate`を実行してください。
-
-4. **型安全性**: Prisma Client は自動的に型を生成するため、TypeScript の型チェックを活用してください。
-
-5. **データベース接続**: `DATABASE_URL` 環境変数に PostgreSQL 接続文字列を設定してください。アプリケーションとマイグレーションの両方で同じ接続文字列を使用します。
-
-6. **エラーハンドリング**: すべての Prisma 操作で適切なエラーハンドリングを実装してください。
-
-### Blob Storage
-
-1. **ファイル名の管理**: 一意のファイル名を生成するために、`addRandomSuffix`オプションを使用するか、UUID などを含めることを検討してください。
-
-2. **キャッシュ制御**: 画像などの静的ファイルには適切な`cacheControlMaxAge`を設定してください。
-
-3. **アクセス制御**: 公開する必要のないファイルは`access: 'private'`に設定してください。
-
-4. **ファイルサイズ制限**: アップロード前にファイルサイズをチェックしてください（Vercel Blob の制限を確認）。
-
-5. **エラーハンドリング**: アップロード失敗時の適切なエラーハンドリングを実装してください。
 
 ## トラブルシューティング
 

@@ -2,6 +2,14 @@
 
 白熊堂プロジェクトの商品管理ダッシュボードについて詳しく説明します。
 
+## このドキュメントの役割
+
+このドキュメントは「**管理画面（ダッシュボード）の実装**」を説明します。商品管理、CRUD 操作、状態管理など、管理機能の実装を理解したいときに参照してください。
+
+**関連ドキュメント**:
+- [フロントエンドガイド](./frontend-guide.md): 公開ページの実装
+- [Prisma ガイド](./prisma-guide.md): データベース操作
+
 ## 目次
 
 - [概要](#概要)
@@ -44,29 +52,24 @@ page.tsx (Server Component)
   ↓ データ取得（Prisma）
   ↓ propsで渡す
 DashboardContent (Client Component)
-  ├── DashboardForm
-  │   ├── useProductForm (カスタムフック)
-  │   ├── ProductFormModal
-  │   ├── ProductFormFields
-  │   │   ├── ProductBasicFields
-  │   │   ├── ProductImageField
-  │   │   ├── ProductPriceFields
-  │   │   └── ProductDateFields
-  │   │       ├── ProductPublishedField
-  │   │       └── ProductDateInput
-  │   └── ProductFormFooter
   └── ProductList
-      ├── ProductListTabs
-      ├── ProductListContent
-      │   ├── ProductSearchFilters
-      │   └── ProductCard
-      ├── ProductLayoutTab
-      │   ├── LayoutCategoryTabs
-      │   └── SortableProductItem
-      └── ProductEditForm
+      ├── ProductListTabs（タブ切り替え）
+      ├── ProductListContent（商品一覧表示）
+      │   ├── ProductSearchFilters（検索フィルター）
+      │   └── ProductCard → ProductCardContent
+      ├── ProductLayoutTab（配置変更タブ）
+      │   ├── LayoutCategoryTabs（カテゴリータブ）
+      │   └── SortableProductItem（ドラッグ&ドロップ）
+      └── ProductForm（新規作成・編集共通）
           ├── useProductForm (カスタムフック)
           ├── ProductFormModal
           ├── ProductFormFields
+          │   ├── ProductBasicFields
+          │   ├── ProductImageField
+          │   ├── ProductPriceFields
+          │   └── ProductDateFields
+          │       ├── ProductPublishedField
+          │       └── ProductDateInput
           └── ProductFormFooter
 ```
 
@@ -78,31 +81,35 @@ app/dashboard/
 ├── types.ts                    # 共通型定義
 ├── components/                 # UI コンポーネント
 │   ├── DashboardContent.tsx    # メインコンテナ
-│   ├── DashboardForm.tsx       # 新規商品登録フォーム
-│   ├── ProductList.tsx         # 商品一覧・配置変更
-│   ├── ProductListTabs.tsx    # 商品一覧タブ切り替え
-│   ├── ProductListContent.tsx # 商品一覧コンテンツ
-│   ├── ProductCard.tsx        # 商品カード
-│   ├── ProductEditForm.tsx     # 商品編集フォーム
-│   ├── ProductFormFields.tsx   # 商品フォームフィールド（共通）
-│   ├── ProductFormModal.tsx   # 商品フォームモーダル
-│   ├── ProductFormFooter.tsx  # 商品フォームフッター
-│   ├── ProductBasicFields.tsx # 商品基本情報フィールド
-│   ├── ProductImageField.tsx  # 商品画像フィールド
-│   ├── ProductPriceFields.tsx # 商品価格フィールド
-│   ├── ProductDateFields.tsx  # 商品日付フィールド
-│   ├── ProductDateInput.tsx   # 日付入力フィールド
-│   ├── ProductPublishedField.tsx # 公開情報フィールド
-│   ├── ProductSearchFilters.tsx # 商品検索フィルター
-│   ├── ProductLayoutTab.tsx  # 商品配置変更タブ
-│   ├── LayoutCategoryTabs.tsx # 配置変更用カテゴリータブ
-│   └── SortableProductItem.tsx # ドラッグ&ドロップ可能な商品アイテム
+│   ├── form/                   # フォーム関連コンポーネント
+│   │   ├── ProductForm.tsx     # 商品作成・編集フォーム
+│   │   ├── ProductFormModal.tsx # 商品フォームモーダル
+│   │   ├── ProductFormFields.tsx # 商品フォームフィールド（共通）
+│   │   ├── ProductFormFooter.tsx # 商品フォームフッター
+│   │   ├── ProductBasicFields.tsx # 商品基本情報フィールド
+│   │   ├── ProductImageField.tsx # 商品画像フィールド
+│   │   ├── ProductPriceFields.tsx # 商品価格フィールド
+│   │   ├── ProductDateFields.tsx # 商品日付フィールド
+│   │   ├── ProductDateInput.tsx # 日付入力フィールド
+│   │   └── ProductPublishedField.tsx # 公開情報フィールド
+│   ├── layout/                 # レイアウト関連コンポーネント
+│   │   ├── ProductLayoutTab.tsx # 商品配置変更タブ
+│   │   ├── LayoutCategoryTabs.tsx # 配置変更用カテゴリータブ
+│   │   └── SortableProductItem.tsx # ドラッグ&ドロップ可能な商品アイテム
+│   └── list/                   # リスト表示関連コンポーネント
+│       ├── ProductList.tsx     # 商品一覧・配置変更
+│       ├── ProductListTabs.tsx # 商品一覧タブ切り替え
+│       ├── ProductListContent.tsx # 商品一覧コンテンツ
+│       ├── ProductCard.tsx     # 商品カード
+│       ├── ProductCardContent.tsx # 商品カードコンテンツ
+│       └── ProductSearchFilters.tsx # 商品検索フィルター
 ├── hooks/                      # カスタムフック
 │   ├── useTabState.ts          # タブ状態管理
 │   ├── useProductForm.ts       # 商品フォームの状態管理
 │   ├── useProductReorder.ts    # 商品順序変更ロジック
-│   ├── useImageCompression.ts # 画像圧縮処理
+│   ├── useImageCompression.ts  # 画像圧縮処理
 │   ├── useImageUpload.ts       # 画像アップロード処理
+│   ├── useProductSearch.ts     # 商品検索ロジック
 │   └── useScrollPosition.ts    # スクロール位置監視
 └── utils/                      # ユーティリティ関数
     ├── productUtils.ts         # 商品のグループ化・フィルタリング
@@ -210,9 +217,9 @@ const refreshProducts = async () => {
 - データフローが明確になり、コンポーネント間の結合が緩くなる
 - 子コンポーネント（`ProductList`）に`products`、`setProducts`、`refreshProducts`を props で渡す
 
-### DashboardForm ([`components/DashboardForm.tsx`](../../app/dashboard/components/DashboardForm.tsx))
+### ProductForm ([`components/form/ProductForm.tsx`](../../app/dashboard/components/form/ProductForm.tsx))
 
-新規商品登録フォームです。
+商品の新規作成と編集で共通に使用するフォームコンポーネントです。
 
 **主な機能**:
 
@@ -220,10 +227,12 @@ const refreshProducts = async () => {
 - 画像アップロード
 - バリデーション
 - フォーム送信
+- 新規作成モードと編集モードの切り替え
 
 **設計の特徴**:
 
 - `useProductForm`フックでフォームの状態管理を行う
+- 編集時は初期値として既存商品情報を設定
 - `ProductFormFields`コンポーネントで共通のフォームフィールドを表示
 - モーダル形式で表示
 
@@ -239,23 +248,7 @@ const refreshProducts = async () => {
 - 公開日（自動設定の場合）
 - 終了日（自動設定の場合）
 
-### ProductEditForm ([`components/ProductEditForm.tsx`](../../app/dashboard/components/ProductEditForm.tsx))
-
-商品編集フォームです。
-
-**主な機能**:
-
-- 既存商品の情報更新
-- 画像の差し替え（古い画像を削除してから新しい画像をアップロード）
-- 公開状態の変更
-
-**設計の特徴**:
-
-- `useProductForm`フックでフォームの状態管理を行う（初期値として既存商品情報を設定）
-- `ProductFormFields`コンポーネントで共通のフォームフィールドを表示（`fieldPrefix="edit-"`を使用）
-- モーダル形式で表示
-
-### ProductList ([`components/ProductList.tsx`](../../app/dashboard/components/ProductList.tsx))
+### ProductList ([`components/list/ProductList.tsx`](../../app/dashboard/components/list/ProductList.tsx))
 
 商品一覧の表示と配置変更機能を実装しています。
 
@@ -288,7 +281,7 @@ interface ProductListProps {
 - タブ状態の localStorage 連携
 - コンポーネントの分割（`ProductListTabs`、`ProductListContent`、`ProductSearchFilters`、`ProductLayoutTab`、`LayoutCategoryTabs`）
 
-### ProductListTabs ([`components/ProductListTabs.tsx`](../../app/dashboard/components/ProductListTabs.tsx))
+### ProductListTabs ([`components/list/ProductListTabs.tsx`](../../app/dashboard/components/list/ProductListTabs.tsx))
 
 商品一覧のタブ切り替えコンポーネントです。
 
@@ -297,7 +290,7 @@ interface ProductListProps {
 - 「登録済み商品一覧」と「配置変更」のタブを表示
 - アクティブなタブのハイライト
 
-### ProductListContent ([`components/ProductListContent.tsx`](../../app/dashboard/components/ProductListContent.tsx))
+### ProductListContent ([`components/list/ProductListContent.tsx`](../../app/dashboard/components/list/ProductListContent.tsx))
 
 商品一覧のコンテンツコンポーネントです。
 
@@ -308,7 +301,7 @@ interface ProductListProps {
 - 空状態の処理（商品がない場合、検索結果がない場合）
 - 新規商品登録ボタンの表示
 
-### ProductFormFields ([`components/ProductFormFields.tsx`](../../app/dashboard/components/ProductFormFields.tsx))
+### ProductFormFields ([`components/form/ProductFormFields.tsx`](../../app/dashboard/components/form/ProductFormFields.tsx))
 
 商品作成・編集フォームで使用する共通のフォームフィールドコンポーネントです。
 
@@ -318,7 +311,7 @@ interface ProductListProps {
 - フォーム作成と編集の両方で使用可能（`fieldPrefix`プロップで識別子を付与）
 - 各フィールドを専用コンポーネントに分割（`ProductBasicFields`、`ProductImageField`、`ProductPriceFields`、`ProductDateFields`）
 
-### ProductFormModal ([`components/ProductFormModal.tsx`](../../app/dashboard/components/ProductFormModal.tsx))
+### ProductFormModal ([`components/form/ProductFormModal.tsx`](../../app/dashboard/components/form/ProductFormModal.tsx))
 
 商品フォームのモーダルコンポーネントです。
 
@@ -327,7 +320,7 @@ interface ProductListProps {
 - モーダルの表示・非表示制御
 - タイトルとフッターのカスタマイズ
 
-### ProductFormFooter ([`components/ProductFormFooter.tsx`](../../app/dashboard/components/ProductFormFooter.tsx))
+### ProductFormFooter ([`components/form/ProductFormFooter.tsx`](../../app/dashboard/components/form/ProductFormFooter.tsx))
 
 商品フォームのフッターコンポーネントです。
 
@@ -336,7 +329,7 @@ interface ProductListProps {
 - キャンセルボタンと送信ボタンの表示
 - 送信状態に応じたボタンテキストの変更
 
-### ProductBasicFields ([`components/ProductBasicFields.tsx`](../../app/dashboard/components/ProductBasicFields.tsx))
+### ProductBasicFields ([`components/form/ProductBasicFields.tsx`](../../app/dashboard/components/form/ProductBasicFields.tsx))
 
 商品の基本情報フィールドコンポーネントです。
 
@@ -344,7 +337,7 @@ interface ProductListProps {
 
 - 商品名、説明、カテゴリーの入力フィールド
 
-### ProductImageField ([`components/ProductImageField.tsx`](../../app/dashboard/components/ProductImageField.tsx))
+### ProductImageField ([`components/form/ProductImageField.tsx`](../../app/dashboard/components/form/ProductImageField.tsx))
 
 商品画像フィールドコンポーネントです。
 
@@ -353,7 +346,7 @@ interface ProductListProps {
 - 画像の選択とプレビュー表示
 - 画像のアップロード状態の表示
 
-### ProductPriceFields ([`components/ProductPriceFields.tsx`](../../app/dashboard/components/ProductPriceFields.tsx))
+### ProductPriceFields ([`components/form/ProductPriceFields.tsx`](../../app/dashboard/components/form/ProductPriceFields.tsx))
 
 商品価格フィールドコンポーネントです。
 
@@ -361,7 +354,7 @@ interface ProductListProps {
 
 - SサイズとLサイズの価格入力フィールド
 
-### ProductDateFields ([`components/ProductDateFields.tsx`](../../app/dashboard/components/ProductDateFields.tsx))
+### ProductDateFields ([`components/form/ProductDateFields.tsx`](../../app/dashboard/components/form/ProductDateFields.tsx))
 
 商品日付フィールドコンポーネントです。
 
@@ -370,7 +363,7 @@ interface ProductListProps {
 - 公開日・終了日の入力フィールド
 - 公開情報のラジオボタン（`ProductPublishedField`を使用）
 
-### ProductDateInput ([`components/ProductDateInput.tsx`](../../app/dashboard/components/ProductDateInput.tsx))
+### ProductDateInput ([`components/form/ProductDateInput.tsx`](../../app/dashboard/components/form/ProductDateInput.tsx))
 
 日付入力フィールドコンポーネントです。
 
@@ -379,7 +372,7 @@ interface ProductListProps {
 - datetime-local形式の日付入力
 - クリアボタンの表示
 
-### ProductPublishedField ([`components/ProductPublishedField.tsx`](../../app/dashboard/components/ProductPublishedField.tsx))
+### ProductPublishedField ([`components/form/ProductPublishedField.tsx`](../../app/dashboard/components/form/ProductPublishedField.tsx))
 
 公開情報フィールドコンポーネントです。
 
@@ -388,7 +381,7 @@ interface ProductListProps {
 - 公開・非公開のラジオボタン
 - 公開日・終了日が設定されている場合の自動判定表示
 
-### ProductCard ([`components/ProductCard.tsx`](../../app/dashboard/components/ProductCard.tsx))
+### ProductCard ([`components/list/ProductCard.tsx`](../../app/dashboard/components/list/ProductCard.tsx))
 
 商品カードコンポーネントです。
 
@@ -397,7 +390,7 @@ interface ProductListProps {
 - 商品情報のカード形式での表示
 - 編集・削除ボタン
 
-### ProductSearchFilters ([`components/ProductSearchFilters.tsx`](../../app/dashboard/components/ProductSearchFilters.tsx))
+### ProductSearchFilters ([`components/list/ProductSearchFilters.tsx`](../../app/dashboard/components/list/ProductSearchFilters.tsx))
 
 商品名、カテゴリー、公開状態による検索・フィルタリング機能を提供するコンポーネントです。
 
@@ -407,7 +400,7 @@ interface ProductListProps {
 - カテゴリーでのフィルタリング
 - 公開状態でのフィルタリング
 
-### ProductLayoutTab ([`components/ProductLayoutTab.tsx`](../../app/dashboard/components/ProductLayoutTab.tsx))
+### ProductLayoutTab ([`components/layout/ProductLayoutTab.tsx`](../../app/dashboard/components/layout/ProductLayoutTab.tsx))
 
 商品配置変更タブコンポーネントです。
 
@@ -416,7 +409,7 @@ interface ProductListProps {
 - ドラッグ&ドロップによる商品の順序変更
 - カテゴリーごとのタブ表示（`LayoutCategoryTabs`を使用）
 
-### LayoutCategoryTabs ([`components/LayoutCategoryTabs.tsx`](../../app/dashboard/components/LayoutCategoryTabs.tsx))
+### LayoutCategoryTabs ([`components/layout/LayoutCategoryTabs.tsx`](../../app/dashboard/components/layout/LayoutCategoryTabs.tsx))
 
 カテゴリータブの UI コンポーネントです。
 
@@ -429,7 +422,7 @@ interface ProductListProps {
 - アクティブなタブの自動スクロール
 - 商品数の表示
 
-### SortableProductItem ([`components/SortableProductItem.tsx`](../../app/dashboard/components/SortableProductItem.tsx))
+### SortableProductItem ([`components/layout/SortableProductItem.tsx`](../../app/dashboard/components/layout/SortableProductItem.tsx))
 
 ドラッグ&ドロップ可能な商品アイテムコンポーネントです。
 
@@ -876,8 +869,7 @@ file: [画像ファイル]
   - [`app/dashboard/page.tsx`](../../app/dashboard/page.tsx): Prisma を使用してデータベースから直接データを取得（`Promise.all`と`safePrismaOperation`を使用して並列取得とエラーハンドリングを実装）
 - **Client Component で API Routes にアクセス** - **このアプリで使用中**
   - [`app/dashboard/components/DashboardContent.tsx`](../../app/dashboard/components/DashboardContent.tsx): `fetch` API を使用して `/api/products` にアクセス
-  - [`app/dashboard/components/DashboardForm.tsx`](../../app/dashboard/components/DashboardForm.tsx): `fetch` API を使用して `/api/products` に POST リクエスト
-  - [`app/dashboard/components/ProductEditForm.tsx`](../../app/dashboard/components/ProductEditForm.tsx): `fetch` API を使用して `/api/products/[id]` に PUT リクエスト
+  - [`app/dashboard/components/form/ProductForm.tsx`](../../app/dashboard/components/form/ProductForm.tsx): `fetch` API を使用して `/api/products` に POST/PUT リクエスト
   - [`app/dashboard/components/ProductList.tsx`](../../app/dashboard/components/ProductList.tsx): `fetch` API を使用して `/api/products/[id]` に DELETE リクエスト
   - [`app/dashboard/hooks/useProductReorder.ts`](../../app/dashboard/hooks/useProductReorder.ts): `fetch` API を使用して `/api/products/reorder` に POST リクエスト
 - **並列データ取得（`Promise.all`を使用）** - **このアプリで使用中**（詳細は [Async/Await ガイド - Promise.all](./async-await-guide.md#promiseall---このアプリで使用中) を参照）

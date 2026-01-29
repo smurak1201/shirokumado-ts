@@ -2,6 +2,16 @@
 
 白熊堂プロジェクトのディレクトリ構造と各ファイルの役割を説明します。
 
+## このドキュメントの役割
+
+このドキュメントは「**何がどこにあるか**」を説明します。ファイルの配置場所や役割を確認したいときに参照してください。
+
+| ドキュメント | 役割 |
+|---|---|
+| [architecture.md](./architecture.md) | 設計思想と全体像（「なぜ」） |
+| [development-guide.md](./development-guide.md) | コーディング規約の詳細（「どう書くか」） |
+| **project-structure.md（このドキュメント）** | ファイル配置のリファレンス（「何がどこに」） |
+
 **注意**: App Router のディレクトリ構造については、[App Router ガイド](./guides/app-router-guide.md#app-router-のディレクトリ構造)を参照してください。設計思想については、[アーキテクチャドキュメント](./architecture.md#ディレクトリ構造の設計思想)を参照してください。
 
 ## 目次
@@ -46,35 +56,60 @@ shirokumado-ts/
 │   │   ├── types.ts       # 共通型定義
 │   │   ├── components/    # ダッシュボードコンポーネント
 │   │   │   ├── DashboardContent.tsx
-│   │   │   ├── DashboardForm.tsx
-│   │   │   │   ├── ProductList.tsx
-│   │   │   ├── ProductEditForm.tsx
-│   │   │   ├── ProductFormFields.tsx
-│   │   │   ├── ProductSearchFilters.tsx
-│   │   │   ├── LayoutCategoryTabs.tsx
-│   │   │   └── SortableProductItem.tsx
+│   │   │   ├── form/     # フォーム関連
+│   │   │   │   ├── ProductForm.tsx
+│   │   │   │   ├── ProductFormModal.tsx
+│   │   │   │   ├── ProductFormFields.tsx
+│   │   │   │   ├── ProductFormFooter.tsx
+│   │   │   │   ├── ProductBasicFields.tsx
+│   │   │   │   ├── ProductPriceFields.tsx
+│   │   │   │   ├── ProductDateFields.tsx
+│   │   │   │   ├── ProductDateInput.tsx
+│   │   │   │   ├── ProductImageField.tsx
+│   │   │   │   └── ProductPublishedField.tsx
+│   │   │   ├── layout/   # レイアウト関連
+│   │   │   │   ├── ProductLayoutTab.tsx
+│   │   │   │   ├── LayoutCategoryTabs.tsx
+│   │   │   │   └── SortableProductItem.tsx
+│   │   │   └── list/     # リスト表示関連
+│   │   │       ├── ProductList.tsx
+│   │   │       ├── ProductListContent.tsx
+│   │   │       ├── ProductListTabs.tsx
+│   │   │       ├── ProductCard.tsx
+│   │   │       ├── ProductCardContent.tsx
+│   │   │       └── ProductSearchFilters.tsx
 │   │   ├── hooks/        # カスタムフック
 │   │   │   ├── useTabState.ts
+│   │   │   ├── useScrollPosition.ts
+│   │   │   ├── useImageCompression.ts
+│   │   │   ├── useProductSearch.ts
+│   │   │   ├── useImageUpload.ts
 │   │   │   ├── useProductForm.ts
 │   │   │   └── useProductReorder.ts
 │   │   └── utils/        # ユーティリティ関数
-│   │       └── productUtils.ts
+│   │       ├── productUtils.ts
+│   │       ├── productFormData.ts
+│   │       └── productFormSubmit.ts
 │   ├── types.ts          # フロントエンド共通型定義
 │   ├── hooks/            # カスタムフック
 │   │   └── useProductModal.ts # 商品モーダル管理フック
-│   ├── utils/            # ユーティリティ関数（現在は使用されていません）
 │   ├── components/       # フロントエンド共通コンポーネント
 │   │   ├── ui/          # shadcn/ui コンポーネントとラッパーコンポーネント
 │   │   ├── ErrorBoundary.tsx # エラーバウンダリーコンポーネント
-│   │   ├── Header.tsx    # ヘッダーコンポーネント
+│   │   ├── FixedHeader.tsx   # 固定ヘッダーコンポーネント
+│   │   ├── HeroSection.tsx   # ヒーローセクション
 │   │   ├── Footer.tsx    # フッターコンポーネント
+│   │   ├── FAQSection.tsx    # FAQセクション
 │   │   ├── ProductCategoryTabs.tsx # カテゴリーをTabsで切り替えるコンポーネント
 │   │   ├── ProductGrid.tsx # 商品グリッドコンポーネント
 │   │   ├── ProductTile.tsx # 商品タイルコンポーネント
 │   │   └── ProductModal.tsx # 商品詳細モーダルコンポーネント
 │   ├── faq/              # FAQページ
-│   │   └── page.tsx      # よくある質問ページ
+│   │   ├── page.tsx      # よくある質問ページ
+│   │   └── data.ts       # FAQデータ
+│   ├── favicon.ico       # ファビコン
 │   ├── globals.css       # グローバルスタイル
+│   ├── error.tsx         # エラーページ
 │   ├── layout.tsx        # ルートレイアウト
 │   └── page.tsx          # ホームページ
 │
@@ -106,19 +141,16 @@ shirokumado-ts/
 │   └── migrations/       # マイグレーションファイル
 │
 ├── public/                 # 静的ファイル
-│   ├── favicon.ico       # ファビコン
 │   ├── logo.webp         # ロゴ画像
 │   ├── logo-instagram.svg # Instagramアイコン
 │   └── hero.webp         # ヒーロー画像
 │
 ├── doc/                    # ドキュメント
-│   ├── getting-started.md  # コードリーディングガイド
 │   ├── architecture.md     # アーキテクチャと設計思想
 │   ├── project-structure.md # プロジェクト構造（このファイル）
 │   ├── tech-stack.md       # 技術スタック
 │   ├── development-guide.md # 開発ガイドライン
 │   ├── setup-prisma-blob.md # Prisma & Blob セットアップ
-│   ├── deployment.md       # デプロイメントガイド
 │   └── guides/            # ガイド系ドキュメント
 │       ├── learning-guide.md   # 勉強用ガイド
 │       ├── frontend-guide.md   # フロントエンドガイド
@@ -128,8 +160,13 @@ shirokumado-ts/
 │       ├── react-guide.md      # React ガイド
 │       ├── jsx-guide.md        # JSX ガイド
 │       ├── typescript-guide.md # TypeScript ガイド
+│       ├── async-await-guide.md # Async/Await ガイド
 │       ├── prisma-guide.md     # Prisma ガイド
-│       └── shadcn-ui-guide.md  # shadcn/ui ガイド
+│       ├── authjs-guide.md     # Auth.js ガイド
+│       ├── shadcn-ui-guide.md  # shadcn/ui ガイド
+│       ├── utilities-guide.md  # ユーティリティ関数ガイド
+│       ├── styling-best-practices.md # スタイリングベストプラクティス
+│       └── git-github-guide.md # Git/GitHub ガイド
 │
 ├── .env                    # 環境変数（.gitignoreに含まれる）
 ├── .gitignore            # Git除外設定
@@ -487,23 +524,14 @@ public/
 
 ## ファイル命名規則
 
+命名規則の詳細（ファイル名、変数・関数名、コンポーネント名など）については、[開発ガイドライン - 命名規則](./development-guide.md#命名規則)を参照してください。
+
 ### Next.js の規約
 
-- **ページ**: `page.tsx`（Next.js App Router の規約）
+- **ページ**: `page.tsx`
 - **レイアウト**: `layout.tsx`
-- **ローディング**: `loading.tsx`
-- **エラー**: `error.tsx`
-- **404**: `not-found.tsx`
 - **API Routes**: `route.ts`
 - **動的ルート**: `[id]/route.ts`
-
-### 一般的な規則
-
-- **コンポーネント**: PascalCase（例: `UserProfile.tsx`）または kebab-case（例: `user-profile.tsx`）
-- **ユーティリティ**: kebab-case（例: `product-utils.ts`）または camelCase（例: `formatDate.ts`）
-- **型定義**: PascalCase（例: `User.ts`）
-
-**注意**: 各ディレクトリ内で一貫性を保つことが重要です。詳細は [開発ガイドライン](./development-guide.md#命名規則) を参照してください。
 
 ## ファイルの役割
 
