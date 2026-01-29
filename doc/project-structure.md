@@ -56,35 +56,60 @@ shirokumado-ts/
 │   │   ├── types.ts       # 共通型定義
 │   │   ├── components/    # ダッシュボードコンポーネント
 │   │   │   ├── DashboardContent.tsx
-│   │   │   ├── DashboardForm.tsx
-│   │   │   │   ├── ProductList.tsx
-│   │   │   ├── ProductEditForm.tsx
-│   │   │   ├── ProductFormFields.tsx
-│   │   │   ├── ProductSearchFilters.tsx
-│   │   │   ├── LayoutCategoryTabs.tsx
-│   │   │   └── SortableProductItem.tsx
+│   │   │   ├── form/     # フォーム関連
+│   │   │   │   ├── ProductForm.tsx
+│   │   │   │   ├── ProductFormModal.tsx
+│   │   │   │   ├── ProductFormFields.tsx
+│   │   │   │   ├── ProductFormFooter.tsx
+│   │   │   │   ├── ProductBasicFields.tsx
+│   │   │   │   ├── ProductPriceFields.tsx
+│   │   │   │   ├── ProductDateFields.tsx
+│   │   │   │   ├── ProductDateInput.tsx
+│   │   │   │   ├── ProductImageField.tsx
+│   │   │   │   └── ProductPublishedField.tsx
+│   │   │   ├── layout/   # レイアウト関連
+│   │   │   │   ├── ProductLayoutTab.tsx
+│   │   │   │   ├── LayoutCategoryTabs.tsx
+│   │   │   │   └── SortableProductItem.tsx
+│   │   │   └── list/     # リスト表示関連
+│   │   │       ├── ProductList.tsx
+│   │   │       ├── ProductListContent.tsx
+│   │   │       ├── ProductListTabs.tsx
+│   │   │       ├── ProductCard.tsx
+│   │   │       ├── ProductCardContent.tsx
+│   │   │       └── ProductSearchFilters.tsx
 │   │   ├── hooks/        # カスタムフック
 │   │   │   ├── useTabState.ts
+│   │   │   ├── useScrollPosition.ts
+│   │   │   ├── useImageCompression.ts
+│   │   │   ├── useProductSearch.ts
+│   │   │   ├── useImageUpload.ts
 │   │   │   ├── useProductForm.ts
 │   │   │   └── useProductReorder.ts
 │   │   └── utils/        # ユーティリティ関数
-│   │       └── productUtils.ts
+│   │       ├── productUtils.ts
+│   │       ├── productFormData.ts
+│   │       └── productFormSubmit.ts
 │   ├── types.ts          # フロントエンド共通型定義
 │   ├── hooks/            # カスタムフック
 │   │   └── useProductModal.ts # 商品モーダル管理フック
-│   ├── utils/            # ユーティリティ関数（現在は使用されていません）
 │   ├── components/       # フロントエンド共通コンポーネント
 │   │   ├── ui/          # shadcn/ui コンポーネントとラッパーコンポーネント
 │   │   ├── ErrorBoundary.tsx # エラーバウンダリーコンポーネント
-│   │   ├── Header.tsx    # ヘッダーコンポーネント
+│   │   ├── FixedHeader.tsx   # 固定ヘッダーコンポーネント
+│   │   ├── HeroSection.tsx   # ヒーローセクション
 │   │   ├── Footer.tsx    # フッターコンポーネント
+│   │   ├── FAQSection.tsx    # FAQセクション
 │   │   ├── ProductCategoryTabs.tsx # カテゴリーをTabsで切り替えるコンポーネント
 │   │   ├── ProductGrid.tsx # 商品グリッドコンポーネント
 │   │   ├── ProductTile.tsx # 商品タイルコンポーネント
 │   │   └── ProductModal.tsx # 商品詳細モーダルコンポーネント
 │   ├── faq/              # FAQページ
-│   │   └── page.tsx      # よくある質問ページ
+│   │   ├── page.tsx      # よくある質問ページ
+│   │   └── data.ts       # FAQデータ
+│   ├── favicon.ico       # ファビコン
 │   ├── globals.css       # グローバルスタイル
+│   ├── error.tsx         # エラーページ
 │   ├── layout.tsx        # ルートレイアウト
 │   └── page.tsx          # ホームページ
 │
@@ -116,19 +141,16 @@ shirokumado-ts/
 │   └── migrations/       # マイグレーションファイル
 │
 ├── public/                 # 静的ファイル
-│   ├── favicon.ico       # ファビコン
 │   ├── logo.webp         # ロゴ画像
 │   ├── logo-instagram.svg # Instagramアイコン
 │   └── hero.webp         # ヒーロー画像
 │
 ├── doc/                    # ドキュメント
-│   ├── getting-started.md  # コードリーディングガイド
 │   ├── architecture.md     # アーキテクチャと設計思想
 │   ├── project-structure.md # プロジェクト構造（このファイル）
 │   ├── tech-stack.md       # 技術スタック
 │   ├── development-guide.md # 開発ガイドライン
 │   ├── setup-prisma-blob.md # Prisma & Blob セットアップ
-│   ├── deployment.md       # デプロイメントガイド
 │   └── guides/            # ガイド系ドキュメント
 │       ├── learning-guide.md   # 勉強用ガイド
 │       ├── frontend-guide.md   # フロントエンドガイド
@@ -138,8 +160,13 @@ shirokumado-ts/
 │       ├── react-guide.md      # React ガイド
 │       ├── jsx-guide.md        # JSX ガイド
 │       ├── typescript-guide.md # TypeScript ガイド
+│       ├── async-await-guide.md # Async/Await ガイド
 │       ├── prisma-guide.md     # Prisma ガイド
-│       └── shadcn-ui-guide.md  # shadcn/ui ガイド
+│       ├── authjs-guide.md     # Auth.js ガイド
+│       ├── shadcn-ui-guide.md  # shadcn/ui ガイド
+│       ├── utilities-guide.md  # ユーティリティ関数ガイド
+│       ├── styling-best-practices.md # スタイリングベストプラクティス
+│       └── git-github-guide.md # Git/GitHub ガイド
 │
 ├── .env                    # 環境変数（.gitignoreに含まれる）
 ├── .gitignore            # Git除外設定
