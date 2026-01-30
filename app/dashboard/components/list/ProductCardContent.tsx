@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { Badge } from "@/app/components/ui/badge";
 import type { Product } from "../../types";
 
 interface ProductCardContentProps {
@@ -55,26 +56,22 @@ export default function ProductCardContent({
         {(showPublishedBadge || showCategoryBadge) && (
           <div className="mb-1 flex flex-wrap gap-0.5 sm:mb-2 sm:gap-1 md:gap-2">
             {showPublishedBadge && (
-              <span
-                className={`rounded-full px-1 py-0.5 text-[8px] font-medium sm:px-1.5 sm:py-0.5 sm:text-[10px] md:px-2 md:py-1 md:text-xs ${
-                  product.published
-                    ? "bg-green-100 text-green-800"
-                    : "bg-gray-100 text-gray-600"
-                }`}
+              <Badge
+                variant={product.published ? "success" : "secondary"}
+                className="px-1 py-0.5 text-[8px] sm:px-1.5 sm:py-0.5 sm:text-[10px] md:px-2 md:py-1 md:text-xs"
               >
                 {product.published ? "公開" : "非公開"}
-              </span>
+              </Badge>
             )}
             {showCategoryBadge && (
-              <span
-                className={`rounded-full px-1 py-0.5 text-[8px] sm:px-1.5 sm:py-0.5 sm:text-[10px] md:px-2 md:py-1 md:text-xs ${
-                  isGrayscale
-                    ? "bg-gray-200 text-gray-500"
-                    : "bg-blue-100 text-blue-800"
+              <Badge
+                variant={isGrayscale ? "secondary" : "default"}
+                className={`px-1 py-0.5 text-[8px] sm:px-1.5 sm:py-0.5 sm:text-[10px] md:px-2 md:py-1 md:text-xs ${
+                  !isGrayscale ? "bg-blue-100 text-blue-800 hover:bg-blue-100/80" : ""
                 }`}
               >
                 {product.category.name}
-              </span>
+              </Badge>
             )}
           </div>
         )}

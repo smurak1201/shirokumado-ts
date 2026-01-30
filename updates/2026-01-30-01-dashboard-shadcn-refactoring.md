@@ -17,7 +17,7 @@
 | 3   | Dialog コンポーネントの置き換え              |   高   |    [o]     |      |
 | 4   | Tabs コンポーネントの置き換え                |   中   |    [o]     | LayoutCategoryTabsは横スクロール機能維持のため現状維持 |
 | 5   | Card コンポーネントの置き換え                |   中   |    [o]     |      |
-| 6   | Badge コンポーネントの置き換え               |   中   |    [ ]     |      |
+| 6   | Badge コンポーネントの置き換え               |   中   |    [o]     |      |
 | 7   | フォーム要素の置き換え（Input, Label, etc.） |   中   |    [ ]     |      |
 | 8   | RadioGroup コンポーネントの置き換え          |   低   |    [ ]     |      |
 | 9   | 動作確認・ビルドテスト                       |   -    |    [ ]     |      |
@@ -495,7 +495,7 @@ export default function ProductCard({
 
 ---
 
-### タスク6: Badge コンポーネントの置き換え
+### タスク6: Badge コンポーネントの置き換え [完了]
 
 **対象ファイル**:
 
@@ -566,11 +566,11 @@ import { Badge } from "@/app/components/ui/badge";
 
 **チェックリスト**:
 
-- [ ] `badge.tsx` に `success` バリアントを追加
-- [ ] 公開/非公開バッジを Badge で置き換え
-- [ ] カテゴリーバッジを Badge で置き換え
+- [o] `badge.tsx` に `success` バリアントを追加
+- [o] 公開/非公開バッジを Badge で置き換え
+- [o] カテゴリーバッジを Badge で置き換え
 - [ ] バッジの見た目が正常であること
-- [ ] ビルドエラーがないこと
+- [o] ビルドエラーがないこと
 
 ---
 
@@ -804,9 +804,9 @@ import { Label } from "@/app/components/ui/label";
 | `app/components/ui/textarea.tsx`                             | **新規作成**（shadcnインストール） |    [o]     |
 | `app/components/ui/select.tsx`                               | **新規作成**（shadcnインストール） |    [o]     |
 | `app/components/ui/radio-group.tsx`                          | **新規作成**（shadcnインストール） |    [o]     |
-| `app/components/ui/badge.tsx`                                | successバリアント追加       |    [ ]     |
+| `app/components/ui/badge.tsx`                                | successバリアント追加       |    [o]     |
 | `app/dashboard/components/list/ProductCard.tsx`              | Button, Card 使用           |    [o]     |
-| `app/dashboard/components/list/ProductCardContent.tsx`       | Badge 使用                  |    [ ]     |
+| `app/dashboard/components/list/ProductCardContent.tsx`       | Badge 使用                  |    [o]     |
 | `app/dashboard/components/list/ProductListTabs.tsx`          | Tabs 使用                   |    [o]     |
 | `app/dashboard/components/list/ProductSearchFilters.tsx`     | Input, Select, RadioGroup 使用 |    [ ]     |
 | `app/dashboard/components/layout/LayoutCategoryTabs.tsx`     | Tabs 使用                   |    [-]     |
