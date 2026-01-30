@@ -14,7 +14,7 @@
 | --- | -------------------------------------------- | :----: | :--------: | ---- |
 | 1   | shadcn UIコンポーネントの追加インストール    |   高   |    [o]     |      |
 | 2   | Button コンポーネントの置き換え              |   高   |    [o]     |      |
-| 3   | Dialog コンポーネントの置き換え              |   高   |    [ ]     |      |
+| 3   | Dialog コンポーネントの置き換え              |   高   |    [o]     |      |
 | 4   | Tabs コンポーネントの置き換え                |   中   |    [ ]     |      |
 | 5   | Card コンポーネントの置き換え                |   中   |    [ ]     |      |
 | 6   | Badge コンポーネントの置き換え               |   中   |    [ ]     |      |
@@ -280,7 +280,7 @@ import { Button } from "@/app/components/ui/button";
 
 ---
 
-### タスク3: Dialog コンポーネントの置き換え
+### タスク3: Dialog コンポーネントの置き換え [完了]
 
 **対象ファイル**:
 
@@ -345,11 +345,11 @@ export default function ProductFormModal({
 
 **チェックリスト**:
 
-- [ ] `ProductFormModal.tsx` を Dialog で実装し直す
-- [ ] ESCキーでモーダルが閉じること
-- [ ] オーバーレイクリックでモーダルが閉じること
-- [ ] フォーカストラップが正常に動作すること
-- [ ] ビルドエラーがないこと
+- [o] `ProductFormModal.tsx` を Dialog で実装し直す
+- [o] ESCキーでモーダルが閉じること
+- [o] オーバーレイクリックでモーダルが閉じること
+- [o] フォーカストラップが正常に動作すること
+- [o] ビルドエラーがないこと
 
 ---
 
@@ -810,7 +810,7 @@ import { Label } from "@/app/components/ui/label";
 | `app/dashboard/components/list/ProductListTabs.tsx`          | Tabs 使用                   |    [ ]     |
 | `app/dashboard/components/list/ProductSearchFilters.tsx`     | Input, Select, RadioGroup 使用 |    [ ]     |
 | `app/dashboard/components/layout/LayoutCategoryTabs.tsx`     | Tabs 使用                   |    [ ]     |
-| `app/dashboard/components/form/ProductFormModal.tsx`         | Dialog 使用                 |    [~]     |
+| `app/dashboard/components/form/ProductFormModal.tsx`         | Dialog 使用                 |    [o]     |
 | `app/dashboard/components/form/ProductFormFooter.tsx`        | Button 使用                 |    [o]     |
 | `app/dashboard/components/form/ProductBasicFields.tsx`       | Label, Textarea, Select 使用 |    [ ]     |
 | `app/dashboard/components/form/ProductPriceFields.tsx`       | Label, Input 使用           |    [ ]     |

@@ -1,7 +1,13 @@
 "use client";
 
 import { ReactNode } from "react";
-import { Button } from "@/app/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/app/components/ui/dialog";
 
 interface ProductFormModalProps {
   title: string;
@@ -23,31 +29,15 @@ export default function ProductFormModal({
   children,
   footer,
 }: ProductFormModalProps) {
-  if (!isOpen) return null;
-
   return (
-    <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-white/80 backdrop-blur-sm overflow-x-hidden"
-      onClick={onClose}
-    >
-      <div
-        className="max-h-[90vh] w-full max-w-full sm:max-w-2xl overflow-y-auto overflow-x-hidden rounded-lg bg-white p-4 sm:p-6 shadow-lg mx-2 sm:mx-4"
-        onClick={(e) => e.stopPropagation()}
-      >
-        <div className="mb-4 flex items-center justify-between">
-          <h2 className="text-xl font-semibold">{title}</h2>
-          <Button
-            onClick={onClose}
-            variant="ghost"
-            size="icon"
-            aria-label="閉じる"
-          >
-            ✕
-          </Button>
-        </div>
+    <Dialog open={isOpen} onOpenChange={(open) => !open && onClose?.()}>
+      <DialogContent className="max-h-[90vh] w-full max-w-full overflow-y-auto sm:max-w-2xl">
+        <DialogHeader>
+          <DialogTitle>{title}</DialogTitle>
+        </DialogHeader>
         {children}
-        {footer}
-      </div>
-    </div>
+        <DialogFooter>{footer}</DialogFooter>
+      </DialogContent>
+    </Dialog>
   );
 }
