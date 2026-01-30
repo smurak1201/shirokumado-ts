@@ -18,8 +18,9 @@
 | 4   | ログインページの作成             |   高   |    [ ]     |      |
 | 5   | ダッシュボードにログアウト機能   |   中   |    [ ]     |      |
 | 6   | Prisma マイグレーション実行      |   高   |    [ ]     |      |
-| 7   | 初期データ登録                   |   高   |    [ ]     |      |
-| 8   | 動作確認・ビルドテスト           |   -    |    [ ]     |      |
+| 7   | シーダーに初期データ登録処理追加 |   高   |    [ ]     |      |
+| 8   | 初期データ登録                   |   高   |    [ ]     |      |
+| 9   | 動作確認・ビルドテスト           |   -    |    [ ]     |      |
 
 **凡例**: `[ ]` 未着手 / `[~]` 作業中 / `[o]` 完了
 
@@ -419,7 +420,56 @@ npm run db:migrate
 
 ---
 
-### タスク7: 初期データ登録
+### タスク7: シーダーに初期データ登録処理追加
+
+**対象ファイル**:
+
+- `prisma/seed.ts`（既存・変更）
+
+**問題点**:
+
+初期データをNeonコンソールから手動で登録するのは手間がかかり、再現性がない。
+
+**修正内容**:
+
+既存のシーダーに許可管理者メールアドレスの登録処理を追加する。
+
+**実装例**:
+
+```typescript
+// prisma/seed.ts に追加
+
+// 許可する管理者メールアドレス
+const ALLOWED_ADMIN_EMAILS = ['s.murakoshi1201@gmail.com'];
+
+async function main() {
+  console.log('シードデータの投入を開始します...');
+
+  // 許可管理者メールアドレスの作成
+  for (const email of ALLOWED_ADMIN_EMAILS) {
+    await prisma.allowedAdmin.upsert({
+      where: { email },
+      update: {},
+      create: { email },
+    });
+  }
+  console.log(
+    '許可管理者メールアドレスを作成しました:',
+    ALLOWED_ADMIN_EMAILS.join(', ')
+  );
+
+  // 既存のカテゴリー作成処理...
+}
+```
+
+**チェックリスト**:
+
+- [ ] `prisma/seed.ts` に `AllowedAdmin` のシード処理を追加
+- [ ] `upsert` を使用して冪等性を確保
+
+---
+
+### タスク8: 初期データ登録
 
 **対象**:
 
@@ -431,7 +481,15 @@ npm run db:migrate
 
 **修正内容**:
 
-Neon コンソールまたは Prisma Studio から初期の管理者メールアドレスを登録する。
+シーダーまたは Neon コンソールから初期の管理者メールアドレスを登録する。
+
+**実行手順（シーダー）**:
+
+```bash
+npm run db:seed
+```
+
+シーダーは `upsert` を使用しているため、既にデータが存在する場合でも安全に再実行可能。
 
 **実行手順（Neon コンソール）**:
 
@@ -461,7 +519,7 @@ npm run db:studio
 
 ---
 
-### タスク8: 動作確認・ビルドテスト
+### タスク9: 動作確認・ビルドテスト
 
 **確認項目**:
 
@@ -482,15 +540,16 @@ npm run db:studio
 
 ## 変更対象ファイル一覧
 
-| ファイル                                   | 変更内容                              | ステータス |
-| ------------------------------------------ | ------------------------------------- | :--------: |
-| `prisma/schema.prisma`                     | AllowedAdminモデル追加                |    [ ]     |
-| `lib/auth-config.ts`                       | **新規作成** - 許可メール判定（DB）   |    [ ]     |
-| `auth.ts`                                  | signInコールバック追加                |    [ ]     |
-| `middleware.ts`                            | **新規作成** - ルート保護             |    [ ]     |
-| `app/auth/signin/page.tsx`                 | **新規作成** - ログインページ         |    [ ]     |
-| `app/dashboard/components/DashboardHeader.tsx` | **新規作成** - ヘッダー           |    [ ]     |
-| `app/dashboard/page.tsx`                   | ヘッダーコンポーネント使用            |    [ ]     |
+| ファイル                                       | 変更内容                            | ステータス |
+| ---------------------------------------------- | ----------------------------------- | :--------: |
+| `prisma/schema.prisma`                         | AllowedAdminモデル追加              |    [ ]     |
+| `prisma/seed.ts`                               | AllowedAdminシード処理追加          |    [ ]     |
+| `lib/auth-config.ts`                           | **新規作成** - 許可メール判定（DB） |    [ ]     |
+| `auth.ts`                                      | signInコールバック追加              |    [ ]     |
+| `middleware.ts`                                | **新規作成** - ルート保護           |    [ ]     |
+| `app/auth/signin/page.tsx`                     | **新規作成** - ログインページ       |    [ ]     |
+| `app/dashboard/components/DashboardHeader.tsx` | **新規作成** - ヘッダー             |    [ ]     |
+| `app/dashboard/page.tsx`                       | ヘッダーコンポーネント使用          |    [ ]     |
 
 ---
 
@@ -503,6 +562,18 @@ npm run db:studio
 - 許可メールアドレスはデータベースで管理するため、コードにハードコードしない
 
 ### 管理者の追加・削除方法
+
+**シーダーから（推奨）**:
+
+1. `prisma/seed.ts` の `ALLOWED_ADMIN_EMAILS` 配列を編集
+2. `npm run db:seed` を実行
+
+```typescript
+const ALLOWED_ADMIN_EMAILS = [
+  's.murakoshi1201@gmail.com',
+  'newadmin@example.com', // 追加
+];
+```
 
 **Neon コンソールから**:
 
