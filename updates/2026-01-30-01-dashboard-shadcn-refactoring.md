@@ -12,8 +12,8 @@
 
 | #   | タスク                                       | 優先度 | ステータス | 備考 |
 | --- | -------------------------------------------- | :----: | :--------: | ---- |
-| 1   | shadcn UIコンポーネントの追加インストール    |   高   |    [ ]     |      |
-| 2   | Button コンポーネントの置き換え              |   高   |    [ ]     |      |
+| 1   | shadcn UIコンポーネントの追加インストール    |   高   |    [o]     |      |
+| 2   | Button コンポーネントの置き換え              |   高   |    [o]     |      |
 | 3   | Dialog コンポーネントの置き換え              |   高   |    [ ]     |      |
 | 4   | Tabs コンポーネントの置き換え                |   中   |    [ ]     |      |
 | 5   | Card コンポーネントの置き換え                |   中   |    [ ]     |      |
@@ -110,7 +110,7 @@ export function PriceBadge({ className, ...props }: PriceBadgeProps) {
 
 ## タスク詳細
 
-### タスク1: shadcn UIコンポーネントの追加インストール
+### タスク1: shadcn UIコンポーネントの追加インストール [完了]
 
 **対象ファイル**:
 
@@ -140,16 +140,16 @@ npx shadcn@latest add radio-group
 
 **チェックリスト**:
 
-- [ ] Input コンポーネントをインストール
-- [ ] Label コンポーネントをインストール
-- [ ] Textarea コンポーネントをインストール
-- [ ] Select コンポーネントをインストール
-- [ ] RadioGroup コンポーネントをインストール
-- [ ] ビルドエラーがないこと
+- [o] Input コンポーネントをインストール
+- [o] Label コンポーネントをインストール
+- [o] Textarea コンポーネントをインストール
+- [o] Select コンポーネントをインストール
+- [o] RadioGroup コンポーネントをインストール
+- [o] ビルドエラーがないこと
 
 ---
 
-### タスク2: Button コンポーネントの置き換え
+### タスク2: Button コンポーネントの置き換え [完了]
 
 **対象ファイル**:
 
@@ -272,10 +272,10 @@ import { Button } from "@/app/components/ui/button";
 
 **チェックリスト**:
 
-- [ ] `ProductCard.tsx` のボタンを置き換え
-- [ ] `ProductFormModal.tsx` の閉じるボタンを置き換え
-- [ ] `ProductFormFooter.tsx` のボタンを置き換え
-- [ ] ビルドエラーがないこと
+- [o] `ProductCard.tsx` のボタンを置き換え
+- [o] `ProductFormModal.tsx` の閉じるボタンを置き換え
+- [o] `ProductFormFooter.tsx` のボタンを置き換え
+- [o] ビルドエラーがないこと
 - [ ] ボタンの見た目・動作が正常であること
 
 ---
@@ -799,19 +799,19 @@ import { Label } from "@/app/components/ui/label";
 
 | ファイル                                                     | 変更内容                    | ステータス |
 | ------------------------------------------------------------ | --------------------------- | :--------: |
-| `app/components/ui/input.tsx`                                | **新規作成**（shadcnインストール） |    [ ]     |
-| `app/components/ui/label.tsx`                                | **新規作成**（shadcnインストール） |    [ ]     |
-| `app/components/ui/textarea.tsx`                             | **新規作成**（shadcnインストール） |    [ ]     |
-| `app/components/ui/select.tsx`                               | **新規作成**（shadcnインストール） |    [ ]     |
-| `app/components/ui/radio-group.tsx`                          | **新規作成**（shadcnインストール） |    [ ]     |
+| `app/components/ui/input.tsx`                                | **新規作成**（shadcnインストール） |    [o]     |
+| `app/components/ui/label.tsx`                                | **新規作成**（shadcnインストール） |    [o]     |
+| `app/components/ui/textarea.tsx`                             | **新規作成**（shadcnインストール） |    [o]     |
+| `app/components/ui/select.tsx`                               | **新規作成**（shadcnインストール） |    [o]     |
+| `app/components/ui/radio-group.tsx`                          | **新規作成**（shadcnインストール） |    [o]     |
 | `app/components/ui/badge.tsx`                                | successバリアント追加       |    [ ]     |
-| `app/dashboard/components/list/ProductCard.tsx`              | Button, Card 使用           |    [ ]     |
+| `app/dashboard/components/list/ProductCard.tsx`              | Button, Card 使用           |    [~]     |
 | `app/dashboard/components/list/ProductCardContent.tsx`       | Badge 使用                  |    [ ]     |
 | `app/dashboard/components/list/ProductListTabs.tsx`          | Tabs 使用                   |    [ ]     |
 | `app/dashboard/components/list/ProductSearchFilters.tsx`     | Input, Select, RadioGroup 使用 |    [ ]     |
 | `app/dashboard/components/layout/LayoutCategoryTabs.tsx`     | Tabs 使用                   |    [ ]     |
-| `app/dashboard/components/form/ProductFormModal.tsx`         | Dialog 使用                 |    [ ]     |
-| `app/dashboard/components/form/ProductFormFooter.tsx`        | Button 使用                 |    [ ]     |
+| `app/dashboard/components/form/ProductFormModal.tsx`         | Dialog 使用                 |    [~]     |
+| `app/dashboard/components/form/ProductFormFooter.tsx`        | Button 使用                 |    [o]     |
 | `app/dashboard/components/form/ProductBasicFields.tsx`       | Label, Textarea, Select 使用 |    [ ]     |
 | `app/dashboard/components/form/ProductPriceFields.tsx`       | Label, Input 使用           |    [ ]     |
 | `app/dashboard/components/form/ProductDateFields.tsx`        | Label 使用                  |    [ ]     |

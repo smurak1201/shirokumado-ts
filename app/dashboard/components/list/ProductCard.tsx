@@ -1,3 +1,4 @@
+import { Button } from "@/app/components/ui/button";
 import ProductCardContent from "./ProductCardContent";
 import type { Product } from "../../types";
 
@@ -31,18 +32,21 @@ export default function ProductCard({
       />
 
       <div className="mt-auto flex gap-0.5 sm:gap-1 md:gap-2">
-        <button
+        <Button
           onClick={() => onEdit(product)}
-          className="flex-1 rounded-md bg-blue-600 px-0.5 py-0.5 text-[8px] font-medium text-white hover:bg-blue-700 sm:px-1 sm:py-1 sm:text-[10px] md:px-3 md:py-2 md:text-sm"
+          size="sm"
+          className="flex-1 text-[8px] sm:text-[10px] md:text-sm"
         >
           編集
-        </button>
-        <button
+        </Button>
+        <Button
           onClick={() => onDelete(product.id)}
-          className="flex-1 rounded-md bg-red-600 px-0.5 py-0.5 text-[8px] font-medium text-white hover:bg-red-700 sm:px-1 sm:py-1 sm:text-[10px] md:px-3 md:py-2 md:text-sm"
+          variant="destructive"
+          size="sm"
+          className="flex-1 text-[8px] sm:text-[10px] md:text-sm"
         >
           削除
-        </button>
+        </Button>
       </div>
     </div>
   );

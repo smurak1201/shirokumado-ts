@@ -1,4 +1,5 @@
 import { ReactNode } from "react";
+import { Button } from "@/app/components/ui/button";
 
 interface ProductFormFooterProps {
   submitting: boolean;
@@ -28,26 +29,27 @@ export default function ProductFormFooter({
 }: ProductFormFooterProps): ReactNode {
   return (
     <div className="flex gap-2 pt-4">
-      <button
+      <Button
         type="button"
         onClick={onClose}
         disabled={submitting || uploading || compressing}
-        className="flex-1 rounded-md border border-gray-300 bg-white px-4 py-2 font-medium text-gray-700 hover:bg-gray-50 disabled:bg-gray-100"
+        variant="outline"
+        className="flex-1"
       >
         キャンセル
-      </button>
-      <button
+      </Button>
+      <Button
         type="submit"
         form={formId}
         disabled={submitting || uploading || compressing}
-        className="flex-1 rounded-md bg-blue-600 px-4 py-2 font-medium text-white hover:bg-blue-700 disabled:bg-gray-400"
+        className="flex-1"
       >
         {uploading
           ? uploadingLabel
           : submitting
           ? submittingLabel
           : submitLabel}
-      </button>
+      </Button>
     </div>
   );
 }
