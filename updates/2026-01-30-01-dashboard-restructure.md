@@ -13,8 +13,8 @@
 | #   | タスク                                   | 優先度 | ステータス | 備考 |
 | --- | ---------------------------------------- | :----: | :--------: | ---- |
 | 1   | 現在の dashboard を homepage に移動      |   高   |    [ ]     |      |
-| 2   | ダッシュボード選択画面の作成             |   高   |    [ ]     |      |
-| 3   | ダッシュボード共通レイアウトの作成       |   高   |    [ ]     |      |
+| 2   | ダッシュボードリダイレクトの設定         |   高   |    [ ]     |      |
+| 3   | ダッシュボード共通レイアウト（タブUI）   |   高   |    [ ]     |      |
 | 4   | ECサイト用ダッシュボードのプレースホルダ |   中   |    [ ]     |      |
 | 5   | ECサイト表示用ページのプレースホルダ     |   中   |    [ ]     |      |
 | 6   | 動作確認・ビルドテスト                   |   -    |    [ ]     |      |
@@ -84,6 +84,22 @@ app/dashboard/
 
 移動後、各ファイル内の相対パスを確認し、必要に応じて修正する。`@/` で始まるパスは変更不要。
 
+**スタイルの調整**:
+
+`layout.tsx` で `min-h-screen bg-gray-50` を設定するため、`homepage/page.tsx` からこれらを削除する。
+
+```tsx
+// 変更前（app/dashboard/homepage/page.tsx 103行目付近）
+return (
+  <div className="min-h-screen bg-gray-50 py-8">
+    <div className="mx-auto max-w-4xl px-4">
+
+// 変更後
+return (
+  <div className="py-8">
+    <div className="mx-auto max-w-4xl px-4">
+```
+
 **チェックリスト**:
 
 - [ ] `app/dashboard/homepage/` ディレクトリを作成
@@ -93,10 +109,11 @@ app/dashboard/
 - [ ] `hooks/` を移動
 - [ ] `utils/` を移動
 - [ ] import パスが正しいことを確認
+- [ ] `homepage/page.tsx` のスタイルを調整（min-h-screen, bg-gray-50 を削除）
 
 ---
 
-### タスク2: ダッシュボード選択画面の作成
+### タスク2: ダッシュボードリダイレクトの設定
 
 **対象ファイル**:
 
@@ -104,125 +121,36 @@ app/dashboard/
 
 **問題点**:
 
-homepage と shop を選択する画面がない。
+`/dashboard` にアクセスした際の遷移先がない。
 
 **修正内容**:
 
-ホームページ用ダッシュボードとECサイト用ダッシュボードを選択できる画面を作成する。
+`/dashboard` にアクセスした場合、`/dashboard/homepage` へ自動リダイレクトする。
 
 **実装例**:
 
 ```tsx
 // app/dashboard/page.tsx（新規作成）
-import Link from 'next/link';
+import { redirect } from 'next/navigation';
 
-const dashboards = [
-  {
-    href: '/dashboard/homepage',
-    title: 'ホームページ管理',
-    description: 'トップページに表示する商品の管理',
-    available: true,
-  },
-  {
-    href: '/dashboard/shop',
-    title: 'ECサイト管理',
-    description: 'オンラインショップの商品・注文管理',
-    available: false,
-  },
-] as const;
-
-export default function DashboardSelectPage() {
-  return (
-    <div className="min-h-screen bg-gray-50 py-12">
-      <div className="mx-auto max-w-2xl px-4">
-        <h1 className="mb-8 text-center text-3xl font-bold text-gray-900">
-          ダッシュボード
-        </h1>
-        <p className="mb-12 text-center text-gray-600">
-          管理するダッシュボードを選択してください
-        </p>
-
-        <div className="grid gap-6">
-          {dashboards.map((dashboard) => (
-            <DashboardCard key={dashboard.href} {...dashboard} />
-          ))}
-        </div>
-      </div>
-    </div>
-  );
-}
-
-interface DashboardCardProps {
-  href: string;
-  title: string;
-  description: string;
-  available: boolean;
-}
-
-function DashboardCard({
-  href,
-  title,
-  description,
-  available,
-}: DashboardCardProps) {
-  if (!available) {
-    return (
-      <div className="rounded-lg border border-gray-200 bg-white p-6 opacity-60">
-        <div className="flex items-center justify-between">
-          <div>
-            <h2 className="text-xl font-semibold text-gray-900">{title}</h2>
-            <p className="mt-2 text-gray-600">{description}</p>
-          </div>
-          <span className="rounded-full bg-gray-100 px-3 py-1 text-sm text-gray-500">
-            準備中
-          </span>
-        </div>
-      </div>
-    );
-  }
-
-  return (
-    <Link
-      href={href}
-      className="block rounded-lg border border-gray-200 bg-white p-6 transition-shadow hover:shadow-md"
-    >
-      <div className="flex items-center justify-between">
-        <div>
-          <h2 className="text-xl font-semibold text-gray-900">{title}</h2>
-          <p className="mt-2 text-gray-600">{description}</p>
-        </div>
-        <svg
-          className="h-6 w-6 text-gray-400"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d="M9 5l7 7-7 7"
-          />
-        </svg>
-      </div>
-    </Link>
-  );
+export default function DashboardPage() {
+  redirect('/dashboard/homepage');
 }
 ```
 
 **チェックリスト**:
 
 - [ ] `app/dashboard/page.tsx` を新規作成
-- [ ] ホームページ管理へのリンクが機能すること
-- [ ] ECサイト管理は「準備中」と表示されること
+- [ ] `/dashboard` にアクセスすると `/dashboard/homepage` へリダイレクトされること
 
 ---
 
-### タスク3: ダッシュボード共通レイアウトの作成
+### タスク3: ダッシュボード共通レイアウト（タブUI）
 
 **対象ファイル**:
 
 - `app/dashboard/layout.tsx`（**新規作成**）
+- `app/dashboard/components/DashboardTabs.tsx`（**新規作成**）
 
 **問題点**:
 
@@ -230,28 +158,78 @@ function DashboardCard({
 
 **修正内容**:
 
-タブUIを含む共通レイアウトを作成する。選択画面（`/dashboard`）ではタブを表示せず、子ページ（`/dashboard/homepage`、`/dashboard/shop`）でのみタブを表示する。
+タブUIを含む共通レイアウトを作成する。タブで `homepage` と `shop` を切り替えられるようにする。
 
 **実装例**:
 
 ```tsx
+// app/dashboard/components/DashboardTabs.tsx（新規作成）
+'use client';
+
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+
+const tabs = [
+  { href: '/dashboard/homepage', label: 'ホームページ' },
+  { href: '/dashboard/shop', label: 'ECサイト' },
+] as const;
+
+export default function DashboardTabs() {
+  const pathname = usePathname();
+
+  return (
+    <nav className="border-b border-gray-200 bg-white">
+      <div className="mx-auto max-w-4xl px-4">
+        <div className="flex gap-4">
+          {tabs.map((tab) => {
+            const isActive = pathname.startsWith(tab.href);
+            return (
+              <Link
+                key={tab.href}
+                href={tab.href}
+                className={`border-b-2 px-4 py-3 text-sm font-medium transition-colors ${
+                  isActive
+                    ? 'border-gray-900 text-gray-900'
+                    : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700'
+                }`}
+              >
+                {tab.label}
+              </Link>
+            );
+          })}
+        </div>
+      </div>
+    </nav>
+  );
+}
+```
+
+```tsx
 // app/dashboard/layout.tsx（新規作成）
 import type { ReactNode } from 'react';
+import DashboardTabs from './components/DashboardTabs';
 
 interface DashboardLayoutProps {
   children: ReactNode;
 }
 
 export default function DashboardLayout({ children }: DashboardLayoutProps) {
-  return <>{children}</>;
+  return (
+    <div className="min-h-screen bg-gray-50">
+      <DashboardTabs />
+      {children}
+    </div>
+  );
 }
 ```
 
-> **注**: タブUIは認証機能実装後に追加する。現時点ではシンプルなレイアウトのみ。
-
 **チェックリスト**:
 
+- [ ] `app/dashboard/components/` ディレクトリを作成
+- [ ] `DashboardTabs.tsx` を新規作成
 - [ ] `app/dashboard/layout.tsx` を新規作成
+- [ ] タブで homepage と shop を切り替えられること
+- [ ] 現在のページのタブがアクティブ表示されること
 
 ---
 
@@ -364,11 +342,12 @@ export default function ShopPage() {
 **確認項目**:
 
 1. **ローカル確認** (`npm run dev`)
-   - [ ] `/dashboard` で選択画面が表示されること
+   - [ ] `/dashboard` にアクセスすると `/dashboard/homepage` へリダイレクトされること
    - [ ] `/dashboard/homepage` で商品管理ダッシュボードが表示されること
    - [ ] `/dashboard/shop` で「準備中」メッセージが表示されること
    - [ ] `/shop` で「準備中」メッセージが表示されること
-   - [ ] 各ページのリンクが正しく機能すること
+   - [ ] タブUIで homepage と shop を切り替えられること
+   - [ ] 現在のページのタブがアクティブ表示されること
 
 2. **ビルド確認** (`npm run build`)
    - [ ] ビルドエラーがないこと
@@ -378,17 +357,18 @@ export default function ShopPage() {
 
 ## 変更対象ファイル一覧
 
-| ファイル                              | 変更内容                           | ステータス |
-| ------------------------------------- | ---------------------------------- | :--------: |
-| `app/dashboard/homepage/page.tsx`     | 移動（旧 `app/dashboard/page.tsx`）|    [ ]     |
-| `app/dashboard/homepage/types.ts`     | 移動                               |    [ ]     |
-| `app/dashboard/homepage/components/*` | 移動                               |    [ ]     |
-| `app/dashboard/homepage/hooks/*`      | 移動                               |    [ ]     |
-| `app/dashboard/homepage/utils/*`      | 移動                               |    [ ]     |
-| `app/dashboard/page.tsx`              | **新規作成** - 選択画面            |    [ ]     |
-| `app/dashboard/layout.tsx`            | **新規作成** - 共通レイアウト      |    [ ]     |
-| `app/dashboard/shop/page.tsx`         | **新規作成** - プレースホルダ      |    [ ]     |
-| `app/shop/page.tsx`                   | **新規作成** - プレースホルダ      |    [ ]     |
+| ファイル                                   | 変更内容                           | ステータス |
+| ------------------------------------------ | ---------------------------------- | :--------: |
+| `app/dashboard/homepage/page.tsx`          | 移動（旧 `app/dashboard/page.tsx`）|    [ ]     |
+| `app/dashboard/homepage/types.ts`          | 移動                               |    [ ]     |
+| `app/dashboard/homepage/components/*`      | 移動                               |    [ ]     |
+| `app/dashboard/homepage/hooks/*`           | 移動                               |    [ ]     |
+| `app/dashboard/homepage/utils/*`           | 移動                               |    [ ]     |
+| `app/dashboard/page.tsx`                   | **新規作成** - リダイレクト        |    [ ]     |
+| `app/dashboard/layout.tsx`                 | **新規作成** - 共通レイアウト      |    [ ]     |
+| `app/dashboard/components/DashboardTabs.tsx` | **新規作成** - タブUI            |    [ ]     |
+| `app/dashboard/shop/page.tsx`              | **新規作成** - プレースホルダ      |    [ ]     |
+| `app/shop/page.tsx`                        | **新規作成** - プレースホルダ      |    [ ]     |
 
 ---
 
