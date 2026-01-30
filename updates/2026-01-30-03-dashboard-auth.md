@@ -56,7 +56,7 @@ s.murakoshi1201@gmail.com
 
 ### 前提条件
 
-この仕様書は `2026-01-30-01-dashboard-restructure.md`（ディレクトリ構造変更）の完了を前提とする。
+この仕様書は `2026-01-30-02-dashboard-restructure.md`（ディレクトリ構造変更）の完了を前提とする。
 
 ---
 
