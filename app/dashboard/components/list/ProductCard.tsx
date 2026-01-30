@@ -1,4 +1,5 @@
 import { Button } from "@/app/components/ui/button";
+import { Card, CardContent, CardFooter } from "@/app/components/ui/card";
 import ProductCardContent from "./ProductCardContent";
 import type { Product } from "../../types";
 
@@ -19,19 +20,16 @@ export default function ProductCard({
   onDelete,
 }: ProductCardProps) {
   return (
-    <div
-      className={`flex flex-col rounded-lg border border-gray-200 p-1 sm:p-2 md:p-4 ${
-        !product.published ? "bg-gray-50" : "bg-white"
-      }`}
-    >
-      <ProductCardContent
-        product={product}
-        showPublishedBadge
-        showCategoryBadge
-        isGrayscale={!product.published}
-      />
-
-      <div className="mt-auto flex gap-0.5 sm:gap-1 md:gap-2">
+    <Card className={`flex flex-col ${!product.published ? "bg-gray-50" : ""}`}>
+      <CardContent className="p-1 sm:p-2 md:p-4">
+        <ProductCardContent
+          product={product}
+          showPublishedBadge
+          showCategoryBadge
+          isGrayscale={!product.published}
+        />
+      </CardContent>
+      <CardFooter className="mt-auto gap-0.5 p-1 pt-0 sm:gap-1 sm:p-2 sm:pt-0 md:gap-2 md:p-4 md:pt-0">
         <Button
           onClick={() => onEdit(product)}
           size="sm"
@@ -47,7 +45,7 @@ export default function ProductCard({
         >
           削除
         </Button>
-      </div>
-    </div>
+      </CardFooter>
+    </Card>
   );
 }

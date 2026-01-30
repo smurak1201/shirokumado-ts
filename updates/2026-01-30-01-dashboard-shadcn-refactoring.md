@@ -15,8 +15,8 @@
 | 1   | shadcn UIコンポーネントの追加インストール    |   高   |    [o]     |      |
 | 2   | Button コンポーネントの置き換え              |   高   |    [o]     |      |
 | 3   | Dialog コンポーネントの置き換え              |   高   |    [o]     |      |
-| 4   | Tabs コンポーネントの置き換え                |   中   |    [ ]     |      |
-| 5   | Card コンポーネントの置き換え                |   中   |    [ ]     |      |
+| 4   | Tabs コンポーネントの置き換え                |   中   |    [o]     | LayoutCategoryTabsは横スクロール機能維持のため現状維持 |
+| 5   | Card コンポーネントの置き換え                |   中   |    [o]     |      |
 | 6   | Badge コンポーネントの置き換え               |   中   |    [ ]     |      |
 | 7   | フォーム要素の置き換え（Input, Label, etc.） |   中   |    [ ]     |      |
 | 8   | RadioGroup コンポーネントの置き換え          |   低   |    [ ]     |      |
@@ -353,7 +353,7 @@ export default function ProductFormModal({
 
 ---
 
-### タスク4: Tabs コンポーネントの置き換え
+### タスク4: Tabs コンポーネントの置き換え [完了]
 
 **対象ファイル**:
 
@@ -408,15 +408,15 @@ export default function ProductListTabs({
 
 **チェックリスト**:
 
-- [ ] `ProductListTabs.tsx` を Tabs で実装し直す
-- [ ] `LayoutCategoryTabs.tsx` を Tabs で実装し直す
-- [ ] タブ切り替えが正常に動作すること
-- [ ] キーボード操作（矢印キー）でタブ切り替えができること
-- [ ] ビルドエラーがないこと
+- [o] `ProductListTabs.tsx` を Tabs で実装し直す
+- [-] `LayoutCategoryTabs.tsx` を Tabs で実装し直す（横スクロール・グラデーション機能維持のため現状維持）
+- [o] タブ切り替えが正常に動作すること
+- [o] キーボード操作（矢印キー）でタブ切り替えができること
+- [o] ビルドエラーがないこと
 
 ---
 
-### タスク5: Card コンポーネントの置き換え
+### タスク5: Card コンポーネントの置き換え [完了]
 
 **対象ファイル**:
 
@@ -489,9 +489,9 @@ export default function ProductCard({
 
 **チェックリスト**:
 
-- [ ] `ProductCard.tsx` を Card で実装し直す
+- [o] `ProductCard.tsx` を Card で実装し直す
 - [ ] カードの見た目が正常であること
-- [ ] ビルドエラーがないこと
+- [o] ビルドエラーがないこと
 
 ---
 
@@ -805,11 +805,11 @@ import { Label } from "@/app/components/ui/label";
 | `app/components/ui/select.tsx`                               | **新規作成**（shadcnインストール） |    [o]     |
 | `app/components/ui/radio-group.tsx`                          | **新規作成**（shadcnインストール） |    [o]     |
 | `app/components/ui/badge.tsx`                                | successバリアント追加       |    [ ]     |
-| `app/dashboard/components/list/ProductCard.tsx`              | Button, Card 使用           |    [~]     |
+| `app/dashboard/components/list/ProductCard.tsx`              | Button, Card 使用           |    [o]     |
 | `app/dashboard/components/list/ProductCardContent.tsx`       | Badge 使用                  |    [ ]     |
-| `app/dashboard/components/list/ProductListTabs.tsx`          | Tabs 使用                   |    [ ]     |
+| `app/dashboard/components/list/ProductListTabs.tsx`          | Tabs 使用                   |    [o]     |
 | `app/dashboard/components/list/ProductSearchFilters.tsx`     | Input, Select, RadioGroup 使用 |    [ ]     |
-| `app/dashboard/components/layout/LayoutCategoryTabs.tsx`     | Tabs 使用                   |    [ ]     |
+| `app/dashboard/components/layout/LayoutCategoryTabs.tsx`     | Tabs 使用                   |    [-]     |
 | `app/dashboard/components/form/ProductFormModal.tsx`         | Dialog 使用                 |    [o]     |
 | `app/dashboard/components/form/ProductFormFooter.tsx`        | Button 使用                 |    [o]     |
 | `app/dashboard/components/form/ProductBasicFields.tsx`       | Label, Textarea, Select 使用 |    [ ]     |
