@@ -1,6 +1,6 @@
 # ダッシュボード認証機能
 
-**日付**: 2026-01-29
+**日付**: 2026-01-30
 **ブランチ**: feature/dashboard-auth
 **対象**: ダッシュボード（`app/dashboard/`）
 **ステータス**: 未着手
@@ -53,6 +53,10 @@
 ```
 s.murakoshi1201@gmail.com
 ```
+
+### 前提条件
+
+この仕様書は `2026-01-30-01-dashboard-restructure.md`（ディレクトリ構造変更）の完了を前提とする。
 
 ---
 
@@ -223,6 +227,8 @@ export const config = {
 
 - [ ] `middleware.ts` を新規作成
 - [ ] 未認証で `/dashboard` にアクセスするとログインページへリダイレクト
+- [ ] 未認証で `/dashboard/homepage` にアクセスするとログインページへリダイレクト
+- [ ] 未認証で `/dashboard/shop` にアクセスするとログインページへリダイレクト
 - [ ] 認証済みで `/auth/signin` にアクセスするとダッシュボードへリダイレクト
 
 ---
@@ -322,7 +328,7 @@ function GoogleIcon() {
 **対象ファイル**:
 
 - `app/dashboard/components/DashboardHeader.tsx`（**新規作成**）
-- `app/dashboard/page.tsx`（既存・変更）
+- `app/dashboard/homepage/page.tsx`（既存・変更）
 
 **問題点**:
 
@@ -338,12 +344,16 @@ function GoogleIcon() {
 // app/dashboard/components/DashboardHeader.tsx（新規作成）
 import { auth, signOut } from '@/auth';
 
-export default async function DashboardHeader() {
+interface DashboardHeaderProps {
+  title: string;
+}
+
+export default async function DashboardHeader({ title }: DashboardHeaderProps) {
   const session = await auth();
 
   return (
     <header className="mb-8 flex items-center justify-between">
-      <h1 className="text-3xl font-bold">商品管理ダッシュボード</h1>
+      <h1 className="text-3xl font-bold">{title}</h1>
       <div className="flex items-center gap-4">
         <span className="text-sm text-gray-600">{session?.user?.email}</span>
         <form
@@ -365,7 +375,7 @@ export default async function DashboardHeader() {
 }
 ```
 
-**page.tsx の変更（104-106行目付近）**:
+**app/dashboard/homepage/page.tsx の変更（104-106行目付近）**:
 
 ```tsx
 // 変更前
@@ -375,18 +385,18 @@ return (
       <h1 className="mb-8 text-3xl font-bold">商品管理ダッシュボード</h1>
 
 // 変更後
-import DashboardHeader from './components/DashboardHeader';
+import DashboardHeader from '../components/DashboardHeader';
 
 return (
   <div className="min-h-screen bg-gray-50 py-8">
     <div className="mx-auto max-w-4xl px-4">
-      <DashboardHeader />
+      <DashboardHeader title="商品管理ダッシュボード" />
 ```
 
 **チェックリスト**:
 
-- [ ] `DashboardHeader.tsx` を新規作成
-- [ ] `page.tsx` でヘッダーコンポーネントをインポート
+- [ ] `app/dashboard/components/DashboardHeader.tsx` を新規作成
+- [ ] `app/dashboard/homepage/page.tsx` でヘッダーコンポーネントをインポート
 - [ ] ログアウトボタンが機能すること
 
 ---
@@ -525,10 +535,12 @@ npm run db:studio
 
 1. **ローカル確認** (`npm run dev`)
    - [ ] `/dashboard` に未認証でアクセスすると `/auth/signin` へリダイレクト
+   - [ ] `/dashboard/homepage` に未認証でアクセスすると `/auth/signin` へリダイレクト
+   - [ ] `/dashboard/shop` に未認証でアクセスすると `/auth/signin` へリダイレクト
    - [ ] `/auth/signin` でGoogleログインボタンが表示される
    - [ ] 許可されたメールアドレス（s.murakoshi1201@gmail.com）でログインできる
    - [ ] 許可されていないメールアドレスではログインが拒否される
-   - [ ] ログイン後、ダッシュボードが表示される
+   - [ ] ログイン後、ダッシュボード選択画面が表示される
    - [ ] ヘッダーにメールアドレスとログアウトボタンが表示される
    - [ ] ログアウトボタンをクリックするとログアウトしてログインページへ
 
@@ -540,16 +552,16 @@ npm run db:studio
 
 ## 変更対象ファイル一覧
 
-| ファイル                                       | 変更内容                            | ステータス |
-| ---------------------------------------------- | ----------------------------------- | :--------: |
-| `prisma/schema.prisma`                         | AllowedAdminモデル追加              |    [ ]     |
-| `prisma/seed.ts`                               | AllowedAdminシード処理追加          |    [ ]     |
-| `lib/auth-config.ts`                           | **新規作成** - 許可メール判定（DB） |    [ ]     |
-| `auth.ts`                                      | signInコールバック追加              |    [ ]     |
-| `middleware.ts`                                | **新規作成** - ルート保護           |    [ ]     |
-| `app/auth/signin/page.tsx`                     | **新規作成** - ログインページ       |    [ ]     |
-| `app/dashboard/components/DashboardHeader.tsx` | **新規作成** - ヘッダー             |    [ ]     |
-| `app/dashboard/page.tsx`                       | ヘッダーコンポーネント使用          |    [ ]     |
+| ファイル                                    | 変更内容                            | ステータス |
+| ------------------------------------------- | ----------------------------------- | :--------: |
+| `prisma/schema.prisma`                      | AllowedAdminモデル追加              |    [ ]     |
+| `prisma/seed.ts`                            | AllowedAdminシード処理追加          |    [ ]     |
+| `lib/auth-config.ts`                        | **新規作成** - 許可メール判定（DB） |    [ ]     |
+| `auth.ts`                                   | signInコールバック追加              |    [ ]     |
+| `middleware.ts`                             | **新規作成** - ルート保護           |    [ ]     |
+| `app/auth/signin/page.tsx`                  | **新規作成** - ログインページ       |    [ ]     |
+| `app/dashboard/components/DashboardHeader.tsx` | **新規作成** - ヘッダー          |    [ ]     |
+| `app/dashboard/homepage/page.tsx`           | ヘッダーコンポーネント使用          |    [ ]     |
 
 ---
 
