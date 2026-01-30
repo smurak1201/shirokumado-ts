@@ -45,6 +45,66 @@
 - **方針2**: 未インストールのコンポーネントは必要に応じて追加する
 - **方針3**: 段階的に置き換えを行い、各タスク完了後に動作確認を実施する
 - **方針4**: 既存の機能・見た目を維持しつつ、コードの一貫性を向上させる
+- **方針5**: 既存のラッパーコンポーネントパターンに従う（後述）
+
+### コンポーネント配置とラッパーパターン
+
+プロジェクトでは以下のパターンでshadcnコンポーネントを使用している。
+
+**ファイル配置**:
+- ベースコンポーネント: `app/components/ui/badge.tsx`, `card.tsx` など
+- ラッパーコンポーネント: `app/components/ui/badge-price.tsx`, `card-product.tsx` など
+- すべて `app/components/ui/` に配置
+
+**ラッパーコンポーネントの構造**:
+
+```tsx
+import { Badge } from "./badge";  // 相対パスでインポート
+import type { ComponentPropsWithoutRef } from "react";
+import { cn } from "@/lib/utils";
+
+// 型定義: ベースコンポーネントのpropsを継承
+export type PriceBadgeProps = ComponentPropsWithoutRef<typeof Badge>;
+
+// ラッパーコンポーネント
+export function PriceBadge({ className, ...props }: PriceBadgeProps) {
+  return (
+    <Badge
+      variant="secondary"
+      className={cn("デフォルトスタイル", className)}  // cn()でマージ
+      {...props}
+    />
+  );
+}
+```
+
+**ダッシュボードでの方針**:
+- 基本的にはshadcnコンポーネントを直接使用する
+- ダッシュボード専用のスタイルが必要な場合は `className` で対応
+- 複数箇所で同じスタイルを使う場合のみラッパーを作成（DRY: 3箇所目で共通化）
+
+### CLAUDE.md準拠事項
+
+本リファクタリングでは以下のルールに従うこと。
+
+**設計原則**:
+- **YAGNI**: 現時点で必要な置き換えのみ実施。将来的な拡張のための過剰な抽象化は行わない
+- **KISS**: shadcnコンポーネントをシンプルに使用。複雑なラッパーは作らない
+- **モバイルファースト**: スタイルは `text-[8px] sm:text-[10px] md:text-sm` のように小さい画面から拡張
+
+**コード品質**:
+- 未使用のインポートは削除すること
+- 関数の引数と返り値には型を付けること
+- リントエラーを解消すること（`npm run lint`）
+
+**Server/Client Components**:
+- shadcn/uiのインタラクティブなコンポーネント（Dialog, Tabs, Select, RadioGroup等）を使用するファイルには `"use client"` が必要
+- 既存のClient Componentはそのまま維持
+- 新規でClient指定が必要な場合のみ追加
+
+**Tailwind CSS**:
+- `cn()` を使用してクラスをマージ（動的クラス名 `bg-${color}-500` は使用禁止）
+- モバイルファーストで `sm:`, `md:`, `lg:` を使用
 
 ---
 
@@ -439,17 +499,47 @@ export default function ProductCard({
 
 **対象ファイル**:
 
+- `app/components/ui/badge.tsx`（既存・変更）
 - `app/dashboard/components/list/ProductCardContent.tsx`（既存・変更）
 
 **問題点**:
 
-公開/非公開バッジ、カテゴリーバッジが Tailwind CSS で直接スタイリングされており、shadcn の `Badge` コンポーネントが使用されていない。
+公開/非公開バッジ、カテゴリーバッジが Tailwind CSS で直接スタイリングされており、shadcn の `Badge` コンポーネントが使用されていない。また、現在のBadgeには緑色（success）のバリアントがない。
 
 **修正内容**:
 
-既存のバッジを shadcn の `Badge` コンポーネントに置き換える。
+1. `badge.tsx` に `success` バリアントを追加
+2. 既存のバッジを shadcn の `Badge` コンポーネントに置き換える
 
-**実装例**:
+**badge.tsx への success バリアント追加**:
+
+```tsx
+// app/components/ui/badge.tsx の variants に追加
+const badgeVariants = cva(
+  "inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2",
+  {
+    variants: {
+      variant: {
+        default:
+          "border-transparent bg-primary text-primary-foreground hover:bg-primary/80",
+        secondary:
+          "border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80",
+        destructive:
+          "border-transparent bg-destructive text-destructive-foreground hover:bg-destructive/80",
+        outline: "text-foreground",
+        // 追加: 公開状態など成功を表すバリアント
+        success:
+          "border-transparent bg-green-100 text-green-800 hover:bg-green-100/80",
+      },
+    },
+    defaultVariants: {
+      variant: "default",
+    },
+  }
+)
+```
+
+**ProductCardContent.tsx の変更**:
 
 ```tsx
 // 変更前
@@ -467,19 +557,16 @@ export default function ProductCard({
 import { Badge } from "@/app/components/ui/badge";
 
 <Badge
-  variant={product.published ? "default" : "secondary"}
+  variant={product.published ? "success" : "secondary"}
   className="text-[8px] sm:text-[10px] md:text-xs"
 >
   {product.published ? "公開" : "非公開"}
 </Badge>
 ```
 
-**注意事項**:
-
-- Badge の variant に `success`（緑）がない場合は、カスタムバリアントを追加するか、className で対応する
-
 **チェックリスト**:
 
+- [ ] `badge.tsx` に `success` バリアントを追加
 - [ ] 公開/非公開バッジを Badge で置き換え
 - [ ] カテゴリーバッジを Badge で置き換え
 - [ ] バッジの見た目が正常であること
@@ -700,6 +787,12 @@ import { Label } from "@/app/components/ui/label";
    - [ ] フォーカスが適切に移動すること
    - [ ] ESCキーでモーダルが閉じること
 
+4. **品質チェックリスト**（CLAUDE.md準拠）
+   - [ ] この機能は**今**必要か？（YAGNI）
+   - [ ] もっとシンプルな方法はないか？（KISS）
+   - [ ] 未使用のインポートは削除したか？
+   - [ ] リントエラーは解消したか？（`npm run lint`）
+
 ---
 
 ## 変更対象ファイル一覧
@@ -711,6 +804,7 @@ import { Label } from "@/app/components/ui/label";
 | `app/components/ui/textarea.tsx`                             | **新規作成**（shadcnインストール） |    [ ]     |
 | `app/components/ui/select.tsx`                               | **新規作成**（shadcnインストール） |    [ ]     |
 | `app/components/ui/radio-group.tsx`                          | **新規作成**（shadcnインストール） |    [ ]     |
+| `app/components/ui/badge.tsx`                                | successバリアント追加       |    [ ]     |
 | `app/dashboard/components/list/ProductCard.tsx`              | Button, Card 使用           |    [ ]     |
 | `app/dashboard/components/list/ProductCardContent.tsx`       | Badge 使用                  |    [ ]     |
 | `app/dashboard/components/list/ProductListTabs.tsx`          | Tabs 使用                   |    [ ]     |
@@ -740,6 +834,18 @@ import { Label } from "@/app/components/ui/label";
 
 - フロント側での shadcn/ui 使用例: `app/components/ui/` 配下のコンポーネント
 - shadcn/ui 公式ドキュメント: https://ui.shadcn.com/
+
+**既存のラッパーコンポーネント例**（実装の参考にする）:
+
+| ファイル | ベース | 用途 |
+|---------|-------|------|
+| `badge-price.tsx` | Badge | 価格表示用 |
+| `badge-question.tsx` | Badge | FAQ質問番号用 |
+| `card-product.tsx` | Card | 商品タイル用 |
+| `card-faq.tsx` | Card | FAQ用 |
+| `card-modal.tsx` | Card | モーダル内表示用 |
+
+これらのファイルを参考に、`ComponentPropsWithoutRef` による型継承と `cn()` によるスタイルマージのパターンを確認すること。
 
 ### 実装順序の推奨
 
