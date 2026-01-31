@@ -20,7 +20,7 @@ export default function ProductCard({
   onDelete,
 }: ProductCardProps) {
   return (
-    <Card className={`flex flex-col ${!product.published ? "bg-gray-50" : ""}`}>
+    <Card className={`flex flex-col border-gray-200 ${!product.published ? "bg-gray-50" : ""}`}>
       <CardContent className="p-1 sm:p-2 md:p-4">
         <ProductCardContent
           product={product}
