@@ -106,7 +106,7 @@ export default function ProductForm({
         />
       }
     >
-      <form id={formId} onSubmit={handleSubmit} className="min-w-0 space-y-4 pr-2">
+      <form id={formId} onSubmit={handleSubmit} className="min-w-0 space-y-4">
         <ProductFormFields
           formData={formData}
           setFormData={setFormData}
