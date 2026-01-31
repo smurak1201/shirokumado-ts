@@ -26,9 +26,9 @@ export default function ProductDateInput({
   ariaLabel,
 }: ProductDateInputProps) {
   return (
-    <div className="space-y-2">
+    <div className="min-w-0 space-y-2">
       <Label htmlFor={id}>{label}</Label>
-      <div className="relative">
+      <div className="relative min-w-0">
         <Input
           type="datetime-local"
           id={id}
