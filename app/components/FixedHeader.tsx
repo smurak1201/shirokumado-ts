@@ -68,7 +68,7 @@ export default function FixedHeader() {
         >
           <Link
             href="/"
-            className="transition-all hover:opacity-80 hover:scale-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded-sm"
+            className="transition-all hover:opacity-80 hover:scale-105 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded-sm"
           >
             <Image
               src="/logo.webp"
@@ -85,7 +85,7 @@ export default function FixedHeader() {
             rel="noopener noreferrer"
             className={cn(
               "flex items-center justify-center rounded-full p-2 transition-all",
-              "hover:bg-accent hover:scale-110",
+              "hover:bg-accent hover:scale-110 active:scale-95",
               "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
             )}
             aria-label="Instagram"
@@ -108,7 +108,7 @@ export default function FixedHeader() {
             href="/faq"
             className={cn(
               "relative text-sm font-medium transition-all md:text-base",
-              "text-foreground/70 hover:text-foreground",
+              "text-foreground/70 hover:text-foreground active:scale-95",
               "after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-0 after:bg-foreground after:transition-all after:duration-300",
               "hover:after:w-full",
               "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded-sm"
