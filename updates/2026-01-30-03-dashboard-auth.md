@@ -51,8 +51,16 @@
 **初期データ**:
 
 ```
-s.murakoshi1201@gmail.com
+s.murakoshi1201@gmail.com (role: admin)
 ```
+
+**ロール一覧**:
+
+| ロール | アクセス範囲 |
+|--------|-------------|
+| `admin` | すべてのダッシュボード |
+| `homepage` | ホームページ側のみ |
+| `shop` | ECサイト側のみ（将来細分化の可能性）|
 
 ### 前提条件
 
@@ -109,6 +117,7 @@ s.murakoshi1201@gmail.com
 model AllowedAdmin {
   id        String   @id @default(cuid())
   email     String   @unique
+  role      String   @default("admin") // admin, homepage, shop, ...
   createdAt DateTime @default(now()) @map("created_at")
 
   @@map("allowed_admins")
@@ -472,23 +481,25 @@ npm run db:migrate
 ```typescript
 // prisma/seed.ts に追加
 
-// 許可する管理者メールアドレス
-const ALLOWED_ADMIN_EMAILS = ['s.murakoshi1201@gmail.com'];
+// 許可する管理者
+const ALLOWED_ADMINS = [
+  { email: 's.murakoshi1201@gmail.com', role: 'admin' },
+];
 
 async function main() {
   console.log('シードデータの投入を開始します...');
 
-  // 許可管理者メールアドレスの作成
-  for (const email of ALLOWED_ADMIN_EMAILS) {
+  // 許可管理者の作成
+  for (const admin of ALLOWED_ADMINS) {
     await prisma.allowedAdmin.upsert({
-      where: { email },
-      update: {},
-      create: { email },
+      where: { email: admin.email },
+      update: { role: admin.role },
+      create: { email: admin.email, role: admin.role },
     });
   }
   console.log(
-    '許可管理者メールアドレスを作成しました:',
-    ALLOWED_ADMIN_EMAILS.join(', ')
+    '許可管理者を作成しました:',
+    ALLOWED_ADMINS.map((a) => `${a.email} (${a.role})`).join(', ')
   );
 
   // 既存のカテゴリー作成処理...

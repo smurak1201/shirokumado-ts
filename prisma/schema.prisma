@@ -71,6 +71,7 @@ model VerificationToken {
 model AllowedAdmin {
   id        String   @id @default(cuid())
   email     String   @unique
+  role      String   @default("admin") // admin, homepage, shop, ...
   createdAt DateTime @default(now()) @map("created_at")
 
   @@map("allowed_admins")
