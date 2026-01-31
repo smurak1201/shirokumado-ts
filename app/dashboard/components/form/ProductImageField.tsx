@@ -33,7 +33,7 @@ export default function ProductImageField({
         accept="image/*"
         onChange={onImageChange}
         disabled={submitting || uploading || compressing}
-        className="file:mr-4 file:rounded-md file:border-0 file:bg-blue-50 file:px-4 file:py-2 file:text-sm file:font-semibold file:text-blue-700 hover:file:bg-blue-100"
+        className="h-auto py-2 file:mr-4 file:rounded-md file:border-0 file:bg-blue-50 file:px-4 file:py-1.5 file:text-sm file:font-semibold file:text-blue-700 hover:file:bg-blue-100"
       />
       {compressing && (
         <p className="text-sm text-gray-500">画像を圧縮中...</p>
