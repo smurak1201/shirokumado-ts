@@ -545,7 +545,7 @@ async function main() {
 
 ---
 
-### タスク8: 初期データ登録
+### タスク8: 初期データ登録 [完了]
 
 **対象**:
 
@@ -591,7 +591,7 @@ npm run db:studio
 
 **チェックリスト**:
 
-- [ ] `allowed_admins` テーブルに初期データが登録されていること
+- [o] `allowed_admins` テーブルに初期データが登録されていること
 
 ---
 
@@ -628,7 +628,7 @@ npm run db:studio
 | ファイル                                    | 変更内容                            | ステータス |
 | ------------------------------------------- | ----------------------------------- | :--------: |
 | `prisma/schema.prisma`                      | AllowedAdminモデル追加              |    [o]     |
-| `prisma/seed.ts`                            | AllowedAdminシード処理追加          |    [ ]     |
+| `prisma/seed.ts`                            | AllowedAdminシード処理追加          |    [o]     |
 | `lib/auth-config.ts`                        | **新規作成** - 許可メール判定（DB） |    [o]     |
 | `auth.ts`                                   | signInコールバック追加              |    [o]     |
 | `proxy.ts`                                  | **新規作成** - ルート保護（クッキー確認） |    [o]     |
