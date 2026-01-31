@@ -39,7 +39,7 @@ export default function DashboardHeader({ title, session, onSignOut }: Dashboard
           </form>
         </div>
       </div>
-      <nav className="-mx-4 border-b border-gray-200 bg-white px-4 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8">
+      <nav className="rounded-lg border-b border-gray-200 bg-white overflow-hidden">
         <div className="flex gap-2 sm:gap-4">
           {tabs.map((tab) => {
             const isActive = pathname.startsWith(tab.href);
