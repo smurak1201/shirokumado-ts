@@ -16,7 +16,7 @@
 | 2   | Auth.js でログイン制限を実装     |   高   |    [o]     |      |
 | 3   | proxyとlayout.tsxでルート保護    |   高   |    [o]     |      |
 | 4   | ログインページの作成             |   高   |    [o]     |      |
-| 5   | ダッシュボードにログアウト機能   |   中   |    [ ]     |      |
+| 5   | ダッシュボードにログアウト機能   |   中   |    [o]     |      |
 | 6   | Prisma マイグレーション実行      |   高   |    [ ]     |      |
 | 7   | シーダーに初期データ登録処理追加 |   高   |    [ ]     |      |
 | 8   | 初期データ登録                   |   高   |    [ ]     |      |
@@ -387,7 +387,7 @@ function GoogleIcon() {
 
 ---
 
-### タスク5: ダッシュボードにログアウト機能
+### タスク5: ダッシュボードにログアウト機能 [完了]
 
 **対象ファイル**:
 
@@ -459,9 +459,9 @@ return (
 
 **チェックリスト**:
 
-- [ ] `app/dashboard/components/DashboardHeader.tsx` を新規作成
-- [ ] `app/dashboard/homepage/page.tsx` でヘッダーコンポーネントをインポート
-- [ ] ログアウトボタンが機能すること
+- [o] `app/dashboard/components/DashboardHeader.tsx` を新規作成
+- [o] `app/dashboard/homepage/page.tsx` でヘッダーコンポーネントをインポート
+- [ ] ログアウトボタンが機能すること（タスク9で確認）
 
 ---
 
@@ -634,8 +634,8 @@ npm run db:studio
 | `proxy.ts`                                  | **新規作成** - ルート保護（クッキー確認） |    [o]     |
 | `app/dashboard/layout.tsx`                  | 認証チェック追加                    |    [o]     |
 | `app/auth/signin/page.tsx`                  | **新規作成** - ログインページ       |    [o]     |
-| `app/dashboard/components/DashboardHeader.tsx` | **新規作成** - ヘッダー          |    [ ]     |
-| `app/dashboard/homepage/page.tsx`           | ヘッダーコンポーネント使用          |    [ ]     |
+| `app/dashboard/components/DashboardHeader.tsx` | **新規作成** - ヘッダー          |    [o]     |
+| `app/dashboard/homepage/page.tsx`           | ヘッダーコンポーネント使用          |    [o]     |
 
 ---
 
