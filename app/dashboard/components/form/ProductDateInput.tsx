@@ -26,15 +26,15 @@ export default function ProductDateInput({
   ariaLabel,
 }: ProductDateInputProps) {
   return (
-    <div className="min-w-0 space-y-2 overflow-hidden">
+    <div className="min-w-0 space-y-2">
       <Label htmlFor={id}>{label}</Label>
-      <div className="relative min-w-0 overflow-hidden">
+      <div className="relative min-w-0">
         <Input
           type="datetime-local"
           id={id}
           value={value}
           onChange={(e) => onChange(e.target.value)}
-          className="max-w-full min-w-0 pr-10"
+          className="w-full min-w-0 pr-10"
         />
         {value && (
           <Button
