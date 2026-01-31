@@ -14,7 +14,7 @@
 | --- | -------------------------------- | :----: | :--------: | ---- |
 | 1   | 許可メールアドレスのテーブル作成 |   高   |    [o]     |      |
 | 2   | Auth.js でログイン制限を実装     |   高   |    [o]     |      |
-| 3   | ミドルウェアでルート保護         |   高   |    [o]     |      |
+| 3   | proxyとlayout.tsxでルート保護    |   高   |    [o]     |      |
 | 4   | ログインページの作成             |   高   |    [o]     |      |
 | 5   | ダッシュボードにログアウト機能   |   中   |    [ ]     |      |
 | 6   | Prisma マイグレーション実行      |   高   |    [ ]     |      |
@@ -214,11 +214,12 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
 ---
 
-### タスク3: ミドルウェアでルート保護 [完了]
+### タスク3: proxyとlayout.tsxでルート保護 [完了]
 
 **対象ファイル**:
 
-- `middleware.ts`（**新規作成**）
+- `proxy.ts`（**新規作成**）
+- `app/dashboard/layout.tsx`（既存・変更）
 
 **問題点**:
 
@@ -226,38 +227,69 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
 **修正内容**:
 
-ミドルウェアを作成し、`/dashboard` へのアクセス時に認証をチェックする。
+Next.js 16のベストプラクティスに従い、2段階で認証を実装する:
+1. `proxy.ts`: セッションクッキーの存在確認（高速なリダイレクト）
+2. `layout.tsx`: `auth()` による詳細な認証チェック
 
 **実装例**:
 
 ```typescript
-// middleware.ts（新規作成）
-import { auth } from '@/auth';
+// proxy.ts（新規作成）
+import type { NextRequest } from 'next/server';
 
-export default auth((req) => {
-  const isLoggedIn = !!req.auth;
-  const isOnDashboard = req.nextUrl.pathname.startsWith('/dashboard');
-  const isOnAuthPage = req.nextUrl.pathname.startsWith('/auth');
+const AUTH_COOKIE_NAME = 'authjs.session-token';
+const SECURE_AUTH_COOKIE_NAME = '__Secure-authjs.session-token';
 
-  // ダッシュボードへの未認証アクセスはログインページへリダイレクト
-  if (isOnDashboard && !isLoggedIn) {
-    return Response.redirect(new URL('/auth/signin', req.nextUrl));
+function hasSessionCookie(request: NextRequest): boolean {
+  return (
+    request.cookies.has(AUTH_COOKIE_NAME) ||
+    request.cookies.has(SECURE_AUTH_COOKIE_NAME)
+  );
+}
+
+export function proxy(request: NextRequest) {
+  const { pathname } = request.nextUrl;
+  const hasSession = hasSessionCookie(request);
+
+  if (pathname.startsWith('/dashboard') && !hasSession) {
+    return Response.redirect(new URL('/auth/signin', request.url));
   }
 
-  // ログイン済みユーザーが認証ページにアクセスした場合はダッシュボードへ
-  if (isOnAuthPage && isLoggedIn) {
-    return Response.redirect(new URL('/dashboard', req.nextUrl));
+  if (pathname.startsWith('/auth') && hasSession) {
+    return Response.redirect(new URL('/dashboard', request.url));
   }
-});
+}
 
 export const config = {
   matcher: ['/dashboard/:path*', '/auth/:path*'],
 };
 ```
 
+```typescript
+// app/dashboard/layout.tsx（変更）
+import { redirect } from 'next/navigation';
+import { auth } from '@/auth';
+
+export default async function DashboardLayout({ children }) {
+  const session = await auth();
+
+  if (!session) {
+    redirect('/auth/signin');
+  }
+
+  return (
+    <div className="min-h-screen bg-gray-50">
+      <DashboardTabs />
+      {children}
+    </div>
+  );
+}
+```
+
 **チェックリスト**:
 
-- [o] `middleware.ts` を新規作成
+- [o] `proxy.ts` を新規作成（セッションクッキー確認）
+- [o] `app/dashboard/layout.tsx` に認証チェックを追加
 - [ ] 未認証で `/dashboard` にアクセスするとログインページへリダイレクト（タスク9で確認）
 - [ ] 未認証で `/dashboard/homepage` にアクセスするとログインページへリダイレクト（タスク9で確認）
 - [ ] 未認証で `/dashboard/shop` にアクセスするとログインページへリダイレクト（タスク9で確認）
@@ -599,7 +631,8 @@ npm run db:studio
 | `prisma/seed.ts`                            | AllowedAdminシード処理追加          |    [ ]     |
 | `lib/auth-config.ts`                        | **新規作成** - 許可メール判定（DB） |    [o]     |
 | `auth.ts`                                   | signInコールバック追加              |    [o]     |
-| `middleware.ts`                             | **新規作成** - ルート保護           |    [o]     |
+| `proxy.ts`                                  | **新規作成** - ルート保護（クッキー確認） |    [o]     |
+| `app/dashboard/layout.tsx`                  | 認証チェック追加                    |    [o]     |
 | `app/auth/signin/page.tsx`                  | **新規作成** - ログインページ       |    [o]     |
 | `app/dashboard/components/DashboardHeader.tsx` | **新規作成** - ヘッダー          |    [ ]     |
 | `app/dashboard/homepage/page.tsx`           | ヘッダーコンポーネント使用          |    [ ]     |
