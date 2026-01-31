@@ -1,3 +1,4 @@
+import { Label } from "@/app/components/ui/label";
 import type { ProductFormData } from "../../hooks/useProductForm";
 
 interface ProductPublishedFieldProps {
@@ -20,11 +21,9 @@ export default function ProductPublishedField({
   fieldPrefix = "",
 }: ProductPublishedFieldProps) {
   return (
-    <div>
-      <label className="block text-sm font-medium text-gray-700">
-        公開情報
-      </label>
-      <div className="mt-2 flex items-center gap-4">
+    <div className="space-y-2">
+      <Label>公開情報</Label>
+      <div className="flex items-center gap-4">
         <label className="flex cursor-pointer items-center">
           <input
             type="radio"
@@ -57,7 +56,7 @@ export default function ProductPublishedField({
         </label>
       </div>
       {hasDateRangeValue && (
-        <p className="mt-1 text-xs text-gray-500">
+        <p className="text-xs text-gray-500">
           公開日・終了日が設定されているため、公開情報は自動的に判定されます
         </p>
       )}

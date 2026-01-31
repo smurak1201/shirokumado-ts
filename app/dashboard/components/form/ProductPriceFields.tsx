@@ -1,3 +1,5 @@
+import { Label } from "@/app/components/ui/label";
+import { Input } from "@/app/components/ui/input";
 import { formatPriceForInput, parsePrice, isNumericKey } from "@/lib/product-utils";
 import type { ProductFormData } from "../../hooks/useProductForm";
 
@@ -19,14 +21,9 @@ export default function ProductPriceFields({
 }: ProductPriceFieldsProps) {
   return (
     <div className="grid grid-cols-2 gap-4">
-      <div>
-        <label
-          htmlFor={`${fieldPrefix}priceS`}
-          className="block text-sm font-medium text-gray-700"
-        >
-          Sサイズの料金（円）
-        </label>
-        <input
+      <div className="space-y-2">
+        <Label htmlFor={`${fieldPrefix}priceS`}>Sサイズの料金（円）</Label>
+        <Input
           type="text"
           id={`${fieldPrefix}priceS`}
           inputMode="numeric"
@@ -40,17 +37,11 @@ export default function ProductPriceFields({
             const cleaned = parsePrice(e.target.value);
             setFormData((prev) => ({ ...prev, priceS: cleaned }));
           }}
-          className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-base shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"
         />
       </div>
-      <div>
-        <label
-          htmlFor={`${fieldPrefix}priceL`}
-          className="block text-sm font-medium text-gray-700"
-        >
-          Lサイズの料金（円）
-        </label>
-        <input
+      <div className="space-y-2">
+        <Label htmlFor={`${fieldPrefix}priceL`}>Lサイズの料金（円）</Label>
+        <Input
           type="text"
           id={`${fieldPrefix}priceL`}
           inputMode="numeric"
@@ -64,7 +55,6 @@ export default function ProductPriceFields({
             const cleaned = parsePrice(e.target.value);
             setFormData((prev) => ({ ...prev, priceL: cleaned }));
           }}
-          className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-base shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"
         />
       </div>
     </div>

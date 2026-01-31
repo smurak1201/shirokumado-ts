@@ -1,3 +1,14 @@
+"use client";
+
+import { Label } from "@/app/components/ui/label";
+import { Input } from "@/app/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/app/components/ui/select";
 import type { Category } from "../../types";
 
 interface ProductSearchFiltersProps {
@@ -28,45 +39,41 @@ export default function ProductSearchFilters({
   return (
     <div className="mb-4 space-y-4">
       <div className="flex flex-col gap-4 md:flex-row md:items-end md:gap-6">
-        <div className="flex-1 min-w-0">
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            商品名
-          </label>
-          <input
+        <div className="min-w-0 flex-1 space-y-2">
+          <Label>商品名</Label>
+          <Input
             type="text"
             placeholder="商品名で検索..."
             value={searchName}
             onChange={(e) => setSearchName(e.target.value)}
-            className="w-full max-w-[224px] rounded-md border border-gray-300 px-3 py-2 text-base focus:border-blue-500 focus:outline-none focus:ring-blue-500"
+            className="max-w-[224px]"
           />
         </div>
 
-        <div className="flex-1 min-w-0">
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            カテゴリー
-          </label>
-          <select
-            value={searchCategoryId || ""}
-            onChange={(e) =>
-              setSearchCategoryId(
-                e.target.value ? parseInt(e.target.value) : null
-              )
+        <div className="min-w-0 flex-1 space-y-2">
+          <Label>カテゴリー</Label>
+          <Select
+            value={searchCategoryId ? String(searchCategoryId) : "all"}
+            onValueChange={(value) =>
+              setSearchCategoryId(value === "all" ? null : parseInt(value))
             }
-            className="w-full max-w-[224px] rounded-md border border-gray-300 px-3 py-2 text-base focus:border-blue-500 focus:outline-none focus:ring-blue-500"
           >
-            <option value="">すべてのカテゴリー</option>
-            {categories.map((category) => (
-              <option key={category.id} value={category.id}>
-                {category.name}
-              </option>
-            ))}
-          </select>
+            <SelectTrigger className="max-w-[224px]">
+              <SelectValue placeholder="すべてのカテゴリー" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">すべてのカテゴリー</SelectItem>
+              {categories.map((category) => (
+                <SelectItem key={category.id} value={String(category.id)}>
+                  {category.name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
 
-        <div className="flex-1 min-w-0">
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            公開情報
-          </label>
+        <div className="min-w-0 flex-1 space-y-2">
+          <Label>公開情報</Label>
           <div className="flex items-center gap-4">
             <label className="flex cursor-pointer items-center">
               <input

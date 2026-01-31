@@ -18,7 +18,7 @@
 | 4   | Tabs コンポーネントの置き換え                |   中   |    [o]     | LayoutCategoryTabsは横スクロール機能維持のため現状維持 |
 | 5   | Card コンポーネントの置き換え                |   中   |    [o]     |      |
 | 6   | Badge コンポーネントの置き換え               |   中   |    [o]     |      |
-| 7   | フォーム要素の置き換え（Input, Label, etc.） |   中   |    [ ]     |      |
+| 7   | フォーム要素の置き換え（Input, Label, etc.） |   中   |    [o]     |      |
 | 8   | RadioGroup コンポーネントの置き換え          |   低   |    [ ]     |      |
 | 9   | 動作確認・ビルドテスト                       |   -    |    [ ]     |      |
 
@@ -574,7 +574,7 @@ import { Badge } from "@/app/components/ui/badge";
 
 ---
 
-### タスク7: フォーム要素の置き換え（Input, Label, Textarea, Select）
+### タスク7: フォーム要素の置き換え（Input, Label, Textarea, Select） [完了]
 
 **対象ファイル**:
 
@@ -681,15 +681,15 @@ import {
 
 **チェックリスト**:
 
-- [ ] `ProductBasicFields.tsx` のフォーム要素を置き換え
-- [ ] `ProductPriceFields.tsx` のフォーム要素を置き換え
-- [ ] `ProductDateFields.tsx` のフォーム要素を置き換え
-- [ ] `ProductDateInput.tsx` のフォーム要素を置き換え
-- [ ] `ProductImageField.tsx` のフォーム要素を置き換え
-- [ ] `ProductPublishedField.tsx` のフォーム要素を置き換え
-- [ ] `ProductSearchFilters.tsx` のフォーム要素を置き換え
+- [o] `ProductBasicFields.tsx` のフォーム要素を置き換え
+- [o] `ProductPriceFields.tsx` のフォーム要素を置き換え
+- [o] `ProductDateFields.tsx` のフォーム要素を置き換え
+- [o] `ProductDateInput.tsx` のフォーム要素を置き換え
+- [o] `ProductImageField.tsx` のフォーム要素を置き換え
+- [~] `ProductPublishedField.tsx` のフォーム要素を置き換え（RadioGroupはタスク8）
+- [~] `ProductSearchFilters.tsx` のフォーム要素を置き換え（RadioGroupはタスク8）
 - [ ] フォームの入力・送信が正常に動作すること
-- [ ] ビルドエラーがないこと
+- [o] ビルドエラーがないこと
 
 ---
 
@@ -808,16 +808,16 @@ import { Label } from "@/app/components/ui/label";
 | `app/dashboard/components/list/ProductCard.tsx`              | Button, Card 使用           |    [o]     |
 | `app/dashboard/components/list/ProductCardContent.tsx`       | Badge 使用                  |    [o]     |
 | `app/dashboard/components/list/ProductListTabs.tsx`          | Tabs 使用                   |    [o]     |
-| `app/dashboard/components/list/ProductSearchFilters.tsx`     | Input, Select, RadioGroup 使用 |    [ ]     |
+| `app/dashboard/components/list/ProductSearchFilters.tsx`     | Input, Select, RadioGroup 使用 |    [~]     |
 | `app/dashboard/components/layout/LayoutCategoryTabs.tsx`     | Tabs 使用                   |    [-]     |
 | `app/dashboard/components/form/ProductFormModal.tsx`         | Dialog 使用                 |    [o]     |
 | `app/dashboard/components/form/ProductFormFooter.tsx`        | Button 使用                 |    [o]     |
-| `app/dashboard/components/form/ProductBasicFields.tsx`       | Label, Textarea, Select 使用 |    [ ]     |
-| `app/dashboard/components/form/ProductPriceFields.tsx`       | Label, Input 使用           |    [ ]     |
-| `app/dashboard/components/form/ProductDateFields.tsx`        | Label 使用                  |    [ ]     |
-| `app/dashboard/components/form/ProductDateInput.tsx`         | Label, Input 使用           |    [ ]     |
-| `app/dashboard/components/form/ProductImageField.tsx`        | Label, Input 使用           |    [ ]     |
-| `app/dashboard/components/form/ProductPublishedField.tsx`    | Label, RadioGroup 使用      |    [ ]     |
+| `app/dashboard/components/form/ProductBasicFields.tsx`       | Label, Textarea, Select 使用 |    [o]     |
+| `app/dashboard/components/form/ProductPriceFields.tsx`       | Label, Input 使用           |    [o]     |
+| `app/dashboard/components/form/ProductDateFields.tsx`        | Label 使用                  |    [o]     |
+| `app/dashboard/components/form/ProductDateInput.tsx`         | Label, Input 使用           |    [o]     |
+| `app/dashboard/components/form/ProductImageField.tsx`        | Label, Input 使用           |    [o]     |
+| `app/dashboard/components/form/ProductPublishedField.tsx`    | Label, RadioGroup 使用      |    [~]     |
 
 ---
 

@@ -1,3 +1,14 @@
+"use client";
+
+import { Label } from "@/app/components/ui/label";
+import { Textarea } from "@/app/components/ui/textarea";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/app/components/ui/select";
 import type { Category } from "../../types";
 import type { ProductFormData } from "../../hooks/useProductForm";
 
@@ -21,14 +32,11 @@ export default function ProductBasicFields({
 }: ProductBasicFieldsProps) {
   return (
     <>
-      <div>
-        <label
-          htmlFor={`${fieldPrefix}name`}
-          className="block text-sm font-medium text-gray-700"
-        >
+      <div className="space-y-2">
+        <Label htmlFor={`${fieldPrefix}name`}>
           商品名 <span className="text-red-500">*</span>
-        </label>
-        <textarea
+        </Label>
+        <Textarea
           id={`${fieldPrefix}name`}
           required
           rows={2}
@@ -36,18 +44,14 @@ export default function ProductBasicFields({
           onChange={(e) =>
             setFormData((prev) => ({ ...prev, name: e.target.value }))
           }
-          className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-base shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"
         />
       </div>
 
-      <div>
-        <label
-          htmlFor={`${fieldPrefix}description`}
-          className="block text-sm font-medium text-gray-700"
-        >
+      <div className="space-y-2">
+        <Label htmlFor={`${fieldPrefix}description`}>
           商品説明 <span className="text-red-500">*</span>
-        </label>
-        <textarea
+        </Label>
+        <Textarea
           id={`${fieldPrefix}description`}
           required
           rows={6}
@@ -55,33 +59,31 @@ export default function ProductBasicFields({
           onChange={(e) =>
             setFormData((prev) => ({ ...prev, description: e.target.value }))
           }
-          className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-base shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"
         />
       </div>
 
-      <div>
-        <label
-          htmlFor={`${fieldPrefix}categoryId`}
-          className="block text-sm font-medium text-gray-700"
-        >
+      <div className="space-y-2">
+        <Label htmlFor={`${fieldPrefix}categoryId`}>
           カテゴリー <span className="text-red-500">*</span>
-        </label>
-        <select
-          id={`${fieldPrefix}categoryId`}
-          required
+        </Label>
+        <Select
           value={formData.categoryId}
-          onChange={(e) =>
-            setFormData((prev) => ({ ...prev, categoryId: e.target.value }))
+          onValueChange={(value) =>
+            setFormData((prev) => ({ ...prev, categoryId: value }))
           }
-          className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-base shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"
+          required
         >
-          {fieldPrefix === "" && <option value="">選択してください</option>}
-          {categories.map((category) => (
-            <option key={category.id} value={category.id}>
-              {category.name}
-            </option>
-          ))}
-        </select>
+          <SelectTrigger id={`${fieldPrefix}categoryId`}>
+            <SelectValue placeholder="選択してください" />
+          </SelectTrigger>
+          <SelectContent>
+            {categories.map((category) => (
+              <SelectItem key={category.id} value={String(category.id)}>
+                {category.name}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
       </div>
     </>
   );
