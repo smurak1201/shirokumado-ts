@@ -35,7 +35,7 @@ export default function ProductFormModal({
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
         </DialogHeader>
-        {children}
+        <div className="pr-2">{children}</div>
         <DialogFooter>{footer}</DialogFooter>
       </DialogContent>
     </Dialog>
