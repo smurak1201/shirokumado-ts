@@ -34,7 +34,7 @@ export default function ProductDateInput({
           id={id}
           value={value}
           onChange={(e) => onChange(e.target.value)}
-          className="pr-10"
+          className="min-w-0 pr-10"
         />
         {value && (
           <Button
