@@ -27,7 +27,7 @@ export default function DashboardHeader({ title, session, onSignOut }: Dashboard
     <header className="sticky top-0 z-20 mb-6 bg-gray-50 pb-4">
       <div className="mb-4 pt-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
         <h1 className="text-2xl font-bold sm:text-3xl">{title}</h1>
-        <div className="flex items-center gap-2 sm:gap-3">
+        <div className="flex items-center justify-between gap-2 sm:gap-3">
           <span className="truncate text-xs text-gray-600 sm:text-sm">{session?.user?.email}</span>
           <form action={onSignOut}>
             <button
