@@ -12,7 +12,7 @@ export default function DashboardTabs() {
   const pathname = usePathname();
 
   return (
-    <nav className="border-b border-gray-200 bg-white">
+    <nav className="sticky top-0 z-10 border-b border-gray-200 bg-white">
       <div className="mx-auto max-w-4xl px-4">
         <div className="flex gap-4">
           {tabs.map((tab) => {
