@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react';
 import { redirect } from 'next/navigation';
-import { auth } from '@/auth';
-import DashboardTabs from './components/DashboardTabs';
+import { auth, signOut } from '@/auth';
+import DashboardHeader from './components/DashboardHeader';
 
 interface DashboardLayoutProps {
   children: ReactNode;
@@ -11,7 +11,7 @@ interface DashboardLayoutProps {
  * ダッシュボード共通レイアウトコンポーネント
  *
  * すべてのダッシュボードページに共通のレイアウトを提供します。
- * タブナビゲーションを含み、各ダッシュボード間の切り替えを可能にします。
+ * ヘッダー（タイトル、ユーザー情報、タブナビゲーション）を含みます。
  *
  * 認証チェック: セッションが存在しない場合はログインページへリダイレクト
  */
@@ -24,8 +24,19 @@ export default async function DashboardLayout({ children }: DashboardLayoutProps
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <DashboardTabs />
-      {children}
+      <div className="py-8">
+        <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
+          <DashboardHeader
+            title="ダッシュボード"
+            session={session}
+            onSignOut={async () => {
+              'use server';
+              await signOut({ redirectTo: '/auth/signin' });
+            }}
+          />
+          {children}
+        </div>
+      </div>
     </div>
   );
 }

@@ -1,6 +1,5 @@
 import { prisma, safePrismaOperation } from "@/lib/prisma";
 import { log } from "@/lib/logger";
-import DashboardHeader from "../components/DashboardHeader";
 import DashboardContent from "./components/DashboardContent";
 import type { Category, Product } from "./types";
 
@@ -101,13 +100,5 @@ export default async function DashboardPage() {
     products = [];
   }
 
-  return (
-    <div className="py-8">
-      <div className="mx-auto max-w-4xl px-4">
-        <DashboardHeader title="商品管理ダッシュボード" />
-
-        <DashboardContent categories={categories} initialProducts={products} />
-      </div>
-    </div>
-  );
+  return <DashboardContent categories={categories} initialProducts={products} />;
 }
