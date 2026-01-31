@@ -12,7 +12,7 @@
 
 | #   | タスク                           | 優先度 | ステータス | 備考 |
 | --- | -------------------------------- | :----: | :--------: | ---- |
-| 1   | 許可メールアドレスのテーブル作成 |   高   |    [ ]     |      |
+| 1   | 許可メールアドレスのテーブル作成 |   高   |    [o]     |      |
 | 2   | Auth.js でログイン制限を実装     |   高   |    [ ]     |      |
 | 3   | ミドルウェアでルート保護         |   高   |    [ ]     |      |
 | 4   | ログインページの作成             |   高   |    [ ]     |      |
@@ -85,7 +85,7 @@ s.murakoshi1201@gmail.com
 
 ## タスク詳細
 
-### タスク1: 許可メールアドレスのテーブル作成
+### タスク1: 許可メールアドレスのテーブル作成 [完了]
 
 **対象ファイル**:
 
@@ -137,8 +137,8 @@ export async function isAllowedEmail(email: string | null | undefined): Promise<
 
 **チェックリスト**:
 
-- [ ] `prisma/schema.prisma` に `AllowedAdmin` モデルを追加
-- [ ] `lib/auth-config.ts` を新規作成
+- [x] `prisma/schema.prisma` に `AllowedAdmin` モデルを追加
+- [x] `lib/auth-config.ts` を新規作成
 - [ ] マイグレーション後、Neon または Prisma Studio で初期データを登録
 
 ---
@@ -584,9 +584,9 @@ npm run db:studio
 
 | ファイル                                    | 変更内容                            | ステータス |
 | ------------------------------------------- | ----------------------------------- | :--------: |
-| `prisma/schema.prisma`                      | AllowedAdminモデル追加              |    [ ]     |
+| `prisma/schema.prisma`                      | AllowedAdminモデル追加              |    [o]     |
 | `prisma/seed.ts`                            | AllowedAdminシード処理追加          |    [ ]     |
-| `lib/auth-config.ts`                        | **新規作成** - 許可メール判定（DB） |    [ ]     |
+| `lib/auth-config.ts`                        | **新規作成** - 許可メール判定（DB） |    [o]     |
 | `auth.ts`                                   | signInコールバック追加              |    [ ]     |
 | `middleware.ts`                             | **新規作成** - ルート保護           |    [ ]     |
 | `app/auth/signin/page.tsx`                  | **新規作成** - ログインページ       |    [ ]     |
