@@ -1,4 +1,7 @@
+"use client";
+
 import { Label } from "@/app/components/ui/label";
+import { RadioGroup, RadioGroupItem } from "@/app/components/ui/radio-group";
 import type { ProductFormData } from "../../hooks/useProductForm";
 
 interface ProductPublishedFieldProps {
@@ -23,38 +26,33 @@ export default function ProductPublishedField({
   return (
     <div className="space-y-2">
       <Label>公開情報</Label>
-      <div className="flex items-center gap-4">
-        <label className="flex cursor-pointer items-center">
-          <input
-            type="radio"
-            name={`${fieldPrefix}published`}
-            checked={formData.published === true}
-            onChange={() =>
-              setFormData((prev) => ({ ...prev, published: true }))
-            }
-            disabled={hasDateRangeValue}
-            className="mr-2"
-          />
-          <span className={hasDateRangeValue ? "text-gray-400" : ""}>
+      <RadioGroup
+        value={formData.published ? "published" : "unpublished"}
+        onValueChange={(value) =>
+          setFormData((prev) => ({ ...prev, published: value === "published" }))
+        }
+        disabled={hasDateRangeValue}
+        className="flex items-center gap-4"
+      >
+        <div className="flex items-center space-x-2">
+          <RadioGroupItem value="published" id={`${fieldPrefix}published-true`} />
+          <Label
+            htmlFor={`${fieldPrefix}published-true`}
+            className={`cursor-pointer font-normal ${hasDateRangeValue ? "text-gray-400" : ""}`}
+          >
             公開
-          </span>
-        </label>
-        <label className="flex cursor-pointer items-center">
-          <input
-            type="radio"
-            name={`${fieldPrefix}published`}
-            checked={formData.published === false}
-            onChange={() =>
-              setFormData((prev) => ({ ...prev, published: false }))
-            }
-            disabled={hasDateRangeValue}
-            className="mr-2"
-          />
-          <span className={hasDateRangeValue ? "text-gray-400" : ""}>
+          </Label>
+        </div>
+        <div className="flex items-center space-x-2">
+          <RadioGroupItem value="unpublished" id={`${fieldPrefix}published-false`} />
+          <Label
+            htmlFor={`${fieldPrefix}published-false`}
+            className={`cursor-pointer font-normal ${hasDateRangeValue ? "text-gray-400" : ""}`}
+          >
             非公開
-          </span>
-        </label>
-      </div>
+          </Label>
+        </div>
+      </RadioGroup>
       {hasDateRangeValue && (
         <p className="text-xs text-gray-500">
           公開日・終了日が設定されているため、公開情報は自動的に判定されます

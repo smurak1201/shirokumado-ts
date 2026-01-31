@@ -9,6 +9,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/app/components/ui/select";
+import { RadioGroup, RadioGroupItem } from "@/app/components/ui/radio-group";
 import type { Category } from "../../types";
 
 interface ProductSearchFiltersProps {
@@ -36,6 +37,11 @@ export default function ProductSearchFilters({
   setSearchCategoryId,
   categories,
 }: ProductSearchFiltersProps) {
+  const getPublishedValue = (): string => {
+    if (searchPublished === null) return "all";
+    return searchPublished ? "published" : "unpublished";
+  };
+
   return (
     <div className="mb-4 space-y-4">
       <div className="flex flex-col gap-4 md:flex-row md:items-end md:gap-6">
@@ -74,38 +80,34 @@ export default function ProductSearchFilters({
 
         <div className="min-w-0 flex-1 space-y-2">
           <Label>公開情報</Label>
-          <div className="flex items-center gap-4">
-            <label className="flex cursor-pointer items-center">
-              <input
-                type="radio"
-                name="search-published"
-                checked={searchPublished === null}
-                onChange={() => setSearchPublished(null)}
-                className="mr-2"
-              />
-              <span>すべて</span>
-            </label>
-            <label className="flex cursor-pointer items-center">
-              <input
-                type="radio"
-                name="search-published"
-                checked={searchPublished === true}
-                onChange={() => setSearchPublished(true)}
-                className="mr-2"
-              />
-              <span>公開</span>
-            </label>
-            <label className="flex cursor-pointer items-center">
-              <input
-                type="radio"
-                name="search-published"
-                checked={searchPublished === false}
-                onChange={() => setSearchPublished(false)}
-                className="mr-2"
-              />
-              <span>非公開</span>
-            </label>
-          </div>
+          <RadioGroup
+            value={getPublishedValue()}
+            onValueChange={(value) => {
+              if (value === "all") setSearchPublished(null);
+              else if (value === "published") setSearchPublished(true);
+              else setSearchPublished(false);
+            }}
+            className="flex items-center gap-4"
+          >
+            <div className="flex items-center space-x-2">
+              <RadioGroupItem value="all" id="search-all" />
+              <Label htmlFor="search-all" className="cursor-pointer font-normal">
+                すべて
+              </Label>
+            </div>
+            <div className="flex items-center space-x-2">
+              <RadioGroupItem value="published" id="search-published" />
+              <Label htmlFor="search-published" className="cursor-pointer font-normal">
+                公開
+              </Label>
+            </div>
+            <div className="flex items-center space-x-2">
+              <RadioGroupItem value="unpublished" id="search-unpublished" />
+              <Label htmlFor="search-unpublished" className="cursor-pointer font-normal">
+                非公開
+              </Label>
+            </div>
+          </RadioGroup>
         </div>
       </div>
     </div>

@@ -19,7 +19,7 @@
 | 5   | Card コンポーネントの置き換え                |   中   |    [o]     |      |
 | 6   | Badge コンポーネントの置き換え               |   中   |    [o]     |      |
 | 7   | フォーム要素の置き換え（Input, Label, etc.） |   中   |    [o]     |      |
-| 8   | RadioGroup コンポーネントの置き換え          |   低   |    [ ]     |      |
+| 8   | RadioGroup コンポーネントの置き換え          |   低   |    [o]     |      |
 | 9   | 動作確認・ビルドテスト                       |   -    |    [ ]     |      |
 
 **凡例**: `[ ]` 未着手 / `[~]` 作業中 / `[o]` 完了
@@ -686,14 +686,14 @@ import {
 - [o] `ProductDateFields.tsx` のフォーム要素を置き換え
 - [o] `ProductDateInput.tsx` のフォーム要素を置き換え
 - [o] `ProductImageField.tsx` のフォーム要素を置き換え
-- [~] `ProductPublishedField.tsx` のフォーム要素を置き換え（RadioGroupはタスク8）
-- [~] `ProductSearchFilters.tsx` のフォーム要素を置き換え（RadioGroupはタスク8）
+- [o] `ProductPublishedField.tsx` のフォーム要素を置き換え
+- [o] `ProductSearchFilters.tsx` のフォーム要素を置き換え
 - [ ] フォームの入力・送信が正常に動作すること
 - [o] ビルドエラーがないこと
 
 ---
 
-### タスク8: RadioGroup コンポーネントの置き換え
+### タスク8: RadioGroup コンポーネントの置き換え [完了]
 
 **対象ファイル**:
 
@@ -756,11 +756,11 @@ import { Label } from "@/app/components/ui/label";
 
 **チェックリスト**:
 
-- [ ] `ProductSearchFilters.tsx` のラジオボタンを置き換え
-- [ ] `ProductPublishedField.tsx` のラジオボタンを置き換え
+- [o] `ProductSearchFilters.tsx` のラジオボタンを置き換え
+- [o] `ProductPublishedField.tsx` のラジオボタンを置き換え
 - [ ] ラジオボタンの選択が正常に動作すること
 - [ ] キーボード操作（矢印キー）で選択変更ができること
-- [ ] ビルドエラーがないこと
+- [o] ビルドエラーがないこと
 
 ---
 
@@ -808,7 +808,7 @@ import { Label } from "@/app/components/ui/label";
 | `app/dashboard/components/list/ProductCard.tsx`              | Button, Card 使用           |    [o]     |
 | `app/dashboard/components/list/ProductCardContent.tsx`       | Badge 使用                  |    [o]     |
 | `app/dashboard/components/list/ProductListTabs.tsx`          | Tabs 使用                   |    [o]     |
-| `app/dashboard/components/list/ProductSearchFilters.tsx`     | Input, Select, RadioGroup 使用 |    [~]     |
+| `app/dashboard/components/list/ProductSearchFilters.tsx`     | Input, Select, RadioGroup 使用 |    [o]     |
 | `app/dashboard/components/layout/LayoutCategoryTabs.tsx`     | Tabs 使用                   |    [-]     |
 | `app/dashboard/components/form/ProductFormModal.tsx`         | Dialog 使用                 |    [o]     |
 | `app/dashboard/components/form/ProductFormFooter.tsx`        | Button 使用                 |    [o]     |
@@ -817,7 +817,7 @@ import { Label } from "@/app/components/ui/label";
 | `app/dashboard/components/form/ProductDateFields.tsx`        | Label 使用                  |    [o]     |
 | `app/dashboard/components/form/ProductDateInput.tsx`         | Label, Input 使用           |    [o]     |
 | `app/dashboard/components/form/ProductImageField.tsx`        | Label, Input 使用           |    [o]     |
-| `app/dashboard/components/form/ProductPublishedField.tsx`    | Label, RadioGroup 使用      |    [~]     |
+| `app/dashboard/components/form/ProductPublishedField.tsx`    | Label, RadioGroup 使用      |    [o]     |
 
 ---
 
