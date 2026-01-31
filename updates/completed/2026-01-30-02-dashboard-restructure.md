@@ -3,8 +3,8 @@
 **日付**: 2026-01-30
 **ブランチ**: feature/dashboard-restructure
 **対象**: ダッシュボード（`app/dashboard/`）、ECサイト（`app/shop/`）
-**ステータス**: 未着手
-**完了日**: -
+**ステータス**: 完了
+**完了日**: 2026-01-31
 
 ---
 
@@ -12,12 +12,12 @@
 
 | #   | タスク                                   | 優先度 | ステータス | 備考 |
 | --- | ---------------------------------------- | :----: | :--------: | ---- |
-| 1   | 現在の dashboard を homepage に移動      |   高   |    [ ]     |      |
-| 2   | ダッシュボードリダイレクトの設定         |   高   |    [ ]     |      |
-| 3   | ダッシュボード共通レイアウト（タブUI）   |   高   |    [ ]     |      |
-| 4   | ECサイト用ダッシュボードのプレースホルダ |   中   |    [ ]     |      |
-| 5   | ECサイト表示用ページのプレースホルダ     |   中   |    [ ]     |      |
-| 6   | 動作確認・ビルドテスト                   |   -    |    [ ]     |      |
+| 1   | 現在の dashboard を homepage に移動      |   高   |    [o]     |      |
+| 2   | ダッシュボードリダイレクトの設定         |   高   |    [o]     |      |
+| 3   | ダッシュボード共通レイアウト（タブUI）   |   高   |    [o]     |      |
+| 4   | ECサイト用ダッシュボードのプレースホルダ |   中   |    [o]     |      |
+| 5   | ECサイト表示用ページのプレースホルダ     |   中   |    [o]     |      |
+| 6   | 動作確認・ビルドテスト                   |   -    |    [o]     |      |
 
 **凡例**: `[ ]` 未着手 / `[~]` 作業中 / `[o]` 完了
 
@@ -72,7 +72,7 @@
 
 ## タスク詳細
 
-### タスク1: 現在の dashboard を homepage に移動
+### タスク1: 現在の dashboard を homepage に移動 [完了]
 
 **対象ファイル**:
 
@@ -119,18 +119,18 @@ return (
 
 **チェックリスト**:
 
-- [ ] `app/dashboard/homepage/` ディレクトリを作成
-- [ ] `page.tsx` を移動
-- [ ] `types.ts` を移動
-- [ ] `components/` を移動
-- [ ] `hooks/` を移動
-- [ ] `utils/` を移動
-- [ ] import パスが正しいことを確認
-- [ ] `homepage/page.tsx` のスタイルを調整（min-h-screen, bg-gray-50 を削除）
+- [o] `app/dashboard/homepage/` ディレクトリを作成
+- [o] `page.tsx` を移動
+- [o] `types.ts` を移動
+- [o] `components/` を移動
+- [o] `hooks/` を移動
+- [o] `utils/` を移動
+- [o] import パスが正しいことを確認
+- [o] `homepage/page.tsx` のスタイルを調整（min-h-screen, bg-gray-50 を削除）
 
 ---
 
-### タスク2: ダッシュボードリダイレクトの設定
+### タスク2: ダッシュボードリダイレクトの設定 [完了]
 
 **対象ファイル**:
 
@@ -157,12 +157,12 @@ export default function DashboardPage() {
 
 **チェックリスト**:
 
-- [ ] `app/dashboard/page.tsx` を新規作成
-- [ ] `/dashboard` にアクセスすると `/dashboard/homepage` へリダイレクトされること
+- [o] `app/dashboard/page.tsx` を新規作成
+- [o] `/dashboard` にアクセスすると `/dashboard/homepage` へリダイレクトされること
 
 ---
 
-### タスク3: ダッシュボード共通レイアウト（タブUI）
+### タスク3: ダッシュボード共通レイアウト（タブUI） [完了]
 
 **対象ファイル**:
 
@@ -242,15 +242,15 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
 
 **チェックリスト**:
 
-- [ ] `app/dashboard/components/` ディレクトリを作成
-- [ ] `DashboardTabs.tsx` を新規作成
-- [ ] `app/dashboard/layout.tsx` を新規作成
-- [ ] タブで homepage と shop を切り替えられること
-- [ ] 現在のページのタブがアクティブ表示されること
+- [o] `app/dashboard/components/` ディレクトリを作成
+- [o] `DashboardTabs.tsx` を新規作成
+- [o] `app/dashboard/layout.tsx` を新規作成
+- [o] タブで homepage と shop を切り替えられること
+- [o] 現在のページのタブがアクティブ表示されること
 
 ---
 
-### タスク4: ECサイト用ダッシュボードのプレースホルダ
+### タスク4: ECサイト用ダッシュボードのプレースホルダ [完了]
 
 **対象ファイル**:
 
@@ -295,13 +295,13 @@ export default function ShopDashboardPage() {
 
 **チェックリスト**:
 
-- [ ] `app/dashboard/shop/` ディレクトリを作成
-- [ ] `page.tsx` を新規作成
-- [ ] 「準備中」メッセージが表示されること
+- [o] `app/dashboard/shop/` ディレクトリを作成
+- [o] `page.tsx` を新規作成
+- [o] 「準備中」メッセージが表示されること
 
 ---
 
-### タスク5: ECサイト表示用ページのプレースホルダ
+### タスク5: ECサイト表示用ページのプレースホルダ [完了]
 
 **対象ファイル**:
 
@@ -348,33 +348,33 @@ export default function ShopPage() {
 
 **チェックリスト**:
 
-- [ ] `app/shop/` ディレクトリを作成
-- [ ] `page.tsx` を新規作成
-- [ ] 「準備中」メッセージが表示されること
+- [o] `app/shop/` ディレクトリを作成
+- [o] `page.tsx` を新規作成
+- [o] 「準備中」メッセージが表示されること
 
 ---
 
-### タスク6: 動作確認・ビルドテスト
+### タスク6: 動作確認・ビルドテスト [完了]
 
 **確認項目**:
 
 1. **ローカル確認** (`npm run dev`)
-   - [ ] `/dashboard` にアクセスすると `/dashboard/homepage` へリダイレクトされること
-   - [ ] `/dashboard/homepage` で商品管理ダッシュボードが表示されること
-   - [ ] `/dashboard/shop` で「準備中」メッセージが表示されること
-   - [ ] `/shop` で「準備中」メッセージが表示されること
-   - [ ] タブUIで homepage と shop を切り替えられること
-   - [ ] 現在のページのタブがアクティブ表示されること
+   - [o] `/dashboard` にアクセスすると `/dashboard/homepage` へリダイレクトされること
+   - [o] `/dashboard/homepage` で商品管理ダッシュボードが表示されること
+   - [o] `/dashboard/shop` で「準備中」メッセージが表示されること
+   - [o] `/shop` で「準備中」メッセージが表示されること
+   - [o] タブUIで homepage と shop を切り替えられること
+   - [o] 現在のページのタブがアクティブ表示されること
 
 2. **ビルド確認** (`npm run build`)
-   - [ ] ビルドエラーがないこと
-   - [ ] TypeScriptエラーがないこと
+   - [o] ビルドエラーがないこと
+   - [o] TypeScriptエラーがないこと
 
 3. **品質チェックリスト**（CLAUDE.md準拠）
-   - [ ] この機能は**今**必要か？（YAGNI）
-   - [ ] もっとシンプルな方法はないか？（KISS）
-   - [ ] 未使用のインポートは削除したか？
-   - [ ] リントエラーは解消したか？（`npm run lint`）
+   - [o] この機能は**今**必要か？（YAGNI）
+   - [o] もっとシンプルな方法はないか？（KISS）
+   - [o] 未使用のインポートは削除したか？
+   - [o] リントエラーは解消したか？（`npm run lint`）
 
 ---
 
@@ -382,16 +382,16 @@ export default function ShopPage() {
 
 | ファイル                                   | 変更内容                           | ステータス |
 | ------------------------------------------ | ---------------------------------- | :--------: |
-| `app/dashboard/homepage/page.tsx`          | 移動（旧 `app/dashboard/page.tsx`）|    [ ]     |
-| `app/dashboard/homepage/types.ts`          | 移動                               |    [ ]     |
-| `app/dashboard/homepage/components/*`      | 移動                               |    [ ]     |
-| `app/dashboard/homepage/hooks/*`           | 移動                               |    [ ]     |
-| `app/dashboard/homepage/utils/*`           | 移動                               |    [ ]     |
-| `app/dashboard/page.tsx`                   | **新規作成** - リダイレクト        |    [ ]     |
-| `app/dashboard/layout.tsx`                 | **新規作成** - 共通レイアウト      |    [ ]     |
-| `app/dashboard/components/DashboardTabs.tsx` | **新規作成** - タブUI            |    [ ]     |
-| `app/dashboard/shop/page.tsx`              | **新規作成** - プレースホルダ      |    [ ]     |
-| `app/shop/page.tsx`                        | **新規作成** - プレースホルダ      |    [ ]     |
+| `app/dashboard/homepage/page.tsx`          | 移動（旧 `app/dashboard/page.tsx`）|    [o]     |
+| `app/dashboard/homepage/types.ts`          | 移動                               |    [o]     |
+| `app/dashboard/homepage/components/*`      | 移動                               |    [o]     |
+| `app/dashboard/homepage/hooks/*`           | 移動                               |    [o]     |
+| `app/dashboard/homepage/utils/*`           | 移動                               |    [o]     |
+| `app/dashboard/page.tsx`                   | **新規作成** - リダイレクト        |    [o]     |
+| `app/dashboard/layout.tsx`                 | **新規作成** - 共通レイアウト      |    [o]     |
+| `app/dashboard/components/DashboardTabs.tsx` | **新規作成** - タブUI            |    [o]     |
+| `app/dashboard/shop/page.tsx`              | **新規作成** - プレースホルダ      |    [o]     |
+| `app/shop/page.tsx`                        | **新規作成** - プレースホルダ      |    [o]     |
 
 ---
 
