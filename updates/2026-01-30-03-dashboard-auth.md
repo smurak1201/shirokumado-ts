@@ -14,7 +14,7 @@
 | --- | -------------------------------- | :----: | :--------: | ---- |
 | 1   | 許可メールアドレスのテーブル作成 |   高   |    [o]     |      |
 | 2   | Auth.js でログイン制限を実装     |   高   |    [o]     |      |
-| 3   | ミドルウェアでルート保護         |   高   |    [ ]     |      |
+| 3   | ミドルウェアでルート保護         |   高   |    [o]     |      |
 | 4   | ログインページの作成             |   高   |    [ ]     |      |
 | 5   | ダッシュボードにログアウト機能   |   中   |    [ ]     |      |
 | 6   | Prisma マイグレーション実行      |   高   |    [ ]     |      |
@@ -146,8 +146,8 @@ export async function isAllowedEmail(email: string | null | undefined): Promise<
 
 **チェックリスト**:
 
-- [x] `prisma/schema.prisma` に `AllowedAdmin` モデルを追加
-- [x] `lib/auth-config.ts` を新規作成
+- [o] `prisma/schema.prisma` に `AllowedAdmin` モデルを追加
+- [o] `lib/auth-config.ts` を新規作成
 - [ ] マイグレーション後、Neon または Prisma Studio で初期データを登録
 
 ---
@@ -208,13 +208,13 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
 **チェックリスト**:
 
-- [x] `isAllowedEmail` をインポート
-- [x] `signIn` コールバックを追加（非同期でDBチェック）
+- [o] `isAllowedEmail` をインポート
+- [o] `signIn` コールバックを追加（非同期でDBチェック）
 - [ ] 許可されていないメールでログインが拒否されること（タスク9で確認）
 
 ---
 
-### タスク3: ミドルウェアでルート保護
+### タスク3: ミドルウェアでルート保護 [完了]
 
 **対象ファイル**:
 
@@ -257,11 +257,11 @@ export const config = {
 
 **チェックリスト**:
 
-- [ ] `middleware.ts` を新規作成
-- [ ] 未認証で `/dashboard` にアクセスするとログインページへリダイレクト
-- [ ] 未認証で `/dashboard/homepage` にアクセスするとログインページへリダイレクト
-- [ ] 未認証で `/dashboard/shop` にアクセスするとログインページへリダイレクト
-- [ ] 認証済みで `/auth/signin` にアクセスするとダッシュボードへリダイレクト
+- [o] `middleware.ts` を新規作成
+- [ ] 未認証で `/dashboard` にアクセスするとログインページへリダイレクト（タスク9で確認）
+- [ ] 未認証で `/dashboard/homepage` にアクセスするとログインページへリダイレクト（タスク9で確認）
+- [ ] 未認証で `/dashboard/shop` にアクセスするとログインページへリダイレクト（タスク9で確認）
+- [ ] 認証済みで `/auth/signin` にアクセスするとダッシュボードへリダイレクト（タスク9で確認）
 
 ---
 
@@ -599,7 +599,7 @@ npm run db:studio
 | `prisma/seed.ts`                            | AllowedAdminシード処理追加          |    [ ]     |
 | `lib/auth-config.ts`                        | **新規作成** - 許可メール判定（DB） |    [o]     |
 | `auth.ts`                                   | signInコールバック追加              |    [o]     |
-| `middleware.ts`                             | **新規作成** - ルート保護           |    [ ]     |
+| `middleware.ts`                             | **新規作成** - ルート保護           |    [o]     |
 | `app/auth/signin/page.tsx`                  | **新規作成** - ログインページ       |    [ ]     |
 | `app/dashboard/components/DashboardHeader.tsx` | **新規作成** - ヘッダー          |    [ ]     |
 | `app/dashboard/homepage/page.tsx`           | ヘッダーコンポーネント使用          |    [ ]     |
