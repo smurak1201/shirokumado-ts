@@ -437,6 +437,7 @@ export default function ShopPage() {
 1. ステータスを「完了」に変更
 2. 完了日を追記
 3. チェックリストを更新
+4. 仕様書ファイルを `updates/completed/` ディレクトリに移動してよいか確認し、許可があれば移動
 
 ```markdown
 **ステータス**: 完了
