@@ -32,7 +32,7 @@ export default function ProductFormModal({
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose?.()}>
       <DialogContent
-        className="max-h-[90vh] w-[calc(100%-2rem)] max-w-2xl overflow-x-hidden overflow-y-auto"
+        className="max-h-[90vh] w-[calc(100%-1rem)] max-w-2xl overflow-x-hidden overflow-y-auto p-4 sm:w-[calc(100%-2rem)] sm:p-6"
         onOpenAutoFocus={(e) => e.preventDefault()}
       >
         <DialogHeader>
