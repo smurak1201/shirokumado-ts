@@ -19,7 +19,7 @@ export default function ShopDashboardPage() {
         </p>
         <Link
           href="/dashboard"
-          className="inline-block rounded-lg bg-gray-900 px-6 py-3 text-white transition-colors hover:bg-gray-800"
+          className="inline-block rounded-lg bg-gray-900 px-6 py-3 text-white transition-all hover:bg-gray-800 active:scale-95"
         >
           ダッシュボードに戻る
         </Link>
