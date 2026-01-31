@@ -47,7 +47,7 @@ export default function DashboardHeader({ title, session, onSignOut }: Dashboard
               <Link
                 key={tab.href}
                 href={tab.href}
-                className={`border-b-2 px-3 py-2.5 text-sm font-medium transition-colors sm:px-4 sm:py-3 ${
+                className={`border-b-2 px-3 py-2.5 text-sm font-medium transition-all cursor-pointer active:scale-95 sm:px-4 sm:py-3 ${
                   isActive
                     ? 'border-gray-900 text-gray-900'
                     : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700'
