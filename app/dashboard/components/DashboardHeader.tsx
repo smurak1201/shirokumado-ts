@@ -24,8 +24,8 @@ export default function DashboardHeader({ title, session, onSignOut }: Dashboard
   const pathname = usePathname();
 
   return (
-    <header className="mb-6">
-      <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
+    <header className="sticky top-0 z-20 mb-6 bg-gray-50 pb-4">
+      <div className="mb-4 pt-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
         <h1 className="text-2xl font-bold sm:text-3xl">{title}</h1>
         <div className="flex items-center gap-2 sm:gap-3">
           <span className="truncate text-xs text-gray-600 sm:text-sm">{session?.user?.email}</span>
@@ -39,7 +39,7 @@ export default function DashboardHeader({ title, session, onSignOut }: Dashboard
           </form>
         </div>
       </div>
-      <nav className="sticky top-0 z-10 -mx-4 border-b border-gray-200 bg-white px-4 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8">
+      <nav className="-mx-4 border-b border-gray-200 bg-white px-4 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8">
         <div className="flex gap-2 sm:gap-4">
           {tabs.map((tab) => {
             const isActive = pathname.startsWith(tab.href);
