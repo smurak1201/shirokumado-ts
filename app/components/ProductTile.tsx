@@ -66,7 +66,7 @@ function ProductTile({ product, onClick }: ProductTileProps) {
         <TooltipProvider>
           <Tooltip>
             <TooltipTrigger asChild>
-              <h3 className="line-clamp-2 whitespace-pre-wrap text-center text-[10px] font-normal leading-relaxed transition-colors duration-300 group-hover:text-foreground md:text-base lg:text-lg cursor-pointer">
+              <h3 className="line-clamp-2 min-h-[3.25em] whitespace-pre-wrap text-center text-[10px] font-normal leading-relaxed transition-colors duration-300 group-hover:text-foreground md:text-base lg:text-lg cursor-pointer">
                 {product.name}
               </h3>
             </TooltipTrigger>
