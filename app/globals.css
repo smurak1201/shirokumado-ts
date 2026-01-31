@@ -133,6 +133,16 @@ body {
   animation: accordion-up 0.4s ease-out;
 }
 
+/* クリック可能な要素の共通スタイル */
+.clickable {
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.clickable:active {
+  transform: scale(0.95);
+}
+
 /*
  * パララックス効果（スマホ対応）
  * 参考: https://daian-kichijitsu.com/parallax/
