@@ -32,7 +32,7 @@ export default function DashboardHeader({ title, session, onSignOut }: Dashboard
           <form action={onSignOut}>
             <button
               type="submit"
-              className="whitespace-nowrap rounded-lg bg-gray-200 px-3 py-1.5 text-xs text-gray-700 transition-colors hover:bg-gray-300 sm:px-4 sm:py-2 sm:text-sm cursor-pointer"
+              className="whitespace-nowrap rounded-lg bg-gray-200 px-3 py-1.5 text-xs text-gray-700 transition-all hover:bg-gray-300 sm:px-4 sm:py-2 sm:text-sm cursor-pointer active:scale-95"
             >
               ログアウト
             </button>
