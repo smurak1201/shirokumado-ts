@@ -19,7 +19,7 @@ export default function Footer() {
         <div className="mb-8 flex items-center gap-3 sm:gap-4 md:gap-5">
           <Link
             href="/"
-            className="transition-all hover:opacity-80 hover:scale-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded-sm"
+            className="transition-all hover:opacity-80 hover:scale-105 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded-sm"
           >
             <Image
               src="/logo.webp"
@@ -35,7 +35,7 @@ export default function Footer() {
             rel="noopener noreferrer"
             className={cn(
               "flex items-center justify-center rounded-full p-2 transition-all",
-              "hover:bg-accent hover:scale-110",
+              "hover:bg-accent hover:scale-110 active:scale-95",
               "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
             )}
             aria-label="Instagram"
@@ -85,7 +85,7 @@ export default function Footer() {
               <a
                 href="tel:070-9157-3772"
                 className={cn(
-                  "block font-medium transition-colors",
+                  "block font-medium transition-all active:scale-95",
                   "hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded-sm"
                 )}
               >
