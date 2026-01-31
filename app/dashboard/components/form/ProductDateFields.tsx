@@ -41,6 +41,7 @@ export default function ProductDateFields({
             setFormData((prev) => ({ ...prev, publishedAt: "" }))
           }
           ariaLabel="公開日をクリア"
+          defaultTime="11:00"
         />
         <ProductDateInput
           id={`${fieldPrefix}endedAt`}
@@ -51,6 +52,7 @@ export default function ProductDateFields({
           }
           onClear={() => setFormData((prev) => ({ ...prev, endedAt: "" }))}
           ariaLabel="終了日をクリア"
+          defaultTime="20:00"
         />
       </div>
     </>

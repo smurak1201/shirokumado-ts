@@ -9,12 +9,13 @@ interface ProductDateInputProps {
   onChange: (value: string) => void;
   onClear: () => void;
   ariaLabel: string;
+  defaultTime?: string;
 }
 
 /**
  * 日付入力フィールドコンポーネント
  *
- * 公開日・終了日の入力に使用する日時入力フィールドを提供します。
+ * 公開日・終了日の入力に使用する日付と時刻の入力フィールドを提供します。
  * 値が設定されている場合はクリアボタンが表示されます。
  */
 export default function ProductDateInput({
@@ -24,17 +25,43 @@ export default function ProductDateInput({
   onChange,
   onClear,
   ariaLabel,
+  defaultTime = "00:00",
 }: ProductDateInputProps) {
+  const [datePart, timePart] = value ? value.split("T") : ["", ""];
+
+  const handleDateChange = (newDate: string) => {
+    if (newDate) {
+      const time = timePart || defaultTime;
+      onChange(`${newDate}T${time}`);
+    } else {
+      onClear();
+    }
+  };
+
+  const handleTimeChange = (newTime: string) => {
+    if (datePart && newTime) {
+      onChange(`${datePart}T${newTime}`);
+    }
+  };
+
   return (
     <div className="space-y-2">
-      <Label htmlFor={id}>{label}</Label>
-      <div className="relative">
+      <Label>{label}</Label>
+      <div className="flex gap-2">
         <Input
-          type="datetime-local"
+          type="date"
           id={id}
-          value={value}
-          onChange={(e) => onChange(e.target.value)}
-          className="pr-10"
+          value={datePart}
+          onChange={(e) => handleDateChange(e.target.value)}
+          className="flex-1"
+        />
+        <Input
+          type="time"
+          id={`${id}-time`}
+          value={timePart}
+          onChange={(e) => handleTimeChange(e.target.value)}
+          disabled={!datePart}
+          className="w-24"
         />
         {value && (
           <Button
@@ -42,7 +69,7 @@ export default function ProductDateInput({
             onClick={onClear}
             variant="ghost"
             size="icon"
-            className="absolute right-1 top-1/2 h-7 w-7 -translate-y-1/2"
+            className="h-10 w-10 shrink-0"
             aria-label={ariaLabel}
           >
             ✕
