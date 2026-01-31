@@ -1,5 +1,11 @@
 import Link from 'next/link';
 
+/**
+ * ECサイト表示ページ（プレースホルダ）
+ *
+ * ECサイト機能が実装されるまでの仮ページです。
+ * 「準備中」メッセージを表示します。
+ */
 export default function ShopPage() {
   return (
     <div className="flex min-h-screen items-center justify-center bg-gray-50">

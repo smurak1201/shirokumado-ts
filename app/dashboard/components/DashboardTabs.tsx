@@ -8,6 +8,12 @@ const tabs = [
   { href: '/dashboard/shop', label: 'ECサイト' },
 ] as const;
 
+/**
+ * ダッシュボードのタブナビゲーションコンポーネント
+ *
+ * ホームページ管理とECサイト管理を切り替えるタブUIを提供します。
+ * スクロールしても上部に固定表示されます。
+ */
 export default function DashboardTabs() {
   const pathname = usePathname();
 

@@ -1,5 +1,11 @@
 import Link from 'next/link';
 
+/**
+ * ECサイト管理ダッシュボードページ（プレースホルダ）
+ *
+ * ECサイト機能が実装されるまでの仮ページです。
+ * 「準備中」メッセージを表示します。
+ */
 export default function ShopDashboardPage() {
   return (
     <div className="flex min-h-[calc(100vh-49px)] items-center justify-center">
