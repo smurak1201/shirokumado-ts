@@ -13,7 +13,7 @@
 | #   | タスク                           | 優先度 | ステータス | 備考 |
 | --- | -------------------------------- | :----: | :--------: | ---- |
 | 1   | 許可メールアドレスのテーブル作成 |   高   |    [o]     |      |
-| 2   | Auth.js でログイン制限を実装     |   高   |    [ ]     |      |
+| 2   | Auth.js でログイン制限を実装     |   高   |    [o]     |      |
 | 3   | ミドルウェアでルート保護         |   高   |    [ ]     |      |
 | 4   | ログインページの作成             |   高   |    [ ]     |      |
 | 5   | ダッシュボードにログアウト機能   |   中   |    [ ]     |      |
@@ -152,7 +152,7 @@ export async function isAllowedEmail(email: string | null | undefined): Promise<
 
 ---
 
-### タスク2: Auth.js でログイン制限を実装
+### タスク2: Auth.js でログイン制限を実装 [完了]
 
 **対象ファイル**:
 
@@ -208,9 +208,9 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
 **チェックリスト**:
 
-- [ ] `isAllowedEmail` をインポート
-- [ ] `signIn` コールバックを追加（非同期でDBチェック）
-- [ ] 許可されていないメールでログインが拒否されること
+- [x] `isAllowedEmail` をインポート
+- [x] `signIn` コールバックを追加（非同期でDBチェック）
+- [ ] 許可されていないメールでログインが拒否されること（タスク9で確認）
 
 ---
 
@@ -598,7 +598,7 @@ npm run db:studio
 | `prisma/schema.prisma`                      | AllowedAdminモデル追加              |    [o]     |
 | `prisma/seed.ts`                            | AllowedAdminシード処理追加          |    [ ]     |
 | `lib/auth-config.ts`                        | **新規作成** - 許可メール判定（DB） |    [o]     |
-| `auth.ts`                                   | signInコールバック追加              |    [ ]     |
+| `auth.ts`                                   | signInコールバック追加              |    [o]     |
 | `middleware.ts`                             | **新規作成** - ルート保護           |    [ ]     |
 | `app/auth/signin/page.tsx`                  | **新規作成** - ログインページ       |    [ ]     |
 | `app/dashboard/components/DashboardHeader.tsx` | **新規作成** - ヘッダー          |    [ ]     |

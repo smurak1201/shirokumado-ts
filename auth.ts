@@ -1,7 +1,14 @@
+/**
+ * Auth.js 設定ファイル
+ *
+ * Google OAuth認証を使用し、許可リストに含まれるメールアドレスのみログインを許可する
+ * セッションはデータベースで管理
+ */
 import NextAuth from 'next-auth';
 import { PrismaAdapter } from '@auth/prisma-adapter';
 import Google from 'next-auth/providers/google';
 import { prisma } from '@/lib/prisma';
+import { isAllowedEmail } from '@/lib/auth-config';
 import type { Adapter } from 'next-auth/adapters';
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
@@ -16,6 +23,23 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     error: '/auth/error',
   },
   callbacks: {
+    /**
+     * サインイン時のコールバック
+     *
+     * allowed_admins テーブルに登録されているメールアドレスのみログインを許可
+     */
+    async signIn({ user }) {
+      const allowed = await isAllowedEmail(user.email);
+      if (!allowed) {
+        return false;
+      }
+      return true;
+    },
+    /**
+     * セッション取得時のコールバック
+     *
+     * セッションにユーザーIDとロールを追加
+     */
     async session({ session, user }) {
       session.user.id = user.id;
       session.user.role = user.role;
