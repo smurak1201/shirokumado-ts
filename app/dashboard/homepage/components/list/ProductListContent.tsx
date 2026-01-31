@@ -45,7 +45,7 @@ export default function ProductListContent({
         {onNewProductClick && (
           <button
             onClick={onNewProductClick}
-            className="rounded-md bg-blue-600 px-4 py-2 font-medium text-white hover:bg-blue-700 whitespace-nowrap"
+            className="rounded-md bg-blue-600 px-4 py-2 font-medium text-white hover:bg-blue-700 whitespace-nowrap cursor-pointer"
           >
             新規商品登録
           </button>

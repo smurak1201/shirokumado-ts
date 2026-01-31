@@ -38,7 +38,7 @@ export default function ProductPublishedField({
           <RadioGroupItem value="published" id={`${fieldPrefix}published-true`} />
           <Label
             htmlFor={`${fieldPrefix}published-true`}
-            className={`cursor-pointer font-normal ${hasDateRangeValue ? "text-gray-400" : ""}`}
+            className={`font-normal ${hasDateRangeValue ? "text-gray-400" : "cursor-pointer"}`}
           >
             公開
           </Label>
@@ -47,7 +47,7 @@ export default function ProductPublishedField({
           <RadioGroupItem value="unpublished" id={`${fieldPrefix}published-false`} />
           <Label
             htmlFor={`${fieldPrefix}published-false`}
-            className={`cursor-pointer font-normal ${hasDateRangeValue ? "text-gray-400" : ""}`}
+            className={`font-normal ${hasDateRangeValue ? "text-gray-400" : "cursor-pointer"}`}
           >
             非公開
           </Label>

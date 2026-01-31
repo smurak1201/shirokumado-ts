@@ -48,7 +48,7 @@ export default function Error({ error, reset }: ErrorProps) {
         )}
         <button
           onClick={reset}
-          className="rounded bg-gray-800 px-6 py-3 text-white transition-colors hover:bg-gray-700"
+          className="rounded bg-gray-800 px-6 py-3 text-white transition-colors hover:bg-gray-700 cursor-pointer"
         >
           もう一度試す
         </button>

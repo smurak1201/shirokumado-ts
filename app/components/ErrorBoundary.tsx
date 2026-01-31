@@ -84,7 +84,7 @@ export default class ErrorBoundary extends Component<
             )}
             <button
               onClick={this.resetError}
-              className="rounded-md bg-blue-600 px-4 py-2 font-medium text-white hover:bg-blue-700"
+              className="rounded-md bg-blue-600 px-4 py-2 font-medium text-white hover:bg-blue-700 cursor-pointer"
             >
               再試行
             </button>

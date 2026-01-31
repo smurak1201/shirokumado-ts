@@ -36,7 +36,7 @@ function ProductCategoryTabButton({
       role="tab"
       aria-selected={isActive}
       onClick={() => onCategoryTabChange(categoryName)}
-      className={`relative whitespace-nowrap border-b-2 pb-3 sm:pb-4 px-2 sm:px-1 text-xs sm:text-sm font-medium transition-colors shrink-0 ${
+      className={`relative whitespace-nowrap border-b-2 pb-3 sm:pb-4 px-2 sm:px-1 text-xs sm:text-sm font-medium transition-colors shrink-0 cursor-pointer ${
         isActive
           ? "border-blue-500 text-blue-600"
           : "border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700"
