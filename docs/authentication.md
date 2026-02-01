@@ -164,6 +164,34 @@ model AllowedAdmin {
 
 このテーブルでログインを許可するメールアドレスを管理します。
 
+### タイムスタンプについて
+
+`createdAt`や`updatedAt`などのタイムスタンプは**UTC（協定世界時）**で保存されます。
+
+- Prismaの`@default(now())`はPostgreSQLの`NOW()`関数を使用
+- PostgreSQL（Neon含む）はデフォルトでUTCでタイムスタンプを保存
+- 日本時間（JST）はUTC+9なので、9時間の差があります
+
+**表示時の変換例**:
+
+```typescript
+// JavaScriptで日本時間に変換
+const createdAtJST = new Date(record.createdAt).toLocaleString('ja-JP', {
+  timeZone: 'Asia/Tokyo'
+});
+```
+
+**SQLで日本時間に変換**（Neon Console等で確認する場合）:
+
+```sql
+SELECT
+  email,
+  created_at AT TIME ZONE 'Asia/Tokyo' AS created_at_jst
+FROM allowed_admins;
+```
+
+UTCで保存することはベストプラクティスであり、タイムゾーンをまたぐ場合やサマータイムの影響を受けない利点があります。
+
 ## 環境変数設定
 
 **場所**: `.env`
