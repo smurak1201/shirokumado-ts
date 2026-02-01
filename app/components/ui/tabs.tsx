@@ -1,44 +1,7 @@
 /**
- * @fileoverview タブコンポーネント
+ * shadcn/ui ベースのタブコンポーネント
  *
- * ## 概要
- * shadcn/ui ベースのタブ切り替えコンポーネント
- * Radix UI の Tabs Primitive をベースに構築されています。
- *
- * ## 主な機能
- * - 複数のコンテンツを切り替え表示
- * - アクセシビリティ対応（キーボード操作、スクリーンリーダー対応）
- * - アクティブタブの視覚的フィードバック（背景色、シャドウ）
- * - スムーズなトランジション
- *
- * ## カスタマイズ内容
- * - active:scale-95 でクリック時の視覚的フィードバックを追加
- * - transition-all でスムーズなアニメーション
- *
- * ## コンポーネント構成
- * - Tabs: ルートコンテナ
- * - TabsList: タブボタンのリスト（bg-muted）
- * - TabsTrigger: 個別のタブボタン（アクティブ時: bg-background + shadow-sm）
- * - TabsContent: 各タブのコンテンツ
- *
- * ## 実装の特性
- * - Client Component（"use client"）
- * - Radix UI Tabs を使用してアクセシビリティを向上
- *
- * ## 使用例
- * ```tsx
- * <Tabs defaultValue="tab1">
- *   <TabsList>
- *     <TabsTrigger value="tab1">タブ1</TabsTrigger>
- *     <TabsTrigger value="tab2">タブ2</TabsTrigger>
- *   </TabsList>
- *   <TabsContent value="tab1">コンテンツ1</TabsContent>
- *   <TabsContent value="tab2">コンテンツ2</TabsContent>
- * </Tabs>
- * ```
- *
- * @see https://ui.shadcn.com/docs/components/tabs
- * @see https://www.radix-ui.com/docs/primitives/components/tabs
+ * カスタマイズ: active:scale-95 でクリック時の視覚的フィードバックを追加
  */
 "use client"
 
@@ -47,7 +10,6 @@ import * as TabsPrimitive from "@radix-ui/react-tabs"
 
 import { cn } from "@/lib/utils"
 
-// Radix UI Tabs Primitive のラッパーをエクスポート
 const Tabs = TabsPrimitive.Root
 
 const TabsList = React.forwardRef<

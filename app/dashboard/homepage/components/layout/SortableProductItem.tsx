@@ -1,32 +1,8 @@
 /**
- * @file ドラッグ&ドロップ可能な商品アイテムコンポーネント
+ * ドラッグ&ドロップ可能な商品アイテム
  *
- * ## 目的
- * 商品配置変更タブで使用される、ドラッグ&ドロップで順序を変更できる商品カードを提供します。
- *
- * ## 主な機能
- * - ドラッグ&ドロップ操作に対応
- * - ドラッグ中の視覚的フィードバック（透明度変更、影の追加）
- * - スムーズなアニメーション（transform、transition）
- * - タッチデバイス対応（touchAction: "none"）
- *
- * ## 実装の特性
- * - Client Component（ドラッグ&ドロップのインタラクションを実装）
- * - @dnd-kit/sortable の useSortable フックを使用
- * - CSS.Transform でスムーズな移動アニメーションを実現
- *
- * ## ライブラリの使用理由
- * useSortable フック：
- * - ドラッグ&ドロップに必要な属性とイベントリスナーを自動生成
- * - transform と transition でスムーズなアニメーションを提供
- * - isDragging 状態でドラッグ中の視覚的フィードバックを実現
- *
- * ## 注意点
- * - touchAction: "none" は必須（タッチデバイスでスクロールとドラッグを区別するため）
- * - cursor-move でドラッグ可能であることを視覚的に示唆
- * - ProductCardContent を再利用（商品カードの表示ロジックを分離）
- *
- * @see {@link https://docs.dndkit.com/presets/sortable} @dnd-kit/sortable 公式ドキュメント
+ * @dnd-kit/sortableのuseSortableフックを使用してドラッグ&ドロップ機能を実装。
+ * タッチデバイスでスクロールとドラッグを区別するため、touchAction: "none"を設定。
  */
 
 "use client";
@@ -36,11 +12,6 @@ import { CSS } from "@dnd-kit/utilities";
 import ProductCardContent from "../list/ProductCardContent";
 import type { Product } from "../../types";
 
-/**
- * SortableProductItem コンポーネントのprops型定義
- *
- * @property product - 商品データ（表示とドラッグ&ドロップの識別に使用）
- */
 interface SortableProductItemProps {
   product: Product;
 }

@@ -1,37 +1,5 @@
 /**
- * @fileoverview ラジオグループコンポーネント
- *
- * ## 概要
- * shadcn/ui ベースのラジオボタングループコンポーネント
- * Radix UI の RadioGroup Primitive をベースに構築されています。
- *
- * ## 主な機能
- * - 単一選択のフォーム入力
- * - アクセシビリティ対応（キーボード操作、スクリーンリーダー対応）
- * - フォーカス時のリングアニメーション
- * - 選択済みアイテムの円形インジケーター表示
- *
- * ## 実装の特性
- * - Client Component（"use client"）
- * - Radix UI RadioGroup を使用してアクセシビリティを向上
- * - grid レイアウトで自動的に縦並び（gap-2）
- *
- * ## 使用例
- * ```tsx
- * <RadioGroup defaultValue="option1">
- *   <div className="flex items-center space-x-2">
- *     <RadioGroupItem value="option1" id="option1" />
- *     <Label htmlFor="option1">オプション1</Label>
- *   </div>
- *   <div className="flex items-center space-x-2">
- *     <RadioGroupItem value="option2" id="option2" />
- *     <Label htmlFor="option2">オプション2</Label>
- *   </div>
- * </RadioGroup>
- * ```
- *
- * @see https://ui.shadcn.com/docs/components/radio-group
- * @see https://www.radix-ui.com/docs/primitives/components/radio-group
+ * shadcn/ui ベースのラジオグループコンポーネント
  */
 "use client"
 
@@ -41,10 +9,6 @@ import { Circle } from "lucide-react"
 
 import { cn } from "@/lib/utils"
 
-/**
- * ラジオグループコンポーネント
- * 複数のラジオボタンをグループ化し、単一選択を可能にする
- */
 const RadioGroup = React.forwardRef<
   React.ElementRef<typeof RadioGroupPrimitive.Root>,
   React.ComponentPropsWithoutRef<typeof RadioGroupPrimitive.Root>

@@ -1,38 +1,12 @@
 /**
- * @fileoverview テキストエリアコンポーネント
+ * shadcn/ui ベースのテキストエリアコンポーネント
  *
- * ## 概要
- * shadcn/ui ベースの複数行テキスト入力コンポーネント
- * フォームの複数行入力フィールドに一貫したスタイルを提供します。
- *
- * ## 主な機能
- * - 最小高さ 80px の自動リサイズ可能なテキストエリア
- * - レスポンシブなフォントサイズ（モバイル: text-base、デスクトップ: text-sm）
- * - フォーカス時のリングアニメーション
- * - プレースホルダーのスタイル統一
- * - disabled 状態の視覚的フィードバック
- *
- * ## デザイン原則
- * - Input コンポーネントと同様のスタイルで統一感を維持
- * - モバイルファースト: スマートフォンでは自動ズーム防止のため text-base を使用
- *
- * ## 使用例
- * ```tsx
- * <Textarea placeholder="お問い合わせ内容を入力してください" />
- * <Textarea rows={5} />
- * ```
- *
- * @see https://ui.shadcn.com/docs/components/textarea
+ * モバイルで自動ズームを防止するため、text-base を使用
  */
 import * as React from "react"
 
 import { cn } from "@/lib/utils"
 
-/**
- * テキストエリアコンポーネント
- *
- * @param {string} [className] - 追加のCSSクラス名
- */
 const Textarea = React.forwardRef<
   HTMLTextAreaElement,
   React.ComponentProps<"textarea">

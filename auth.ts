@@ -23,11 +23,6 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     error: '/auth/error',
   },
   callbacks: {
-    /**
-     * サインイン時のコールバック
-     *
-     * allowed_admins テーブルに登録されているメールアドレスのみログインを許可
-     */
     async signIn({ user }) {
       const allowed = await isAllowedEmail(user.email);
       if (!allowed) {
@@ -35,11 +30,6 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       }
       return true;
     },
-    /**
-     * セッション取得時のコールバック
-     *
-     * セッションにユーザーIDとロールを追加
-     */
     async session({ session, user }) {
       session.user.id = user.id;
       session.user.role = user.role;

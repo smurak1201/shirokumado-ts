@@ -1,38 +1,13 @@
 /**
- * @fileoverview バッジコンポーネント
+ * shadcn/ui ベースのバッジコンポーネント
  *
- * ## 概要
- * shadcn/ui ベースの小さなステータス表示コンポーネント
- * ラベル、ステータス、カテゴリーなどの表示に使用します。
- *
- * ## 主な機能
- * - 複数のバリアント（default, secondary, destructive, outline, success）
- * - 角丸（rounded-full）のコンパクトなデザイン
- * - ホバー時の色変更
- *
- * ## カスタマイズ内容
- * - success バリアント（緑色）を追加
- *   成功状態やアクティブ状態の表示に使用
- *
- * ## 使用例
- * ```tsx
- * <Badge>デフォルト</Badge>
- * <Badge variant="success">成功</Badge>
- * <Badge variant="destructive">エラー</Badge>
- * <Badge variant="outline">アウトライン</Badge>
- * ```
- *
- * @see https://ui.shadcn.com/docs/components/badge
+ * カスタマイズ: success バリアント（緑色）を追加
  */
 import * as React from "react"
 import { cva, type VariantProps } from "class-variance-authority"
 
 import { cn } from "@/lib/utils"
 
-/**
- * バッジのスタイルバリアント定義
- * success バリアントは shadcn/ui にはないカスタマイズ
- */
 const badgeVariants = cva(
   "inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2",
   {

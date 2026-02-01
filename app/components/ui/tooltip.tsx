@@ -1,37 +1,5 @@
 /**
- * @fileoverview ツールチップコンポーネント
- *
- * ## 概要
- * shadcn/ui ベースのツールチップ（ホバー時の説明表示）コンポーネント
- * Radix UI の Tooltip Primitive をベースに構築されています。
- *
- * ## 主な機能
- * - ホバー時に補足情報を表示
- * - アニメーション付きの表示/非表示（fade, zoom, slide）
- * - 4方向への配置（top, bottom, left, right）
- * - アクセシビリティ対応（キーボード操作、スクリーンリーダー対応）
- *
- * ## 実装の特性
- * - Client Component（"use client"）
- * - Radix UI Tooltip を使用してアクセシビリティを向上
- * - TooltipProvider でツールチップの表示タイミングを制御
- *
- * ## 使用例
- * ```tsx
- * <TooltipProvider>
- *   <Tooltip>
- *     <TooltipTrigger asChild>
- *       <Button variant="outline">ホバーしてください</Button>
- *     </TooltipTrigger>
- *     <TooltipContent>
- *       <p>補足情報がここに表示されます</p>
- *     </TooltipContent>
- *   </Tooltip>
- * </TooltipProvider>
- * ```
- *
- * @see https://ui.shadcn.com/docs/components/tooltip
- * @see https://www.radix-ui.com/docs/primitives/components/tooltip
+ * shadcn/ui ベースのツールチップコンポーネント
  */
 "use client"
 
@@ -40,7 +8,6 @@ import * as TooltipPrimitive from "@radix-ui/react-tooltip"
 
 import { cn } from "@/lib/utils"
 
-// Radix UI Tooltip Primitive のラッパーをエクスポート
 const TooltipProvider = TooltipPrimitive.Provider
 
 const Tooltip = TooltipPrimitive.Root

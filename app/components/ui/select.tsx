@@ -1,37 +1,5 @@
 /**
- * @fileoverview セレクトボックスコンポーネント
- *
- * ## 概要
- * shadcn/ui ベースのドロップダウン選択コンポーネント
- * Radix UI の Select Primitive をベースに構築されています。
- *
- * ## 主な機能
- * - アクセシビリティ対応（キーボード操作、スクリーンリーダー対応）
- * - スクロールボタン付きの長いリスト対応
- * - アニメーション付きの開閉（fade-in/out, zoom, slide）
- * - 選択済みアイテムのチェックマーク表示
- * - グループ化とセパレーター対応
- *
- * ## 実装の特性
- * - Client Component（"use client"）
- * - Radix UI Select を使用してアクセシビリティを向上
- * - Portal を使用して DOM 階層の外にドロップダウンを配置（z-index問題を回避）
- *
- * ## 使用例
- * ```tsx
- * <Select>
- *   <SelectTrigger>
- *     <SelectValue placeholder="選択してください" />
- *   </SelectTrigger>
- *   <SelectContent>
- *     <SelectItem value="option1">オプション1</SelectItem>
- *     <SelectItem value="option2">オプション2</SelectItem>
- *   </SelectContent>
- * </Select>
- * ```
- *
- * @see https://ui.shadcn.com/docs/components/select
- * @see https://www.radix-ui.com/docs/primitives/components/select
+ * shadcn/ui ベースのセレクトボックスコンポーネント
  */
 "use client"
 
@@ -41,7 +9,6 @@ import { Check, ChevronDown, ChevronUp } from "lucide-react"
 
 import { cn } from "@/lib/utils"
 
-// Radix UI Select Primitive のラッパーをエクスポート
 const Select = SelectPrimitive.Root
 
 const SelectGroup = SelectPrimitive.Group

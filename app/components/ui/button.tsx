@@ -1,29 +1,7 @@
 /**
- * @fileoverview ボタンコンポーネント
+ * shadcn/ui ベースのボタンコンポーネント
  *
- * ## 概要
- * shadcn/ui ベースの汎用ボタンコンポーネント
- * アプリケーション全体で統一されたボタンスタイルを提供します。
- *
- * ## 主な機能
- * - 複数のバリアント（default, destructive, outline, secondary, ghost, link）
- * - サイズバリエーション（default, sm, lg, icon）
- * - アクティブ時のスケールアニメーション（active:scale-95）
- * - asChild props による Radix UI Slot パターン対応
- *
- * ## カスタマイズ内容
- * - active:scale-95 でクリック時の視覚的フィードバックを追加
- * - transition-all でスムーズなアニメーション
- *
- * ## 使用例
- * ```tsx
- * <Button>デフォルトボタン</Button>
- * <Button variant="destructive">削除</Button>
- * <Button size="sm">小さいボタン</Button>
- * <Button asChild><Link href="/page">リンクとして</Link></Button>
- * ```
- *
- * @see https://ui.shadcn.com/docs/components/button
+ * カスタマイズ: active:scale-95 でクリック時の視覚的フィードバックを追加
  */
 import * as React from "react"
 import { Slot } from "@radix-ui/react-slot"
@@ -31,10 +9,6 @@ import { cva, type VariantProps } from "class-variance-authority"
 
 import { cn } from "@/lib/utils"
 
-/**
- * ボタンのスタイルバリアント定義
- * class-variance-authority (cva) を使用して型安全なバリアントを提供
- */
 const buttonVariants = cva(
   "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 cursor-pointer active:scale-95 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
   {
@@ -64,24 +38,12 @@ const buttonVariants = cva(
   }
 )
 
-/**
- * ボタンコンポーネントのProps型定義
- *
- * @property {boolean} [asChild] - Radix UI Slot パターンを使用するか
- *   true の場合、子要素をボタンスタイルでラップ（例: Link要素をボタンとして表示）
- * @property {string} [variant] - ボタンのスタイルバリアント（default, destructive, outline, secondary, ghost, link）
- * @property {string} [size] - ボタンのサイズ（default, sm, lg, icon）
- */
 export interface ButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement>,
     VariantProps<typeof buttonVariants> {
   asChild?: boolean
 }
 
-/**
- * ボタンコンポーネント
- * forwardRef を使用してrefを親コンポーネントに転送可能
- */
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   ({ className, variant, size, asChild = false, ...props }, ref) => {
     const Comp = asChild ? Slot : "button"
