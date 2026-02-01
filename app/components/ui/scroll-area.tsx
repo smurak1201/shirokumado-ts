@@ -24,7 +24,7 @@
  * ```tsx
  * <ScrollArea className="h-72 w-48">
  *   <div className="p-4">
- *     {/* 長いコンテンツ */}
+ *     {// 長いコンテンツ}
  *   </div>
  * </ScrollArea>
  * ```

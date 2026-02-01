@@ -224,20 +224,16 @@ export default function ProductModal({
                   <div className="relative h-[40vh] min-h-[200px] max-h-[450px] md:h-[45vh] md:max-h-[500px] overflow-hidden bg-muted">
                     {/*
                      * 商品画像の有無で表示を切り替え
+                     *
+                     * 商品画像がある場合:
+                     * - motion.div でズームエフェクトを追加
+                     * - whileHover={{ scale: 1.05 }}: ホバー時に5%拡大
+                     * - transition={{ duration: 0.4 }}: 0.4秒でゆったりとズーム
+                     * - relative: 絶対配置の子要素（Image）の基準点
+                     * - flex items-center justify-center: 画像を中央配置
+                     * - p-4/md:p-6: パディング（画像の周囲に余白を作る）
                      */}
                     {product.imageUrl ? (
-                      /**
-                       * 商品画像がある場合
-                       *
-                       * motion.div でズームエフェクトを追加:
-                       * - whileHover={{ scale: 1.05 }}: ホバー時に5%拡大
-                       * - transition={{ duration: 0.4 }}: 0.4秒でゆったりとズーム
-                       *
-                       * レイアウト:
-                       * - relative: 絶対配置の子要素（Image）の基準点
-                       * - flex items-center justify-center: 画像を中央配置
-                       * - p-4/md:p-6: パディング（画像の周囲に余白を作る）
-                       */}
                       <motion.div
                         className="relative h-full w-full flex items-center justify-center p-4 md:p-6"
                         whileHover={{ scale: 1.05 }}

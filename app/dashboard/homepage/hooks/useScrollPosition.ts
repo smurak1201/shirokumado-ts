@@ -45,7 +45,7 @@ import { useState, useEffect, useRef, useCallback } from "react";
  * const { scrollContainerRef, showLeftGradient, showRightGradient } = useScrollPosition();
  * <div ref={scrollContainerRef}>
  *   {showLeftGradient && <div className="gradient-left" />}
- *   {/* コンテンツ */}
+ *   {// コンテンツ}
  *   {showRightGradient && <div className="gradient-right" />}
  * </div>
  * ```

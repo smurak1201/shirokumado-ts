@@ -120,24 +120,24 @@ export default function FixedHeader() {
    */
   const isHomePage = pathname === "/";
 
+  /**
+   * ヘッダー要素（motion.header）
+   *
+   * アニメーション設定:
+   * - initial: トップページなら "hidden"、それ以外は "visible"
+   *   - 理由: トップページでのみアニメーション実行（パフォーマンス考慮）
+   * - animate: "visible" 状態にアニメーション
+   * - variants: containerVariants でスタッガーアニメーション
+   *
+   * レイアウト:
+   * - fixed top-0 left-0 right-0: 画面上部に固定
+   * - z-50: 他の要素の上に表示（z-index: 50）
+   * - h-20: 高さ 80px（5rem）
+   *   - 注意: globals.css の --header-height と一致させる必要がある
+   * - border-b: 下部にボーダーを表示（コンテンツとの区切り）
+   * - bg-background: 背景色（スクロール時に下のコンテンツが透けないように）
+   */
   return (
-    /**
-     * ヘッダー要素（motion.header）
-     *
-     * アニメーション設定:
-     * - initial: トップページなら "hidden"、それ以外は "visible"
-     *   - 理由: トップページでのみアニメーション実行（パフォーマンス考慮）
-     * - animate: "visible" 状態にアニメーション
-     * - variants: containerVariants でスタッガーアニメーション
-     *
-     * レイアウト:
-     * - fixed top-0 left-0 right-0: 画面上部に固定
-     * - z-50: 他の要素の上に表示（z-index: 50）
-     * - h-20: 高さ 80px（5rem）
-     *   - 注意: globals.css の --header-height と一致させる必要がある
-     * - border-b: 下部にボーダーを表示（コンテンツとの区切り）
-     * - bg-background: 背景色（スクロール時に下のコンテンツが透けないように）
-     */}
     <motion.header
       initial={isHomePage ? "hidden" : "visible"}
       animate="visible"

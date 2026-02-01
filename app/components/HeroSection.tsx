@@ -57,24 +57,24 @@ import heroImage from "@/public/hero.webp";
  * - オーバーレイ: グラデーションで画像の視覚効果を調整
  */
 export default function HeroSection() {
+  /**
+   * ヒーローセクションのコンテナ
+   *
+   * .hero-section クラス:
+   * - globals.css で定義されたパララックス効果の CSS が適用される
+   * - clip-path: inset(0) で「窓」として機能
+   * - height: calc(...) で画像のアスペクト比に応じた高さを自動計算
+   *
+   * CSS 変数の設定:
+   * - --hero-width: 画像の幅（next/image の metadata から取得）
+   * - --hero-height: 画像の高さ（next/image の metadata から取得）
+   * - これらの値は globals.css でアスペクト比の計算に使用される
+   *
+   * 利点:
+   * - 画像を変更しても、CSS 変数が自動的に更新される
+   * - マジックナンバーを避けて、保守性が向上
+   */
   return (
-    /**
-     * ヒーローセクションのコンテナ
-     *
-     * .hero-section クラス:
-     * - globals.css で定義されたパララックス効果の CSS が適用される
-     * - clip-path: inset(0) で「窓」として機能
-     * - height: calc(...) で画像のアスペクト比に応じた高さを自動計算
-     *
-     * CSS 変数の設定:
-     * - --hero-width: 画像の幅（next/image の metadata から取得）
-     * - --hero-height: 画像の高さ（next/image の metadata から取得）
-     * - これらの値は globals.css でアスペクト比の計算に使用される
-     *
-     * 利点:
-     * - 画像を変更しても、CSS 変数が自動的に更新される
-     * - マジックナンバーを避けて、保守性が向上
-     */}
     <section
       className="hero-section relative w-full"
       style={
