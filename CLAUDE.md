@@ -68,6 +68,53 @@
 - リントエラーを解消すること
 - ハードコードとマジックナンバーを避け、定数として一元管理すること
 
+## Prisma
+
+### データベース操作の基本
+
+- **すべての操作は`safePrismaOperation`でラップすること**
+  - エラーハンドリングとログ記録を統一
+  - データベースエラーを適切な形式に変換
+
+  ```typescript
+  const products = await safePrismaOperation(
+    () => prisma.product.findMany({ include: { category: true } }),
+    'GET /api/products'
+  );
+  ```
+
+### トランザクション
+
+- **複数の更新が一貫性を持つ必要がある場合、トランザクションを使用すること**
+- **トランザクション内の操作は最小限に抑えること**（パフォーマンス考慮）
+
+  ```typescript
+  await safePrismaOperation(async () => {
+    await prisma.$transaction([
+      prisma.product.update({ where: { id: 1 }, data: { displayOrder: 1 } }),
+      prisma.product.update({ where: { id: 2 }, data: { displayOrder: 2 } }),
+    ]);
+  }, 'reorder products');
+  ```
+
+### N+1問題の回避
+
+- **関連データは`include`で事前に取得すること**
+- **ループ内でデータベースクエリを実行しないこと**
+
+  ```typescript
+  // ✅ Good: includeで1回のクエリで取得
+  const products = await prisma.product.findMany({
+    include: { category: true }
+  });
+
+  // ❌ Bad: ループ内でクエリを実行
+  const products = await prisma.product.findMany();
+  for (const product of products) {
+    const category = await prisma.category.findUnique({ where: { id: product.categoryId } });
+  }
+  ```
+
 ## React / Next.js
 
 > 参考: [Vercel React Best Practices](https://vercel.com/blog/introducing-react-best-practices)
@@ -84,6 +131,29 @@
 - **デフォルトで Server Components を使用すること**
 - **Server Actionsでも認証を検証すること**
 - **RSC境界ではクライアントが必要なフィールドのみ渡すこと**
+
+### Server Actions vs API Routes
+
+#### API Routesを使用する場合
+
+- **外部クライアントからのアクセスが必要な場合**（モバイルアプリ、Webhook等）
+- **RESTful APIとして公開する場合**
+- **詳細なHTTPステータスコードやヘッダー制御が必要な場合**
+- **キャッシュ制御（Cache-Control）が必要な場合**
+
+#### Server Actionsを使用する場合
+
+- **フォーム送信など、Next.jsアプリ内部でのみ使用する場合**
+- **クライアントコンポーネントから直接呼び出す場合**
+- **プログレッシブエンハンスメント（JavaScript無効時の対応）が必要な場合**
+
+#### 判断基準
+
+現在のプロジェクトでは**API Routesを統一して使用**しています。新機能を追加する際は以下を検討してください：
+
+- API Routesの既存の統一されたエラーハンドリング（`withErrorHandling`）を活用できる
+- 将来的に外部アクセスが必要になる可能性がある場合はAPI Routesを選択
+- 純粋にフォーム処理のみで外部公開の予定がなければServer Actionsも検討可能
 
 ### コンポーネント設計
 
@@ -106,9 +176,18 @@
 
 ## Tailwind CSS
 
+### Tailwind CSS v4の特徴
+
+- **CSS-based設定**: `@import "tailwindcss"`でインポート
+- **`@theme inline`ブロック**: CSS変数からTailwindテーマへマッピング
+- **設定ファイル不要**: `tailwind.config.js`は使用しない
+
+### 基本ルール
+
 - **ユーティリティクラスを直接使用すること**
 - **動的クラス名（`bg-${color}-500`）を避けること**
 - **モバイルファースト**: `sm:`, `md:`, `lg:` で拡張
+- **カスタムスタイルはCSS変数で管理**: `globals.css`の`:root`で定義し、`@theme inline`でマッピング
 
 ## アクセシビリティ
 
