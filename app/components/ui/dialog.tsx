@@ -1,3 +1,46 @@
+/**
+ * @fileoverview ダイアログ（モーダル）コンポーネント
+ *
+ * ## 概要
+ * shadcn/ui ベースのモーダルダイアログコンポーネント
+ * Radix UI の Dialog Primitive をベースに構築されています。
+ *
+ * ## 主な機能
+ * - 画面中央にオーバーレイ付きで表示
+ * - アニメーション付きの開閉（fade, zoom, slide）
+ * - アクセシビリティ対応（フォーカストラップ、ESCキーで閉じる）
+ * - Portal を使用して DOM 階層の外に配置（z-index問題を回避）
+ *
+ * ## カスタマイズ内容
+ * - 閉じるボタンのスタイルを強化
+ *   - 円形デザイン（rounded-full）
+ *   - backdrop-blur-sm で背景ぼかし効果
+ *   - hover:scale-110 でホバー時の拡大アニメーション
+ *   - ring-2 で常にフォーカスリングを表示
+ *
+ * ## 実装の特性
+ * - Client Component（"use client"）
+ * - Radix UI Dialog を使用してアクセシビリティを向上
+ *
+ * ## 使用例
+ * ```tsx
+ * <Dialog>
+ *   <DialogTrigger asChild>
+ *     <Button>開く</Button>
+ *   </DialogTrigger>
+ *   <DialogContent>
+ *     <DialogHeader>
+ *       <DialogTitle>タイトル</DialogTitle>
+ *       <DialogDescription>説明文</DialogDescription>
+ *     </DialogHeader>
+ *     コンテンツ
+ *   </DialogContent>
+ * </Dialog>
+ * ```
+ *
+ * @see https://ui.shadcn.com/docs/components/dialog
+ * @see https://www.radix-ui.com/docs/primitives/components/dialog
+ */
 "use client"
 
 import * as React from "react"
@@ -6,6 +49,7 @@ import { X } from "lucide-react"
 
 import { cn } from "@/lib/utils"
 
+// Radix UI Dialog Primitive のラッパーをエクスポート
 const Dialog = DialogPrimitive.Root
 
 const DialogTrigger = DialogPrimitive.Trigger

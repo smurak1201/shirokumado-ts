@@ -1,7 +1,49 @@
+/**
+ * @fileoverview カードコンポーネント
+ *
+ * ## 概要
+ * shadcn/ui ベースのカード型レイアウトコンポーネント
+ * コンテンツをグループ化して視覚的に区別するために使用します。
+ *
+ * ## 主な機能
+ * - 角丸（rounded-lg）とシャドウ（shadow-sm）のモダンなデザイン
+ * - Header, Title, Description, Content, Footer の構造化されたレイアウト
+ * - 柔軟なカスタマイズが可能
+ *
+ * ## コンポーネント構成
+ * - Card: ルートコンテナ
+ * - CardHeader: ヘッダー部分（タイトルと説明を含む）
+ * - CardTitle: タイトル（text-2xl）
+ * - CardDescription: 説明文（text-sm, muted色）
+ * - CardContent: メインコンテンツ
+ * - CardFooter: フッター（ボタンなどのアクション）
+ *
+ * ## 使用例
+ * ```tsx
+ * <Card>
+ *   <CardHeader>
+ *     <CardTitle>タイトル</CardTitle>
+ *     <CardDescription>説明文</CardDescription>
+ *   </CardHeader>
+ *   <CardContent>
+ *     コンテンツ
+ *   </CardContent>
+ *   <CardFooter>
+ *     <Button>アクション</Button>
+ *   </CardFooter>
+ * </Card>
+ * ```
+ *
+ * @see https://ui.shadcn.com/docs/components/card
+ */
 import * as React from "react"
 
 import { cn } from "@/lib/utils"
 
+/**
+ * カードコンポーネント（ルートコンテナ）
+ * 角丸、ボーダー、シャドウでコンテンツをグループ化
+ */
 const Card = React.forwardRef<
   HTMLDivElement,
   React.HTMLAttributes<HTMLDivElement>
