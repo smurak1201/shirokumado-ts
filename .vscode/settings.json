@@ -1,19 +1,20 @@
 {
+  // Tailwind CSS v4 の新しいアットルール（@import, @theme）のリントエラーを抑制
   "css.lint.unknownAtRules": "ignore",
+  // CSS ファイルを PostCSS として認識（Tailwind CSS v4 構文に対応）
   "files.associations": {
     "*.css": "postcss"
   },
   "github.copilot.chat.commitMessageGeneration.locale": "ja",
-  // Tailwind CSS のクラス名補完を文字列内でも有効化
+  // 文字列内でも Tailwind クラス名の自動補完を有効化
   "editor.quickSuggestions": {
     "strings": true
   },
-  // cva() などの関数内でも Tailwind クラス名を認識
+  // cva() 関数内でも Tailwind クラス名を認識（shadcn/ui で使用）
   "tailwindCSS.experimental.classRegex": [
     ["cva\\(([^)]*)\\)", "[\"'`]([^\"'`]*).*?[\"'`]"]
   ],
-  // CSS ファイル内での IntelliSense を有効化
-  "css.customData": [],
+  // TypeScript/TSX ファイル内でも Tailwind の補完を有効化
   "tailwindCSS.includeLanguages": {
     "typescript": "javascript",
     "typescriptreact": "javascript"
