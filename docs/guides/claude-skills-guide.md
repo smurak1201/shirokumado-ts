@@ -141,10 +141,10 @@ your-skill-name/
 - バリエーションは不可（SKILL.MD、skill.mdなど）
 
 **スキルフォルダの命名**:
-- ✅ ケバブケースを使用: `notion-project-setup`
-- ❌ スペース不可: `Notion Project Setup`
-- ❌ アンダースコア不可: `notion_project_setup`
-- ❌ 大文字不可: `NotionProjectSetup`
+- 推奨: ケバブケースを使用: `notion-project-setup`
+- 不可: スペース不可: `Notion Project Setup`
+- 不可: アンダースコア不可: `notion_project_setup`
+- 不可: 大文字不可: `NotionProjectSetup`
 
 **README.mdの禁止**:
 - スキルフォルダ内に`README.md`を含めない
@@ -492,7 +492,7 @@ python scripts/fetch_data.py --project-id PROJECT_ID
 
 **1. 具体的で実行可能に**
 
-✅ 良い:
+良い例:
 ```markdown
 `python scripts/validate.py --input {filename}`を実行してデータフォーマットをチェック。
 
@@ -501,7 +501,7 @@ python scripts/fetch_data.py --project-id PROJECT_ID
 - 無効な日付フォーマット（YYYY-MM-DDを使用）
 ```
 
-❌ 悪い:
+悪い例:
 ```markdown
 続行前にデータを検証。
 ```
@@ -745,9 +745,9 @@ MCPツールを呼び出し: `send_email`
 **目標**: スキルが適切なタイミングで読み込まれることを確認
 
 **テストケース**:
-- ✅ 明白なタスクでトリガーされる
-- ✅ 言い換えられたリクエストでトリガーされる
-- ❌ 無関係なトピックでトリガーされない
+- 明白なタスクでトリガーされる
+- 言い換えられたリクエストでトリガーされる
+- 無関係なトピックでトリガーされない
 
 **テストスイート例**:
 
@@ -955,14 +955,14 @@ GitHubでスキルをホストし、公開リポジトリ、明確なREADME（�
 
 #### 機能ではなく成果に焦点を当てる
 
-✅ 良い:
+良い例:
 ```
 「ProjectHubスキルにより、チームは完全なプロジェクトワークスペース
 （ページ、データベース、テンプレートを含む）を数秒で設定でき、
 30分の手動設定の代わりになります。」
 ```
 
-❌ 悪い:
+悪い例:
 ```
 「ProjectHubスキルは、MCPサーバーツールを呼び出す
 YAMLフロントマターとMarkdown指示を含むフォルダです。」
