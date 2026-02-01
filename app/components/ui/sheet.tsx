@@ -1,3 +1,47 @@
+/**
+ * @fileoverview シートコンポーネント
+ *
+ * ## 概要
+ * shadcn/ui ベースのスライドイン式パネルコンポーネント
+ * Radix UI の Dialog Primitive をベースに構築されています。
+ *
+ * ## 主な機能
+ * - 画面の上下左右からスライドイン
+ * - 4方向のバリアント（top, bottom, left, right）
+ * - アニメーション付きの開閉（fade, slide）
+ * - アクセシビリティ対応（フォーカストラップ、ESCキーで閉じる）
+ * - Portal を使用して DOM 階層の外に配置
+ *
+ * ## バリアント
+ * - top: 画面上部からスライドイン
+ * - bottom: 画面下部からスライドイン
+ * - left: 画面左側からスライドイン（全高、モバイル: 75%, デスクトップ: 最大 sm）
+ * - right: 画面右側からスライドイン（デフォルト、全高、モバイル: 75%, デスクトップ: 最大 sm）
+ *
+ * ## 実装の特性
+ * - Client Component（"use client"）
+ * - Radix UI Dialog を使用してアクセシビリティを向上
+ * - Dialog と同じ Primitive を使用するが、スライドインの動作を実装
+ *
+ * ## 使用例
+ * ```tsx
+ * <Sheet>
+ *   <SheetTrigger asChild>
+ *     <Button>開く</Button>
+ *   </SheetTrigger>
+ *   <SheetContent side="right">
+ *     <SheetHeader>
+ *       <SheetTitle>タイトル</SheetTitle>
+ *       <SheetDescription>説明文</SheetDescription>
+ *     </SheetHeader>
+ *     コンテンツ
+ *   </SheetContent>
+ * </Sheet>
+ * ```
+ *
+ * @see https://ui.shadcn.com/docs/components/sheet
+ * @see https://www.radix-ui.com/docs/primitives/components/dialog
+ */
 "use client"
 
 import * as React from "react"
@@ -7,6 +51,7 @@ import { X } from "lucide-react"
 
 import { cn } from "@/lib/utils"
 
+// Radix UI Dialog Primitive のラッパーをエクスポート
 const Sheet = SheetPrimitive.Root
 
 const SheetTrigger = SheetPrimitive.Trigger

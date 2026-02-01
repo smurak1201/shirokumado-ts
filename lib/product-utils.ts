@@ -128,12 +128,39 @@ export function calculatePublishedStatus(
 }
 
 /**
- * 公開日・終了日が設定されているかどうかを判定
- * @param publishedAt 公開日
- * @param endedAt 終了日
- * @returns どちらかが設定されている場合はtrue
+ * 公開日・終了日が設定されているかどうかを判定します
+ *
+ * どちらか一方でも設定されていれば true を返します。
+ * この判定は、自動判定と手動設定のどちらを優先するかを決定する際に使用されます。
+ *
+ * @param publishedAt 公開日（null の場合は未設定）
+ * @param endedAt 終了日（null の場合は未設定）
+ * @returns どちらかが設定されている場合は true、両方とも null の場合は false
+ *
+ * 使用例:
+ * ```typescript
+ * // 公開日のみ設定
+ * hasDateRange(new Date('2026-01-01'), null); // true
+ *
+ * // 終了日のみ設定
+ * hasDateRange(null, new Date('2026-12-31')); // true
+ *
+ * // 両方設定
+ * hasDateRange(new Date('2026-01-01'), new Date('2026-12-31')); // true
+ *
+ * // 両方未設定
+ * hasDateRange(null, null); // false
+ * ```
+ *
+ * 実装の理由:
+ * - 日付範囲が設定されている場合は自動判定を優先する
+ * - 設定されていない場合は手動設定値（published フラグ）を使用する
+ * - この判定により、2つの公開制御方法を適切に使い分けられる
+ *
+ * @see determinePublishedStatus - この関数を使用して公開状態を決定
  */
 export function hasDateRange(publishedAt: Date | null, endedAt: Date | null): boolean {
+  // OR 演算子により、どちらか一方でも null でなければ true を返す
   return publishedAt !== null || endedAt !== null;
 }
 
