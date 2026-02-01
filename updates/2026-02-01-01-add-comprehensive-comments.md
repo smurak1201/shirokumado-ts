@@ -398,50 +398,116 @@ API ルートに詳細なコメントを追加：
 
 ---
 
-### タスク7: app/dashboard/ ダッシュボード（30ファイル）
+### タスク7: app/dashboard/ ダッシュボード（35ファイル）[作業中]
 
-**対象ファイル**:
+**進捗**: 14/35ファイル完了（40%）
 
-管理画面関連の30ファイル（hooks, components, utils, types）
+**対象ファイル**: 管理画面関連の35ファイル（page, layout, hooks, utils, components, types）
 
-- `app/dashboard/page.tsx`
-- `app/dashboard/layout.tsx`
-- `app/dashboard/homepage/page.tsx`
-- `app/dashboard/homepage/types.ts`
-- `app/dashboard/homepage/hooks/*.ts`（6ファイル）
-- `app/dashboard/homepage/utils/*.ts`（3ファイル）
-- `app/dashboard/homepage/components/**/*.tsx`（約20ファイル）
-- `app/dashboard/shop/page.tsx`
-- `app/dashboard/components/DashboardHeader.tsx`
+---
 
-**修正内容**:
+#### タスク7-1: トップレベルファイル（2ファイル）[完了]
 
-ダッシュボード関連のファイルに詳細なコメントを追加。特に：
+- [o] `app/dashboard/page.tsx` - ルートページ（リダイレクト処理）
+- [o] `app/dashboard/layout.tsx` - 共通レイアウト（認証保護）
 
-1. カスタムフック（hooks/）
-   - フックの目的と使用場所
-   - 状態管理のロジック
-   - パフォーマンス最適化の理由
+**修正内容**: ファイル全体のモジュールドキュメント、認証処理の説明、Server Actionのコメント追加
 
-2. ユーティリティ（utils/）
-   - 関数の目的と使用場所
-   - 複雑なロジックの説明
+---
 
-3. コンポーネント（components/）
-   - フォーム、リスト、レイアウトの役割
-   - ドラッグ&ドロップの実装理由
+#### タスク7-2: homepage/メインファイル（2ファイル）[完了]
 
-**チェックリスト**:
+- [o] `app/dashboard/homepage/page.tsx` - ホームページ（データ取得）
+- [o] `app/dashboard/homepage/types.ts` - 型定義
 
-- [ ] `app/dashboard/page.tsx`
-- [ ] `app/dashboard/layout.tsx`
-- [ ] `app/dashboard/homepage/page.tsx`
-- [ ] `app/dashboard/homepage/types.ts`
-- [ ] hooks: 6ファイル
-- [ ] utils: 3ファイル
-- [ ] components: 約20ファイル
-- [ ] `app/dashboard/shop/page.tsx`
-- [ ] `app/dashboard/components/DashboardHeader.tsx`
+**修正内容**: データ取得ロジック、型変換の理由、並列取得の説明、型定義の詳細なコメント追加
+
+---
+
+#### タスク7-3: hooks/カスタムフック（7ファイル）[完了]
+
+- [o] `hooks/useProductReorder.ts` - 商品順序変更
+- [o] `hooks/useScrollPosition.ts` - スクロール位置監視
+- [o] `hooks/useImageUpload.ts` - 画像アップロード
+- [o] `hooks/useProductForm.ts` - 商品フォーム状態管理
+- [o] `hooks/useImageCompression.ts` - 画像圧縮
+- [o] `hooks/useTabState.ts` - タブ状態管理
+- [o] `hooks/useProductSearch.ts` - 商品検索
+
+**修正内容**: 各フックの目的、使用場所、実装の理由、パフォーマンス最適化、エラーハンドリングの詳細なコメント追加
+
+---
+
+#### タスク7-4: utils/ユーティリティ（3ファイル）
+
+- [ ] `utils/productUtils.ts` - 商品フィルタリング・ユーティリティ
+- [ ] `utils/productFormData.ts` - フォームデータ変換
+- [ ] `utils/productFormSubmit.ts` - フォーム送信処理
+
+**修正内容**: 各関数の目的と使用場所、フィルタリングロジックの説明、データ変換の理由、エラーハンドリング方針
+
+---
+
+#### タスク7-5: components/form/（10ファイル）
+
+- [ ] `components/form/ProductForm.tsx` - 商品フォームメイン
+- [ ] `components/form/ProductFormModal.tsx` - フォームモーダル
+- [ ] `components/form/ProductFormFields.tsx` - フォームフィールド統合
+- [ ] `components/form/ProductBasicFields.tsx` - 基本情報フィールド
+- [ ] `components/form/ProductPriceFields.tsx` - 価格フィールド
+- [ ] `components/form/ProductImageField.tsx` - 画像フィールド
+- [ ] `components/form/ProductDateFields.tsx` - 日付フィールド
+- [ ] `components/form/ProductDateInput.tsx` - 日付入力
+- [ ] `components/form/ProductPublishedField.tsx` - 公開状態フィールド
+- [ ] `components/form/ProductFormFooter.tsx` - フォームフッター
+
+**修正内容**: コンポーネントの役割と構成、バリデーションロジック、公開状態の自動計算、フォーム送信処理
+
+---
+
+#### タスク7-6: components/list/（6ファイル）
+
+- [ ] `components/list/ProductList.tsx` - 商品リストメイン
+- [ ] `components/list/ProductListTabs.tsx` - リストタブ
+- [ ] `components/list/ProductListContent.tsx` - リスト内容
+- [ ] `components/list/ProductCard.tsx` - 商品カード
+- [ ] `components/list/ProductCardContent.tsx` - カード内容
+- [ ] `components/list/ProductSearchFilters.tsx` - 検索フィルター
+
+**修正内容**: リスト表示の実装、検索・フィルタリング機能、カード表示のレイアウト
+
+---
+
+#### タスク7-7: components/layout/（3ファイル）
+
+- [ ] `components/layout/ProductLayoutTab.tsx` - レイアウトタブ
+- [ ] `components/layout/LayoutCategoryTabs.tsx` - カテゴリータブ
+- [ ] `components/layout/SortableProductItem.tsx` - ソート可能な商品アイテム
+
+**修正内容**: ドラッグ&ドロップ実装、表示順変更ロジック、@dnd-kit/sortable の使用理由
+
+---
+
+#### タスク7-8: components/その他（3ファイル）
+
+- [ ] `components/DashboardContent.tsx` - ダッシュボードメインコンテンツ
+- [ ] `app/dashboard/shop/page.tsx` - ショップページ
+- [ ] `app/dashboard/components/DashboardHeader.tsx` - ダッシュボードヘッダー
+
+**修正内容**: メインコンテンツの構成、タブ切り替えロジック、ヘッダーナビゲーション
+
+---
+
+**タスク7全体のチェックリスト**:
+
+- [o] タスク7-1: トップレベルファイル（2ファイル）
+- [o] タスク7-2: homepage/メインファイル（2ファイル）
+- [o] タスク7-3: hooks/カスタムフック（7ファイル）
+- [ ] タスク7-4: utils/ユーティリティ（3ファイル）← 次はこれ
+- [ ] タスク7-5: components/form/（10ファイル）
+- [ ] タスク7-6: components/list/（6ファイル）
+- [ ] タスク7-7: components/layout/（3ファイル）
+- [ ] タスク7-8: components/その他（3ファイル）
 
 ---
 
