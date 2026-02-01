@@ -1,7 +1,21 @@
 {
   "css.lint.unknownAtRules": "ignore",
   "files.associations": {
-    "*.css": "tailwindcss"
+    "*.css": "postcss"
   },
-  "github.copilot.chat.commitMessageGeneration.locale": "ja"
+  "github.copilot.chat.commitMessageGeneration.locale": "ja",
+  // Tailwind CSS のクラス名補完を文字列内でも有効化
+  "editor.quickSuggestions": {
+    "strings": true
+  },
+  // cva() などの関数内でも Tailwind クラス名を認識
+  "tailwindCSS.experimental.classRegex": [
+    ["cva\\(([^)]*)\\)", "[\"'`]([^\"'`]*).*?[\"'`]"]
+  ],
+  // CSS ファイル内での IntelliSense を有効化
+  "css.customData": [],
+  "tailwindCSS.includeLanguages": {
+    "typescript": "javascript",
+    "typescriptreact": "javascript"
+  }
 }
