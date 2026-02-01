@@ -12,16 +12,16 @@
 
 | #   | タスク                                   | 優先度 | ステータス | 備考 |
 | --- | ---------------------------------------- | :----: | :--------: | ---- |
-| 1   | ページコンポーネント                     |   高   |    [ ]     |      |
-| 2   | トップレベルコンポーネント               |   高   |    [ ]     |      |
+| 1   | ページコンポーネント                     |   高   |    [o]     | 2026-02-01 完了 |
+| 2   | トップレベルコンポーネント               |   高   |    [o]     | 2026-02-01 完了 |
 | 3   | ダッシュボード - フォームコンポーネント  |   中   |    [o]     | 2026-02-01 完了 |
-| 4   | ダッシュボード - リストコンポーネント    |   中   |    [ ]     |      |
-| 5   | ダッシュボード - レイアウトコンポーネント|   中   |    [ ]     |      |
-| 6   | ダッシュボード - フック                  |   中   |    [ ]     |      |
-| 7   | ダッシュボード - ユーティリティ          |   中   |    [ ]     |      |
-| 8   | UIコンポーネント                         |   低   |    [ ]     |      |
-| 9   | ライブラリ/ユーティリティ                |   高   |    [ ]     |      |
-| 10  | API Routes                               |   中   |    [ ]     |      |
+| 4   | ダッシュボード - リストコンポーネント    |   中   |    [o]     | 2026-02-01 完了 |
+| 5   | ダッシュボード - レイアウトコンポーネント|   中   |    [o]     | 2026-02-01 完了 |
+| 6   | ダッシュボード - フック                  |   中   |    [o]     | 2026-02-01 完了 |
+| 7   | ダッシュボード - ユーティリティ          |   中   |    [o]     | 2026-02-01 完了 |
+| 8   | UIコンポーネント                         |   低   |    [o]     | 2026-02-01 完了 (22ファイル) |
+| 9   | ライブラリ/ユーティリティ                |   高   |    [o]     |      |
+| 10  | API Routes                               |   中   |    [o]     |      |
 | 11  | 設定ファイル・型定義                     |   低   |    [o]     |      |
 | 12  | 動作確認・ビルドテスト                   |   -    |    [ ]     |      |
 
@@ -77,20 +77,20 @@
 
 ## タスク詳細
 
-### タスク1: ページコンポーネント
+### タスク1: ページコンポーネント [完了]
 
 **対象ファイル**:
 
 - `app/page.tsx`（既存・変更）✅ 完了済み
-- `app/shop/page.tsx`（既存・変更）
-- `app/faq/page.tsx`（既存・変更）
-- `app/auth/signin/page.tsx`（既存・変更）
-- `app/dashboard/page.tsx`（既存・変更）
-- `app/dashboard/homepage/page.tsx`（既存・変更）
-- `app/dashboard/shop/page.tsx`（既存・変更）
-- `app/layout.tsx`（既存・変更）
-- `app/dashboard/layout.tsx`（既存・変更）
-- `app/error.tsx`（既存・変更）
+- `app/shop/page.tsx`（既存・変更）✅ 完了
+- `app/faq/page.tsx`（既存・変更）✅ 完了
+- `app/auth/signin/page.tsx`（既存・変更）✅ 完了
+- `app/dashboard/page.tsx`（既存・変更）✅ 完了
+- `app/dashboard/homepage/page.tsx`（既存・変更）✅ 完了
+- `app/dashboard/shop/page.tsx`（既存・変更）✅ 完了
+- `app/layout.tsx`（既存・変更）✅ 完了
+- `app/dashboard/layout.tsx`（既存・変更）✅ 完了
+- `app/error.tsx`（既存・変更）✅ 完了
 
 **修正方針**:
 
@@ -108,19 +108,19 @@
 
 **チェックリスト**:
 
-- [ ] `app/shop/page.tsx` のコメント整理
-- [ ] `app/faq/page.tsx` のコメント整理
-- [ ] `app/auth/signin/page.tsx` のコメント整理
-- [ ] `app/dashboard/page.tsx` のコメント整理
-- [ ] `app/dashboard/homepage/page.tsx` のコメント整理
-- [ ] `app/dashboard/shop/page.tsx` のコメント整理
-- [ ] `app/layout.tsx` のコメント整理
-- [ ] `app/dashboard/layout.tsx` のコメント整理
-- [ ] `app/error.tsx` のコメント整理
+- [o] `app/shop/page.tsx` のコメント整理（109行→33行）
+- [o] `app/faq/page.tsx` のコメント整理（101行→33行）
+- [o] `app/auth/signin/page.tsx` のコメント整理（279行→79行）
+- [o] `app/dashboard/page.tsx` のコメント整理（38行→9行）
+- [o] `app/dashboard/homepage/page.tsx` のコメント整理（209行→102行）
+- [o] `app/dashboard/shop/page.tsx` のコメント整理（77行→27行）
+- [o] `app/layout.tsx` のコメント整理（208行→41行）
+- [o] `app/dashboard/layout.tsx` のコメント整理（94行→37行）
+- [o] `app/error.tsx` のコメント整理（201行→46行）
 
 ---
 
-### タスク2: トップレベルコンポーネント
+### タスク2: トップレベルコンポーネント [完了]
 
 **対象ファイル**:
 
@@ -140,32 +140,32 @@
 
 **チェックリスト**:
 
-- [ ] `ErrorBoundary.tsx` のコメント整理
-- [ ] `FAQSection.tsx` のコメント整理
-- [ ] `FixedHeader.tsx` のコメント整理
-- [ ] `Footer.tsx` のコメント整理
-- [ ] `HeroSection.tsx` のコメント整理
-- [ ] `ProductCategoryTabs.tsx` のコメント整理
-- [ ] `ProductGrid.tsx` のコメント整理
-- [ ] `ProductModal.tsx` のコメント整理
-- [ ] `ProductTile.tsx` のコメント整理
+- [o] `ErrorBoundary.tsx` のコメント整理
+- [o] `FAQSection.tsx` のコメント整理
+- [o] `FixedHeader.tsx` のコメント整理
+- [o] `Footer.tsx` のコメント整理
+- [o] `HeroSection.tsx` のコメント整理
+- [o] `ProductCategoryTabs.tsx` のコメント整理
+- [o] `ProductGrid.tsx` のコメント整理
+- [o] `ProductModal.tsx` のコメント整理
+- [o] `ProductTile.tsx` のコメント整理
 
 ---
 
-### タスク3: ダッシュボード - フォームコンポーネント
+### タスク3: ダッシュボード - フォームコンポーネント [完了]
 
 **対象ファイル**:
 
-- `app/dashboard/homepage/components/form/ProductBasicFields.tsx`（既存・変更）
-- `app/dashboard/homepage/components/form/ProductDateFields.tsx`（既存・変更）
-- `app/dashboard/homepage/components/form/ProductDateInput.tsx`（既存・変更）
-- `app/dashboard/homepage/components/form/ProductForm.tsx`（既存・変更）
-- `app/dashboard/homepage/components/form/ProductFormFields.tsx`（既存・変更）
-- `app/dashboard/homepage/components/form/ProductFormFooter.tsx`（既存・変更）
-- `app/dashboard/homepage/components/form/ProductFormModal.tsx`（既存・変更）
-- `app/dashboard/homepage/components/form/ProductImageField.tsx`（既存・変更）
-- `app/dashboard/homepage/components/form/ProductPriceFields.tsx`（既存・変更）
-- `app/dashboard/homepage/components/form/ProductPublishedField.tsx`（既存・変更）
+- `app/dashboard/homepage/components/form/ProductBasicFields.tsx`（既存・変更）✅
+- `app/dashboard/homepage/components/form/ProductDateFields.tsx`（既存・変更）✅
+- `app/dashboard/homepage/components/form/ProductDateInput.tsx`（既存・変更）✅
+- `app/dashboard/homepage/components/form/ProductForm.tsx`（既存・変更）✅
+- `app/dashboard/homepage/components/form/ProductFormFields.tsx`（既存・変更）✅
+- `app/dashboard/homepage/components/form/ProductFormFooter.tsx`（既存・変更）✅
+- `app/dashboard/homepage/components/form/ProductFormModal.tsx`（既存・変更）✅
+- `app/dashboard/homepage/components/form/ProductImageField.tsx`（既存・変更）✅
+- `app/dashboard/homepage/components/form/ProductPriceFields.tsx`（既存・変更）✅
+- `app/dashboard/homepage/components/form/ProductPublishedField.tsx`（既存・変更）✅
 
 **修正方針**:
 
@@ -173,11 +173,11 @@
 
 **チェックリスト**:
 
-- [ ] 10個のフォームコンポーネントのコメント整理
+- [o] 10個のフォームコンポーネントのコメント整理
 
 ---
 
-### タスク4: ダッシュボード - リストコンポーネント
+### タスク4: ダッシュボード - リストコンポーネント [完了]
 
 **対象ファイル**:
 
@@ -194,11 +194,15 @@
 
 **チェックリスト**:
 
-- [ ] 6個のリストコンポーネントのコメント整理
+- [o] `ProductCard.tsx` のコメント整理（ファイル先頭とprops型のJSDocを削除、JSX内のコメントを削除）
+- [o] `ProductCardContent.tsx` のコメント整理（ファイル先頭とprops型のJSDocを削除、JSX内のコメントを削除）
+- [o] `ProductList.tsx` のコメント整理（ファイル先頭とprops型・関数のJSDocを削除、JSX内のコメントを削除）
+- [o] `ProductListContent.tsx` のコメント整理（ファイル先頭とprops型のJSDocを削除、JSX内のコメントを削除）
+- [o] `ProductListTabs.tsx` のコメント整理（ファイル先頭とprops型のJSDocを削除、JSX内のコメントを削除）
+- [o] `ProductSearchFilters.tsx` のコメント整理（ファイル先頭とprops型のJSDocを削除、JSX内のコメントを削除）
 
 ---
-
-### タスク5: ダッシュボード - レイアウトコンポーネント
+### タスク5: ダッシュボード - レイアウトコンポーネント [完了]
 
 **対象ファイル**:
 
@@ -213,22 +217,25 @@
 
 **チェックリスト**:
 
-- [ ] 4個のレイアウトコンポーネントのコメント整理
+- [o] `DashboardHeader.tsx` のコメント整理（ファイル先頭のJSDocを簡潔化、冗長なインラインコメントを削除）
+- [o] `LayoutCategoryTabs.tsx` のコメント整理（スクロールインジケーターのコメントは残す）
+- [o] `ProductLayoutTab.tsx` のコメント整理（@dnd-kitの特殊な実装コメントは残す）
+- [o] `SortableProductItem.tsx` のコメント整理（touchAction: "none"の理由コメントは残す）
 
 ---
 
-### タスク6: ダッシュボード - フック
+### タスク6: ダッシュボード - フック [完了]
 
 **対象ファイル**:
 
-- `app/dashboard/homepage/hooks/useImageCompression.ts`（既存・変更）
-- `app/dashboard/homepage/hooks/useImageUpload.ts`（既存・変更）
-- `app/dashboard/homepage/hooks/useProductForm.ts`（既存・変更）
-- `app/dashboard/homepage/hooks/useProductReorder.ts`（既存・変更）
-- `app/dashboard/homepage/hooks/useProductSearch.ts`（既存・変更）
-- `app/dashboard/homepage/hooks/useScrollPosition.ts`（既存・変更）
-- `app/dashboard/homepage/hooks/useTabState.ts`（既存・変更）
-- `app/hooks/useProductModal.ts`（既存・変更）
+- `app/dashboard/homepage/hooks/useImageCompression.ts`（既存・変更）✅
+- `app/dashboard/homepage/hooks/useImageUpload.ts`（既存・変更）✅
+- `app/dashboard/homepage/hooks/useProductForm.ts`（既存・変更）✅
+- `app/dashboard/homepage/hooks/useProductReorder.ts`（既存・変更）✅
+- `app/dashboard/homepage/hooks/useProductSearch.ts`（既存・変更）✅
+- `app/dashboard/homepage/hooks/useScrollPosition.ts`（既存・変更）✅
+- `app/dashboard/homepage/hooks/useTabState.ts`（既存・変更）✅
+- `app/hooks/useProductModal.ts`（既存・変更）✅
 
 **修正方針**:
 
@@ -236,18 +243,18 @@
 
 **チェックリスト**:
 
-- [ ] 8個のフックのコメント整理
+- [o] 8個のフックのコメント整理
 
 ---
 
-### タスク7: ダッシュボード - ユーティリティ
+### タスク7: ダッシュボード - ユーティリティ [完了]
 
 **対象ファイル**:
 
-- `app/dashboard/homepage/utils/productFormData.ts`（既存・変更）
-- `app/dashboard/homepage/utils/productFormSubmit.ts`（既存・変更）
-- `app/dashboard/homepage/utils/productUtils.ts`（既存・変更）
-- `app/dashboard/homepage/types.ts`（既存・変更）
+- `app/dashboard/homepage/utils/productFormData.ts`（既存・変更）✅
+- `app/dashboard/homepage/utils/productFormSubmit.ts`（既存・変更）✅
+- `app/dashboard/homepage/utils/productUtils.ts`（既存・変更）✅
+- `app/dashboard/homepage/types.ts`（既存・変更）✅
 
 **修正方針**:
 
@@ -255,43 +262,77 @@
 
 **チェックリスト**:
 
-- [ ] 4個のユーティリティファイルのコメント整理
+- [o] 4個のユーティリティファイルのコメント整理
 
 ---
 
-### タスク8: UIコンポーネント
+### タスク8: UIコンポーネント [完了]
 
 **対象ファイル**:
 
-- `app/components/ui/` 配下の全ファイル（25個程度）
+- `app/components/ui/` 配下の全ファイル（22個）
 
 **修正方針**:
 
 shadcn/uiベースのコンポーネントなので、カスタマイズ部分のみコメントを残す。基本的な使い方の説明は削除。
 
-**チェックリスト**:
+**完了内容**:
 
-- [ ] UIコンポーネント全体のコメント整理（約25ファイル）
+以下の22ファイルを整理しました：
+
+**基本UIコンポーネント** (10個):
+- [o] button.tsx - active:scale-95のカスタマイズコメントを残す
+- [o] input.tsx - モバイル自動ズーム防止のコメントを残す
+- [o] label.tsx
+- [o] textarea.tsx - モバイル自動ズーム防止のコメントを残す
+- [o] select.tsx
+- [o] radio-group.tsx
+- [o] badge.tsx - successバリアントのカスタマイズコメントを残す
+- [o] card.tsx
+- [o] separator.tsx
+- [o] skeleton.tsx
+
+**複雑UIコンポーネント** (7個):
+- [o] dialog.tsx - 閉じるボタンのカスタマイズコメントを残す
+- [o] tabs.tsx - active:scale-95のカスタマイズコメントを残す
+- [o] accordion.tsx - active:scale-95、hover:underline、アイコン回転のカスタマイズコメントを残す
+- [o] tooltip.tsx
+- [o] sheet.tsx
+- [o] scroll-area.tsx
+- [o] aspect-ratio.tsx
+
+**カスタムUIコンポーネント** (5個):
+- [o] card-faq.tsx - ホバーエフェクトのカスタマイズ理由を残す
+- [o] card-modal.tsx - border-0とグラデーション背景のカスタマイズ理由を残す
+- [o] card-product.tsx - インタラクションのカスタマイズ理由を残す
+- [o] badge-price.tsx - 大きめサイズの理由を残す
+- [o] badge-question.tsx - 太字とshrink-0の理由を残す
+
+**修正のポイント**:
+- shadcn/uiの標準機能の説明は削除
+- カスタマイズ部分（active:scale-95、モバイル対応等）のコメントは残す
+- カスタムコンポーネントは、カスタマイズの理由を簡潔に記述
+- 使用例、主な機能の箇条書き等の冗長なコメントは削除
 
 ---
 
-### タスク9: ライブラリ/ユーティリティ
+### タスク9: ライブラリ/ユーティリティ [完了]
 
 **対象ファイル**:
 
-- `lib/api-helpers.ts`（既存・変更）
-- `lib/api-types.ts`（既存・変更）
-- `lib/auth-config.ts`（既存・変更）
-- `lib/blob.ts`（既存・変更）
-- `lib/config.ts`（既存・変更）
-- `lib/env.ts`（既存・変更）
-- `lib/errors.ts`（既存・変更）
-- `lib/logger.ts`（既存・変更）
-- `lib/prisma.ts`（既存・変更）
-- `lib/product-utils.ts`（既存・変更）
-- `lib/products.ts`（既存・変更）
-- `lib/utils.ts`（既存・変更）
-- `lib/image-compression/` 配下の全ファイル（9個）
+- `lib/api-helpers.ts`（既存・変更）✅ 完了済み
+- `lib/api-types.ts`（既存・変更）✅ 完了済み
+- `lib/auth-config.ts`（既存・変更）✅ 完了済み
+- `lib/blob.ts`（既存・変更）✅ 完了済み
+- `lib/config.ts`（既存・変更）✅ 完了済み
+- `lib/env.ts`（既存・変更）✅ 完了済み
+- `lib/errors.ts`（既存・変更）✅ 完了済み
+- `lib/logger.ts`（既存・変更）✅ 完了済み
+- `lib/prisma.ts`（既存・変更）✅ 完了済み
+- `lib/product-utils.ts`（既存・変更）✅ 完了済み
+- `lib/products.ts`（既存・変更）✅ 完了済み
+- `lib/utils.ts`（既存・変更）✅ 完了済み
+- `lib/image-compression/` 配下の全ファイル（9個）✅ 完了済み
 
 **修正方針**:
 
@@ -299,11 +340,11 @@ shadcn/uiベースのコンポーネントなので、カスタマイズ部分�
 
 **チェックリスト**:
 
-- [ ] libディレクトリのコメント整理（約20ファイル）
+- [o] libディレクトリのコメント整理（約20ファイル）
 
 ---
 
-### タスク10: API Routes
+### タスク10: API Routes [完了]
 
 **対象ファイル**:
 
@@ -324,7 +365,7 @@ shadcn/uiベースのコンポーネントなので、カスタマイズ部分�
 
 **チェックリスト**:
 
-- [ ] 10個のAPI Routeのコメント整理
+- [o] 10個のAPI Routeのコメント整理
 
 ---
 
@@ -374,15 +415,15 @@ shadcn/uiベースのコンポーネントなので、カスタマイズ部分�
 
 | カテゴリ                  | ファイル数 | ステータス |
 | ------------------------- | :--------: | :--------: |
-| ページコンポーネント      |     10     |    [ ]     |
-| トップレベルコンポーネント|      9     |    [ ]     |
-| ダッシュボード - フォーム |     10     |    [ ]     |
-| ダッシュボード - リスト   |      6     |    [ ]     |
-| ダッシュボード - レイアウト|      4     |    [ ]     |
-| ダッシュボード - フック   |      8     |    [ ]     |
-| ダッシュボード - ユーティリティ|  4     |    [ ]     |
-| UIコンポーネント          |     25     |    [ ]     |
-| ライブラリ/ユーティリティ |     20     |    [ ]     |
+| ページコンポーネント      |     10     |    [o]     |
+| トップレベルコンポーネント|      9     |    [o]     |
+| ダッシュボード - フォーム |     10     |    [o]     |
+| ダッシュボード - リスト   |      6     |    [o]     |
+| ダッシュボード - レイアウト|      4     |    [o]     |
+| ダッシュボード - フック   |      8     |    [o]     |
+| ダッシュボード - ユーティリティ|  4     |    [o]     |
+| UIコンポーネント          |     22     |    [o]     |
+| ライブラリ/ユーティリティ |     20     |    [o]     |
 | API Routes                |     10     |    [ ]     |
 | 設定ファイル・型定義      |      4     |    [o]     |
 

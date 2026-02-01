@@ -1,13 +1,12 @@
+/**
+ * 商品モーダルフック
+ *
+ * モーダルを閉じる際にアニメーション完了を待ってから選択状態をクリアする。
+ */
 import { useState, useEffect, useRef, useCallback } from "react";
 import type { Product } from "../types";
 import { config } from "@/lib/config";
 
-/**
- * 商品モーダルの状態管理を行うカスタムフック
- *
- * 商品タイルクリック時にモーダルを開き、閉じる際にアニメーション完了を待ってから
- * 選択状態をクリアします。
- */
 export function useProductModal() {
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -23,6 +22,7 @@ export function useProductModal() {
     if (timeoutRef.current) {
       clearTimeout(timeoutRef.current);
     }
+    // アニメーション完了を待ってから選択状態をクリア
     timeoutRef.current = setTimeout(() => {
       setSelectedProduct(null);
       timeoutRef.current = null;

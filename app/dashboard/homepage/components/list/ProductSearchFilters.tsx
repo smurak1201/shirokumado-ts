@@ -36,14 +36,6 @@ export default function ProductSearchFilters({
   setSearchCategoryId,
   categories,
 }: ProductSearchFiltersProps) {
-  /**
-   * 公開状態フィルターの値を RadioGroup 用の文字列に変換
-   *
-   * RadioGroup は文字列を value として扱うため、boolean | null を
-   * "all" | "published" | "unpublished" に変換します。
-   *
-   * @returns {string} RadioGroup の value
-   */
   const getPublishedValue = (): string => {
     if (searchPublished === null) return "all";
     return searchPublished ? "published" : "unpublished";
@@ -51,10 +43,7 @@ export default function ProductSearchFilters({
 
   return (
     <div className="mb-4 space-y-4">
-      {/* フィルターコンテナ: レスポンシブなレイアウト */}
-      {/* モバイル: flex-col（縦並び）、デスクトップ: md:flex-row（横並び） */}
       <div className="flex flex-col gap-4 md:flex-row md:items-end md:gap-6">
-        {/* 商品名検索フィールド */}
         <div className="min-w-0 flex-1 space-y-2">
           <Label>商品名</Label>
           <Input
@@ -66,14 +55,11 @@ export default function ProductSearchFilters({
           />
         </div>
 
-        {/* カテゴリーフィルター */}
         <div className="min-w-0 flex-1 space-y-2">
           <Label>カテゴリー</Label>
           <Select
-            // Select は文字列を扱うため、数値を文字列に変換
             value={searchCategoryId ? String(searchCategoryId) : "all"}
             onValueChange={(value) =>
-              // "all" の場合は null、それ以外は数値に変換
               setSearchCategoryId(value === "all" ? null : parseInt(value))
             }
           >
@@ -81,10 +67,7 @@ export default function ProductSearchFilters({
               <SelectValue placeholder="すべてのカテゴリー" />
             </SelectTrigger>
             <SelectContent>
-              {/* すべてのカテゴリーを表示するオプション */}
               <SelectItem value="all">すべてのカテゴリー</SelectItem>
-
-              {/* カテゴリーリストから選択肢を生成 */}
               {categories.map((category) => (
                 <SelectItem key={category.id} value={String(category.id)}>
                   {category.name}
@@ -94,20 +77,17 @@ export default function ProductSearchFilters({
           </Select>
         </div>
 
-        {/* 公開状態フィルター */}
         <div className="min-w-0 flex-1 space-y-2">
           <Label>公開情報</Label>
           <RadioGroup
             value={getPublishedValue()}
             onValueChange={(value) => {
-              // 文字列を boolean | null に変換
               if (value === "all") setSearchPublished(null);
               else if (value === "published") setSearchPublished(true);
               else setSearchPublished(false);
             }}
             className="flex items-center gap-4"
           >
-            {/* すべて */}
             <div className="flex items-center space-x-2">
               <RadioGroupItem value="all" id="search-all" />
               <Label htmlFor="search-all" className="cursor-pointer font-normal">
@@ -115,7 +95,6 @@ export default function ProductSearchFilters({
               </Label>
             </div>
 
-            {/* 公開のみ */}
             <div className="flex items-center space-x-2">
               <RadioGroupItem value="published" id="search-published" />
               <Label htmlFor="search-published" className="cursor-pointer font-normal">
@@ -123,7 +102,6 @@ export default function ProductSearchFilters({
               </Label>
             </div>
 
-            {/* 非公開のみ */}
             <div className="flex items-center space-x-2">
               <RadioGroupItem value="unpublished" id="search-unpublished" />
               <Label htmlFor="search-unpublished" className="cursor-pointer font-normal">
