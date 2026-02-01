@@ -1,3 +1,35 @@
+/**
+ * @fileoverview FAQ専用カードコンポーネント
+ *
+ * ## 概要
+ * FAQページで使用する質問カード専用のカスタムコンポーネント
+ * 基本のCardコンポーネントをラップし、FAQ専用のスタイルを適用します。
+ *
+ * ## 主な機能
+ * - ホバー時のリフトアップアニメーション（-translate-y-1）
+ * - ホバー時のシャドウ強調（shadow-lg）
+ * - ホバー時のボーダー色変更（border-primary/30）
+ * - スムーズなトランジション（duration-300）
+ *
+ * ## カスタマイズの理由
+ * - FAQ項目をインタラクティブに見せるため、ホバーエフェクトを強化
+ * - ユーザーがクリック可能な要素であることを視覚的に示す
+ * - group クラスで子要素にもホバー効果を連動（FAQCardTitle の色変更）
+ *
+ * ## 使用例
+ * ```tsx
+ * <FAQCard>
+ *   <FAQCardHeader>
+ *     <FAQCardTitle>よくある質問のタイトル</FAQCardTitle>
+ *   </FAQCardHeader>
+ *   <FAQCardContent>
+ *     回答内容
+ *   </FAQCardContent>
+ * </FAQCard>
+ * ```
+ *
+ * @see app/components/ui/card.tsx - 基本のCardコンポーネント
+ */
 import { Card, CardContent, CardHeader, CardTitle } from "./card";
 import type { ComponentPropsWithoutRef } from "react";
 import { cn } from "@/lib/utils";
@@ -10,8 +42,10 @@ export type FAQCardTitleProps = ComponentPropsWithoutRef<typeof CardTitle>;
 /**
  * FAQ用のCardコンポーネント
  *
- * FAQページで使用するカードコンポーネントです。
- * ホバーエフェクトがデフォルトで適用されています。
+ * FAQページで使用するカードコンポーネント。
+ * ホバーエフェクト（リフトアップ、シャドウ強調、ボーダー変更）がデフォルトで適用されています。
+ *
+ * @param {string} [className] - 追加のCSSクラス名
  */
 export function FAQCard({ className, ...props }: FAQCardProps) {
   return (

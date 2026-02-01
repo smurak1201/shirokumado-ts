@@ -13,13 +13,13 @@
 | #   | タスク                                      | 優先度 | ステータス | 備考                           |
 | --- | ------------------------------------------- | :----: | :--------: | ------------------------------ |
 | 1   | lib/ コアファイル（8ファイル）              |   高   |    [~]     | 4/8 完了                       |
-| 2   | lib/image-compression/（9ファイル）         |   高   |    [ ]     |                                |
+| 2   | lib/image-compression/（9ファイル）         |   高   |    [o]     | 9/9 完了                       |
 | 3   | app/layout.tsx 再確認                       |   高   |    [o]     | 既存コメントの改善（完了）     |
 | 4   | app/components/ メインコンポーネント（8）   |   高   |    [ ]     |                                |
-| 5   | app/ メインページ（5ファイル）              |   中   |    [ ]     | page.tsx は完了済み            |
-| 6   | app/api/ APIルート（7ファイル）             |   中   |    [ ]     |                                |
+| 5   | app/ メインページ（5ファイル）              |   中   |    [o]     | 全6ファイル完了                |
+| 6   | app/api/ APIルート（10ファイル）            |   中   |    [o]     | 2026-02-01 完了                |
 | 7   | app/dashboard/ ダッシュボード（30ファイル） |   中   |    [ ]     |                                |
-| 8   | app/components/ui/ UIコンポーネント（20）   |   低   |    [ ]     | shadcn/ui由来、優先度低        |
+| 8   | app/components/ui/ UIコンポーネント（22）   |   低   |    [o]     | shadcn/ui由来、カスタム含む    |
 | 9   | 最終確認・ビルドテスト                      |   -    |    [ ]     |                                |
 
 **凡例**: `[ ]` 未着手 / `[~]` 作業中 / `[o]` 完了
@@ -147,7 +147,7 @@
 
 ---
 
-### タスク2: lib/image-compression/（9ファイル）
+### タスク2: lib/image-compression/（9ファイル）[完了]
 
 **対象ファイル**:
 
@@ -183,15 +183,15 @@
 
 **チェックリスト**:
 
-- [ ] `lib/image-compression/index.ts`
-- [ ] `lib/image-compression/heic.ts`
-- [ ] `lib/image-compression/utils.ts`
-- [ ] `lib/image-compression/load.ts`
-- [ ] `lib/image-compression/blob-loader.ts`
-- [ ] `lib/image-compression/bitmap-loader.ts`
-- [ ] `lib/image-compression/blob-handlers.ts`
-- [ ] `lib/image-compression/canvas.ts`
-- [ ] `lib/image-compression/errors.ts`
+- [o] `lib/image-compression/index.ts`
+- [o] `lib/image-compression/heic.ts`
+- [o] `lib/image-compression/utils.ts`
+- [o] `lib/image-compression/load.ts`
+- [o] `lib/image-compression/blob-loader.ts`
+- [o] `lib/image-compression/bitmap-loader.ts`
+- [o] `lib/image-compression/blob-handlers.ts`
+- [o] `lib/image-compression/canvas.ts`
+- [o] `lib/image-compression/errors.ts`
 
 ---
 
@@ -282,16 +282,16 @@ React コンポーネントに詳細なコメントを追加：
 
 ---
 
-### タスク5: app/ メインページ（5ファイル）
+### タスク5: app/ メインページ（5ファイル）[完了]
 
 **対象ファイル**:
 
 - ✅ `app/page.tsx`（完了）
-- `app/faq/page.tsx`
-- `app/shop/page.tsx`
-- `app/auth/signin/page.tsx`
-- `app/error.tsx`
-- `app/faq/data.ts`
+- ✅ `app/faq/page.tsx`（完了）
+- ✅ `app/shop/page.tsx`（完了）
+- ✅ `app/auth/signin/page.tsx`（完了）
+- ✅ `app/error.tsx`（完了）
+- ✅ `app/faq/data.ts`（完了）
 
 **修正内容**:
 
@@ -303,15 +303,51 @@ React コンポーネントに詳細なコメントを追加：
 **チェックリスト**:
 
 - [o] `app/page.tsx`
-- [ ] `app/faq/page.tsx`
-- [ ] `app/shop/page.tsx`
-- [ ] `app/auth/signin/page.tsx`
-- [ ] `app/error.tsx`
-- [ ] `app/faq/data.ts`
+- [o] `app/faq/page.tsx`
+- [o] `app/shop/page.tsx`
+- [o] `app/auth/signin/page.tsx`
+- [o] `app/error.tsx`
+- [o] `app/faq/data.ts`
+
+**完了日**: 2026-02-01
+
+**追加したコメント内容**:
+
+1. **app/faq/page.tsx**
+   - ファイル先頭のモジュールドキュメント追加（目的、機能、実装の特性）
+   - ヘッダースペーサーの詳細な説明（position:fixedとの関係）
+   - レスポンシブパディングの意図説明
+   - 各UI要素の役割と配置理由
+
+2. **app/shop/page.tsx**
+   - プレースホルダーページの目的と今後の拡張方針
+   - デザインの意図（準備中として前向きな印象）
+   - 各UI要素のスタイル選択理由
+   - インタラクション（ホバー、クリック時のフィードバック）の説明
+
+3. **app/auth/signin/page.tsx**
+   - Google OAuth認証フローの詳細説明
+   - Server Actionの仕組みと利点
+   - セキュリティ考慮事項（環境変数、許可リスト）
+   - グラスモーフィズムデザインの意図
+   - Googleブランドカラーの使用理由
+
+4. **app/error.tsx**
+   - Next.jsのエラーバウンダリの仕組み
+   - Client Componentである理由
+   - 開発環境のみエラー詳細を表示する理由
+   - reset()関数の動作説明
+   - セキュリティとUXのトレードオフ
+
+5. **app/faq/data.ts**
+   - 型定義の目的と設計理由
+   - データ管理の方針（データとUIの分離）
+   - 質問の分類（営業、席、会計、サービス、連絡）
+   - 各質問への補足コメント（なぜその質問が必要か）
 
 ---
 
-### タスク6: app/api/ APIルート（7ファイル）
+### タスク6: app/api/ APIルート（10ファイル）[完了]
 
 **対象ファイル**:
 
@@ -349,16 +385,16 @@ API ルートに詳細なコメントを追加：
 
 **チェックリスト**:
 
-- [ ] `app/api/categories/route.ts`
-- [ ] `app/api/products/route.ts`
-- [ ] `app/api/products/reorder/route.ts`
-- [ ] `app/api/products/upload/route.ts`
-- [ ] `app/api/products/[id]/route.ts`
-- [ ] `app/api/products/[id]/get.ts`
-- [ ] `app/api/products/[id]/put.ts`
-- [ ] `app/api/products/[id]/put-validation.ts`
-- [ ] `app/api/products/[id]/delete.ts`
-- [ ] `app/api/auth/[...nextauth]/route.ts`
+- [o] `app/api/categories/route.ts`
+- [o] `app/api/products/route.ts`
+- [o] `app/api/products/reorder/route.ts`
+- [o] `app/api/products/upload/route.ts`
+- [o] `app/api/products/[id]/route.ts`
+- [o] `app/api/products/[id]/get.ts`
+- [o] `app/api/products/[id]/put.ts`
+- [o] `app/api/products/[id]/put-validation.ts`
+- [o] `app/api/products/[id]/delete.ts`
+- [o] `app/api/auth/[...nextauth]/route.ts`
 
 ---
 
@@ -409,11 +445,11 @@ API ルートに詳細なコメントを追加：
 
 ---
 
-### タスク8: app/components/ui/ UIコンポーネント（20ファイル）
+### タスク8: app/components/ui/ UIコンポーネント（20ファイル）[完了]
 
 **対象ファイル**:
 
-shadcn/ui 由来のUIコンポーネント（20ファイル）
+shadcn/ui 由来のUIコンポーネント（22ファイル）
 
 **修正内容**:
 
@@ -433,24 +469,28 @@ shadcn/ui ベースのコンポーネントに簡潔なコメントを追加：
 
 **チェックリスト**:
 
-- [ ] `app/components/ui/button.tsx`
-- [ ] `app/components/ui/input.tsx`
-- [ ] `app/components/ui/label.tsx`
-- [ ] `app/components/ui/textarea.tsx`
-- [ ] `app/components/ui/select.tsx`
-- [ ] `app/components/ui/radio-group.tsx`
-- [ ] `app/components/ui/badge.tsx`
-- [ ] `app/components/ui/card.tsx`
-- [ ] `app/components/ui/dialog.tsx`
-- [ ] `app/components/ui/sheet.tsx`
-- [ ] `app/components/ui/tabs.tsx`
-- [ ] `app/components/ui/separator.tsx`
-- [ ] `app/components/ui/skeleton.tsx`
-- [ ] `app/components/ui/scroll-area.tsx`
-- [ ] `app/components/ui/tooltip.tsx`
-- [ ] `app/components/ui/accordion.tsx`
-- [ ] `app/components/ui/aspect-ratio.tsx`
-- [ ] カスタムUIコンポーネント（card-*, badge-*）
+- [o] `app/components/ui/button.tsx`
+- [o] `app/components/ui/input.tsx`
+- [o] `app/components/ui/label.tsx`
+- [o] `app/components/ui/textarea.tsx`
+- [o] `app/components/ui/select.tsx`
+- [o] `app/components/ui/radio-group.tsx`
+- [o] `app/components/ui/badge.tsx`
+- [o] `app/components/ui/card.tsx`
+- [o] `app/components/ui/dialog.tsx`
+- [o] `app/components/ui/sheet.tsx`
+- [o] `app/components/ui/tabs.tsx`
+- [o] `app/components/ui/separator.tsx`
+- [o] `app/components/ui/skeleton.tsx`
+- [o] `app/components/ui/scroll-area.tsx`
+- [o] `app/components/ui/tooltip.tsx`
+- [o] `app/components/ui/accordion.tsx`
+- [o] `app/components/ui/aspect-ratio.tsx`
+- [o] `app/components/ui/card-faq.tsx`
+- [o] `app/components/ui/card-modal.tsx`
+- [o] `app/components/ui/card-product.tsx`
+- [o] `app/components/ui/badge-question.tsx`
+- [o] `app/components/ui/badge-price.tsx`
 
 ---
 
@@ -494,18 +534,18 @@ shadcn/ui ベースのコンポーネントに簡潔なコメントを追加：
 | `lib/api-helpers.ts`                            | コメント追加                 |    [ ]     |
 | `lib/auth-config.ts`                            | コメント追加                 |    [ ]     |
 | `lib/api-types.ts`                              | コメント追加                 |    [ ]     |
-| `lib/image-compression/*.ts`（9ファイル）       | コメント追加                 |    [ ]     |
+| `lib/image-compression/*.ts`（9ファイル）       | コメント追加                 |    [o]     |
 | `app/layout.tsx`                                | コメント改善                 |    [o]     |
 | `app/page.tsx`                                  | コメント改善                 |    [o]     |
 | `app/components/*.tsx`（8ファイル）             | コメント追加                 |    [ ]     |
-| `app/faq/page.tsx`                              | コメント追加                 |    [ ]     |
-| `app/shop/page.tsx`                             | コメント追加                 |    [ ]     |
-| `app/auth/signin/page.tsx`                      | コメント追加                 |    [ ]     |
-| `app/error.tsx`                                 | コメント追加                 |    [ ]     |
-| `app/faq/data.ts`                               | コメント追加                 |    [ ]     |
-| `app/api/**/*.ts`（約10ファイル）               | コメント追加                 |    [ ]     |
+| `app/faq/page.tsx`                              | コメント追加                 |    [o]     |
+| `app/shop/page.tsx`                             | コメント追加                 |    [o]     |
+| `app/auth/signin/page.tsx`                      | コメント追加                 |    [o]     |
+| `app/error.tsx`                                 | コメント追加                 |    [o]     |
+| `app/faq/data.ts`                               | コメント追加                 |    [o]     |
+| `app/api/**/*.ts`（10ファイル）                 | コメント追加                 |    [o]     |
 | `app/dashboard/**/*.{ts,tsx}`（約30ファイル）   | コメント追加                 |    [ ]     |
-| `app/components/ui/*.tsx`（約20ファイル）       | 簡潔なコメント追加           |    [ ]     |
+| `app/components/ui/*.tsx`（22ファイル）         | 簡潔なコメント追加           |    [o]     |
 | `app/types.ts`                                  | 型定義のコメント追加         |    [ ]     |
 
 **合計**: 約88ファイル
