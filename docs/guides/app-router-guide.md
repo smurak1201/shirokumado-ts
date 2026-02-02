@@ -64,95 +64,123 @@ App Router では、`app/` ディレクトリ内のファイル構造がその�
 **このアプリでの App Router のディレクトリ構造**:
 
 ```
-├── layout.tsx          # ルートレイアウト（全ページ共通）
-├── page.tsx           # ホームページ（/）
-├── globals.css        # グローバルスタイル
-├── faq/
-│   └── page.tsx       # FAQページ（/faq）
-├── dashboard/
-│   └── page.tsx       # ダッシュボード（/dashboard）
+├── (public)/          # 公開ページ用ルートグループ
+│   ├── error.tsx      # エラーUI
+│   ├── faq/
+│   │   └── page.tsx   # FAQページ（/faq）
+│   ├── loading.tsx    # ローディングUI
+│   ├── page.tsx       # ホームページ（/）
+│   └── shop/
+│       └── page.tsx   # ショップページ（/shop）
 ├── api/               # API Routes
-│   ├── products/
-│   │   ├── route.ts   # GET, POST /api/products
-│   │   ├── [id]/
-│   │   │   └── route.ts # GET, PUT, DELETE /api/products/[id]
-│   │   ├── upload/
-│   │   │   └── route.ts # POST /api/products/upload
-│   │   └── reorder/
-│   │       └── route.ts # POST /api/products/reorder
-│   └── categories/
-│       └── route.ts   # GET /api/categories
+│   ├── categories/
+│   │   └── route.ts   # GET /api/categories
+│   └── products/
+│       ├── [id]/
+│       │   └── route.ts # GET, PUT, DELETE /api/products/[id]
+│       ├── reorder/
+│       │   └── route.ts # POST /api/products/reorder
+│       ├── route.ts   # GET, POST /api/products
+│       └── upload/
+│           └── route.ts # POST /api/products/upload
+├── auth/              # 認証ページ（管理者用）
+│   ├── error/
+│   │   └── page.tsx   # 認証エラーページ
+│   └── signin/
+│       └── page.tsx   # サインインページ
 ├── components/        # 共通コンポーネント
-├── hooks/            # カスタムフック
-├── utils/             # ユーティリティ関数
-└── types.ts          # 型定義
+├── dashboard/         # 管理用ページ（ルートグループ外）
+│   └── page.tsx       # ダッシュボード（/dashboard）
+├── globals.css        # グローバルスタイル
+├── hooks/             # カスタムフック
+├── layout.tsx         # ルートレイアウト（全ページ共通）
+├── not-found.tsx      # 404ページ
+├── types.ts           # 型定義
+└── utils/             # ユーティリティ関数
 ```
+
+**ルートグループ `(public)` について**:
+
+ルートグループは括弧で囲まれたフォルダ名（例: `(public)`）で、URLには影響を与えずにルートを整理できます。このアプリでは、公開ページと管理ページで `loading.tsx` や `error.tsx` の適用範囲を分けるために使用しています。
+
+- `(public)/page.tsx` → `/` としてアクセス可能
+- `(public)/faq/page.tsx` → `/faq` としてアクセス可能
+- `dashboard/page.tsx` → `/dashboard` としてアクセス可能（`(public)` の `loading.tsx` は適用されない）
 
 - `page.tsx`: ページコンポーネント（ルートとして機能） - **このアプリで使用中**
 - `layout.tsx`: レイアウトコンポーネント（ネストされたレイアウト） - **このアプリで使用中**
 - `route.ts`: API エンドポイント（API Routes） - **このアプリで使用中**
-- `error.tsx`: エラー UI - **このアプリで使用中**（[`app/error.tsx`](../../app/error.tsx)）
-- `loading.tsx`: ローディング UI - **このアプリでは未使用**
-- `not-found.tsx`: 404 ページ - **このアプリでは未使用**
+- `error.tsx`: エラー UI - **このアプリで使用中**（[`app/(public)/error.tsx`](../../app/(public)/error.tsx)）
+- `loading.tsx`: ローディング UI - **このアプリで使用中**（[`app/(public)/loading.tsx`](../../app/(public)/loading.tsx)）
+- `not-found.tsx`: 404 ページ - **このアプリで使用中**（[`app/not-found.tsx`](../../app/not-found.tsx)）
 - `template.tsx`: テンプレートコンポーネント - **このアプリでは未使用**
 
 **使用中のファイル**:
 
 **`error.tsx`** - Next.js App Router のエラーハンドリング
 
-このアプリでは [`app/error.tsx`](../../app/error.tsx) でエラーハンドリングを実装しています。Server Componentsでエラーが発生した場合に表示されるエラーページです。
+このアプリでは [`app/(public)/error.tsx`](../../app/(public)/error.tsx) でエラーハンドリングを実装しています。Server Componentsでエラーが発生した場合に表示されるエラーページです。`(public)` ルートグループ内に配置しているため、公開ページでのみ適用されます。
 
 **注意**: `error.tsx`はNext.js App Routerのエラーハンドリング用ファイルです。Reactのエラーバウンダリーコンポーネント（[`app/components/ErrorBoundary.tsx`](../../app/components/ErrorBoundary.tsx)）とは異なります。詳細は [React ガイド - エラーバウンダリー](./react-guide.md#9-エラーバウンダリー) を参照してください。
 
-**未使用ファイルの説明**:
-
-このアプリでは、以下のファイルは使用されていませんが、知っておくと便利な機能です：
-
 **`loading.tsx`** - ローディング UI
 
-ページやセグメントの読み込み中に表示される UI を定義します。データフェッチ中にローディングスピナーなどを表示できます。
+このアプリでは [`app/(public)/loading.tsx`](../../app/(public)/loading.tsx) でローディングUIを実装しています。Server Componentsでデータフェッチ中に表示されます。`(public)` ルートグループ内に配置しているため、公開ページ（`/`、`/faq`、`/shop`）でのみ適用され、管理用ページ（`/dashboard`）では適用されません。
 
-**使用例**:
+**このアプリでの実装**:
 
 ```typescript
 export default function Loading() {
   return (
-    <div className="flex items-center justify-center p-8">
-      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
-      <span className="ml-2">読み込み中...</span>
+    <div className="flex min-h-screen items-center justify-center bg-background">
+      <div className="flex flex-col items-center gap-6 animate-fade-in">
+        {/* ロゴ・店名 */}
+        <div className="text-center">
+          <h1 className="text-2xl font-light tracking-widest text-primary">
+            白熊堂
+          </h1>
+          <p className="mt-1 text-xs tracking-wider text-muted-foreground">
+            SHIROKUMADO
+          </p>
+        </div>
+
+        {/* ドットスピナー */}
+        <div className="flex items-center gap-1.5">
+          <span className="h-2 w-2 rounded-full bg-primary/60 animate-bounce [animation-delay:-0.3s]" />
+          <span className="h-2 w-2 rounded-full bg-primary/60 animate-bounce [animation-delay:-0.15s]" />
+          <span className="h-2 w-2 rounded-full bg-primary/60 animate-bounce" />
+        </div>
+
+        {/* テキスト */}
+        <p className="text-sm text-muted-foreground">読み込み中...</p>
+      </div>
     </div>
   );
 }
 ```
 
-**注意**: このアプリでは `loading.tsx` は使用されていません。上記は参考例です。
+**最低表示時間の設定**:
 
+トップページ（`app/(public)/page.tsx`）では、ローディング画面の最低表示時間を設定しています。データ取得と並列で待機するため、データ取得が遅い場合は追加の遅延はかかりません。
+
+```typescript
+// ローディング画面の最低表示時間（ms）
+const MIN_LOADING_TIME_MS = 1000;
+
+// データ取得と最低表示時間を並列で待機
+const [data] = await Promise.all([
+  getPublishedProductsByCategory(),
+  new Promise((resolve) => setTimeout(resolve, MIN_LOADING_TIME_MS)),
+]);
+```
 
 **`not-found.tsx`** - 404 ページ
 
-404 ページをカスタマイズします。`notFound()`関数を呼び出した時や、存在しないルートにアクセスした時に表示されます。
+このアプリでは [`app/not-found.tsx`](../../app/not-found.tsx) で404ページを実装しています。存在しないURLにアクセスした時に表示されます。ルートレベルに配置しているため、アプリ全体に適用されます。
 
-**使用例**:
+**未使用ファイルの説明**:
 
-```typescript
-import Link from "next/link";
-
-export default function NotFound() {
-  return (
-    <div className="flex flex-col items-center justify-center p-8">
-      <h2 className="text-2xl font-bold mb-4">商品が見つかりません</h2>
-      <p className="text-gray-600 mb-4">
-        お探しの商品は存在しないか、削除された可能性があります。
-      </p>
-      <Link href="/" className="text-blue-500 hover:underline">
-        ホームに戻る
-      </Link>
-    </div>
-  );
-}
-```
-
-**注意**: このアプリでは `not-found.tsx` は使用されていません。上記は参考例です。
+このアプリでは、以下のファイルは使用されていませんが、知っておくと便利な機能です：
 
 **`template.tsx`** - テンプレートコンポーネント
 
@@ -172,9 +200,9 @@ export default function Template({ children }: { children: React.ReactNode }) {
 
 **注意**: このアプリでは `template.tsx` は使用されていません。上記は参考例です。
 
-- エラーハンドリング: `error.tsx` で Server Components のエラーを処理し、API Routes では `withErrorHandling` で統一して実装している
-- ローディング状態は各コンポーネント内で管理している
-- 404 ページは Next.js のデフォルトを使用している
+- エラーハンドリング: `(public)/error.tsx` で公開ページのエラーを処理し、API Routes では `withErrorHandling` で統一して実装している
+- ローディング状態: `(public)/loading.tsx` でServer Componentsのデータフェッチ中にローディングUIを表示
+- 404 ページ: `not-found.tsx` でカスタム404ページを表示
 - テンプレート機能は現在の要件では不要
 
 ## Server Components と Client Components
@@ -192,7 +220,7 @@ export default function Template({ children }: { children: React.ReactNode }) {
 
 **このアプリでの使用箇所**:
 
-1. **[`app/page.tsx`](../../app/page.tsx) (`Home`コンポーネント)** - ホームページ（Server Component）
+1. **[`app/(public)/page.tsx`](../../app/(public)/page.tsx) (`Home`コンポーネント)** - ホームページ（Server Component）
 
 ```typescript
   // カテゴリーごとにグループ化された公開商品を取得
@@ -236,7 +264,7 @@ export default function Template({ children }: { children: React.ReactNode }) {
 }
 ```
 
-2. **[`app/faq/page.tsx`](../../app/faq/page.tsx) (`FAQPage`コンポーネント)** - FAQ ページ（Server Component）
+2. **[`app/(public)/faq/page.tsx`](../../app/(public)/faq/page.tsx) (`FAQPage`コンポーネント)** - FAQ ページ（Server Component）
 
 ```typescript
   /**
@@ -653,7 +681,7 @@ export function calculatePublishedStatus(
 
 **このアプリでの使用箇所**:
 
-1. **[`app/page.tsx`](../../app/page.tsx) (`dynamic`エクスポート)** - 動的レンダリングを強制
+1. **[`app/(public)/page.tsx`](../../app/(public)/page.tsx) (`dynamic`エクスポート)** - 動的レンダリングを強制
 
 ```typescript
 /**
@@ -1040,7 +1068,7 @@ Next.js の `Image` コンポーネントを使用すると、画像の自動最
 
 **このアプリでの使用箇所**:
 
-- **[`app/page.tsx`](../../app/page.tsx)**: ヒーロー画像の最適化
+- **[`app/(public)/page.tsx`](../../app/(public)/page.tsx)**: ヒーロー画像の最適化
 - **[`app/components/ProductTile.tsx`](../../app/components/ProductTile.tsx)**: 商品画像の最適化
 - **[`app/components/ProductModal.tsx`](../../app/components/ProductModal.tsx)**: モーダル内の商品画像
 
@@ -1110,21 +1138,32 @@ Next.js の `Image` コンポーネントを使用すると、画像の自動最
 
 ### ページ構成
 
-1. **ホームページ** (`app/page.tsx`)
+**公開ページ** (`(public)` ルートグループ内):
+
+1. **ホームページ** ([`app/(public)/page.tsx`](../../app/(public)/page.tsx))
 
    - Server Component
    - データベースから公開商品を取得
    - カテゴリーごとにグループ化して表示
+   - 最低1秒のローディング表示時間を設定
 
-2. **FAQ ページ** (`app/faq/page.tsx`)
+2. **FAQ ページ** ([`app/(public)/faq/page.tsx`](../../app/(public)/faq/page.tsx))
 
    - Server Component
    - 静的なコンテンツを表示
 
-3. **ダッシュボード** ([`app/dashboard/page.tsx`](../../app/dashboard/page.tsx))
+3. **ショップページ** ([`app/(public)/shop/page.tsx`](../../app/(public)/shop/page.tsx))
+
+   - Server Component
+   - 準備中メッセージを表示
+
+**管理ページ** (ルートグループ外):
+
+4. **ダッシュボード** ([`app/dashboard/page.tsx`](../../app/dashboard/page.tsx))
    - Server Component
    - データベースから商品とカテゴリーを取得
    - Client Component にデータを渡す
+   - `(public)` の `loading.tsx` は適用されない
 
 ### API Routes 構成
 
