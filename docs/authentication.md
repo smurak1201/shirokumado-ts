@@ -37,6 +37,10 @@
    ├─ 許可 → Userレコード作成/更新
    └─ 不許可 → ログイン拒否
    ↓
+[createUserイベント（新規ユーザーのみ）]
+   ↓
+[AllowedAdminのロールをUserに反映]
+   ↓
 [sessionコールバック → id, role追加]
    ↓
 [/dashboardへリダイレクト]
@@ -262,7 +266,20 @@ export async function isAllowedEmail(email: string | null | undefined): Promise<
 
   return !!allowedAdmin;
 }
+
+export async function getRoleByEmail(email: string | null | undefined): Promise<string> {
+  if (!email) return 'user';
+
+  const allowedAdmin = await prisma.allowedAdmin.findUnique({
+    where: { email },
+  });
+
+  return allowedAdmin?.role ?? 'user';
+}
 ```
+
+- `isAllowedEmail`: メールアドレスが許可リストに含まれているかチェック
+- `getRoleByEmail`: メールアドレスに対応するロールを取得（ユーザー作成時に使用）
 
 **使用場所**: [auth.ts](../auth.ts)
 
@@ -281,10 +298,22 @@ callbacks: {
     session.user.role = user.role;
     return session;
   },
-}
+},
+events: {
+  // ユーザー新規作成時にAllowedAdminのロールをUserに反映
+  async createUser({ user }) {
+    const role = await getRoleByEmail(user.email);
+    await prisma.user.update({
+      where: { id: user.id },
+      data: { role },
+    });
+  },
+},
 ```
 
 Googleでの認証成功後、`signIn`コールバックで`AllowedAdmin`テーブルをチェックし、許可されていないメールアドレスはログインを拒否します。
+
+新規ユーザーの場合、`createUser`イベントで`AllowedAdmin`テーブルからロールを取得し、`User`テーブルに反映します。これにより、許可リストで設定したロールが自動的にユーザーに割り当てられます。
 
 ### 許可メールアドレスの管理
 
@@ -385,7 +414,7 @@ npm run db:studio
 | `homepage` | ホームページ管理者 | ホームページ関連の機能のみ（将来実装予定） |
 | `shop` | ショップ管理者 | ECサイト関連の機能のみ（将来実装予定） |
 
-**注意**: 現在は`role`フィールドは保存されていますが、アクセス制御には使用されていません。将来的に機能別のアクセス制御を実装する際に使用される予定です。
+**注意**: 初回ログイン時に`AllowedAdmin`テーブルで設定されたロールが`User`テーブルに自動的に反映されます。現在はセッションにロール情報が含まれていますが、機能別のアクセス制御は将来実装予定です。
 
 ## セキュリティ
 
@@ -518,6 +547,7 @@ export default function MyClientComponent() {
 
 - すべてのユーザーは管理者が事前に`allowed_admins`テーブルに登録する必要がある
 - 初めてログインしたユーザーは、Googleアカウント情報が`users`テーブルに自動的に作成される
+- **初回ログイン時に`AllowedAdmin`テーブルで設定されたロールが`User`テーブルに自動的に反映される**
 - ただし、ログイン前に`allowed_admins`テーブルに登録されていないとログインできない
 
 ### セキュリティのベストプラクティス
