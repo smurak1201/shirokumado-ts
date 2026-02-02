@@ -18,11 +18,20 @@ import { log } from "@/lib/logger";
 // 商品データは頻繁に更新されるため、リクエストごとに最新データを取得
 export const dynamic = "force-dynamic";
 
+// ローディング画面の最低表示時間（ms）
+const MIN_LOADING_TIME_MS = 1000;
+
 export default async function Home() {
   let categoriesWithProducts: CategoryWithProducts[] = [];
 
   try {
-    categoriesWithProducts = await getPublishedProductsByCategory();
+    // データ取得と最低表示時間を並列で待機
+    // データ取得が1000ms以上かかれば追加の遅延なし
+    const [data] = await Promise.all([
+      getPublishedProductsByCategory(),
+      new Promise((resolve) => setTimeout(resolve, MIN_LOADING_TIME_MS)),
+    ]);
+    categoriesWithProducts = data;
   } catch (error) {
     // 設計判断: データ取得エラー時もページは表示する（部分的なダウンタイムを許容）
     // ユーザーには通知せず、運用者のみログで確認
