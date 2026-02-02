@@ -547,10 +547,20 @@ export default function MyClientComponent() {
 
 ### ログイン拒否時の動作
 
-許可リストにないメールアドレスでログインを試みると、Auth.jsのデフォルトのエラーページが表示されます。
+許可リストにないメールアドレスでログインを試みると、カスタムエラーページ（`/auth/error`）が表示されます。
 
-- ユーザーには「AccessDenied」というエラーが表示される
-- 詳細なエラーメッセージは表示されない（セキュリティのため）
+**実装場所**: [app/auth/error/page.tsx](../app/auth/error/page.tsx)
+
+エラータイプに応じたメッセージを表示:
+
+| エラータイプ | タイトル | 説明 |
+|-------------|---------|------|
+| `AccessDenied` | アクセスが許可されていません | このメールアドレスはログインが許可されていません |
+| `Configuration` | 設定エラー | 認証システムの設定に問題があります |
+| `Verification` | 認証エラー | 認証の検証に失敗しました |
+| その他 | エラーが発生しました | ログイン中にエラーが発生しました |
+
+- ログインページに戻るボタンを提供
 - ログインを許可したい場合は、管理者が`allowed_admins`テーブルにメールアドレスを追加する必要がある
 
 ### 新規ユーザー登録について
@@ -781,6 +791,7 @@ VALUES (gen_random_uuid(), 'newadmin@example.com', 'admin', NOW());
 | [lib/auth-config.ts](../lib/auth-config.ts) | 認可チェック（許可リスト） |
 | [app/api/auth/[...nextauth]/route.ts](../app/api/auth/[...nextauth]/route.ts) | Auth.js APIエンドポイント |
 | [app/auth/signin/page.tsx](../app/auth/signin/page.tsx) | ログインページ（Googleボタン） |
+| [app/auth/error/page.tsx](../app/auth/error/page.tsx) | 認証エラーページ |
 | [app/dashboard/layout.tsx](../app/dashboard/layout.tsx) | ダッシュボード保護（セッションチェック） |
 | [app/dashboard/components/DashboardHeader.tsx](../app/dashboard/components/DashboardHeader.tsx) | ユーザー情報・ログアウトボタン |
 | [prisma/schema.prisma](../prisma/schema.prisma) | データベーススキーマ（User, Account, Session等） |
