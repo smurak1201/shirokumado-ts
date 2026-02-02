@@ -8,11 +8,11 @@ import {
   getPublishedProductsByCategory,
   type CategoryWithProducts,
 } from "@/lib/products";
-import ProductCategoryTabs from "./components/ProductCategoryTabs";
-import FixedHeader from "./components/FixedHeader";
-import Footer from "./components/Footer";
-import HeroSection from "./components/HeroSection";
-import { Separator } from "./components/ui/separator";
+import ProductCategoryTabs from "@/app/components/ProductCategoryTabs";
+import FixedHeader from "@/app/components/FixedHeader";
+import Footer from "@/app/components/Footer";
+import HeroSection from "@/app/components/HeroSection";
+import { Separator } from "@/app/components/ui/separator";
 import { log } from "@/lib/logger";
 
 // 商品データは頻繁に更新されるため、リクエストごとに最新データを取得

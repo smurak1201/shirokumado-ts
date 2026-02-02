@@ -2,11 +2,11 @@
  * FAQページ
  *
  * よくある質問と回答をアコーディオン形式で表示。
- * データは app/faq/data.ts から取得。
+ * データは app/(public)/faq/data.ts から取得。
  */
-import FixedHeader from "../components/FixedHeader";
-import Footer from "../components/Footer";
-import FAQSection from "../components/FAQSection";
+import FixedHeader from "@/app/components/FixedHeader";
+import Footer from "@/app/components/Footer";
+import FAQSection from "@/app/components/FAQSection";
 import { faqs } from "./data";
 
 export default function FAQPage() {

@@ -15,8 +15,12 @@ import {
 import { QuestionBadge } from "./ui/badge-question";
 import { Separator } from "./ui/separator";
 import { config } from "@/lib/config";
-import type { FAQ } from "@/app/faq/data";
 import { cn } from "@/lib/utils";
+
+export interface FAQ {
+  question: string;
+  answer: string;
+}
 
 const containerVariants: Variants = {
   hidden: { opacity: 0 },
