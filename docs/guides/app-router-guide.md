@@ -69,7 +69,6 @@ App Router では、`app/` ディレクトリ内のファイル構造がその�
 │   ├── faq/
 │   │   └── page.tsx   # FAQページ（/faq）
 │   ├── HomeContent.tsx # ホームページのメインコンテンツ（Server Component）
-│   ├── loading.tsx    # ローディングUI
 │   ├── page.tsx       # ホームページ（/）
 │   └── shop/
 │       └── page.tsx   # ショップページ（/shop）
@@ -103,11 +102,11 @@ App Router では、`app/` ディレクトリ内のファイル構造がその�
 
 **ルートグループ `(public)` について**:
 
-ルートグループは括弧で囲まれたフォルダ名（例: `(public)`）で、URLには影響を与えずにルートを整理できます。このアプリでは、公開ページと管理ページで `loading.tsx` や `error.tsx` の適用範囲を分けるために使用しています。
+ルートグループは括弧で囲まれたフォルダ名（例: `(public)`）で、URLには影響を与えずにルートを整理できます。このアプリでは、公開ページと管理ページで `error.tsx` の適用範囲を分けるために使用しています。
 
 - `(public)/page.tsx` → `/` としてアクセス可能
 - `(public)/faq/page.tsx` → `/faq` としてアクセス可能
-- `dashboard/page.tsx` → `/dashboard` としてアクセス可能（`(public)` の `loading.tsx` は適用されない）
+- `dashboard/page.tsx` → `/dashboard` としてアクセス可能（`(public)` の `error.tsx` は適用されない）
 
 - `page.tsx`: ページコンポーネント（ルートとして機能） - **このアプリで使用中**
 - `layout.tsx`: レイアウトコンポーネント（ネストされたレイアウト） - **このアプリで使用中**
@@ -127,57 +126,23 @@ App Router では、`app/` ディレクトリ内のファイル構造がその�
 
 **`loading.tsx`** - ローディング UI
 
-このアプリでは [`app/(public)/loading.tsx`](../../app/(public)/loading.tsx) でローディングUIを実装しています。Server Componentsでデータフェッチ中に表示されます。`(public)` ルートグループ内に配置しているため、公開ページ（`/`、`/faq`、`/shop`）でのみ適用され、管理用ページ（`/dashboard`）では適用されません。
+`loading.tsx`はNext.js App Routerの機能で、Server Componentsでデータフェッチ中にローディングUIを表示できます。ただし、**クライアントサイドナビゲーション時のみ**表示され、初回ロードやブラウザリロード時には表示されません。
 
-**重要**: Next.js App Routerの`loading.tsx`は**クライアントサイドナビゲーション時のみ**表示されます。初回ロード（ブラウザで直接アクセス）やブラウザリロード時には表示されません。これはNext.jsの仕様です。
+**このアプリでの方針**:
 
-**このアプリでの実装**:
+このアプリでは`loading.tsx`を使用せず、**Suspenseを使って各ページで個別にローディング制御**しています。これにより以下のメリットがあります：
 
-ローディングUIは [`app/components/LoadingScreen.tsx`](../../app/components/LoadingScreen.tsx) として共通コンポーネント化しています。これにより、`loading.tsx` と `Suspense fallback` の両方で再利用でき、DRY原則を維持しています。
+- 初回ロード/リロード時にもローディング画面が表示される
+- ページごとに最低表示時間を個別に設定できる
+- 静的なページ（FAQ等）では不要なローディングを省略できる
 
-```typescript
-// app/components/LoadingScreen.tsx
-export default function LoadingScreen() {
-  return (
-    <div className="flex min-h-screen items-center justify-center bg-background">
-      <div className="flex flex-col items-center gap-6 animate-fade-in">
-        {/* ロゴ・店名 */}
-        <div className="text-center">
-          <h1 className="text-2xl font-light tracking-widest text-primary">
-            白熊堂
-          </h1>
-          <p className="mt-1 text-xs tracking-wider text-muted-foreground">
-            SHIROKUMADO
-          </p>
-        </div>
+**共通ローディングコンポーネント**:
 
-        {/* ドットスピナー */}
-        <div className="flex items-center gap-1.5">
-          <span className="h-2 w-2 rounded-full bg-primary/60 animate-bounce [animation-delay:-0.3s]" />
-          <span className="h-2 w-2 rounded-full bg-primary/60 animate-bounce [animation-delay:-0.15s]" />
-          <span className="h-2 w-2 rounded-full bg-primary/60 animate-bounce" />
-        </div>
+ローディングUIは [`app/components/LoadingScreen.tsx`](../../app/components/LoadingScreen.tsx) として共通コンポーネント化しています。白熊アイコン、店名、キャッチフレーズ、ドットアニメーションを含むブランド要素を持つデザインです。
 
-        {/* テキスト */}
-        <p className="text-sm text-muted-foreground">読み込み中...</p>
-      </div>
-    </div>
-  );
-}
-```
+**トップページでのローディング実装**:
 
-```typescript
-// app/(public)/loading.tsx
-import LoadingScreen from "@/app/components/LoadingScreen";
-
-export default function Loading() {
-  return <LoadingScreen />;
-}
-```
-
-**初回ロード/リロード時にもローディング画面を表示する方法**:
-
-`loading.tsx`は初回ロード時には表示されないため、トップページでは`Suspense`を使用してストリーミングレンダリングを実現しています。これにより、初回アクセスやブラウザリロード時にもローディング画面が表示されます。
+トップページでは`Suspense`を使用してストリーミングレンダリングを実現しています。
 
 ```typescript
 // app/(public)/page.tsx
@@ -202,19 +167,40 @@ export default function Home() {
 2. 非同期処理中は`fallback`に指定したコンポーネント（`LoadingScreen`）が表示される
 3. Next.jsのストリーミングSSRにより、`fallback`のHTMLが即座にクライアントに送信される
 4. データ取得完了後、コンテンツがストリーミングで送信される
+5. クライアントサイドナビゲーション時も同様に`fallback`が表示される
+
+**拡張性**:
+
+この設計パターンは、将来的に他のページでも同様に適用できます：
+
+```
+app/
+├── (public)/
+│   ├── page.tsx + HomeContent.tsx  ← Suspense + Promise.all（1.5秒）
+│   ├── faq/page.tsx                ← 静的ページ（ローディング不要）
+│   └── shop/                       ← 将来: Suspense + Promise.all
+│       └── page.tsx
+└── account/                        ← 将来: 認証が必要なページ
+    ├── orders/page.tsx             ← Suspense（注文履歴取得）
+    └── checkout/page.tsx           ← Suspense（購入処理）
+```
+
+各ページで以下を判断できます：
+- ローディング画面が必要か（静的ページは不要）
+- 最低表示時間をどれくらいにするか（ブランド表示 vs 即時表示）
 
 **最低表示時間の設定**:
 
-トップページ（`app/(public)/HomeContent.tsx`）では、ローディング画面の最低表示時間を2秒に設定しています。`Promise.all`でデータ取得と2秒の遅延を並列実行するため、以下のように動作します：
+トップページ（`app/(public)/HomeContent.tsx`）では、ローディング画面の最低表示時間を1.5秒に設定しています。`Promise.all`でデータ取得と1.5秒の遅延を並列実行するため、以下のように動作します：
 
-- データ取得が0.3秒で完了 → 2秒後にコンテンツ表示（最低2秒を保証）
+- データ取得が0.3秒で完了 → 1.5秒後にコンテンツ表示（最低1.5秒を保証）
 - データ取得が2.5秒かかる → 2.5秒後にコンテンツ表示（データ取得完了を待つ）
 
-つまり、**最低2秒は必ずローディングが表示され**、データ取得に2秒以上かかる場合はその時間だけ表示されます。
+つまり、**最低1.5秒は必ずローディングが表示され**、データ取得に1.5秒以上かかる場合はその時間だけ表示されます。
 
 ```typescript
 // app/(public)/HomeContent.tsx
-const MIN_LOADING_TIME_MS = 2000;
+const MIN_LOADING_TIME_MS = 1500;
 
 const [data] = await Promise.all([
   getPublishedProductsByCategory(),
@@ -226,13 +212,14 @@ const [data] = await Promise.all([
 
 | シナリオ | 表示される仕組み |
 |---------|----------------|
-| 他ページからトップページへ遷移 | `loading.tsx`が表示される |
 | ブラウザで直接トップページにアクセス | `Suspense fallback`が表示される |
 | トップページをリロード | `Suspense fallback`が表示される |
+| 他ページからトップページへ遷移 | `Suspense fallback`が表示される |
+| FAQページにアクセス | ローディングなし（静的ページ） |
 
 **Safari/iOSに関する注意**:
 
-SafariにはストリーミングSSRの最小チャンクサイズ制限（約1KB）があります。`LoadingScreen`のHTML出力が1KB未満の場合、初回ロード時にローディング画面が表示されない可能性があります。この問題を回避するには、`LoadingScreen`コンポーネントのHTML出力を1KB以上にする必要があります。
+SafariにはストリーミングSSRの最小チャンクサイズ制限（約1KB）があります。`LoadingScreen`のHTML出力が1KB未満の場合、初回ロード時にローディング画面が表示されない可能性があります。このアプリでは、白熊アイコン（SVG）やキャッチフレーズなどを含めることで約2KBのHTML出力を確保し、Safari対応しています。
 
 参考:
 - [WebKit Bug #252413](https://bugs.webkit.org/show_bug.cgi?id=252413)
@@ -265,7 +252,7 @@ export default function Template({ children }: { children: React.ReactNode }) {
 **注意**: このアプリでは `template.tsx` は使用されていません。上記は参考例です。
 
 - エラーハンドリング: `(public)/error.tsx` で公開ページのエラーを処理し、API Routes では `withErrorHandling` で統一して実装している
-- ローディング状態: `(public)/loading.tsx` でServer Componentsのデータフェッチ中にローディングUIを表示
+- ローディング状態: `loading.tsx`は使用せず、各ページでSuspenseを使用して個別に制御
 - 404 ページ: `not-found.tsx` でカスタム404ページを表示
 - テンプレート機能は現在の要件では不要
 
@@ -1212,7 +1199,7 @@ Next.js の `Image` コンポーネントを使用すると、画像の自動最
    - `Suspense`を使用して初回ロード/リロード時にもローディング画面を表示
    - データ取得は[`HomeContent.tsx`](../../app/(public)/HomeContent.tsx)で行う
    - ローディングUIは[`LoadingScreen.tsx`](../../app/components/LoadingScreen.tsx)で共通化
-   - `Promise.all`で最低2秒のローディング表示時間を保証
+   - `Promise.all`で最低1.5秒のローディング表示時間を保証
 
 2. **FAQ ページ** ([`app/(public)/faq/page.tsx`](../../app/(public)/faq/page.tsx))
 
