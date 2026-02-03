@@ -1,8 +1,9 @@
 /**
- * ホームページのメインコンテンツ
+ * トップページのメインコンテンツ
  *
- * ページ全体のレイアウトと商品データを表示するServer Component。
- * Suspense境界内で使用され、データ取得中はフルスクリーンのローディング画面が表示される。
+ * データ取得と表示を担当するServer Component。
+ * Suspenseでラップされることを想定しており、
+ * 初回ロード時にもローディング画面が表示されるようにする。
  */
 import {
   getPublishedProductsByCategory,
@@ -16,10 +17,9 @@ import { Separator } from "@/app/components/ui/separator";
 import { log } from "@/lib/logger";
 
 // ローディング画面の最低表示時間（ms）
-// 短すぎるとチラつきになるため、安定した表示時間を確保
 const MIN_LOADING_TIME_MS = 1000;
 
-export default async function HomeContent(): Promise<React.ReactElement> {
+export default async function HomeContent() {
   let categoriesWithProducts: CategoryWithProducts[] = [];
 
   try {
@@ -41,15 +41,13 @@ export default async function HomeContent(): Promise<React.ReactElement> {
   }
 
   return (
-    <div className="min-h-screen bg-background overflow-x-hidden">
+    <>
       <FixedHeader />
 
       {/*
        * position:fixed のヘッダーに対応するスペーサー
        * fixedは通常フローから外れるため、このスペーサーがないと
        * 下のコンテンツがヘッダーの裏に隠れてしまう
-       *
-       * CSS変数 --header-height を使用（複数箇所で同じ値を使うため一元管理）
        */}
       <div style={{ height: "var(--header-height)" }} />
 
@@ -64,6 +62,6 @@ export default async function HomeContent(): Promise<React.ReactElement> {
       </main>
 
       <Footer />
-    </div>
+    </>
   );
 }

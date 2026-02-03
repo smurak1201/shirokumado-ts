@@ -1,11 +1,11 @@
 /**
  * ローディングページ
  *
- * (public)ルートグループ内のページ遷移時に表示されるローディング状態。
- * LoadingSpinnerコンポーネントを使用してフルスクリーンのローディング画面を表示。
+ * (public)ルートグループ内のクライアントサイドナビゲーション時に表示。
+ * LoadingScreenコンポーネントを再利用してDRYを維持。
  */
-import LoadingSpinner from "./components/LoadingSpinner";
+import LoadingScreen from "@/app/components/LoadingScreen";
 
-export default function Loading(): React.ReactElement {
-  return <LoadingSpinner />;
+export default function Loading() {
+  return <LoadingScreen />;
 }

@@ -1,10 +1,9 @@
 /**
- * ローディングスピナー
+ * ローディング画面コンポーネント
  *
- * フルスクリーンのローディング画面で使用する共通コンポーネント。
- * loading.tsxとpage.tsx（Suspense fallback）で共有。
+ * loading.tsxとSuspense fallbackの両方で再利用するための共通コンポーネント。
  */
-export default function LoadingSpinner(): React.ReactElement {
+export default function LoadingScreen() {
   return (
     <div className="flex min-h-screen items-center justify-center bg-background">
       <div className="flex flex-col items-center gap-6 animate-fade-in">
