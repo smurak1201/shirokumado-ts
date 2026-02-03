@@ -2,46 +2,54 @@
  * トップページ
  *
  * 公開中の商品をカテゴリー別に表示するメインページ。
- * Server Componentとして実装し、データベースから直接データを取得。
+ * Suspenseを使用してストリーミングレンダリングを実現し、
+ * 初回アクセス時もローディング画面を表示する。
  */
-import {
-  getPublishedProductsByCategory,
-  type CategoryWithProducts,
-} from "@/lib/products";
-import ProductCategoryTabs from "@/app/components/ProductCategoryTabs";
+import { Suspense } from "react";
 import FixedHeader from "@/app/components/FixedHeader";
 import Footer from "@/app/components/Footer";
 import HeroSection from "@/app/components/HeroSection";
 import { Separator } from "@/app/components/ui/separator";
-import { log } from "@/lib/logger";
+import HomeContent from "./components/HomeContent";
 
 // 商品データは頻繁に更新されるため、リクエストごとに最新データを取得
 export const dynamic = "force-dynamic";
 
-// ローディング画面の最低表示時間（ms）
-const MIN_LOADING_TIME_MS = 1000;
+/**
+ * 商品セクションのローディングUI
+ *
+ * Suspense境界のfallbackとして使用。
+ * loading.tsxと同様のデザインで、商品読み込み中に表示。
+ */
+function ProductsLoading(): React.ReactElement {
+  return (
+    <div className="flex flex-col items-center justify-center py-20">
+      <div className="flex flex-col items-center gap-6 animate-fade-in">
+        {/* ロゴ・店名 */}
+        <div className="text-center">
+          <h1 className="text-2xl font-light tracking-widest text-primary">
+            白熊堂
+          </h1>
+          <p className="mt-1 text-xs tracking-wider text-muted-foreground">
+            SHIROKUMADO
+          </p>
+        </div>
 
-export default async function Home() {
-  let categoriesWithProducts: CategoryWithProducts[] = [];
+        {/* ドットスピナー */}
+        <div className="flex items-center gap-1.5">
+          <span className="h-2 w-2 rounded-full bg-primary/60 animate-bounce [animation-delay:-0.3s]" />
+          <span className="h-2 w-2 rounded-full bg-primary/60 animate-bounce [animation-delay:-0.15s]" />
+          <span className="h-2 w-2 rounded-full bg-primary/60 animate-bounce" />
+        </div>
 
-  try {
-    // データ取得と最低表示時間を並列で待機
-    // データ取得が1000ms以上かかれば追加の遅延なし
-    const [data] = await Promise.all([
-      getPublishedProductsByCategory(),
-      new Promise((resolve) => setTimeout(resolve, MIN_LOADING_TIME_MS)),
-    ]);
-    categoriesWithProducts = data;
-  } catch (error) {
-    // 設計判断: データ取得エラー時もページは表示する（部分的なダウンタイムを許容）
-    // ユーザーには通知せず、運用者のみログで確認
-    log.error("商品データの取得に失敗しました", {
-      context: "Home",
-      error,
-    });
-    categoriesWithProducts = [];
-  }
+        {/* テキスト */}
+        <p className="text-sm text-muted-foreground">読み込み中...</p>
+      </div>
+    </div>
+  );
+}
 
+export default function Home(): React.ReactElement {
   return (
     <div className="min-h-screen bg-background overflow-x-hidden">
       <FixedHeader />
@@ -62,7 +70,15 @@ export default async function Home() {
       </div>
 
       <main className="mx-auto max-w-7xl px-2 py-8 md:px-6 md:py-20 lg:px-8 lg:py-24 overflow-x-hidden">
-        <ProductCategoryTabs categoriesWithProducts={categoriesWithProducts} />
+        {/*
+         * Suspenseを使用してストリーミングレンダリングを実現
+         * 初回アクセス時: サーバーがこの部分までのHTMLを即座に送信し、
+         * HomeContentの取得完了後に商品部分をストリーミング
+         * → ユーザーは待機中にローディングUIを見る
+         */}
+        <Suspense fallback={<ProductsLoading />}>
+          <HomeContent />
+        </Suspense>
       </main>
 
       <Footer />
