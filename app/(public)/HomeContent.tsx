@@ -2,7 +2,8 @@
  * トップページのメインコンテンツ
  *
  * データ取得と表示を担当するServer Component。
- * ローディング表示はHomePageWrapperでクライアント側で制御する。
+ * Promise.allでデータ取得と最低表示時間を並列で待機し、
+ * 最低1秒のローディング表示を保証する。
  */
 import {
   getPublishedProductsByCategory,
@@ -15,11 +16,21 @@ import HeroSection from "@/app/components/HeroSection";
 import { Separator } from "@/app/components/ui/separator";
 import { log } from "@/lib/logger";
 
+// ローディング画面の最低表示時間（ms）
+const MIN_LOADING_TIME_MS = 1000;
+
 export default async function HomeContent() {
   let categoriesWithProducts: CategoryWithProducts[] = [];
 
   try {
-    categoriesWithProducts = await getPublishedProductsByCategory();
+    // データ取得と最低表示時間を並列で待機
+    // - データ取得が0.3秒で完了 → 1秒後にコンテンツ表示
+    // - データ取得が1.5秒かかる → 1.5秒後にコンテンツ表示
+    const [data] = await Promise.all([
+      getPublishedProductsByCategory(),
+      new Promise((resolve) => setTimeout(resolve, MIN_LOADING_TIME_MS)),
+    ]);
+    categoriesWithProducts = data;
   } catch (error) {
     // 設計判断: データ取得エラー時もページは表示する（部分的なダウンタイムを許容）
     // ユーザーには通知せず、運用者のみログで確認

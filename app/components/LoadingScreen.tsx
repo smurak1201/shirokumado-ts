@@ -1,7 +1,12 @@
 /**
  * ローディング画面コンポーネント
  *
- * loading.tsxとHomePageWrapperで再利用するための共通コンポーネント。
+ * loading.tsxとSuspense fallbackで再利用するための共通コンポーネント。
+ *
+ * 注意: SafariのストリーミングSSRには最小チャンクサイズ制限（約1KB）がある。
+ * このコンポーネントのHTML出力が1KB未満だと、Safariで初回ロード時に
+ * ローディング画面が表示されない可能性がある。
+ * @see https://bugs.webkit.org/show_bug.cgi?id=252413
  */
 export default function LoadingScreen() {
   return (

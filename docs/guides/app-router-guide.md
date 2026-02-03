@@ -68,10 +68,9 @@ App Router では、`app/` ディレクトリ内のファイル構造がその�
 │   ├── error.tsx      # エラーUI
 │   ├── faq/
 │   │   └── page.tsx   # FAQページ（/faq）
-│   ├── HomeContent.tsx    # ホームページのメインコンテンツ（Server Component）
-│   ├── HomePageWrapper.tsx # ローディング制御（Client Component）
-│   ├── loading.tsx        # ローディングUI
-│   ├── page.tsx           # ホームページ（/）
+│   ├── HomeContent.tsx # ホームページのメインコンテンツ（Server Component）
+│   ├── loading.tsx    # ローディングUI
+│   ├── page.tsx       # ホームページ（/）
 │   └── shop/
 │       └── page.tsx   # ショップページ（/shop）
 ├── api/               # API Routes
@@ -134,7 +133,7 @@ App Router では、`app/` ディレクトリ内のファイル構造がその�
 
 **このアプリでの実装**:
 
-ローディングUIは [`app/components/LoadingScreen.tsx`](../../app/components/LoadingScreen.tsx) として共通コンポーネント化しています。これにより、`loading.tsx` と `HomePageWrapper` の両方で再利用でき、DRY原則を維持しています。
+ローディングUIは [`app/components/LoadingScreen.tsx`](../../app/components/LoadingScreen.tsx) として共通コンポーネント化しています。これにより、`loading.tsx` と `Suspense fallback` の両方で再利用でき、DRY原則を維持しています。
 
 ```typescript
 // app/components/LoadingScreen.tsx
@@ -176,66 +175,68 @@ export default function Loading() {
 }
 ```
 
-**トップページでのローディング画面表示**:
+**初回ロード/リロード時にもローディング画面を表示する方法**:
 
-トップページでは、すべてのアクセス方法（初回ロード、リロード、クライアントサイドナビゲーション）で1秒間のローディング画面を表示しています。これは [`app/(public)/HomePageWrapper.tsx`](../../app/(public)/HomePageWrapper.tsx) というClient Componentで実現しています。
-
-```typescript
-// app/(public)/HomePageWrapper.tsx
-"use client";
-
-import { useState, useEffect, type ReactNode } from "react";
-import LoadingScreen from "@/app/components/LoadingScreen";
-
-const LOADING_DURATION_MS = 1000;
-
-export default function HomePageWrapper({ children }: { children: ReactNode }) {
-  const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsLoading(false);
-    }, LOADING_DURATION_MS);
-    return () => clearTimeout(timer);
-  }, []);
-
-  if (isLoading) {
-    return <LoadingScreen />;
-  }
-  return <>{children}</>;
-}
-```
+`loading.tsx`は初回ロード時には表示されないため、トップページでは`Suspense`を使用してストリーミングレンダリングを実現しています。これにより、初回アクセスやブラウザリロード時にもローディング画面が表示されます。
 
 ```typescript
 // app/(public)/page.tsx
+import { Suspense } from "react";
+import LoadingScreen from "@/app/components/LoadingScreen";
 import HomeContent from "./HomeContent";
-import HomePageWrapper from "./HomePageWrapper";
 
 export const dynamic = "force-dynamic";
 
 export default function Home() {
   return (
-    <HomePageWrapper>
+    <Suspense fallback={<LoadingScreen />}>
       <HomeContent />
-    </HomePageWrapper>
+    </Suspense>
   );
 }
 ```
 
-**この実装の特徴**:
+**Suspenseの仕組み**:
 
-- **モバイルファースト**: Safari/iOSでも確実にローディング画面が表示される
-- **シンプル**: クライアントサイドで1秒間ローディングを表示するだけのシンプルな実装
-- **一貫性**: すべてのアクセス方法で同じ動作
+1. `Suspense`でラップされたコンポーネント（`HomeContent`）が非同期処理（データ取得）を行う
+2. 非同期処理中は`fallback`に指定したコンポーネント（`LoadingScreen`）が表示される
+3. Next.jsのストリーミングSSRにより、`fallback`のHTMLが即座にクライアントに送信される
+4. データ取得完了後、コンテンツがストリーミングで送信される
 
-**動作の流れ**:
+**最低表示時間の設定**:
 
-1. サーバーでデータ取得（`HomeContent`）
-2. HTMLがクライアントに送信される
-3. `HomePageWrapper`がマウントされ、1秒間ローディング画面を表示
-4. 1秒後にコンテンツが表示される
+トップページ（`app/(public)/HomeContent.tsx`）では、ローディング画面の最低表示時間を1秒に設定しています。`Promise.all`でデータ取得と1秒の遅延を並列実行するため、以下のように動作します：
 
-**注意**: この実装では、データ取得時間とローディング表示時間が加算されます（合計 = データ取得時間 + 1秒）。ただし、データ取得は通常高速なため、合計で2秒以内に収まります。
+- データ取得が0.3秒で完了 → 1秒後にコンテンツ表示（最低1秒を保証）
+- データ取得が1.5秒かかる → 1.5秒後にコンテンツ表示（データ取得完了を待つ）
+
+つまり、**最低1秒は必ずローディングが表示され**、データ取得に1秒以上かかる場合はその時間だけ表示されます。
+
+```typescript
+// app/(public)/HomeContent.tsx
+const MIN_LOADING_TIME_MS = 1000;
+
+const [data] = await Promise.all([
+  getPublishedProductsByCategory(),
+  new Promise((resolve) => setTimeout(resolve, MIN_LOADING_TIME_MS)),
+]);
+```
+
+**ローディング表示の動作まとめ**:
+
+| シナリオ | 表示される仕組み |
+|---------|----------------|
+| 他ページからトップページへ遷移 | `loading.tsx`が表示される |
+| ブラウザで直接トップページにアクセス | `Suspense fallback`が表示される |
+| トップページをリロード | `Suspense fallback`が表示される |
+
+**Safari/iOSに関する注意**:
+
+SafariにはストリーミングSSRの最小チャンクサイズ制限（約1KB）があります。`LoadingScreen`のHTML出力が1KB未満の場合、初回ロード時にローディング画面が表示されない可能性があります。この問題を回避するには、`LoadingScreen`コンポーネントのHTML出力を1KB以上にする必要があります。
+
+参考:
+- [WebKit Bug #252413](https://bugs.webkit.org/show_bug.cgi?id=252413)
+- [Next.js Issue #52444](https://github.com/vercel/next.js/issues/52444)
 
 **`not-found.tsx`** - 404 ページ
 
@@ -283,22 +284,23 @@ export default function Template({ children }: { children: React.ReactNode }) {
 
 **このアプリでの使用箇所**:
 
-1. **[`app/(public)/page.tsx`](../../app/(public)/page.tsx) (`Home`コンポーネント)** - ホームページ
+1. **[`app/(public)/page.tsx`](../../app/(public)/page.tsx) (`Home`コンポーネント)** - ホームページ（Server Component + Suspense）
 
-ホームページは`HomePageWrapper`でラップして、すべてのアクセス方法で1秒間のローディング画面を表示します。データ取得は`HomeContent`コンポーネントで行います。
+ホームページは`Suspense`を使用して、初回ロード/リロード時にもローディング画面を表示します。データ取得は`HomeContent`コンポーネントで行います。
 
 ```typescript
 // app/(public)/page.tsx
+import { Suspense } from "react";
+import LoadingScreen from "@/app/components/LoadingScreen";
 import HomeContent from "./HomeContent";
-import HomePageWrapper from "./HomePageWrapper";
 
 export const dynamic = "force-dynamic";
 
 export default function Home() {
   return (
-    <HomePageWrapper>
+    <Suspense fallback={<LoadingScreen />}>
       <HomeContent />
-    </HomePageWrapper>
+    </Suspense>
   );
 }
 ```
@@ -307,8 +309,14 @@ export default function Home() {
 
 ```typescript
 // app/(public)/HomeContent.tsx
+const MIN_LOADING_TIME_MS = 1000;
+
 export default async function HomeContent() {
-  const categoriesWithProducts = await getPublishedProductsByCategory();
+  // データ取得と最低表示時間を並列で待機
+  const [data] = await Promise.all([
+    getPublishedProductsByCategory(),
+    new Promise((resolve) => setTimeout(resolve, MIN_LOADING_TIME_MS)),
+  ]);
 
   return (
     <div className="min-h-screen bg-background overflow-x-hidden">
@@ -1200,11 +1208,11 @@ Next.js の `Image` コンポーネントを使用すると、画像の自動最
 
 1. **ホームページ** ([`app/(public)/page.tsx`](../../app/(public)/page.tsx))
 
-   - Server Component + Client Component（`HomePageWrapper`）構造
-   - `HomePageWrapper`でクライアントサイドのローディング制御（1秒間表示）
+   - Server Component + Suspense構造
+   - `Suspense`を使用して初回ロード/リロード時にもローディング画面を表示
    - データ取得は[`HomeContent.tsx`](../../app/(public)/HomeContent.tsx)で行う
    - ローディングUIは[`LoadingScreen.tsx`](../../app/components/LoadingScreen.tsx)で共通化
-   - モバイルファースト設計（Safari/iOS対応）
+   - `Promise.all`で最低1秒のローディング表示時間を保証
 
 2. **FAQ ページ** ([`app/(public)/faq/page.tsx`](../../app/(public)/faq/page.tsx))
 

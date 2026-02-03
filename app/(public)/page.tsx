@@ -1,19 +1,20 @@
 /**
  * トップページ
  *
- * 初回表示時に1秒間ローディング画面を表示してからコンテンツを表示。
- * HomePageWrapperでクライアント側のローディング制御を行う。
+ * Suspenseを使用して、データ取得中はローディング画面を表示。
+ * HomeContentでPromise.allを使い、最低1秒のローディング時間を保証。
  */
+import { Suspense } from "react";
+import LoadingScreen from "@/app/components/LoadingScreen";
 import HomeContent from "./HomeContent";
-import HomePageWrapper from "./HomePageWrapper";
 
 // 商品データは頻繁に更新されるため、リクエストごとに最新データを取得
 export const dynamic = "force-dynamic";
 
 export default function Home() {
   return (
-    <HomePageWrapper>
+    <Suspense fallback={<LoadingScreen />}>
       <HomeContent />
-    </HomePageWrapper>
+    </Suspense>
   );
 }
