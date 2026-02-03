@@ -68,6 +68,7 @@ App Router では、`app/` ディレクトリ内のファイル構造がその�
 │   ├── error.tsx      # エラーUI
 │   ├── faq/
 │   │   └── page.tsx   # FAQページ（/faq）
+│   ├── HomeContent.tsx # ホームページのメインコンテンツ（Server Component）
 │   ├── loading.tsx    # ローディングUI
 │   ├── page.tsx       # ホームページ（/）
 │   └── shop/
@@ -89,6 +90,7 @@ App Router では、`app/` ディレクトリ内のファイル構造がその�
 │   └── signin/
 │       └── page.tsx   # サインインページ
 ├── components/        # 共通コンポーネント
+│   ├── LoadingScreen.tsx # 共通ローディング画面
 ├── dashboard/         # 管理用ページ（ルートグループ外）
 │   └── page.tsx       # ダッシュボード（/dashboard）
 ├── globals.css        # グローバルスタイル
@@ -127,10 +129,15 @@ App Router では、`app/` ディレクトリ内のファイル構造がその�
 
 このアプリでは [`app/(public)/loading.tsx`](../../app/(public)/loading.tsx) でローディングUIを実装しています。Server Componentsでデータフェッチ中に表示されます。`(public)` ルートグループ内に配置しているため、公開ページ（`/`、`/faq`、`/shop`）でのみ適用され、管理用ページ（`/dashboard`）では適用されません。
 
+**重要**: Next.js App Routerの`loading.tsx`は**クライアントサイドナビゲーション時のみ**表示されます。初回ロード（ブラウザで直接アクセス）やブラウザリロード時には表示されません。これはNext.jsの仕様です。
+
 **このアプリでの実装**:
 
+ローディングUIは [`app/components/LoadingScreen.tsx`](../../app/components/LoadingScreen.tsx) として共通コンポーネント化しています。これにより、`loading.tsx` と `Suspense fallback` の両方で再利用でき、DRY原則を維持しています。
+
 ```typescript
-export default function Loading() {
+// app/components/LoadingScreen.tsx
+export default function LoadingScreen() {
   return (
     <div className="flex min-h-screen items-center justify-center bg-background">
       <div className="flex flex-col items-center gap-6 animate-fade-in">
@@ -159,11 +166,51 @@ export default function Loading() {
 }
 ```
 
-**最低表示時間の設定**:
+```typescript
+// app/(public)/loading.tsx
+import LoadingScreen from "@/app/components/LoadingScreen";
 
-トップページ（`app/(public)/page.tsx`）では、ローディング画面の最低表示時間を設定しています。データ取得と並列で待機するため、データ取得が遅い場合は追加の遅延はかかりません。
+export default function Loading() {
+  return <LoadingScreen />;
+}
+```
+
+**初回ロード/リロード時にもローディング画面を表示する方法**:
+
+`loading.tsx`は初回ロード時には表示されないため、トップページでは`Suspense`を使用してストリーミングレンダリングを実現しています。これにより、初回アクセスやブラウザリロード時にもローディング画面が表示されます。
 
 ```typescript
+// app/(public)/page.tsx
+import { Suspense } from "react";
+import LoadingScreen from "@/app/components/LoadingScreen";
+import HomeContent from "./HomeContent";
+
+export const dynamic = "force-dynamic";
+
+export default function Home() {
+  return (
+    <div className="min-h-screen bg-background overflow-x-hidden">
+      <Suspense fallback={<LoadingScreen />}>
+        <HomeContent />
+      </Suspense>
+    </div>
+  );
+}
+```
+
+**Suspenseの仕組み**:
+
+1. `Suspense`でラップされたコンポーネント（`HomeContent`）が非同期処理（データ取得）を行う
+2. 非同期処理中は`fallback`に指定したコンポーネント（`LoadingScreen`）が表示される
+3. Next.jsのストリーミングSSRにより、`fallback`のHTMLが即座にクライアントに送信される
+4. データ取得完了後、コンテンツがストリーミングで送信される
+
+**最低表示時間の設定**:
+
+トップページ（`app/(public)/HomeContent.tsx`）では、ローディング画面の最低表示時間を設定しています。データ取得と並列で待機するため、データ取得が遅い場合は追加の遅延はかかりません。
+
+```typescript
+// app/(public)/HomeContent.tsx
 // ローディング画面の最低表示時間（ms）
 const MIN_LOADING_TIME_MS = 1000;
 
@@ -173,6 +220,14 @@ const [data] = await Promise.all([
   new Promise((resolve) => setTimeout(resolve, MIN_LOADING_TIME_MS)),
 ]);
 ```
+
+**ローディング表示の動作まとめ**:
+
+| シナリオ | 表示される仕組み |
+|---------|----------------|
+| 他ページからトップページへ遷移 | `loading.tsx`が表示される |
+| ブラウザで直接トップページにアクセス | `Suspense fallback`が表示される |
+| トップページをリロード | `Suspense fallback`が表示される |
 
 **`not-found.tsx`** - 404 ページ
 
@@ -220,46 +275,50 @@ export default function Template({ children }: { children: React.ReactNode }) {
 
 **このアプリでの使用箇所**:
 
-1. **[`app/(public)/page.tsx`](../../app/(public)/page.tsx) (`Home`コンポーネント)** - ホームページ（Server Component）
+1. **[`app/(public)/page.tsx`](../../app/(public)/page.tsx) (`Home`コンポーネント)** - ホームページ（Server Component + Suspense）
+
+ホームページは`Suspense`を使用して、初回ロード/リロード時にもローディング画面を表示します。データ取得は`HomeContent`コンポーネントで行います。
 
 ```typescript
-  // カテゴリーごとにグループ化された公開商品を取得
-  const categoriesWithProducts = await getPublishedProductsByCategory();
+// app/(public)/page.tsx
+import { Suspense } from "react";
+import LoadingScreen from "@/app/components/LoadingScreen";
+import HomeContent from "./HomeContent";
+
+export const dynamic = "force-dynamic";
+
+export default function Home() {
+  return (
+    <div className="min-h-screen bg-background overflow-x-hidden">
+      <Suspense fallback={<LoadingScreen />}>
+        <HomeContent />
+      </Suspense>
+    </div>
+  );
+}
+```
+
+**[`app/(public)/HomeContent.tsx`](../../app/(public)/HomeContent.tsx) (`HomeContent`コンポーネント)** - データ取得とメインコンテンツ
+
+```typescript
+// app/(public)/HomeContent.tsx
+const MIN_LOADING_TIME_MS = 1000;
+
+export default async function HomeContent() {
+  // データ取得と最低表示時間を並列で待機
+  const [data] = await Promise.all([
+    getPublishedProductsByCategory(),
+    new Promise((resolve) => setTimeout(resolve, MIN_LOADING_TIME_MS)),
+  ]);
 
   return (
-    <div className="min-h-screen bg-white">
-      {/* ヘッダー */}
-      <Header />
-
-      {/* ヒーローバナー */}
-      <section className="relative h-[30vh] min-h-[200px] w-full overflow-hidden md:h-[50vh] md:min-h-[400px] lg:h-[60vh] lg:min-h-[500px]">
-        <Image
-          src="/hero.webp"
-          alt="白熊堂"
-          fill
-          priority
-          className="object-cover"
-          sizes="100vw"
-        />
-        {/* オーバーレイ */}
-        <div className="absolute inset-0 bg-linear-to-b from-white/20 via-white/8 to-white/25" />
-      </section>
-
-      {/* メインコンテンツ */}
-      <main className="mx-auto max-w-6xl px-4 py-6 md:px-8 md:py-12 lg:px-12 lg:py-16 xl:py-20">
-        {/* カテゴリーごとの商品セクション */}
-        {categoriesWithProducts.map(({ category, products }) => (
-          <ProductGrid
-            key={category.id}
-            category={category}
-            products={products}
-          />
-        ))}
-      </main>
-
-      {/* フッター */}
+    <>
+      <FixedHeader />
+      <div style={{ height: "var(--header-height)" }} />
+      <HeroSection />
+      {/* ... */}
       <Footer />
-    </div>
+    </>
   );
 }
 ```
@@ -1142,9 +1201,10 @@ Next.js の `Image` コンポーネントを使用すると、画像の自動最
 
 1. **ホームページ** ([`app/(public)/page.tsx`](../../app/(public)/page.tsx))
 
-   - Server Component
-   - データベースから公開商品を取得
-   - カテゴリーごとにグループ化して表示
+   - Server Component + Suspense構造
+   - `Suspense`を使用して初回ロード/リロード時にもローディング画面を表示
+   - データ取得は[`HomeContent.tsx`](../../app/(public)/HomeContent.tsx)で行う
+   - ローディングUIは[`LoadingScreen.tsx`](../../app/components/LoadingScreen.tsx)で共通化
    - 最低1秒のローディング表示時間を設定
 
 2. **FAQ ページ** ([`app/(public)/faq/page.tsx`](../../app/(public)/faq/page.tsx))
