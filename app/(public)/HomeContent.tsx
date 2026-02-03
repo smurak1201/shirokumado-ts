@@ -2,8 +2,7 @@
  * トップページのメインコンテンツ
  *
  * データ取得と表示を担当するServer Component。
- * Suspenseでラップされることを想定しており、
- * 初回ロード時にもローディング画面が表示されるようにする。
+ * ローディング表示はHomePageWrapperでクライアント側で制御する。
  */
 import {
   getPublishedProductsByCategory,
@@ -16,20 +15,11 @@ import HeroSection from "@/app/components/HeroSection";
 import { Separator } from "@/app/components/ui/separator";
 import { log } from "@/lib/logger";
 
-// ローディング画面の最低表示時間（ms）
-const MIN_LOADING_TIME_MS = 1000;
-
 export default async function HomeContent() {
   let categoriesWithProducts: CategoryWithProducts[] = [];
 
   try {
-    // データ取得と最低表示時間を並列で待機
-    // データ取得が1000ms以上かかれば追加の遅延なし
-    const [data] = await Promise.all([
-      getPublishedProductsByCategory(),
-      new Promise((resolve) => setTimeout(resolve, MIN_LOADING_TIME_MS)),
-    ]);
-    categoriesWithProducts = data;
+    categoriesWithProducts = await getPublishedProductsByCategory();
   } catch (error) {
     // 設計判断: データ取得エラー時もページは表示する（部分的なダウンタイムを許容）
     // ユーザーには通知せず、運用者のみログで確認
@@ -41,7 +31,7 @@ export default async function HomeContent() {
   }
 
   return (
-    <>
+    <div className="min-h-screen bg-background overflow-x-hidden">
       <FixedHeader />
 
       {/*
@@ -62,6 +52,6 @@ export default async function HomeContent() {
       </main>
 
       <Footer />
-    </>
+    </div>
   );
 }

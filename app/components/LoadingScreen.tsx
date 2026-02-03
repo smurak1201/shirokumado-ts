@@ -1,7 +1,7 @@
 /**
  * ローディング画面コンポーネント
  *
- * loading.tsxとSuspense fallbackの両方で再利用するための共通コンポーネント。
+ * loading.tsxとHomePageWrapperで再利用するための共通コンポーネント。
  */
 export default function LoadingScreen() {
   return (
