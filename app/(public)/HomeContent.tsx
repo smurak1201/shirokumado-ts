@@ -17,15 +17,15 @@ import { Separator } from "@/app/components/ui/separator";
 import { log } from "@/lib/logger";
 
 // ローディング画面の最低表示時間（ms）
-const MIN_LOADING_TIME_MS = 1000;
+const MIN_LOADING_TIME_MS = 1500;
 
 export default async function HomeContent() {
   let categoriesWithProducts: CategoryWithProducts[] = [];
 
   try {
     // データ取得と最低表示時間を並列で待機
-    // - データ取得が0.3秒で完了 → 1秒後にコンテンツ表示
-    // - データ取得が1.5秒かかる → 1.5秒後にコンテンツ表示
+    // - データ取得が0.3秒で完了 → 1.5秒後にコンテンツ表示
+    // - データ取得が2.5秒かかる → 2.5秒後にコンテンツ表示
     const [data] = await Promise.all([
       getPublishedProductsByCategory(),
       new Promise((resolve) => setTimeout(resolve, MIN_LOADING_TIME_MS)),

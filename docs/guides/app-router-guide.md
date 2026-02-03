@@ -205,16 +205,16 @@ export default function Home() {
 
 **最低表示時間の設定**:
 
-トップページ（`app/(public)/HomeContent.tsx`）では、ローディング画面の最低表示時間を1秒に設定しています。`Promise.all`でデータ取得と1秒の遅延を並列実行するため、以下のように動作します：
+トップページ（`app/(public)/HomeContent.tsx`）では、ローディング画面の最低表示時間を2秒に設定しています。`Promise.all`でデータ取得と2秒の遅延を並列実行するため、以下のように動作します：
 
-- データ取得が0.3秒で完了 → 1秒後にコンテンツ表示（最低1秒を保証）
-- データ取得が1.5秒かかる → 1.5秒後にコンテンツ表示（データ取得完了を待つ）
+- データ取得が0.3秒で完了 → 2秒後にコンテンツ表示（最低2秒を保証）
+- データ取得が2.5秒かかる → 2.5秒後にコンテンツ表示（データ取得完了を待つ）
 
-つまり、**最低1秒は必ずローディングが表示され**、データ取得に1秒以上かかる場合はその時間だけ表示されます。
+つまり、**最低2秒は必ずローディングが表示され**、データ取得に2秒以上かかる場合はその時間だけ表示されます。
 
 ```typescript
 // app/(public)/HomeContent.tsx
-const MIN_LOADING_TIME_MS = 1000;
+const MIN_LOADING_TIME_MS = 2000;
 
 const [data] = await Promise.all([
   getPublishedProductsByCategory(),
@@ -1212,7 +1212,7 @@ Next.js の `Image` コンポーネントを使用すると、画像の自動最
    - `Suspense`を使用して初回ロード/リロード時にもローディング画面を表示
    - データ取得は[`HomeContent.tsx`](../../app/(public)/HomeContent.tsx)で行う
    - ローディングUIは[`LoadingScreen.tsx`](../../app/components/LoadingScreen.tsx)で共通化
-   - `Promise.all`で最低1秒のローディング表示時間を保証
+   - `Promise.all`で最低2秒のローディング表示時間を保証
 
 2. **FAQ ページ** ([`app/(public)/faq/page.tsx`](../../app/(public)/faq/page.tsx))
 
