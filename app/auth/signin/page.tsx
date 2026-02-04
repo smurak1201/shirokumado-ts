@@ -4,16 +4,9 @@
  * Google OAuth認証による管理者ログイン。
  * 許可リスト（ALLOWED_EMAILS）による厳格なアクセス制御。
  */
-import { auth, signIn } from '@/auth';
-import { redirect } from 'next/navigation';
+import { signIn } from '@/auth';
 
-export default async function SignInPage() {
-  const session = await auth();
-
-  if (session) {
-    redirect('/dashboard');
-  }
-
+export default function SignInPage() {
   return (
     <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
       <div className="w-full max-w-md space-y-8 rounded-2xl bg-white/80 p-10 shadow-2xl backdrop-blur-sm transition-all hover:shadow-3xl sm:p-12">

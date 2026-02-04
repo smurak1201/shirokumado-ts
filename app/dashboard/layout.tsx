@@ -1,11 +1,9 @@
 /**
  * ダッシュボード共通レイアウト
  *
- * 認証チェックと共通ヘッダーを提供。
- * セッションがない場合はログインページへリダイレクト。
+ * 共通ヘッダーを提供。認証チェックはMiddlewareで行う。
  */
 import type { ReactNode } from 'react';
-import { redirect } from 'next/navigation';
 import { auth, signOut } from '@/auth';
 import DashboardHeader from './components/DashboardHeader';
 
@@ -16,8 +14,9 @@ interface DashboardLayoutProps {
 export default async function DashboardLayout({ children }: DashboardLayoutProps) {
   const session = await auth();
 
+  // Middlewareで認証済みユーザーのみがここに到達する
   if (!session) {
-    redirect('/auth/signin');
+    return null;
   }
 
   return (
