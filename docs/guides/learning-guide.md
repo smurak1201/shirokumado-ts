@@ -399,7 +399,7 @@ Java、PHP、Laravel の経験がある方は、以下のような知識を活�
 - 「商品一覧を表示する機能を理解したい」→ [`app/page.tsx`](../../app/(public)/page.tsx)、[`app/components/ProductCategoryTabs.tsx`](../../app/components/ProductCategoryTabs.tsx)、[`app/components/ProductGrid.tsx`](../../app/components/ProductGrid.tsx)を読む
 - 「商品を追加する機能を理解したい」→ [`app/dashboard/homepage/components/form/ProductForm.tsx`](../../app/dashboard/homepage/components/form/ProductForm.tsx)、[`app/dashboard/homepage/hooks/useProductForm.ts`](../../app/dashboard/homepage/hooks/useProductForm.ts)、[`app/dashboard/homepage/components/form/ProductFormFields.tsx`](../../app/dashboard/homepage/components/form/ProductFormFields.tsx)を読む
 - 「商品を編集する機能を理解したい」→ [`app/dashboard/homepage/components/form/ProductForm.tsx`](../../app/dashboard/homepage/components/form/ProductForm.tsx)、[`app/dashboard/homepage/hooks/useProductForm.ts`](../../app/dashboard/homepage/hooks/useProductForm.ts)を読む
-- 「商品一覧の検索機能を理解したい」→ [`app/dashboard/homepage/components/ProductList.tsx`](../../app/dashboard/homepage/components/ProductList.tsx)、[`app/dashboard/homepage/components/ProductSearchFilters.tsx`](../../app/dashboard/homepage/components/ProductSearchFilters.tsx)、[`app/dashboard/homepage/utils/productUtils.ts`](../../app/dashboard/homepage/utils/productUtils.ts)を読む
+- 「商品一覧の検索機能を理解したい」→ [`app/dashboard/homepage/components/list/ProductList.tsx`](../../app/dashboard/homepage/components/list/ProductList.tsx)、[`app/dashboard/homepage/components/list/ProductSearchFilters.tsx`](../../app/dashboard/homepage/components/list/ProductSearchFilters.tsx)、[`app/dashboard/homepage/utils/productUtils.ts`](../../app/dashboard/homepage/utils/productUtils.ts)を読む
 - 「データベースから商品を取得する方法を知りたい」→ [`app/api/products/route.ts`](../../app/api/products/route.ts)を読む
 
 ### 2. 型定義を先に確認する
@@ -567,7 +567,7 @@ import { ValidationError } from "@/lib/errors";
    - `useState`の使い方
    - shadcn/ui の Tabs コンポーネントの使用例
 
-5. **[`app/dashboard/homepage/components/ProductList.tsx`](../../app/dashboard/homepage/components/ProductList.tsx)**
+5. **[`app/dashboard/homepage/components/list/ProductList.tsx`](../../app/dashboard/homepage/components/list/ProductList.tsx)**
    - 複雑な状態管理
    - 複数の Hooks の組み合わせ
 
@@ -955,7 +955,7 @@ import { ValidationError } from "@/lib/errors";
 
 1. [`app/hooks/useProductModal.ts`](../../app/hooks/useProductModal.ts)（シンプルな状態管理）
 2. [`app/dashboard/homepage/hooks/useTabState.ts`](../../app/dashboard/homepage/hooks/useTabState.ts)（localStorage との連携）
-3. [`app/dashboard/homepage/components/ProductList.tsx`](../../app/dashboard/homepage/components/ProductList.tsx)（複雑な状態管理）
+3. [`app/dashboard/homepage/components/list/ProductList.tsx`](../../app/dashboard/homepage/components/list/ProductList.tsx)（複雑な状態管理）
 
 **詳細**: [`doc/guides/react-guide.md`](./react-guide.md)の「状態管理」セクションを参照
 

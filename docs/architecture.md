@@ -168,9 +168,9 @@ DashboardPage (Server Component)
 
 **After** (分割後):
 
-- [`ProductList.tsx`](../app/dashboard/homepage/components/ProductList.tsx): メインロジック（約 490 行）
-- [`LayoutCategoryTabs.tsx`](../app/dashboard/homepage/components/LayoutCategoryTabs.tsx): 配置変更用カテゴリータブ UI
-- [`SortableProductItem.tsx`](../app/dashboard/homepage/components/SortableProductItem.tsx): ドラッグ&ドロップ可能な商品アイテム
+- [`ProductList.tsx`](../app/dashboard/homepage/components/list/ProductList.tsx): メインロジック（約 490 行）
+- [`LayoutCategoryTabs.tsx`](../app/dashboard/homepage/components/layout/LayoutCategoryTabs.tsx): 配置変更用カテゴリータブ UI
+- [`SortableProductItem.tsx`](../app/dashboard/homepage/components/layout/SortableProductItem.tsx): ドラッグ&ドロップ可能な商品アイテム
 - [`useTabState.ts`](../app/dashboard/homepage/hooks/useTabState.ts): タブ状態管理フック
 - [`useProductReorder.ts`](../app/dashboard/homepage/hooks/useProductReorder.ts): 商品順序変更フック
 - [`productUtils.ts`](../app/dashboard/homepage/utils/productUtils.ts): 商品のグループ化・フィルタリング関数

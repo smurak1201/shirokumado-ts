@@ -569,7 +569,7 @@ if (error instanceof BlobStorageError) {
 }
 ```
 
-3. **コンポーネントでのエラーハンドリング** ([`app/dashboard/homepage/components/ProductList.tsx`](../../app/dashboard/homepage/components/ProductList.tsx))
+3. **コンポーネントでのエラーハンドリング** ([`app/dashboard/homepage/components/list/ProductList.tsx`](../../app/dashboard/homepage/components/list/ProductList.tsx))
 
 ```typescript
 catch (error) {
@@ -1355,7 +1355,7 @@ const [activeTab, setActiveTab] = useState<TabType>(() => {
 });
 ```
 
-[`app/dashboard/homepage/components/ProductList.tsx`](../../app/dashboard/homepage/components/ProductList.tsx) (フィルタリング処理)
+[`app/dashboard/homepage/components/list/ProductList.tsx`](../../app/dashboard/homepage/components/list/ProductList.tsx) (フィルタリング処理)
 
 ```typescript
 onClick={() => setActiveTab("list")}

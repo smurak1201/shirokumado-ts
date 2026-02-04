@@ -877,7 +877,7 @@ file: [画像ファイル]
 - **Client Component で API Routes にアクセス** - **このアプリで使用中**
   - [`app/dashboard/homepage/components/DashboardContent.tsx`](../../app/dashboard/homepage/components/DashboardContent.tsx): `fetch` API を使用して `/api/products` にアクセス
   - [`app/dashboard/homepage/components/form/ProductForm.tsx`](../../app/dashboard/homepage/components/form/ProductForm.tsx): `fetch` API を使用して `/api/products` に POST/PUT リクエスト
-  - [`app/dashboard/homepage/components/ProductList.tsx`](../../app/dashboard/homepage/components/ProductList.tsx): `fetch` API を使用して `/api/products/[id]` に DELETE リクエスト
+  - [`app/dashboard/homepage/components/list/ProductList.tsx`](../../app/dashboard/homepage/components/list/ProductList.tsx): `fetch` API を使用して `/api/products/[id]` に DELETE リクエスト
   - [`app/dashboard/homepage/hooks/useProductReorder.ts`](../../app/dashboard/homepage/hooks/useProductReorder.ts): `fetch` API を使用して `/api/products/reorder` に POST リクエスト
 - **並列データ取得（`Promise.all`を使用）** - **このアプリで使用中**（詳細は [Async/Await ガイド - Promise.all](./async-await-guide.md#promiseall---このアプリで使用中) を参照）
 

@@ -510,7 +510,7 @@ async function getDashboardData() {
 ```
 
 
-2. **[`app/dashboard/homepage/components/ProductList.tsx`](../../app/dashboard/homepage/components/ProductList.tsx) (`handleDelete`関数)** - 商品の削除
+2. **[`app/dashboard/homepage/components/list/ProductList.tsx`](../../app/dashboard/homepage/components/list/ProductList.tsx) (`handleDelete`関数)** - 商品の削除
 
 ```typescript
     // 削除前に確認ダイアログを表示

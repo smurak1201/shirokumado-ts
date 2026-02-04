@@ -234,7 +234,7 @@ const memoizedValue = useMemo(() => {
 - **依存配列**: 依存配列の値が変更された時のみ、再計算が実行される
 - **使用タイミング**: 計算コストが高い処理や、参照の同一性が重要な場合に使用
 
-2. **[`app/dashboard/homepage/components/ProductList.tsx`](../../app/dashboard/homepage/components/ProductList.tsx) (`publishedProductsByCategory`の計算)** - 商品のフィルタリングとグループ化
+2. **[`app/dashboard/homepage/components/list/ProductList.tsx`](../../app/dashboard/homepage/components/list/ProductList.tsx) (`publishedProductsByCategory`の計算)** - 商品のフィルタリングとグループ化
 
 ```typescript
 const publishedProductsByCategory = useMemo(
@@ -243,7 +243,7 @@ const publishedProductsByCategory = useMemo(
 );
 ```
 
-[`app/dashboard/homepage/components/ProductList.tsx`](../../app/dashboard/homepage/components/ProductList.tsx) (`filteredProducts`の計算)
+[`app/dashboard/homepage/components/list/ProductList.tsx`](../../app/dashboard/homepage/components/list/ProductList.tsx) (`filteredProducts`の計算)
 
 ```typescript
 const filteredProducts = useMemo(
@@ -264,7 +264,7 @@ const memoizedCallback = useCallback(() => {
 }, [dependencies]);
 ```
 
-1. **[`app/dashboard/homepage/components/LayoutCategoryTabs.tsx`](../../app/dashboard/homepage/components/LayoutCategoryTabs.tsx) (`checkScrollPosition`関数)** - スクロール位置のチェック
+1. **[`app/dashboard/homepage/components/layout/LayoutCategoryTabs.tsx`](../../app/dashboard/homepage/components/layout/LayoutCategoryTabs.tsx) (`checkScrollPosition`関数)** - スクロール位置のチェック
 
 ```typescript
 const checkScrollPosition = useCallback(() => {
@@ -282,7 +282,7 @@ const checkScrollPosition = useCallback(() => {
 
 `useProductModal`フックでは、`useCallback`を使用して`handleProductClick`と`handleCloseModal`関数をメモ化しています。詳細な実装については、[useProductModal](#useproductmodal)セクションを参照してください。
 
-3. **[`app/dashboard/homepage/components/ProductList.tsx`](../../app/dashboard/homepage/components/ProductList.tsx) (`handleEdit`関数)** - 商品操作のコールバック関数
+3. **[`app/dashboard/homepage/components/list/ProductList.tsx`](../../app/dashboard/homepage/components/list/ProductList.tsx) (`handleEdit`関数)** - 商品操作のコールバック関数
 
 ```typescript
 const handleEdit = useCallback((product: Product) => {
@@ -290,7 +290,7 @@ const handleEdit = useCallback((product: Product) => {
 }, []);
 ```
 
-[`app/dashboard/homepage/components/ProductList.tsx`](../../app/dashboard/homepage/components/ProductList.tsx) (`handleDelete`関数)
+[`app/dashboard/homepage/components/list/ProductList.tsx`](../../app/dashboard/homepage/components/list/ProductList.tsx) (`handleDelete`関数)
 
 ```typescript
 const handleDelete = useCallback(
@@ -371,7 +371,7 @@ export default memo(ProductTile);
 
 **基本的な使い方**:
 
-1. **[`app/dashboard/homepage/components/LayoutCategoryTabs.tsx`](../../app/dashboard/homepage/components/LayoutCategoryTabs.tsx) (`scrollContainerRef`)** - DOM 要素への参照
+1. **[`app/dashboard/homepage/components/layout/LayoutCategoryTabs.tsx`](../../app/dashboard/homepage/components/layout/LayoutCategoryTabs.tsx) (`scrollContainerRef`)** - DOM 要素への参照
 
 ```typescript
 // useRef を使用して DOM 要素に直接アクセスします
@@ -601,7 +601,7 @@ export default function ProductGrid({ category, products }: ProductGridProps) {
 **このアプリでの使用箇所**:
 
 - [`app/dashboard/homepage/hooks/useTabState.ts`](../../app/dashboard/homepage/hooks/useTabState.ts): フックの実装
-- [`app/dashboard/homepage/components/ProductList.tsx`](../../app/dashboard/homepage/components/ProductList.tsx): 商品一覧で使用
+- [`app/dashboard/homepage/components/list/ProductList.tsx`](../../app/dashboard/homepage/components/list/ProductList.tsx): 商品一覧で使用
 
 **実装コード**:
 
@@ -644,7 +644,7 @@ export default function ProductGrid({ category, products }: ProductGridProps) {
 **このアプリでの使用箇所**:
 
 - [`app/dashboard/homepage/hooks/useTabState.ts`](../../app/dashboard/homepage/hooks/useTabState.ts): フックの実装
-- [`app/dashboard/homepage/components/ProductList.tsx`](../../app/dashboard/homepage/components/ProductList.tsx): 商品一覧で使用
+- [`app/dashboard/homepage/components/list/ProductList.tsx`](../../app/dashboard/homepage/components/list/ProductList.tsx): 商品一覧で使用
 
 ### useProductForm
 
@@ -736,7 +736,7 @@ export function useCategoryTabState(
 **このアプリでの使用箇所**:
 
 - [`app/dashboard/homepage/hooks/useProductReorder.ts`](../../app/dashboard/homepage/hooks/useProductReorder.ts): フックの実装
-- [`app/dashboard/homepage/components/ProductList.tsx`](../../app/dashboard/homepage/components/ProductList.tsx): 商品一覧で使用
+- [`app/dashboard/homepage/components/list/ProductList.tsx`](../../app/dashboard/homepage/components/list/ProductList.tsx): 商品一覧で使用
 
 **実装コード**:
 
@@ -1005,7 +1005,7 @@ export function useImageUpload() {
 **このアプリでの使用箇所**:
 
 - [`app/dashboard/homepage/hooks/useScrollPosition.ts`](../../app/dashboard/homepage/hooks/useScrollPosition.ts): フックの実装
-- [`app/dashboard/homepage/components/LayoutCategoryTabs.tsx`](../../app/dashboard/homepage/components/LayoutCategoryTabs.tsx): 配置変更用カテゴリータブで使用
+- [`app/dashboard/homepage/components/layout/LayoutCategoryTabs.tsx`](../../app/dashboard/homepage/components/layout/LayoutCategoryTabs.tsx): 配置変更用カテゴリータブで使用
 
 **実装コード**:
 
@@ -1314,9 +1314,9 @@ function ProductTile({ product, onClick }: ProductTileProps) {
 2. **ダッシュボードコンポーネント** (`app/dashboard/homepage/components/`)
 
    - [`DashboardContent.tsx`](../../app/dashboard/homepage/components/DashboardContent.tsx): ダッシュボードコンテンツ（フォーム送信、状態管理）
-   - [`ProductList.tsx`](../../app/dashboard/homepage/components/ProductList.tsx): 商品一覧（タブ切り替え、ドラッグ&ドロップ）
-   - [`LayoutCategoryTabs.tsx`](../../app/dashboard/homepage/components/LayoutCategoryTabs.tsx): 配置変更用カテゴリータブ（タブ切り替え UI）
-   - [`SortableProductItem.tsx`](../../app/dashboard/homepage/components/SortableProductItem.tsx): ドラッグ&ドロップ可能な商品アイテム
+   - [`ProductList.tsx`](../../app/dashboard/homepage/components/list/ProductList.tsx): 商品一覧（タブ切り替え、ドラッグ&ドロップ）
+   - [`LayoutCategoryTabs.tsx`](../../app/dashboard/homepage/components/layout/LayoutCategoryTabs.tsx): 配置変更用カテゴリータブ（タブ切り替え UI）
+   - [`SortableProductItem.tsx`](../../app/dashboard/homepage/components/layout/SortableProductItem.tsx): ドラッグ&ドロップ可能な商品アイテム
 
 ### カスタムフック構成
 
