@@ -7,22 +7,21 @@
  * 環境変数:
  * - CRON_SECRET: Vercelダッシュボードで設定（Production環境のみ）
  */
-import { NextResponse } from 'next/server';
-
 import { prisma, safePrismaOperation } from '@/lib/prisma';
+import { withErrorHandling, apiSuccess, apiError } from '@/lib/api-helpers';
 
-export async function GET(request: Request) {
+export const GET = withErrorHandling(async (request: Request) => {
   // Vercel Cronからのリクエストを検証
   const authHeader = request.headers.get('authorization');
   const cronSecret = process.env.CRON_SECRET;
 
   if (!cronSecret) {
     console.error('CRON_SECRET is not configured');
-    return NextResponse.json({ error: 'Server configuration error' }, { status: 500 });
+    return apiError('Server configuration error', 500);
   }
 
   if (authHeader !== `Bearer ${cronSecret}`) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    return apiError('Unauthorized', 401);
   }
 
   const result = await safePrismaOperation(async () => {
@@ -38,9 +37,8 @@ export async function GET(request: Request) {
 
   console.log(`Cleanup completed: ${result.count} expired sessions deleted`);
 
-  return NextResponse.json({
-    success: true,
+  return apiSuccess({
     deletedCount: result.count,
     timestamp: new Date().toISOString(),
   });
-}
+});

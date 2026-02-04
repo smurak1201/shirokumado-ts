@@ -4,7 +4,7 @@
  * 管理画面へのアクセス制御を管理
  */
 
-import { prisma } from '@/lib/prisma';
+import { prisma, safePrismaOperation } from '@/lib/prisma';
 
 /**
  * メールアドレスがログイン許可リストに含まれているかチェック
@@ -12,9 +12,12 @@ import { prisma } from '@/lib/prisma';
 export async function isAllowedEmail(email: string | null | undefined): Promise<boolean> {
   if (!email) return false;
 
-  const allowedAdmin = await prisma.allowedAdmin.findUnique({
-    where: { email },
-  });
+  const allowedAdmin = await safePrismaOperation(
+    () => prisma.allowedAdmin.findUnique({
+      where: { email },
+    }),
+    'isAllowedEmail'
+  );
 
   return !!allowedAdmin;
 }
@@ -25,9 +28,12 @@ export async function isAllowedEmail(email: string | null | undefined): Promise<
 export async function getRoleNameByEmail(email: string | null | undefined): Promise<string | null> {
   if (!email) return null;
 
-  const allowedAdmin = await prisma.allowedAdmin.findUnique({
-    where: { email },
-  });
+  const allowedAdmin = await safePrismaOperation(
+    () => prisma.allowedAdmin.findUnique({
+      where: { email },
+    }),
+    'getRoleNameByEmail'
+  );
 
   return allowedAdmin?.roleName ?? null;
 }
