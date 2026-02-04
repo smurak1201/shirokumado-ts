@@ -19,6 +19,13 @@ if (!databaseUrl) {
 const adapter = new PrismaNeon({ connectionString: databaseUrl });
 const prisma = new PrismaClient({ adapter });
 
+// ロールマスター
+const ROLES = [
+  { name: 'admin', description: 'すべてのダッシュボード機能にアクセス可能' },
+  { name: 'homepage', description: 'ホームページ関連の機能のみ' },
+  { name: 'shop', description: 'ECサイト関連の機能のみ' },
+];
+
 // 許可する管理者
 const ALLOWED_ADMINS = [
   { email: 's.murakoshi1201@gmail.com', role: 'admin' },
@@ -194,12 +201,25 @@ const PRODUCTS = [
 async function main() {
   console.log('シードデータの投入を開始します...');
 
+  // ロールマスターの作成
+  for (const role of ROLES) {
+    await prisma.role.upsert({
+      where: { name: role.name },
+      update: { description: role.description },
+      create: { name: role.name, description: role.description },
+    });
+  }
+  console.log(
+    'ロールを作成しました:',
+    ROLES.map((r) => r.name).join(', ')
+  );
+
   // 許可管理者の作成
   for (const admin of ALLOWED_ADMINS) {
     await prisma.allowedAdmin.upsert({
       where: { email: admin.email },
-      update: { role: admin.role },
-      create: { email: admin.email, role: admin.role },
+      update: { roleName: admin.role },
+      create: { email: admin.email, roleName: admin.role },
     });
   }
   console.log(

@@ -8,7 +8,7 @@ import NextAuth from 'next-auth';
 import { PrismaAdapter } from '@auth/prisma-adapter';
 import Google from 'next-auth/providers/google';
 import { prisma } from '@/lib/prisma';
-import { isAllowedEmail, getRoleByEmail } from '@/lib/auth-config';
+import { isAllowedEmail, getRoleNameByEmail } from '@/lib/auth-config';
 import type { Adapter } from 'next-auth/adapters';
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
@@ -32,17 +32,17 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     },
     async session({ session, user }) {
       session.user.id = user.id;
-      session.user.role = user.role;
+      session.user.role = user.roleName;
       return session;
     },
   },
   events: {
     // ユーザー新規作成時にAllowedAdminのロールをUserに反映
     async createUser({ user }) {
-      const role = await getRoleByEmail(user.email);
+      const roleName = await getRoleNameByEmail(user.email);
       await prisma.user.update({
         where: { id: user.id },
-        data: { role },
+        data: { roleName },
       });
     },
   },

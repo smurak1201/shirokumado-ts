@@ -20,14 +20,14 @@ export async function isAllowedEmail(email: string | null | undefined): Promise<
 }
 
 /**
- * AllowedAdminテーブルからメールアドレスに対応するロールを取得
+ * AllowedAdminテーブルからメールアドレスに対応するロール名を取得
  */
-export async function getRoleByEmail(email: string | null | undefined): Promise<string> {
-  if (!email) return 'user';
+export async function getRoleNameByEmail(email: string | null | undefined): Promise<string | null> {
+  if (!email) return null;
 
   const allowedAdmin = await prisma.allowedAdmin.findUnique({
     where: { email },
   });
 
-  return allowedAdmin?.role ?? 'user';
+  return allowedAdmin?.roleName ?? null;
 }

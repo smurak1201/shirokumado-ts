@@ -17,7 +17,8 @@ model User {
   email         String?   @unique
   emailVerified DateTime? @map("email_verified")
   image         String?
-  role          String    @default("user")
+  roleName      String?   @map("role_name")
+  role          Role?     @relation(fields: [roleName], references: [name])
   accounts      Account[]
   sessions      Session[]
   createdAt     DateTime  @default(now()) @map("created_at")
@@ -71,10 +72,22 @@ model VerificationToken {
 model AllowedAdmin {
   id        String   @id @default(uuid())
   email     String   @unique
-  role      String   @default("admin") // admin, homepage, shop, ...
+  roleName  String   @map("role_name")
+  role      Role     @relation(fields: [roleName], references: [name])
   createdAt DateTime @default(now()) @map("created_at")
 
   @@map("allowed_admins")
+}
+
+// ロールマスターテーブル
+model Role {
+  name          String         @id
+  description   String?
+  users         User[]
+  allowedAdmins AllowedAdmin[]
+  createdAt     DateTime       @default(now()) @map("created_at")
+
+  @@map("roles")
 }
 
 // カテゴリーテーブル
