@@ -49,18 +49,17 @@
 app/
 ├── types.ts           # 共通型定義
 ├── hooks/            # カスタムフック
-├── utils/            # ユーティリティ関数
-└── components/       # UIコンポーネント
-    └── icons/       # アイコンコンポーネント
+├── components/       # UIコンポーネント
+│   └── ui/          # shadcn/ui コンポーネント
+└── (public)/         # 公開ページ（Route Group）
 ```
 
 **設計思想**:
 
 - **[`types.ts`](../app/types.ts)**: フロントエンドで使用する型を一元管理（重複を防止）
 - **`hooks/`**: 状態管理や副作用をカスタムフックに分離（再利用可能）
-- **`utils/`**: 純粋関数として実装可能なビジネスロジック（テストしやすい）
 - **`components/`**: UI コンポーネントのみを配置（見た目とレイアウト）
-- **`components/icons/`**: アイコンコンポーネントを分離（再利用性）
+- **`components/ui/`**: shadcn/ui コンポーネントとラッパーコンポーネント
 
 ### 機能別ディレクトリ (`app/dashboard/`)
 
@@ -68,11 +67,17 @@ app/
 
 ```
 app/dashboard/
+├── page.tsx           # ダッシュボードルートページ
 ├── layout.tsx         # 共通レイアウト（認証チェック）
-├── components/        # 共通コンポーネント（DashboardHeader）
+├── components/        # 共通コンポーネント
+│   └── DashboardHeader.tsx
 └── homepage/          # 商品管理ページ
+    ├── page.tsx       # エントリーポイント
     ├── types.ts       # 共通型定義
     ├── components/    # UIコンポーネント
+    │   ├── form/     # フォーム関連
+    │   ├── layout/   # レイアウト関連
+    │   └── list/     # リスト表示関連
     ├── hooks/         # 状態管理ロジック
     └── utils/         # ビジネスロジック
 ```
@@ -94,7 +99,8 @@ lib/
 ├── prisma.ts         # データベース接続
 ├── blob.ts           # ストレージ操作
 ├── errors.ts         # エラーハンドリング
-└── api-helpers.ts    # API共通処理
+├── api-helpers.ts    # API共通処理
+└── auth-config.ts    # 認証設定（許可リストチェック）
 ```
 
 ## コンポーネント設計
@@ -105,8 +111,8 @@ lib/
 
 ```
 HomePage (Server Component)
-  ├── Header (Server Component)
-  ├── HeroBanner (Server Component)
+  ├── FixedHeader (Server Component)
+  ├── HeroSection (Server Component)
   └── ProductCategoryTabs (Client Component)
       └── ProductGrid (Client Component)
           ├── useProductModal (カスタムフック)
@@ -115,8 +121,8 @@ HomePage (Server Component)
               └── formatPrice (ユーティリティ関数)
 
 FAQPage (Server Component)
-  ├── Header (Server Component)
-  └── FAQContent (Server Component)
+  ├── FixedHeader (Server Component)
+  └── FAQSection (Server Component)
 ```
 
 #### ダッシュボード
