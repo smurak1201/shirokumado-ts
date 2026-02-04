@@ -62,7 +62,7 @@ export default class ErrorBoundary extends Component<
       }
 
       return (
-        <div className="flex min-h-[400px] flex-col items-center justify-center p-8">
+        <div className="flex min-h-100 flex-col items-center justify-center p-8">
           <div className="max-w-md text-center">
             <h2 className="mb-4 text-2xl font-bold text-gray-800">
               エラーが発生しました

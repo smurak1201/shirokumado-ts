@@ -83,7 +83,7 @@ export default function ProductModal({
             >
               <ModalImageCard>
                 <ModalCardHeader>
-                  <div className="relative h-[40vh] min-h-[200px] max-h-[450px] md:h-[45vh] md:max-h-[500px] overflow-hidden bg-muted">
+                  <div className="relative h-[40vh] min-h-50 max-h-112.5 md:h-[45vh] md:max-h-125 overflow-hidden bg-muted">
                     {product.imageUrl ? (
                       <motion.div
                         className="relative h-full w-full flex items-center justify-center p-4 md:p-6"

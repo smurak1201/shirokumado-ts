@@ -51,7 +51,7 @@ export default function ProductSearchFilters({
             placeholder="商品名で検索..."
             value={searchName}
             onChange={(e) => setSearchName(e.target.value)}
-            className="max-w-[224px]"
+            className="max-w-56"
           />
         </div>
 
@@ -63,7 +63,7 @@ export default function ProductSearchFilters({
               setSearchCategoryId(value === "all" ? null : parseInt(value))
             }
           >
-            <SelectTrigger className="max-w-[224px]">
+            <SelectTrigger className="max-w-56">
               <SelectValue placeholder="すべてのカテゴリー" />
             </SelectTrigger>
             <SelectContent>

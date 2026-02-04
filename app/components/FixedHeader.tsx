@@ -91,7 +91,7 @@ export default function FixedHeader() {
             className={cn(
               "relative text-sm font-medium transition-all md:text-base",
               "text-foreground/70 hover:text-foreground active:scale-95",
-              "after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-0 after:bg-foreground after:transition-all after:duration-300",
+              "after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-0 after:bg-foreground after:transition-all after:duration-300",
               "hover:after:w-full",
               "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded-sm"
             )}

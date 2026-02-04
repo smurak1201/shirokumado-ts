@@ -107,7 +107,7 @@ export default function ProductList({
       <div className="rounded-lg bg-white p-6 shadow">
         <ProductListTabs activeTab={activeTab} onTabChange={setActiveTab} />
 
-        <div className="min-h-[400px]">
+        <div className="min-h-100">
           {activeTab === "list" && (
             <ProductListContent
               products={products}
