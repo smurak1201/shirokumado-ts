@@ -67,7 +67,7 @@
 
 ### ログアウト
 
-**実装場所**: [app/dashboard/homepage/components/DashboardHeader.tsx](../app/dashboard/homepage/components/DashboardHeader.tsx)
+**実装場所**: [app/dashboard/components/DashboardHeader.tsx](../app/dashboard/components/DashboardHeader.tsx)
 
 ```tsx
 <form
@@ -793,7 +793,7 @@ VALUES (gen_random_uuid(), 'newadmin@example.com', 'admin', NOW());
 | [app/auth/signin/page.tsx](../app/auth/signin/page.tsx) | ログインページ（Googleボタン） |
 | [app/auth/error/page.tsx](../app/auth/error/page.tsx) | 認証エラーページ |
 | [app/dashboard/layout.tsx](../app/dashboard/layout.tsx) | ダッシュボード保護（セッションチェック） |
-| [app/dashboard/homepage/components/DashboardHeader.tsx](../app/dashboard/homepage/components/DashboardHeader.tsx) | ユーザー情報・ログアウトボタン |
+| [app/dashboard/components/DashboardHeader.tsx](../app/dashboard/components/DashboardHeader.tsx) | ユーザー情報・ログアウトボタン |
 | [prisma/schema.prisma](../prisma/schema.prisma) | データベーススキーマ（User, Account, Session等） |
 | [prisma/seed.ts](../prisma/seed.ts) | 許可管理者データの初期投入 |
 | [lib/api-helpers.ts](../lib/api-helpers.ts) | APIエラーハンドリング |

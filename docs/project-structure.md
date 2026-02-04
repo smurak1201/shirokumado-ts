@@ -49,47 +49,31 @@ shirokumado-ts/
 │   │   │       ├── put.ts        # PUT処理
 │   │   │       ├── put-validation.ts  # PUT用バリデーション
 │   │   │       └── delete.ts     # DELETE処理
-│   │   └── categories/   # カテゴリーAPI
-│   │       └── route.ts
+│   │   ├── categories/   # カテゴリーAPI
+│   │   │   └── route.ts
+│   │   ├── auth/         # 認証API
+│   │   │   └── [...nextauth]/
+│   │   │       └── route.ts
+│   │   └── cron/         # Cronジョブ
+│   │       └── cleanup-sessions/
+│   │           └── route.ts
 │   ├── dashboard/         # ダッシュボード
-│   │   ├── page.tsx      # ダッシュボードページ（Server Component）
-│   │   ├── types.ts       # 共通型定義
-│   │   ├── components/    # ダッシュボードコンポーネント
-│   │   │   ├── DashboardContent.tsx
-│   │   │   ├── form/     # フォーム関連
-│   │   │   │   ├── ProductForm.tsx
-│   │   │   │   ├── ProductFormModal.tsx
-│   │   │   │   ├── ProductFormFields.tsx
-│   │   │   │   ├── ProductFormFooter.tsx
-│   │   │   │   ├── ProductBasicFields.tsx
-│   │   │   │   ├── ProductPriceFields.tsx
-│   │   │   │   ├── ProductDateFields.tsx
-│   │   │   │   ├── ProductDateInput.tsx
-│   │   │   │   ├── ProductImageField.tsx
-│   │   │   │   └── ProductPublishedField.tsx
-│   │   │   ├── layout/   # レイアウト関連
-│   │   │   │   ├── ProductLayoutTab.tsx
-│   │   │   │   ├── LayoutCategoryTabs.tsx
-│   │   │   │   └── SortableProductItem.tsx
-│   │   │   └── list/     # リスト表示関連
-│   │   │       ├── ProductList.tsx
-│   │   │       ├── ProductListContent.tsx
-│   │   │       ├── ProductListTabs.tsx
-│   │   │       ├── ProductCard.tsx
-│   │   │       ├── ProductCardContent.tsx
-│   │   │       └── ProductSearchFilters.tsx
-│   │   ├── hooks/        # カスタムフック
-│   │   │   ├── useTabState.ts
-│   │   │   ├── useScrollPosition.ts
-│   │   │   ├── useImageCompression.ts
-│   │   │   ├── useProductSearch.ts
-│   │   │   ├── useImageUpload.ts
-│   │   │   ├── useProductForm.ts
-│   │   │   └── useProductReorder.ts
-│   │   └── utils/        # ユーティリティ関数
-│   │       ├── productUtils.ts
-│   │       ├── productFormData.ts
-│   │       └── productFormSubmit.ts
+│   │   ├── page.tsx      # ダッシュボードルートページ
+│   │   ├── layout.tsx    # ダッシュボードレイアウト（認証チェック）
+│   │   ├── components/   # ダッシュボード共通コンポーネント
+│   │   │   └── DashboardHeader.tsx  # ダッシュボードヘッダー
+│   │   ├── homepage/     # 商品管理ページ
+│   │   │   ├── page.tsx      # エントリーポイント（Server Component）
+│   │   │   ├── types.ts      # 共通型定義
+│   │   │   ├── components/   # UIコンポーネント
+│   │   │   │   ├── DashboardContent.tsx
+│   │   │   │   ├── form/     # フォーム関連
+│   │   │   │   ├── layout/   # レイアウト関連
+│   │   │   │   └── list/     # リスト表示関連
+│   │   │   ├── hooks/        # カスタムフック
+│   │   │   └── utils/        # ユーティリティ関数
+│   │   └── shop/         # ショップ管理ページ
+│   │       └── page.tsx
 │   ├── types.ts          # フロントエンド共通型定義
 │   ├── hooks/            # カスタムフック
 │   │   └── useProductModal.ts # 商品モーダル管理フック
@@ -104,22 +88,33 @@ shirokumado-ts/
 │   │   ├── ProductGrid.tsx # 商品グリッドコンポーネント
 │   │   ├── ProductTile.tsx # 商品タイルコンポーネント
 │   │   └── ProductModal.tsx # 商品詳細モーダルコンポーネント
-│   ├── faq/              # FAQページ
-│   │   ├── page.tsx      # よくある質問ページ
-│   │   └── data.ts       # FAQデータ
+│   ├── (public)/         # 公開ページ（Route Group）
+│   │   ├── page.tsx      # ホームページ
+│   │   ├── HomeContent.tsx # ホームページコンテンツ
+│   │   ├── error.tsx     # エラーページ
+│   │   ├── faq/          # FAQページ
+│   │   │   ├── page.tsx  # よくある質問ページ
+│   │   │   └── data.ts   # FAQデータ
+│   │   └── shop/         # ショップページ
+│   │       └── page.tsx
+│   ├── auth/             # 認証ページ
+│   │   ├── signin/       # サインインページ
+│   │   │   └── page.tsx
+│   │   └── error/        # 認証エラーページ
+│   │       └── page.tsx
 │   ├── favicon.ico       # ファビコン
 │   ├── globals.css       # グローバルスタイル
-│   ├── error.tsx         # エラーページ
 │   ├── layout.tsx        # ルートレイアウト
-│   └── page.tsx          # ホームページ
+│   └── not-found.tsx     # 404ページ
 │
 ├── lib/                    # ユーティリティ・ライブラリ
 │   ├── prisma.ts         # Prisma Clientインスタンス
 │   ├── blob.ts           # Blobストレージユーティリティ
 │   ├── env.ts            # 環境変数管理
 │   ├── errors.ts         # 統一されたエラーハンドリング（エラーコード定数含む）
-│   ├── api-helpers.ts     # API Routes用ヘルパー
+│   ├── api-helpers.ts    # API Routes用ヘルパー
 │   ├── api-types.ts      # API レスポンスの型定義
+│   ├── auth-config.ts    # 認証設定（許可リストチェック）
 │   ├── config.ts         # アプリケーション設定
 │   ├── logger.ts         # 構造化ログユーティリティ
 │   ├── utils.ts          # 汎用ユーティリティ（clsx/tailwind-merge）
@@ -145,7 +140,7 @@ shirokumado-ts/
 │   ├── logo-instagram.svg # Instagramアイコン
 │   └── hero.webp         # ヒーロー画像
 │
-├── doc/                    # ドキュメント
+├── docs/                    # ドキュメント
 │   ├── architecture.md     # アーキテクチャと設計思想
 │   ├── project-structure.md # プロジェクト構造（このファイル）
 │   ├── tech-stack.md       # 技術スタック
@@ -238,21 +233,6 @@ app/hooks/
 - **関心の分離**: UI ロジックと状態管理ロジックを分離
 - **テストしやすさ**: フック単体でテスト可能
 
-#### `app/utils/` - ユーティリティ関数
-
-フロントエンドで使用するユーティリティ関数を配置します。
-
-```
-app/utils/
-（現在は使用されていません。フォーマット関数は lib/product-utils.ts に統合されています）
-```
-
-**設計の特徴**:
-
-- **純粋関数**: 副作用のない純粋関数として実装
-- **再利用性**: 複数のコンポーネントで使用可能
-- **テストしやすさ**: 純粋関数なのでテストが容易
-
 #### `app/components/` - フロントエンド共通コンポーネント
 
 フロントエンドで使用する共通コンポーネントを配置します。
@@ -268,7 +248,7 @@ app/components/
 │   ├── badge-price.tsx     # 価格表示用の Badge ラッパー
 │   └── ...             # その他の shadcn/ui コンポーネントとラッパー
 ├── [ErrorBoundary.tsx](../app/components/ErrorBoundary.tsx)     # エラーバウンダリーコンポーネント
-├── [Header.tsx](../app/components/Header.tsx)           # ヘッダー（ロゴ、Instagramリンク、ナビゲーション）
+├── [FixedHeader.tsx](../app/components/FixedHeader.tsx) # 固定ヘッダー（ロゴ、Instagramリンク、ナビゲーション）
 ├── [Footer.tsx](../app/components/Footer.tsx)           # フッター（店舗情報、地図、連絡先）
 ├── [ProductCategoryTabs.tsx](../app/components/ProductCategoryTabs.tsx)  # カテゴリーをTabsで切り替えるコンポーネント（Client Component）
 ├── [ProductGrid.tsx](../app/components/ProductGrid.tsx)      # カテゴリーごとの商品グリッド表示（Client Component）
@@ -286,13 +266,20 @@ app/components/
 
 **詳細**: shadcn/ui の使用方法とラッパーコンポーネントの作成については、[shadcn/ui ガイド](./guides/shadcn-ui-guide.md) を参照してください。
 
-#### `app/faq/` - FAQ ページ
+#### `app/(public)/` - 公開ページ
 
-よくある質問ページの実装です。
+Route Group を使用して公開ページをグループ化しています。
 
 ```
-app/faq/
-└── page.tsx              # FAQページ（Server Component）
+app/(public)/
+├── page.tsx              # ホームページ（Server Component）
+├── HomeContent.tsx       # ホームページのコンテンツ（Client Component）
+├── error.tsx             # エラーページ
+├── faq/                  # FAQページ
+│   ├── page.tsx          # FAQページ（Server Component）
+│   └── data.ts           # FAQデータ
+└── shop/                 # ショップページ
+    └── page.tsx          # ショップページ（Server Component）
 ```
 
 #### `app/dashboard/` - ダッシュボード
@@ -301,51 +288,51 @@ app/faq/
 
 ```
 app/dashboard/
-├── [page.tsx](../app/dashboard/page.tsx)                # ダッシュボードルートページ
-├── [layout.tsx](../app/dashboard/layout.tsx)            # ダッシュボードレイアウト（認証チェック）
-├── components/                                          # 共通コンポーネント
-│   └── [DashboardHeader.tsx](../app/dashboard/components/DashboardHeader.tsx)  # ダッシュボードヘッダー
-├── homepage/                                            # 商品管理ページ
-│   ├── [page.tsx](../app/dashboard/homepage/page.tsx)   # エントリーポイント（Server Component）
-│   ├── [types.ts](../app/dashboard/homepage/types.ts)   # 共通型定義（Category, Product）
-│   ├── components/                                      # UI コンポーネント
-│   │   ├── [DashboardContent.tsx](../app/dashboard/homepage/components/DashboardContent.tsx)  # メインコンテナ
-│   │   ├── form/                                        # フォーム関連
-│   │   │   ├── [ProductForm.tsx](../app/dashboard/homepage/components/form/ProductForm.tsx)
-│   │   │   ├── [ProductFormModal.tsx](../app/dashboard/homepage/components/form/ProductFormModal.tsx)
-│   │   │   ├── [ProductFormFields.tsx](../app/dashboard/homepage/components/form/ProductFormFields.tsx)
-│   │   │   ├── [ProductFormFooter.tsx](../app/dashboard/homepage/components/form/ProductFormFooter.tsx)
-│   │   │   ├── [ProductBasicFields.tsx](../app/dashboard/homepage/components/form/ProductBasicFields.tsx)
-│   │   │   ├── [ProductImageField.tsx](../app/dashboard/homepage/components/form/ProductImageField.tsx)
-│   │   │   ├── [ProductPriceFields.tsx](../app/dashboard/homepage/components/form/ProductPriceFields.tsx)
-│   │   │   ├── [ProductDateFields.tsx](../app/dashboard/homepage/components/form/ProductDateFields.tsx)
-│   │   │   ├── [ProductDateInput.tsx](../app/dashboard/homepage/components/form/ProductDateInput.tsx)
-│   │   │   └── [ProductPublishedField.tsx](../app/dashboard/homepage/components/form/ProductPublishedField.tsx)
-│   │   ├── layout/                                      # レイアウト関連
-│   │   │   ├── [ProductLayoutTab.tsx](../app/dashboard/homepage/components/layout/ProductLayoutTab.tsx)
-│   │   │   ├── [LayoutCategoryTabs.tsx](../app/dashboard/homepage/components/layout/LayoutCategoryTabs.tsx)
-│   │   │   └── [SortableProductItem.tsx](../app/dashboard/homepage/components/layout/SortableProductItem.tsx)
-│   │   └── list/                                        # リスト表示関連
-│   │       ├── [ProductList.tsx](../app/dashboard/homepage/components/list/ProductList.tsx)
-│   │       ├── [ProductListTabs.tsx](../app/dashboard/homepage/components/list/ProductListTabs.tsx)
-│   │       ├── [ProductListContent.tsx](../app/dashboard/homepage/components/list/ProductListContent.tsx)
-│   │       ├── [ProductCard.tsx](../app/dashboard/homepage/components/list/ProductCard.tsx)
-│   │       ├── [ProductCardContent.tsx](../app/dashboard/homepage/components/list/ProductCardContent.tsx)
-│   │       └── [ProductSearchFilters.tsx](../app/dashboard/homepage/components/list/ProductSearchFilters.tsx)
-│   ├── hooks/                                           # カスタムフック
-│   │   ├── [useTabState.ts](../app/dashboard/homepage/hooks/useTabState.ts)
-│   │   ├── [useProductForm.ts](../app/dashboard/homepage/hooks/useProductForm.ts)
-│   │   ├── [useProductReorder.ts](../app/dashboard/homepage/hooks/useProductReorder.ts)
-│   │   ├── [useProductSearch.ts](../app/dashboard/homepage/hooks/useProductSearch.ts)
-│   │   ├── [useImageCompression.ts](../app/dashboard/homepage/hooks/useImageCompression.ts)
-│   │   ├── [useImageUpload.ts](../app/dashboard/homepage/hooks/useImageUpload.ts)
-│   │   └── [useScrollPosition.ts](../app/dashboard/homepage/hooks/useScrollPosition.ts)
-│   └── utils/                                           # ユーティリティ関数
-│       ├── [productUtils.ts](../app/dashboard/homepage/utils/productUtils.ts)
-│       ├── [productFormData.ts](../app/dashboard/homepage/utils/productFormData.ts)
-│       └── [productFormSubmit.ts](../app/dashboard/homepage/utils/productFormSubmit.ts)
-└── shop/                                                # ショップ管理ページ
-    └── [page.tsx](../app/dashboard/shop/page.tsx)
+├── page.tsx              # ダッシュボードルートページ
+├── layout.tsx            # ダッシュボードレイアウト（認証チェック）
+├── components/           # ダッシュボード共通コンポーネント
+│   └── DashboardHeader.tsx  # ダッシュボードヘッダー
+├── homepage/             # 商品管理ページ
+│   ├── page.tsx          # エントリーポイント（Server Component）
+│   ├── types.ts          # 共通型定義（Category, Product）
+│   ├── components/       # UI コンポーネント
+│   │   ├── DashboardContent.tsx  # メインコンテナ
+│   │   ├── form/         # フォーム関連
+│   │   │   ├── ProductForm.tsx
+│   │   │   ├── ProductFormModal.tsx
+│   │   │   ├── ProductFormFields.tsx
+│   │   │   ├── ProductFormFooter.tsx
+│   │   │   ├── ProductBasicFields.tsx
+│   │   │   ├── ProductImageField.tsx
+│   │   │   ├── ProductPriceFields.tsx
+│   │   │   ├── ProductDateFields.tsx
+│   │   │   ├── ProductDateInput.tsx
+│   │   │   └── ProductPublishedField.tsx
+│   │   ├── layout/       # レイアウト関連
+│   │   │   ├── ProductLayoutTab.tsx
+│   │   │   ├── LayoutCategoryTabs.tsx
+│   │   │   └── SortableProductItem.tsx
+│   │   └── list/         # リスト表示関連
+│   │       ├── ProductList.tsx
+│   │       ├── ProductListTabs.tsx
+│   │       ├── ProductListContent.tsx
+│   │       ├── ProductCard.tsx
+│   │       ├── ProductCardContent.tsx
+│   │       └── ProductSearchFilters.tsx
+│   ├── hooks/            # カスタムフック
+│   │   ├── useTabState.ts
+│   │   ├── useProductForm.ts
+│   │   ├── useProductReorder.ts
+│   │   ├── useProductSearch.ts
+│   │   ├── useImageCompression.ts
+│   │   ├── useImageUpload.ts
+│   │   └── useScrollPosition.ts
+│   └── utils/            # ユーティリティ関数
+│       ├── productUtils.ts
+│       ├── productFormData.ts
+│       └── productFormSubmit.ts
+└── shop/                 # ショップ管理ページ
+    └── page.tsx
 ```
 
 **設計の特徴**:
@@ -556,23 +543,23 @@ public/
 ### ドキュメント
 
 - **[`README.md`](../README.md)**: プロジェクトの概要とセットアップ手順
-- **[`doc/getting-started.md`](./getting-started.md)**: コードリーディングガイド
-- **[`doc/guides/learning-guide.md`](./guides/learning-guide.md)**: 勉強用ガイド（学習の進め方、ファイルの読み順序、技術スタック別おすすめファイル）
-- **[`doc/architecture.md`](./architecture.md)**: アーキテクチャと設計思想
-- **[`doc/project-structure.md`](./project-structure.md)**: プロジェクト構造（このファイル）
-- **[`doc/tech-stack.md`](./tech-stack.md)**: 技術スタックの詳細
-- **[`doc/guides/frontend-guide.md`](./guides/frontend-guide.md)**: フロントエンドガイド
-- **[`doc/guides/dashboard-guide.md`](./guides/dashboard-guide.md)**: ダッシュボードガイド
-- **[`doc/development-guide.md`](./development-guide.md)**: 開発ガイドライン
-- **[`doc/guides/nextjs-guide.md`](./guides/nextjs-guide.md)**: Next.js の詳細な使用方法
-- **[`doc/guides/app-router-guide.md`](./guides/app-router-guide.md)**: Next.js App Router の詳細な使用方法
-- **[`doc/guides/react-guide.md`](./guides/react-guide.md)**: React の詳細な使用方法
-- **[`doc/guides/jsx-guide.md`](./guides/jsx-guide.md)**: JSX の構文と使用方法
-- **[`doc/guides/typescript-guide.md`](./guides/typescript-guide.md)**: TypeScript の詳細な使用方法
-- **[`doc/guides/prisma-guide.md`](./guides/prisma-guide.md)**: Prisma の詳細な使用方法
-- **[`doc/guides/shadcn-ui-guide.md`](./guides/shadcn-ui-guide.md)**: shadcn/ui の使用方法とラッパーコンポーネントの作成
-- **[`doc/setup-prisma-blob.md`](./setup-prisma-blob.md)**: Prisma と Blob のセットアップガイド
-- **[`doc/deployment.md`](./deployment.md)**: デプロイメントガイド
+- **[`docs/getting-started.md`](./getting-started.md)**: コードリーディングガイド
+- **[`docs/guides/learning-guide.md`](./guides/learning-guide.md)**: 勉強用ガイド（学習の進め方、ファイルの読み順序、技術スタック別おすすめファイル）
+- **[`docs/architecture.md`](./architecture.md)**: アーキテクチャと設計思想
+- **[`docs/project-structure.md`](./project-structure.md)**: プロジェクト構造（このファイル）
+- **[`docs/tech-stack.md`](./tech-stack.md)**: 技術スタックの詳細
+- **[`docs/guides/frontend-guide.md`](./guides/frontend-guide.md)**: フロントエンドガイド
+- **[`docs/guides/dashboard-guide.md`](./guides/dashboard-guide.md)**: ダッシュボードガイド
+- **[`docs/development-guide.md`](./development-guide.md)**: 開発ガイドライン
+- **[`docs/guides/nextjs-guide.md`](./guides/nextjs-guide.md)**: Next.js の詳細な使用方法
+- **[`docs/guides/app-router-guide.md`](./guides/app-router-guide.md)**: Next.js App Router の詳細な使用方法
+- **[`docs/guides/react-guide.md`](./guides/react-guide.md)**: React の詳細な使用方法
+- **[`docs/guides/jsx-guide.md`](./guides/jsx-guide.md)**: JSX の構文と使用方法
+- **[`docs/guides/typescript-guide.md`](./guides/typescript-guide.md)**: TypeScript の詳細な使用方法
+- **[`docs/guides/prisma-guide.md`](./guides/prisma-guide.md)**: Prisma の詳細な使用方法
+- **[`docs/guides/shadcn-ui-guide.md`](./guides/shadcn-ui-guide.md)**: shadcn/ui の使用方法とラッパーコンポーネントの作成
+- **[`docs/setup-prisma-blob.md`](./setup-prisma-blob.md)**: Prisma と Blob のセットアップガイド
+- **[`docs/deployment.md`](./deployment.md)**: デプロイメントガイド
 
 ## ベストプラクティス
 

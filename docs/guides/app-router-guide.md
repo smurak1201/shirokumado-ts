@@ -96,8 +96,7 @@ App Router では、`app/` ディレクトリ内のファイル構造がその�
 ├── hooks/             # カスタムフック
 ├── layout.tsx         # ルートレイアウト（全ページ共通）
 ├── not-found.tsx      # 404ページ
-├── types.ts           # 型定義
-└── utils/             # ユーティリティ関数
+└── types.ts           # 型定義
 ```
 
 **ルートグループ `(public)` について**:
