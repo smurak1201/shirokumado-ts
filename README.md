@@ -123,30 +123,47 @@ npm run db:seed        # シードデータを投入
 shirokumado-ts/
 ├── app/                    # Next.js App Router
 │   ├── api/               # API Routes
+│   │   ├── auth/         # 認証API
 │   │   ├── products/     # 商品API
 │   │   │   ├── [id]/    # 商品個別操作
 │   │   │   ├── reorder/ # 並び替え
 │   │   │   └── upload/  # 画像アップロード
 │   │   └── categories/   # カテゴリーAPI
+│   ├── (public)/          # 公開ページ（Route Group）
+│   │   ├── page.tsx      # ホームページ
+│   │   ├── faq/          # FAQページ
+│   │   ├── shop/         # ショップページ
+│   │   ├── error.tsx     # エラーページ
+│   │   └── layout.tsx    # 公開ページレイアウト
+│   ├── auth/              # 認証ページ
+│   │   ├── signin/       # サインインページ
+│   │   └── error/        # 認証エラーページ
 │   ├── dashboard/         # ダッシュボード機能
-│   │   ├── components/   # ダッシュボードコンポーネント
-│   │   ├── hooks/        # カスタムフック
-│   │   ├── utils/        # ユーティリティ関数
-│   │   ├── page.tsx      # ダッシュボードページ
-│   │   └── types.ts       # 型定義
+│   │   ├── layout.tsx    # ダッシュボードレイアウト
+│   │   ├── page.tsx      # ダッシュボードルートページ
+│   │   ├── components/   # 共通コンポーネント（DashboardHeader）
+│   │   ├── homepage/     # 商品管理ページ
+│   │   │   ├── page.tsx  # 商品管理ページ
+│   │   │   ├── types.ts  # 型定義
+│   │   │   ├── components/ # UIコンポーネント
+│   │   │   │   ├── form/   # フォーム関連
+│   │   │   │   ├── list/   # リスト表示関連
+│   │   │   │   └── layout/ # レイアウト関連
+│   │   │   ├── hooks/    # カスタムフック
+│   │   │   └── utils/    # ユーティリティ関数
+│   │   └── shop/         # ショップ管理ページ
 │   ├── components/       # フロントエンド共通コンポーネント
 │   │   ├── ui/          # shadcn/ui コンポーネント
 │   │   ├── Header.tsx   # ヘッダー
 │   │   ├── Footer.tsx   # フッター
 │   │   └── ...          # その他のコンポーネント
 │   ├── hooks/            # カスタムフック
-│   ├── utils/            # ユーティリティ関数
-│   ├── faq/              # FAQページ
-│   ├── error.tsx         # エラーページ
 │   ├── layout.tsx        # ルートレイアウト
-│   ├── page.tsx          # ホームページ
+│   ├── not-found.tsx     # 404ページ
 │   └── types.ts           # 型定義
-├── doc/                    # ドキュメント
+├── docs/                   # ドキュメント
+│   ├── guides/           # 技術ガイド
+│   └── *.md              # その他ドキュメント
 ├── lib/                    # ユーティリティ・ライブラリ
 │   ├── prisma.ts         # Prisma Clientインスタンス
 │   ├── blob.ts           # Blobストレージユーティリティ
@@ -158,16 +175,16 @@ shirokumado-ts/
 │   ├── logger.ts         # ログユーティリティ
 │   ├── products.ts       # 商品関連ユーティリティ
 │   ├── product-utils.ts  # 商品関連ユーティリティ
-│   ├── image-compression.ts # 画像圧縮ユーティリティ
+│   ├── image-compression/ # 画像圧縮ユーティリティ
 │   └── utils.ts           # 汎用ユーティリティ
 ├── prisma/                 # Prisma設定
-│   ├── schema.prisma     # データベーススキーマ定義
+│   ├── schema/           # データベーススキーマ定義
 │   ├── migrations/       # マイグレーションファイル
 │   └── seed.ts           # シードデータ
 ├── public/                 # 静的ファイル
 ├── updates/                # 更新履歴・改修ドキュメント
 │   ├── README.md          # 更新履歴の説明
-│   └── *.md               # 各改修の詳細ドキュメント
+│   └── completed/        # 完了した改修ドキュメント
 └── package.json            # 依存関係
 ```
 

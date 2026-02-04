@@ -37,7 +37,7 @@
 
 ## ページ構成
 
-### ホームページ ([`app/page.tsx`](../../app/page.tsx))
+### ホームページ ([`app/page.tsx`](../../app/(public)/page.tsx))
 
 トップページでは、カテゴリーごとに公開されている商品を表示します。
 
@@ -80,7 +80,7 @@
 3. **メインコンテンツ**: カテゴリーごとの商品グリッド
 4. **フッター**: 店舗情報、地図、連絡先
 
-### FAQ ページ ([`app/faq/page.tsx`](../../app/faq/page.tsx))
+### FAQ ページ ([`app/faq/page.tsx`](../../app/(public)/faq/page.tsx))
 
 よくある質問ページです。静的なコンテンツを表示します。
 
@@ -444,19 +444,19 @@ className = "grid grid-cols-1 md:grid-cols-3";
 **フロントエンド（Client Components）で使用**:
 
 - **`fetch` API**: API Routes に HTTP リクエストを送信
-  - `app/dashboard/components/form/ProductForm.tsx`: 商品作成・更新時に `/api/products` に POST/PUT リクエスト
-  - `app/dashboard/components/DashboardContent.tsx`: 商品一覧取得時に `/api/products` に GET リクエスト
-  - `app/dashboard/hooks/useProductReorder.ts`: 商品並び替え時に `/api/products/reorder` に POST リクエスト
-  - `app/dashboard/components/list/ProductList.tsx`: 商品削除時に `/api/products/[id]` に DELETE リクエスト
-  - `app/dashboard/hooks/useProductForm.ts`: 画像アップロード時に `/api/products/upload` に POST リクエスト
+  - `app/dashboard/homepage/components/form/ProductForm.tsx`: 商品作成・更新時に `/api/products` に POST/PUT リクエスト
+  - `app/dashboard/homepage/components/DashboardContent.tsx`: 商品一覧取得時に `/api/products` に GET リクエスト
+  - `app/dashboard/homepage/hooks/useProductReorder.ts`: 商品並び替え時に `/api/products/reorder` に POST リクエスト
+  - `app/dashboard/homepage/components/list/ProductList.tsx`: 商品削除時に `/api/products/[id]` に DELETE リクエスト
+  - `app/dashboard/homepage/hooks/useProductForm.ts`: 画像アップロード時に `/api/products/upload` に POST リクエスト
 - **`FormData`**: 画像アップロード時に使用
-  - `app/dashboard/hooks/useProductForm.ts`: 画像ファイルを `FormData` に追加して `/api/products/upload` に送信
+  - `app/dashboard/homepage/hooks/useProductForm.ts`: 画像ファイルを `FormData` に追加して `/api/products/upload` に送信
 - **`localStorage`**: ブラウザのローカルストレージにデータを保存
-  - `app/dashboard/hooks/useTabState.ts`: タブの状態を `localStorage` に保存
+  - `app/dashboard/homepage/hooks/useTabState.ts`: タブの状態を `localStorage` に保存
 - **`URL.createObjectURL`**: 画像プレビュー用の URL を生成
-  - `app/dashboard/hooks/useProductForm.ts`: 画像選択時にプレビュー用 URL を生成
+  - `app/dashboard/homepage/hooks/useProductForm.ts`: 画像選択時にプレビュー用 URL を生成
 - **動的インポート（`await import()`）**: モジュールの動的読み込み
-  - `app/dashboard/hooks/useProductForm.ts`: `config` モジュールを動的インポート
+  - `app/dashboard/homepage/hooks/useProductForm.ts`: `config` モジュールを動的インポート
 - **React Hooks**: 状態管理や副作用の処理
   - `useState`, `useEffect`, `useRef`, `useMemo`, `useCallback` など
 

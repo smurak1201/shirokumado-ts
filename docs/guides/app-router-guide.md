@@ -112,7 +112,7 @@ App Router では、`app/` ディレクトリ内のファイル構造がその�
 - `layout.tsx`: レイアウトコンポーネント（ネストされたレイアウト） - **このアプリで使用中**
 - `route.ts`: API エンドポイント（API Routes） - **このアプリで使用中**
 - `error.tsx`: エラー UI - **このアプリで使用中**（[`app/(public)/error.tsx`](../../app/(public)/error.tsx)）
-- `loading.tsx`: ローディング UI - **このアプリで使用中**（[`app/(public)/loading.tsx`](../../app/(public)/loading.tsx)）
+- `loading.tsx`: ローディング UI - **このアプリでは未使用**（代わりにSuspenseを使用）
 - `not-found.tsx`: 404 ページ - **このアプリで使用中**（[`app/not-found.tsx`](../../app/not-found.tsx)）
 - `template.tsx`: テンプレートコンポーネント - **このアプリでは未使用**
 
@@ -400,7 +400,7 @@ export default async function HomeContent() {
 
 - [`app/components/ProductGrid.tsx`](../../app/components/ProductGrid.tsx): 商品グリッド（モーダル表示などのインタラクティブ機能）
 - [`app/components/ProductModal.tsx`](../../app/components/ProductModal.tsx): 商品詳細モーダル（開閉状態の管理）
-- [`app/dashboard/components/DashboardContent.tsx`](../../app/dashboard/components/DashboardContent.tsx): ダッシュボードコンテンツ（フォーム送信、状態管理）
+- [`app/dashboard/homepage/components/DashboardContent.tsx`](../../app/dashboard/homepage/components/DashboardContent.tsx): ダッシュボードコンテンツ（フォーム送信、状態管理）
 
 **Server Components と Client Components の使い分け**:
 
@@ -488,7 +488,7 @@ async function getDashboardData() {
 
 **このアプリでの使用箇所**:
 
-1. **[`app/dashboard/components/DashboardContent.tsx`](../../app/dashboard/components/DashboardContent.tsx) (`refreshProducts`関数)** - 商品一覧の更新
+1. **[`app/dashboard/homepage/components/DashboardContent.tsx`](../../app/dashboard/homepage/components/DashboardContent.tsx) (`refreshProducts`関数)** - 商品一覧の更新
 
 ```typescript
     try {
@@ -510,7 +510,7 @@ async function getDashboardData() {
 ```
 
 
-2. **[`app/dashboard/components/ProductList.tsx`](../../app/dashboard/components/ProductList.tsx) (`handleDelete`関数)** - 商品の削除
+2. **[`app/dashboard/homepage/components/list/ProductList.tsx`](../../app/dashboard/homepage/components/list/ProductList.tsx) (`handleDelete`関数)** - 商品の削除
 
 ```typescript
     // 削除前に確認ダイアログを表示
@@ -541,7 +541,7 @@ async function getDashboardData() {
   };
 ```
 
-3. **[`app/dashboard/hooks/useProductReorder.ts`](../../app/dashboard/hooks/useProductReorder.ts) (`reorderProducts`関数)** - 商品順序の変更
+3. **[`app/dashboard/homepage/hooks/useProductReorder.ts`](../../app/dashboard/homepage/hooks/useProductReorder.ts) (`reorderProducts`関数)** - 商品順序の変更
 
 ```typescript
 // API を呼び出して商品の順序をサーバーに保存
@@ -560,13 +560,13 @@ if (!response.ok) {
 }
 ```
 
-4. **`app/dashboard/components/form/ProductForm.tsx`** - 商品の作成と画像アップロード
+4. **`app/dashboard/homepage/components/form/ProductForm.tsx`** - 商品の作成と画像アップロード
 
 **画像アップロード（FormData を使用）**:
 
 このアプリでは、画像アップロード処理は`useProductForm`カスタムフック内で実装されています。
 
-[`app/dashboard/hooks/useProductForm.ts`](../../app/dashboard/hooks/useProductForm.ts) (`uploadImage`関数)
+[`app/dashboard/homepage/hooks/useProductForm.ts`](../../app/dashboard/homepage/hooks/useProductForm.ts) (`uploadImage`関数)
 
 ```typescript
 const uploadImage = useCallback(async (): Promise<string | null> => {
@@ -609,7 +609,7 @@ const uploadImage = useCallback(async (): Promise<string | null> => {
 }, [formData.imageFile, formData.imageUrl]);
 ```
 
-[`app/dashboard/components/form/ProductForm.tsx`](../../app/dashboard/components/form/ProductForm.tsx) (商品登録処理)
+[`app/dashboard/homepage/components/form/ProductForm.tsx`](../../app/dashboard/homepage/components/form/ProductForm.tsx) (商品登録処理)
 
 ```typescript
 const handleSubmit = async (e: React.FormEvent) => {
@@ -1217,7 +1217,7 @@ Next.js の `Image` コンポーネントを使用すると、画像の自動最
    - Server Component
    - データベースから商品とカテゴリーを取得
    - Client Component にデータを渡す
-   - `(public)` の `loading.tsx` は適用されない
+   - ルートグループ外なので `(public)` のレイアウト・エラーハンドリングは適用されない
 
 ### API Routes 構成
 

@@ -164,7 +164,7 @@ Next.js 13 以降で導入された新しいルーティングシステムです
 
 このアプリでは、App Router を使用して以下のページと API を実装しています：
 
-- **ページ**: [`app/page.tsx`](../../app/page.tsx)（ホームページ）、[`app/faq/page.tsx`](../../app/faq/page.tsx)（FAQ ページ）、[`app/dashboard/page.tsx`](../../app/dashboard/page.tsx)（ダッシュボード）
+- **ページ**: [`app/page.tsx`](../../app/(public)/page.tsx)（ホームページ）、[`app/faq/page.tsx`](../../app/(public)/faq/page.tsx)（FAQ ページ）、[`app/dashboard/page.tsx`](../../app/dashboard/page.tsx)（ダッシュボード）
 - **API Routes**: `app/api/products/`、`app/api/categories/`
 
 ## 設定ファイル
@@ -273,7 +273,7 @@ Next.js は、`next/image` コンポーネントを使用して、画像の自�
 
 ### このアプリでの使用箇所
 
-1. **[`app/page.tsx`](../../app/page.tsx) (ヒーロー画像セクション)** - ヒーロー画像の最適化
+1. **[`app/page.tsx`](../../app/(public)/page.tsx) (ヒーロー画像セクション)** - ヒーロー画像の最適化
 
 ```typescript
 <Image
@@ -463,8 +463,8 @@ Server Components により、クライアントサイドの JavaScript を最�
 
 **このアプリでの使用例**:
 
-- [`app/page.tsx`](../../app/page.tsx): ホームページ（Server Component）
-- [`app/faq/page.tsx`](../../app/faq/page.tsx): FAQ ページ（Server Component）
+- [`app/page.tsx`](../../app/(public)/page.tsx): ホームページ（Server Component）
+- [`app/faq/page.tsx`](../../app/(public)/faq/page.tsx): FAQ ページ（Server Component）
 - [`app/dashboard/page.tsx`](../../app/dashboard/page.tsx): ダッシュボードページ（Server Component）
 
 ## このアプリでの Next.js の使用例まとめ
@@ -475,7 +475,7 @@ Server Components により、クライアントサイドの JavaScript を最�
 
 このアプリでは、以下のページと API を実装しています：
 
-- **ページ**: [`app/page.tsx`](../../app/page.tsx)（ホームページ）、[`app/faq/page.tsx`](../../app/faq/page.tsx)（FAQ ページ）、[`app/dashboard/page.tsx`](../../app/dashboard/page.tsx)（ダッシュボード）
+- **ページ**: [`app/page.tsx`](../../app/(public)/page.tsx)（ホームページ）、[`app/faq/page.tsx`](../../app/(public)/faq/page.tsx)（FAQ ページ）、[`app/dashboard/page.tsx`](../../app/dashboard/page.tsx)（ダッシュボード）
 - **API Routes**: `app/api/products/`、`app/api/categories/`
 
 ### 設定ファイル

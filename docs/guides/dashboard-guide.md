@@ -77,44 +77,51 @@ DashboardContent (Client Component)
 
 ```
 app/dashboard/
-├── page.tsx                    # エントリーポイント（Server Component）
-├── types.ts                    # 共通型定義
-├── components/                 # UI コンポーネント
-│   ├── DashboardContent.tsx    # メインコンテナ
-│   ├── form/                   # フォーム関連コンポーネント
-│   │   ├── ProductForm.tsx     # 商品作成・編集フォーム
-│   │   ├── ProductFormModal.tsx # 商品フォームモーダル
-│   │   ├── ProductFormFields.tsx # 商品フォームフィールド（共通）
-│   │   ├── ProductFormFooter.tsx # 商品フォームフッター
-│   │   ├── ProductBasicFields.tsx # 商品基本情報フィールド
-│   │   ├── ProductImageField.tsx # 商品画像フィールド
-│   │   ├── ProductPriceFields.tsx # 商品価格フィールド
-│   │   ├── ProductDateFields.tsx # 商品日付フィールド
-│   │   ├── ProductDateInput.tsx # 日付入力フィールド
-│   │   └── ProductPublishedField.tsx # 公開情報フィールド
-│   ├── layout/                 # レイアウト関連コンポーネント
-│   │   ├── ProductLayoutTab.tsx # 商品配置変更タブ
-│   │   ├── LayoutCategoryTabs.tsx # 配置変更用カテゴリータブ
-│   │   └── SortableProductItem.tsx # ドラッグ&ドロップ可能な商品アイテム
-│   └── list/                   # リスト表示関連コンポーネント
-│       ├── ProductList.tsx     # 商品一覧・配置変更
-│       ├── ProductListTabs.tsx # 商品一覧タブ切り替え
-│       ├── ProductListContent.tsx # 商品一覧コンテンツ
-│       ├── ProductCard.tsx     # 商品カード
-│       ├── ProductCardContent.tsx # 商品カードコンテンツ
-│       └── ProductSearchFilters.tsx # 商品検索フィルター
-├── hooks/                      # カスタムフック
-│   ├── useTabState.ts          # タブ状態管理
-│   ├── useProductForm.ts       # 商品フォームの状態管理
-│   ├── useProductReorder.ts    # 商品順序変更ロジック
-│   ├── useImageCompression.ts  # 画像圧縮処理
-│   ├── useImageUpload.ts       # 画像アップロード処理
-│   ├── useProductSearch.ts     # 商品検索ロジック
-│   └── useScrollPosition.ts    # スクロール位置監視
-└── utils/                      # ユーティリティ関数
-    ├── productUtils.ts         # 商品のグループ化・フィルタリング
-    ├── productFormData.ts      # 商品フォームデータ変換（リセット・初期化・準備）
-    └── productFormSubmit.ts    # 商品フォーム送信処理（作成・更新）
+├── page.tsx                    # ダッシュボードルートページ
+├── layout.tsx                  # ダッシュボードレイアウト（認証チェック）
+├── components/                 # 共通コンポーネント
+│   └── DashboardHeader.tsx     # ダッシュボードヘッダー
+├── homepage/                   # 商品管理ページ
+│   ├── page.tsx                # エントリーポイント（Server Component）
+│   ├── types.ts                # 共通型定義
+│   ├── components/             # UI コンポーネント
+│   │   ├── DashboardContent.tsx    # メインコンテナ
+│   │   ├── form/               # フォーム関連コンポーネント
+│   │   │   ├── ProductForm.tsx     # 商品作成・編集フォーム
+│   │   │   ├── ProductFormModal.tsx # 商品フォームモーダル
+│   │   │   ├── ProductFormFields.tsx # 商品フォームフィールド（共通）
+│   │   │   ├── ProductFormFooter.tsx # 商品フォームフッター
+│   │   │   ├── ProductBasicFields.tsx # 商品基本情報フィールド
+│   │   │   ├── ProductImageField.tsx # 商品画像フィールド
+│   │   │   ├── ProductPriceFields.tsx # 商品価格フィールド
+│   │   │   ├── ProductDateFields.tsx # 商品日付フィールド
+│   │   │   ├── ProductDateInput.tsx # 日付入力フィールド
+│   │   │   └── ProductPublishedField.tsx # 公開情報フィールド
+│   │   ├── layout/             # レイアウト関連コンポーネント
+│   │   │   ├── ProductLayoutTab.tsx # 商品配置変更タブ
+│   │   │   ├── LayoutCategoryTabs.tsx # 配置変更用カテゴリータブ
+│   │   │   └── SortableProductItem.tsx # ドラッグ&ドロップ可能な商品アイテム
+│   │   └── list/               # リスト表示関連コンポーネント
+│   │       ├── ProductList.tsx     # 商品一覧・配置変更
+│   │       ├── ProductListTabs.tsx # 商品一覧タブ切り替え
+│   │       ├── ProductListContent.tsx # 商品一覧コンテンツ
+│   │       ├── ProductCard.tsx     # 商品カード
+│   │       ├── ProductCardContent.tsx # 商品カードコンテンツ
+│   │       └── ProductSearchFilters.tsx # 商品検索フィルター
+│   ├── hooks/                  # カスタムフック
+│   │   ├── useTabState.ts          # タブ状態管理
+│   │   ├── useProductForm.ts       # 商品フォームの状態管理
+│   │   ├── useProductReorder.ts    # 商品順序変更ロジック
+│   │   ├── useImageCompression.ts  # 画像圧縮処理
+│   │   ├── useImageUpload.ts       # 画像アップロード処理
+│   │   ├── useProductSearch.ts     # 商品検索ロジック
+│   │   └── useScrollPosition.ts    # スクロール位置監視
+│   └── utils/                  # ユーティリティ関数
+│       ├── productUtils.ts         # 商品のグループ化・フィルタリング
+│       ├── productFormData.ts      # 商品フォームデータ変換（リセット・初期化・準備）
+│       └── productFormSubmit.ts    # 商品フォーム送信処理（作成・更新）
+└── shop/                       # ショップ管理ページ（今後拡張予定）
+    └── page.tsx
 ```
 
 ## 主要機能
@@ -181,7 +188,7 @@ return (
 );
 ```
 
-### DashboardContent ([`components/DashboardContent.tsx`](../../app/dashboard/components/DashboardContent.tsx))
+### DashboardContent ([`components/DashboardContent.tsx`](../../app/dashboard/homepage/components/DashboardContent.tsx))
 
 ダッシュボードのメインコンテナです。Client Component として実装されています。
 
@@ -217,7 +224,7 @@ const refreshProducts = async () => {
 - データフローが明確になり、コンポーネント間の結合が緩くなる
 - 子コンポーネント（`ProductList`）に`products`、`setProducts`、`refreshProducts`を props で渡す
 
-### ProductForm ([`components/form/ProductForm.tsx`](../../app/dashboard/components/form/ProductForm.tsx))
+### ProductForm ([`components/form/ProductForm.tsx`](../../app/dashboard/homepage/components/form/ProductForm.tsx))
 
 商品の新規作成と編集で共通に使用するフォームコンポーネントです。
 
@@ -248,7 +255,7 @@ const refreshProducts = async () => {
 - 公開日（自動設定の場合）
 - 終了日（自動設定の場合）
 
-### ProductList ([`components/list/ProductList.tsx`](../../app/dashboard/components/list/ProductList.tsx))
+### ProductList ([`components/list/ProductList.tsx`](../../app/dashboard/homepage/components/list/ProductList.tsx))
 
 商品一覧の表示と配置変更機能を実装しています。
 
@@ -281,7 +288,7 @@ interface ProductListProps {
 - タブ状態の localStorage 連携
 - コンポーネントの分割（`ProductListTabs`、`ProductListContent`、`ProductSearchFilters`、`ProductLayoutTab`、`LayoutCategoryTabs`）
 
-### ProductListTabs ([`components/list/ProductListTabs.tsx`](../../app/dashboard/components/list/ProductListTabs.tsx))
+### ProductListTabs ([`components/list/ProductListTabs.tsx`](../../app/dashboard/homepage/components/list/ProductListTabs.tsx))
 
 商品一覧のタブ切り替えコンポーネントです。
 
@@ -290,7 +297,7 @@ interface ProductListProps {
 - 「登録済み商品一覧」と「配置変更」のタブを表示
 - アクティブなタブのハイライト
 
-### ProductListContent ([`components/list/ProductListContent.tsx`](../../app/dashboard/components/list/ProductListContent.tsx))
+### ProductListContent ([`components/list/ProductListContent.tsx`](../../app/dashboard/homepage/components/list/ProductListContent.tsx))
 
 商品一覧のコンテンツコンポーネントです。
 
@@ -301,7 +308,7 @@ interface ProductListProps {
 - 空状態の処理（商品がない場合、検索結果がない場合）
 - 新規商品登録ボタンの表示
 
-### ProductFormFields ([`components/form/ProductFormFields.tsx`](../../app/dashboard/components/form/ProductFormFields.tsx))
+### ProductFormFields ([`components/form/ProductFormFields.tsx`](../../app/dashboard/homepage/components/form/ProductFormFields.tsx))
 
 商品作成・編集フォームで使用する共通のフォームフィールドコンポーネントです。
 
@@ -311,7 +318,7 @@ interface ProductListProps {
 - フォーム作成と編集の両方で使用可能（`fieldPrefix`プロップで識別子を付与）
 - 各フィールドを専用コンポーネントに分割（`ProductBasicFields`、`ProductImageField`、`ProductPriceFields`、`ProductDateFields`）
 
-### ProductFormModal ([`components/form/ProductFormModal.tsx`](../../app/dashboard/components/form/ProductFormModal.tsx))
+### ProductFormModal ([`components/form/ProductFormModal.tsx`](../../app/dashboard/homepage/components/form/ProductFormModal.tsx))
 
 商品フォームのモーダルコンポーネントです。
 
@@ -320,7 +327,7 @@ interface ProductListProps {
 - モーダルの表示・非表示制御
 - タイトルとフッターのカスタマイズ
 
-### ProductFormFooter ([`components/form/ProductFormFooter.tsx`](../../app/dashboard/components/form/ProductFormFooter.tsx))
+### ProductFormFooter ([`components/form/ProductFormFooter.tsx`](../../app/dashboard/homepage/components/form/ProductFormFooter.tsx))
 
 商品フォームのフッターコンポーネントです。
 
@@ -329,7 +336,7 @@ interface ProductListProps {
 - キャンセルボタンと送信ボタンの表示
 - 送信状態に応じたボタンテキストの変更
 
-### ProductBasicFields ([`components/form/ProductBasicFields.tsx`](../../app/dashboard/components/form/ProductBasicFields.tsx))
+### ProductBasicFields ([`components/form/ProductBasicFields.tsx`](../../app/dashboard/homepage/components/form/ProductBasicFields.tsx))
 
 商品の基本情報フィールドコンポーネントです。
 
@@ -337,7 +344,7 @@ interface ProductListProps {
 
 - 商品名、説明、カテゴリーの入力フィールド
 
-### ProductImageField ([`components/form/ProductImageField.tsx`](../../app/dashboard/components/form/ProductImageField.tsx))
+### ProductImageField ([`components/form/ProductImageField.tsx`](../../app/dashboard/homepage/components/form/ProductImageField.tsx))
 
 商品画像フィールドコンポーネントです。
 
@@ -346,7 +353,7 @@ interface ProductListProps {
 - 画像の選択とプレビュー表示
 - 画像のアップロード状態の表示
 
-### ProductPriceFields ([`components/form/ProductPriceFields.tsx`](../../app/dashboard/components/form/ProductPriceFields.tsx))
+### ProductPriceFields ([`components/form/ProductPriceFields.tsx`](../../app/dashboard/homepage/components/form/ProductPriceFields.tsx))
 
 商品価格フィールドコンポーネントです。
 
@@ -354,7 +361,7 @@ interface ProductListProps {
 
 - SサイズとLサイズの価格入力フィールド
 
-### ProductDateFields ([`components/form/ProductDateFields.tsx`](../../app/dashboard/components/form/ProductDateFields.tsx))
+### ProductDateFields ([`components/form/ProductDateFields.tsx`](../../app/dashboard/homepage/components/form/ProductDateFields.tsx))
 
 商品日付フィールドコンポーネントです。
 
@@ -363,7 +370,7 @@ interface ProductListProps {
 - 公開日・終了日の入力フィールド
 - 公開情報のラジオボタン（`ProductPublishedField`を使用）
 
-### ProductDateInput ([`components/form/ProductDateInput.tsx`](../../app/dashboard/components/form/ProductDateInput.tsx))
+### ProductDateInput ([`components/form/ProductDateInput.tsx`](../../app/dashboard/homepage/components/form/ProductDateInput.tsx))
 
 日付入力フィールドコンポーネントです。
 
@@ -372,7 +379,7 @@ interface ProductListProps {
 - datetime-local形式の日付入力
 - クリアボタンの表示
 
-### ProductPublishedField ([`components/form/ProductPublishedField.tsx`](../../app/dashboard/components/form/ProductPublishedField.tsx))
+### ProductPublishedField ([`components/form/ProductPublishedField.tsx`](../../app/dashboard/homepage/components/form/ProductPublishedField.tsx))
 
 公開情報フィールドコンポーネントです。
 
@@ -381,7 +388,7 @@ interface ProductListProps {
 - 公開・非公開のラジオボタン
 - 公開日・終了日が設定されている場合の自動判定表示
 
-### ProductCard ([`components/list/ProductCard.tsx`](../../app/dashboard/components/list/ProductCard.tsx))
+### ProductCard ([`components/list/ProductCard.tsx`](../../app/dashboard/homepage/components/list/ProductCard.tsx))
 
 商品カードコンポーネントです。
 
@@ -390,7 +397,7 @@ interface ProductListProps {
 - 商品情報のカード形式での表示
 - 編集・削除ボタン
 
-### ProductSearchFilters ([`components/list/ProductSearchFilters.tsx`](../../app/dashboard/components/list/ProductSearchFilters.tsx))
+### ProductSearchFilters ([`components/list/ProductSearchFilters.tsx`](../../app/dashboard/homepage/components/list/ProductSearchFilters.tsx))
 
 商品名、カテゴリー、公開状態による検索・フィルタリング機能を提供するコンポーネントです。
 
@@ -400,7 +407,7 @@ interface ProductListProps {
 - カテゴリーでのフィルタリング
 - 公開状態でのフィルタリング
 
-### ProductLayoutTab ([`components/layout/ProductLayoutTab.tsx`](../../app/dashboard/components/layout/ProductLayoutTab.tsx))
+### ProductLayoutTab ([`components/layout/ProductLayoutTab.tsx`](../../app/dashboard/homepage/components/layout/ProductLayoutTab.tsx))
 
 商品配置変更タブコンポーネントです。
 
@@ -409,7 +416,7 @@ interface ProductListProps {
 - ドラッグ&ドロップによる商品の順序変更
 - カテゴリーごとのタブ表示（`LayoutCategoryTabs`を使用）
 
-### LayoutCategoryTabs ([`components/layout/LayoutCategoryTabs.tsx`](../../app/dashboard/components/layout/LayoutCategoryTabs.tsx))
+### LayoutCategoryTabs ([`components/layout/LayoutCategoryTabs.tsx`](../../app/dashboard/homepage/components/layout/LayoutCategoryTabs.tsx))
 
 カテゴリータブの UI コンポーネントです。
 
@@ -422,7 +429,7 @@ interface ProductListProps {
 - アクティブなタブの自動スクロール
 - 商品数の表示
 
-### SortableProductItem ([`components/layout/SortableProductItem.tsx`](../../app/dashboard/components/layout/SortableProductItem.tsx))
+### SortableProductItem ([`components/layout/SortableProductItem.tsx`](../../app/dashboard/homepage/components/layout/SortableProductItem.tsx))
 
 ドラッグ&ドロップ可能な商品アイテムコンポーネントです。
 
@@ -520,7 +527,7 @@ React のベストプラクティスに従い、共有状態は親コンポー�
 
 ### カスタムフック
 
-#### useTabState ([`hooks/useTabState.ts`](../../app/dashboard/hooks/useTabState.ts))
+#### useTabState ([`hooks/useTabState.ts`](../../app/dashboard/homepage/hooks/useTabState.ts))
 
 タブ状態を localStorage と同期するカスタムフックです。
 
@@ -535,7 +542,7 @@ React のベストプラクティスに従い、共有状態は親コンポー�
 const { activeTab, setActiveTab } = useTabState();
 ```
 
-#### useCategoryTabState ([`hooks/useTabState.ts`](../../app/dashboard/hooks/useTabState.ts))
+#### useCategoryTabState ([`hooks/useTabState.ts`](../../app/dashboard/homepage/hooks/useTabState.ts))
 
 カテゴリータブの状態を管理するカスタムフックです。
 
@@ -553,7 +560,7 @@ const { activeCategoryTab, setActiveCategoryTab, initialCategoryTab } = useCateg
 );
 ```
 
-#### useProductForm ([`hooks/useProductForm.ts`](../../app/dashboard/hooks/useProductForm.ts))
+#### useProductForm ([`hooks/useProductForm.ts`](../../app/dashboard/homepage/hooks/useProductForm.ts))
 
 商品フォームの状態管理を行うカスタムフックです。
 
@@ -587,7 +594,7 @@ const {
 });
 ```
 
-#### useProductReorder ([`hooks/useProductReorder.ts`](../../app/dashboard/hooks/useProductReorder.ts))
+#### useProductReorder ([`hooks/useProductReorder.ts`](../../app/dashboard/homepage/hooks/useProductReorder.ts))
 
 商品順序変更のロジックを実装したカスタムフックです。
 
@@ -609,7 +616,7 @@ const { reorderProducts } = useProductReorder(
 await reorderProducts(categoryGroup, oldIndex, newIndex);
 ```
 
-#### useImageCompression ([`hooks/useImageCompression.ts`](../../app/dashboard/hooks/useImageCompression.ts))
+#### useImageCompression ([`hooks/useImageCompression.ts`](../../app/dashboard/homepage/hooks/useImageCompression.ts))
 
 画像圧縮処理を行うカスタムフックです。
 
@@ -626,7 +633,7 @@ const { compressing, compressImageFile } = useImageCompression();
 const processedFile = await compressImageFile(file);
 ```
 
-#### useImageUpload ([`hooks/useImageUpload.ts`](../../app/dashboard/hooks/useImageUpload.ts))
+#### useImageUpload ([`hooks/useImageUpload.ts`](../../app/dashboard/homepage/hooks/useImageUpload.ts))
 
 画像アップロード処理を行うカスタムフックです。
 
@@ -644,7 +651,7 @@ const result = await handleImageChange(file, fallbackImageUrl);
 const imageUrl = await uploadImage(imageFile, existingImageUrl);
 ```
 
-#### useScrollPosition ([`hooks/useScrollPosition.ts`](../../app/dashboard/hooks/useScrollPosition.ts))
+#### useScrollPosition ([`hooks/useScrollPosition.ts`](../../app/dashboard/homepage/hooks/useScrollPosition.ts))
 
 スクロール位置を監視するカスタムフックです。
 
@@ -814,9 +821,9 @@ file: [画像ファイル]
 
 ### 新しい機能の追加
 
-1. **型定義の追加**: [`app/dashboard/types.ts`](../../app/dashboard/types.ts)に追加
-2. **コンポーネントの作成**: `app/dashboard/components/`に追加
-3. **カスタムフックの作成**: `app/dashboard/hooks/`に追加（必要に応じて）
+1. **型定義の追加**: [`app/dashboard/homepage/types.ts`](../../app/dashboard/homepage/types.ts)に追加
+2. **コンポーネントの作成**: `app/dashboard/homepage/components/`に追加
+3. **カスタムフックの作成**: `app/dashboard/homepage/hooks/`に追加（必要に応じて）
 4. **API Route の作成**: `app/api/`に追加（必要に応じて）
 
 ### バリデーション
@@ -868,10 +875,10 @@ file: [画像ファイル]
 - **Server Component でデータを取得** - **このアプリで使用中**
   - [`app/dashboard/page.tsx`](../../app/dashboard/page.tsx): Prisma を使用してデータベースから直接データを取得（`Promise.all`と`safePrismaOperation`を使用して並列取得とエラーハンドリングを実装）
 - **Client Component で API Routes にアクセス** - **このアプリで使用中**
-  - [`app/dashboard/components/DashboardContent.tsx`](../../app/dashboard/components/DashboardContent.tsx): `fetch` API を使用して `/api/products` にアクセス
-  - [`app/dashboard/components/form/ProductForm.tsx`](../../app/dashboard/components/form/ProductForm.tsx): `fetch` API を使用して `/api/products` に POST/PUT リクエスト
-  - [`app/dashboard/components/ProductList.tsx`](../../app/dashboard/components/ProductList.tsx): `fetch` API を使用して `/api/products/[id]` に DELETE リクエスト
-  - [`app/dashboard/hooks/useProductReorder.ts`](../../app/dashboard/hooks/useProductReorder.ts): `fetch` API を使用して `/api/products/reorder` に POST リクエスト
+  - [`app/dashboard/homepage/components/DashboardContent.tsx`](../../app/dashboard/homepage/components/DashboardContent.tsx): `fetch` API を使用して `/api/products` にアクセス
+  - [`app/dashboard/homepage/components/form/ProductForm.tsx`](../../app/dashboard/homepage/components/form/ProductForm.tsx): `fetch` API を使用して `/api/products` に POST/PUT リクエスト
+  - [`app/dashboard/homepage/components/list/ProductList.tsx`](../../app/dashboard/homepage/components/list/ProductList.tsx): `fetch` API を使用して `/api/products/[id]` に DELETE リクエスト
+  - [`app/dashboard/homepage/hooks/useProductReorder.ts`](../../app/dashboard/homepage/hooks/useProductReorder.ts): `fetch` API を使用して `/api/products/reorder` に POST リクエスト
 - **並列データ取得（`Promise.all`を使用）** - **このアプリで使用中**（詳細は [Async/Await ガイド - Promise.all](./async-await-guide.md#promiseall---このアプリで使用中) を参照）
 
 **Prisma の`select`について**:

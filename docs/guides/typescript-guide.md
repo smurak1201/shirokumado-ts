@@ -92,7 +92,7 @@ TypeScript は、JavaScript に静的型付けを追加したプログラミン�
 **このアプリでの使われ方**:
 
 - フロントエンドとバックエンドの両方で TypeScript を使用し、型安全性を確保
-- [`app/types.ts`](../../app/types.ts) と [`app/dashboard/types.ts`](../../app/dashboard/types.ts) で型定義を一元管理
+- [`app/types.ts`](../../app/types.ts) と [`app/dashboard/homepage/types.ts`](../../app/dashboard/homepage/types.ts) で型定義を一元管理
 - Prisma の型生成機能と統合し、データベーススキーマから自動的に型を生成
 - API Routes のリクエスト・レスポンスの型を定義し、エンドポイント間の型安全性を確保
 - カスタムフックやユーティリティ関数にも型を適用し、コードの品質を向上
@@ -277,15 +277,15 @@ export interface ProductTile {
 
 ### ダッシュボードの型定義
 
-**説明**: ダッシュボードで使用する型定義を [`app/dashboard/types.ts`](../../app/dashboard/types.ts) で一元管理しています。フロントエンドの型定義とは異なり、管理機能に必要な追加情報（公開状態、日付情報など）を含みます。
+**説明**: ダッシュボードで使用する型定義を [`app/dashboard/homepage/types.ts`](../../app/dashboard/homepage/types.ts) で一元管理しています。フロントエンドの型定義とは異なり、管理機能に必要な追加情報（公開状態、日付情報など）を含みます。
 
 **このアプリでの使用箇所**:
 
-- [`app/dashboard/types.ts`](../../app/dashboard/types.ts): ダッシュボード共通型定義
+- [`app/dashboard/homepage/types.ts`](../../app/dashboard/homepage/types.ts): ダッシュボード共通型定義
 
 **型定義の内容**:
 
-[`app/dashboard/types.ts`](../../app/dashboard/types.ts) (型定義)
+[`app/dashboard/homepage/types.ts`](../../app/dashboard/homepage/types.ts) (型定義)
 
 ```typescript
 /**
@@ -501,7 +501,7 @@ if (!body.name || typeof body.name !== "string") {
 }
 ```
 
-2. **サーバーサイドレンダリング時の環境チェック** ([`app/dashboard/hooks/useTabState.ts`](../../app/dashboard/hooks/useTabState.ts))
+2. **サーバーサイドレンダリング時の環境チェック** ([`app/dashboard/homepage/hooks/useTabState.ts`](../../app/dashboard/homepage/hooks/useTabState.ts))
 
 ```typescript
 if (typeof window !== "undefined") {
@@ -569,7 +569,7 @@ if (error instanceof BlobStorageError) {
 }
 ```
 
-3. **コンポーネントでのエラーハンドリング** ([`app/dashboard/components/ProductList.tsx`](../../app/dashboard/components/ProductList.tsx))
+3. **コンポーネントでのエラーハンドリング** ([`app/dashboard/homepage/components/list/ProductList.tsx`](../../app/dashboard/homepage/components/list/ProductList.tsx))
 
 ```typescript
 catch (error) {
@@ -628,7 +628,7 @@ export function isImageFile(file: File): boolean {
 }
 ```
 
-**使用例** ([`app/dashboard/components/form/ProductForm.tsx`](../../app/dashboard/components/form/ProductForm.tsx)):
+**使用例** ([`app/dashboard/homepage/components/form/ProductForm.tsx`](../../app/dashboard/homepage/components/form/ProductForm.tsx)):
 
 ```typescript
 if (!isImageFile(file)) {
@@ -665,7 +665,7 @@ export function isNumericKey(
 }
 ```
 
-**使用例** ([`app/dashboard/components/form/ProductForm.tsx`](../../app/dashboard/components/form/ProductForm.tsx)):
+**使用例** ([`app/dashboard/homepage/components/form/ProductForm.tsx`](../../app/dashboard/homepage/components/form/ProductForm.tsx)):
 
 ```typescript
 onKeyDown={(e) => {
@@ -707,7 +707,7 @@ if (isUser(data)) {
 
 実際のコードベースでは、型ガードを使用してフィルタリング時の型安全性を確保しています。
 
-[`app/page.tsx`](../../app/page.tsx) (行 104-125)
+[`app/page.tsx`](../../app/(public)/page.tsx) (行 104-125)
 
 ```typescript
 const publishedProducts = productsList.filter(
@@ -1339,7 +1339,7 @@ interface Product extends BaseProduct {
 
 1. **文字列リテラル型のユニオン型**: `"list" | "layout"`
 
-[`app/dashboard/hooks/useTabState.ts`](../../app/dashboard/hooks/useTabState.ts) (`TabType`型)
+[`app/dashboard/homepage/hooks/useTabState.ts`](../../app/dashboard/homepage/hooks/useTabState.ts) (`TabType`型)
 
 ```typescript
 type TabType = "list" | "layout";
@@ -1347,7 +1347,7 @@ type TabType = "list" | "layout";
 
 **使用例**:
 
-[`app/dashboard/hooks/useTabState.ts`](../../app/dashboard/hooks/useTabState.ts) (`useTabState`フック)
+[`app/dashboard/homepage/hooks/useTabState.ts`](../../app/dashboard/homepage/hooks/useTabState.ts) (`useTabState`フック)
 
 ```typescript
 const [activeTab, setActiveTab] = useState<TabType>(() => {
@@ -1355,7 +1355,7 @@ const [activeTab, setActiveTab] = useState<TabType>(() => {
 });
 ```
 
-[`app/dashboard/components/ProductList.tsx`](../../app/dashboard/components/ProductList.tsx) (フィルタリング処理)
+[`app/dashboard/homepage/components/list/ProductList.tsx`](../../app/dashboard/homepage/components/list/ProductList.tsx) (フィルタリング処理)
 
 ```typescript
 onClick={() => setActiveTab("list")}
@@ -1435,7 +1435,7 @@ type EventHandler = (event: Event) => void;
 
 **原則**: 型定義を `types.ts` ファイルに集約し、重複を防ぐ
 
-**例**: [`app/types.ts`](../../app/types.ts)、[`app/dashboard/types.ts`](../../app/dashboard/types.ts) で型定義を一元管理
+**例**: [`app/types.ts`](../../app/types.ts)、[`app/dashboard/homepage/types.ts`](../../app/dashboard/homepage/types.ts) で型定義を一元管理
 
 ### 2. null 許容型の明示
 
@@ -1747,12 +1747,12 @@ export function determinePublishedStatus(
    - `Product`: 商品情報（詳細表示用）
    - `ProductTile`: 商品情報（タイル表示用）
 
-2. **ダッシュボードの型定義** ([`app/dashboard/types.ts`](../../app/dashboard/types.ts))
+2. **ダッシュボードの型定義** ([`app/dashboard/homepage/types.ts`](../../app/dashboard/homepage/types.ts))
 
    - `Category`: カテゴリー情報（カテゴリーオブジェクトを含む）
    - `Product`: 商品情報（公開状態、日付情報を含む）
 
-3. **型エイリアス** ([`app/dashboard/hooks/useTabState.ts`](../../app/dashboard/hooks/useTabState.ts))
+3. **型エイリアス** ([`app/dashboard/homepage/hooks/useTabState.ts`](../../app/dashboard/homepage/hooks/useTabState.ts))
    - `TabType`: 文字列リテラル型のユニオン型（`"list" | "layout"`）
 
 ### 型安全性の実装 {#型安全性の実装-1}
@@ -1784,7 +1784,7 @@ export function determinePublishedStatus(
 
 このアプリケーションでは、**TypeScript 5** を使用して以下の機能を実装しています：
 
-1. **型定義の一元管理**: [`app/types.ts`](../../app/types.ts) と [`app/dashboard/types.ts`](../../app/dashboard/types.ts) で型定義を集約
+1. **型定義の一元管理**: [`app/types.ts`](../../app/types.ts) と [`app/dashboard/homepage/types.ts`](../../app/dashboard/homepage/types.ts) で型定義を集約
 2. **型安全性**: すべてのコンポーネント、関数、API Routes に型を適用
 3. **型エイリアス**: 文字列リテラル型のユニオン型など、`type` キーワードを使用した型定義
 4. **ジェネリクス**: `apiSuccess<T>`, `safePrismaOperation<T>`, `withErrorHandling<T>`など、型をパラメータ化してコードの再利用性を向上

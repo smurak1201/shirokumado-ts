@@ -68,16 +68,19 @@ app/
 
 ```
 app/dashboard/
-├── types.ts           # 共通型定義
-├── components/        # UIコンポーネント
-├── hooks/            # 状態管理ロジック
-└── utils/            # ビジネスロジック
+├── layout.tsx         # 共通レイアウト（認証チェック）
+├── components/        # 共通コンポーネント（DashboardHeader）
+└── homepage/          # 商品管理ページ
+    ├── types.ts       # 共通型定義
+    ├── components/    # UIコンポーネント
+    ├── hooks/         # 状態管理ロジック
+    └── utils/         # ビジネスロジック
 ```
 
 **設計思想**:
 
-- **[`types.ts`](../app/dashboard/types.ts)**: その機能で使用する型を一元管理
-- **`components/`**: UI コンポーネントのみを配置
+- **[`types.ts`](../app/dashboard/homepage/types.ts)**: その機能で使用する型を一元管理
+- **`components/`**: UI コンポーネントのみを配置（form/, layout/, list/ でさらに分類）
 - **`hooks/`**: 状態管理や副作用をカスタムフックに分離
 - **`utils/`**: 純粋関数として実装可能なビジネスロジック
 
@@ -165,12 +168,12 @@ DashboardPage (Server Component)
 
 **After** (分割後):
 
-- [`ProductList.tsx`](../app/dashboard/components/ProductList.tsx): メインロジック（約 490 行）
-- [`LayoutCategoryTabs.tsx`](../app/dashboard/components/LayoutCategoryTabs.tsx): 配置変更用カテゴリータブ UI
-- [`SortableProductItem.tsx`](../app/dashboard/components/SortableProductItem.tsx): ドラッグ&ドロップ可能な商品アイテム
-- [`useTabState.ts`](../app/dashboard/hooks/useTabState.ts): タブ状態管理フック
-- [`useProductReorder.ts`](../app/dashboard/hooks/useProductReorder.ts): 商品順序変更フック
-- [`productUtils.ts`](../app/dashboard/utils/productUtils.ts): 商品のグループ化・フィルタリング関数
+- [`ProductList.tsx`](../app/dashboard/homepage/components/list/ProductList.tsx): メインロジック（約 490 行）
+- [`LayoutCategoryTabs.tsx`](../app/dashboard/homepage/components/layout/LayoutCategoryTabs.tsx): 配置変更用カテゴリータブ UI
+- [`SortableProductItem.tsx`](../app/dashboard/homepage/components/layout/SortableProductItem.tsx): ドラッグ&ドロップ可能な商品アイテム
+- [`useTabState.ts`](../app/dashboard/homepage/hooks/useTabState.ts): タブ状態管理フック
+- [`useProductReorder.ts`](../app/dashboard/homepage/hooks/useProductReorder.ts): 商品順序変更フック
+- [`productUtils.ts`](../app/dashboard/homepage/utils/productUtils.ts): 商品のグループ化・フィルタリング関数
 
 ## 状態管理
 
@@ -186,7 +189,7 @@ DashboardPage (Server Component)
 
 ##### `useTabState`
 
-[`app/dashboard/hooks/useTabState.ts`](../app/dashboard/hooks/useTabState.ts) (`useTabState`フック)
+[`app/dashboard/homepage/hooks/useTabState.ts`](../app/dashboard/homepage/hooks/useTabState.ts) (`useTabState`フック)
 
 ```typescript
 // タブ状態をlocalStorageと同期
@@ -195,7 +198,7 @@ const { activeTab, setActiveTab } = useTabState();
 
 ##### `useCategoryTabState`
 
-[`app/dashboard/hooks/useTabState.ts`](../app/dashboard/hooks/useTabState.ts) (`useCategoryTabState`フック)
+[`app/dashboard/homepage/hooks/useTabState.ts`](../app/dashboard/homepage/hooks/useTabState.ts) (`useCategoryTabState`フック)
 
 ```typescript
 // カテゴリータブの状態管理
@@ -207,7 +210,7 @@ const { activeCategoryTab, setActiveCategoryTab } = useCategoryTabState(
 
 ##### `useProductReorder`
 
-[`app/dashboard/hooks/useProductReorder.ts`](../app/dashboard/hooks/useProductReorder.ts) (`useProductReorder`フック)
+[`app/dashboard/homepage/hooks/useProductReorder.ts`](../app/dashboard/homepage/hooks/useProductReorder.ts) (`useProductReorder`フック)
 
 ```typescript
 // 商品順序変更の楽観的UI更新
@@ -216,7 +219,7 @@ const { reorderProducts } = useProductReorder(setProducts, refreshProducts);
 
 ##### `useImageCompression`
 
-[`app/dashboard/hooks/useImageCompression.ts`](../app/dashboard/hooks/useImageCompression.ts) (`useImageCompression`フック)
+[`app/dashboard/homepage/hooks/useImageCompression.ts`](../app/dashboard/homepage/hooks/useImageCompression.ts) (`useImageCompression`フック)
 
 ```typescript
 // 画像圧縮処理
@@ -225,7 +228,7 @@ const { compressing, compressImageFile } = useImageCompression();
 
 ##### `useImageUpload`
 
-[`app/dashboard/hooks/useImageUpload.ts`](../app/dashboard/hooks/useImageUpload.ts) (`useImageUpload`フック)
+[`app/dashboard/homepage/hooks/useImageUpload.ts`](../app/dashboard/homepage/hooks/useImageUpload.ts) (`useImageUpload`フック)
 
 ```typescript
 // 画像アップロード処理
@@ -234,7 +237,7 @@ const { uploading, compressing, handleImageChange, uploadImage } = useImageUploa
 
 ##### `useScrollPosition`
 
-[`app/dashboard/hooks/useScrollPosition.ts`](../app/dashboard/hooks/useScrollPosition.ts) (`useScrollPosition`フック)
+[`app/dashboard/homepage/hooks/useScrollPosition.ts`](../app/dashboard/homepage/hooks/useScrollPosition.ts) (`useScrollPosition`フック)
 
 ```typescript
 // スクロール位置の監視
@@ -369,7 +372,7 @@ export const config = {
 
 機能内で使用する型を一元管理：
 
-[`app/dashboard/types.ts`](../app/dashboard/types.ts) (型定義)
+[`app/dashboard/homepage/types.ts`](../app/dashboard/homepage/types.ts) (型定義)
 
 ```typescript
 export interface Category {

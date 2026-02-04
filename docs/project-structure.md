@@ -301,40 +301,51 @@ app/faq/
 
 ```
 app/dashboard/
-├── [page.tsx](../app/dashboard/page.tsx)              # ダッシュボードページ（Server Component）
-├── [types.ts](../app/dashboard/types.ts)              # 共通型定義（Category, Product）
-├── components/           # コンポーネント
-│   ├── [DashboardContent.tsx](../app/dashboard/components/DashboardContent.tsx)      # メインコンテナ
-│   ├── [DashboardForm.tsx](../app/dashboard/components/DashboardForm.tsx)         # 新規商品登録フォーム
-│   ├── [ProductList.tsx](../app/dashboard/components/ProductList.tsx)           # 商品一覧・配置変更
-│   ├── [ProductListTabs.tsx](../app/dashboard/components/ProductListTabs.tsx)      # 商品一覧タブ切り替え
-│   ├── [ProductListContent.tsx](../app/dashboard/components/ProductListContent.tsx)  # 商品一覧コンテンツ
-│   ├── [ProductCard.tsx](../app/dashboard/components/ProductCard.tsx)            # 商品カード
-│   ├── [ProductEditForm.tsx](../app/dashboard/components/ProductEditForm.tsx)       # 商品編集フォーム
-│   ├── [ProductFormFields.tsx](../app/dashboard/components/ProductFormFields.tsx)  # 商品フォームフィールド（共通）
-│   ├── [ProductFormModal.tsx](../app/dashboard/components/ProductFormModal.tsx)  # 商品フォームモーダル
-│   ├── [ProductFormFooter.tsx](../app/dashboard/components/ProductFormFooter.tsx)  # 商品フォームフッター
-│   ├── [ProductBasicFields.tsx](../app/dashboard/components/ProductBasicFields.tsx)  # 商品基本情報フィールド
-│   ├── [ProductImageField.tsx](../app/dashboard/components/ProductImageField.tsx)  # 商品画像フィールド
-│   ├── [ProductPriceFields.tsx](../app/dashboard/components/ProductPriceFields.tsx)  # 商品価格フィールド
-│   ├── [ProductDateFields.tsx](../app/dashboard/components/ProductDateFields.tsx)  # 商品日付フィールド
-│   ├── [ProductDateInput.tsx](../app/dashboard/components/ProductDateInput.tsx)  # 日付入力フィールド
-│   ├── [ProductPublishedField.tsx](../app/dashboard/components/ProductPublishedField.tsx)  # 公開情報フィールド
-│   ├── [ProductSearchFilters.tsx](../app/dashboard/components/ProductSearchFilters.tsx)  # 商品検索フィルター
-│   ├── [ProductLayoutTab.tsx](../app/dashboard/components/ProductLayoutTab.tsx)  # 商品配置変更タブ
-│   ├── [LayoutCategoryTabs.tsx](../app/dashboard/components/LayoutCategoryTabs.tsx)  # 配置変更用カテゴリータブ
-│   └── [SortableProductItem.tsx](../app/dashboard/components/SortableProductItem.tsx)  # ドラッグ&ドロップ可能な商品アイテム
-├── hooks/                # カスタムフック
-│   ├── [useTabState.ts](../app/dashboard/hooks/useTabState.ts)            # タブ状態管理（localStorage連携）
-│   ├── [useProductForm.ts](../app/dashboard/hooks/useProductForm.ts)        # 商品フォームの状態管理
-│   ├── [useProductReorder.ts](../app/dashboard/hooks/useProductReorder.ts)      # 商品順序変更ロジック
-│   ├── [useImageCompression.ts](../app/dashboard/hooks/useImageCompression.ts)  # 画像圧縮処理
-│   ├── [useImageUpload.ts](../app/dashboard/hooks/useImageUpload.ts)        # 画像アップロード処理
-│   └── [useScrollPosition.ts](../app/dashboard/hooks/useScrollPosition.ts)  # スクロール位置監視
-└── utils/                # ユーティリティ関数
-    ├── [productUtils.ts](../app/dashboard/utils/productUtils.ts)           # 商品のグループ化・フィルタリング
-    ├── [productFormData.ts](../app/dashboard/utils/productFormData.ts)     # 商品フォームデータ変換（リセット・初期化・準備）
-    └── [productFormSubmit.ts](../app/dashboard/utils/productFormSubmit.ts) # 商品フォーム送信処理（作成・更新）
+├── [page.tsx](../app/dashboard/page.tsx)                # ダッシュボードルートページ
+├── [layout.tsx](../app/dashboard/layout.tsx)            # ダッシュボードレイアウト（認証チェック）
+├── components/                                          # 共通コンポーネント
+│   └── [DashboardHeader.tsx](../app/dashboard/components/DashboardHeader.tsx)  # ダッシュボードヘッダー
+├── homepage/                                            # 商品管理ページ
+│   ├── [page.tsx](../app/dashboard/homepage/page.tsx)   # エントリーポイント（Server Component）
+│   ├── [types.ts](../app/dashboard/homepage/types.ts)   # 共通型定義（Category, Product）
+│   ├── components/                                      # UI コンポーネント
+│   │   ├── [DashboardContent.tsx](../app/dashboard/homepage/components/DashboardContent.tsx)  # メインコンテナ
+│   │   ├── form/                                        # フォーム関連
+│   │   │   ├── [ProductForm.tsx](../app/dashboard/homepage/components/form/ProductForm.tsx)
+│   │   │   ├── [ProductFormModal.tsx](../app/dashboard/homepage/components/form/ProductFormModal.tsx)
+│   │   │   ├── [ProductFormFields.tsx](../app/dashboard/homepage/components/form/ProductFormFields.tsx)
+│   │   │   ├── [ProductFormFooter.tsx](../app/dashboard/homepage/components/form/ProductFormFooter.tsx)
+│   │   │   ├── [ProductBasicFields.tsx](../app/dashboard/homepage/components/form/ProductBasicFields.tsx)
+│   │   │   ├── [ProductImageField.tsx](../app/dashboard/homepage/components/form/ProductImageField.tsx)
+│   │   │   ├── [ProductPriceFields.tsx](../app/dashboard/homepage/components/form/ProductPriceFields.tsx)
+│   │   │   ├── [ProductDateFields.tsx](../app/dashboard/homepage/components/form/ProductDateFields.tsx)
+│   │   │   ├── [ProductDateInput.tsx](../app/dashboard/homepage/components/form/ProductDateInput.tsx)
+│   │   │   └── [ProductPublishedField.tsx](../app/dashboard/homepage/components/form/ProductPublishedField.tsx)
+│   │   ├── layout/                                      # レイアウト関連
+│   │   │   ├── [ProductLayoutTab.tsx](../app/dashboard/homepage/components/layout/ProductLayoutTab.tsx)
+│   │   │   ├── [LayoutCategoryTabs.tsx](../app/dashboard/homepage/components/layout/LayoutCategoryTabs.tsx)
+│   │   │   └── [SortableProductItem.tsx](../app/dashboard/homepage/components/layout/SortableProductItem.tsx)
+│   │   └── list/                                        # リスト表示関連
+│   │       ├── [ProductList.tsx](../app/dashboard/homepage/components/list/ProductList.tsx)
+│   │       ├── [ProductListTabs.tsx](../app/dashboard/homepage/components/list/ProductListTabs.tsx)
+│   │       ├── [ProductListContent.tsx](../app/dashboard/homepage/components/list/ProductListContent.tsx)
+│   │       ├── [ProductCard.tsx](../app/dashboard/homepage/components/list/ProductCard.tsx)
+│   │       ├── [ProductCardContent.tsx](../app/dashboard/homepage/components/list/ProductCardContent.tsx)
+│   │       └── [ProductSearchFilters.tsx](../app/dashboard/homepage/components/list/ProductSearchFilters.tsx)
+│   ├── hooks/                                           # カスタムフック
+│   │   ├── [useTabState.ts](../app/dashboard/homepage/hooks/useTabState.ts)
+│   │   ├── [useProductForm.ts](../app/dashboard/homepage/hooks/useProductForm.ts)
+│   │   ├── [useProductReorder.ts](../app/dashboard/homepage/hooks/useProductReorder.ts)
+│   │   ├── [useProductSearch.ts](../app/dashboard/homepage/hooks/useProductSearch.ts)
+│   │   ├── [useImageCompression.ts](../app/dashboard/homepage/hooks/useImageCompression.ts)
+│   │   ├── [useImageUpload.ts](../app/dashboard/homepage/hooks/useImageUpload.ts)
+│   │   └── [useScrollPosition.ts](../app/dashboard/homepage/hooks/useScrollPosition.ts)
+│   └── utils/                                           # ユーティリティ関数
+│       ├── [productUtils.ts](../app/dashboard/homepage/utils/productUtils.ts)
+│       ├── [productFormData.ts](../app/dashboard/homepage/utils/productFormData.ts)
+│       └── [productFormSubmit.ts](../app/dashboard/homepage/utils/productFormSubmit.ts)
+└── shop/                                                # ショップ管理ページ
+    └── [page.tsx](../app/dashboard/shop/page.tsx)
 ```
 
 **設計の特徴**:

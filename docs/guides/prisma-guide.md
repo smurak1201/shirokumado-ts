@@ -396,7 +396,7 @@ const categories = await prisma.category.findMany({
 });
 ```
 
-- [`app/page.tsx`](../../app/page.tsx): 商品とカテゴリーを一緒に取得
+- [`app/page.tsx`](../../app/(public)/page.tsx): 商品とカテゴリーを一緒に取得
 - [`app/dashboard/page.tsx`](../../app/dashboard/page.tsx): 商品とカテゴリーを一緒に取得
 - [`app/api/products/route.ts`](../../app/api/products/route.ts): 商品とカテゴリーを一緒に取得
 
@@ -658,7 +658,7 @@ export default defineConfig({
 
 **基本的な使い方**:
 
-1. **[`app/page.tsx`](../../app/page.tsx) (カテゴリー取得処理)** - カテゴリー一覧の取得
+1. **[`app/page.tsx`](../../app/(public)/page.tsx) (カテゴリー取得処理)** - カテゴリー一覧の取得
 
 ```typescript
       orderBy: {
@@ -667,7 +667,7 @@ export default defineConfig({
     }),
 ```
 
-[`app/page.tsx`](../../app/page.tsx) (商品取得処理)
+[`app/page.tsx`](../../app/(public)/page.tsx) (商品取得処理)
 
 ```typescript
       include: {
@@ -1089,7 +1089,7 @@ const products = await prisma.product.findMany({
 });
 ```
 
-1. **[`app/page.tsx`](../../app/page.tsx) (カテゴリー取得処理)** - カテゴリーを ID 順で取得
+1. **[`app/page.tsx`](../../app/(public)/page.tsx) (カテゴリー取得処理)** - カテゴリーを ID 順で取得
 
 ```typescript
       orderBy: {
@@ -1098,7 +1098,7 @@ const products = await prisma.product.findMany({
     }),
 ```
 
-[`app/page.tsx`](../../app/page.tsx) (商品取得処理)
+[`app/page.tsx`](../../app/(public)/page.tsx) (商品取得処理)
 
 ```typescript
       include: {
@@ -1179,7 +1179,7 @@ orderBy: {
     nulls: "last", // displayOrderがnullの商品は最後に
   },
 }
-[`app/page.tsx`](../app/page.tsx)
+[`app/page.tsx`](../../app/(public)/page.tsx)
 
 ```
 
@@ -1204,7 +1204,7 @@ const categories = await prisma.category.findMany({
 });
 ```
 
-1. **[`app/page.tsx`](../../app/page.tsx) (商品取得処理)** - 商品とカテゴリーを一緒に取得
+1. **[`app/page.tsx`](../../app/(public)/page.tsx) (商品取得処理)** - 商品とカテゴリーを一緒に取得
 
 ```typescript
       include: {
@@ -1376,7 +1376,7 @@ for (const product of products) {
 
 **使用箇所**:
 
-- [`app/page.tsx`](../../app/page.tsx): 商品一覧の取得時にカテゴリー情報も一緒に取得
+- [`app/page.tsx`](../../app/(public)/page.tsx): 商品一覧の取得時にカテゴリー情報も一緒に取得
 - [`app/dashboard/page.tsx`](../../app/dashboard/page.tsx): 商品一覧の取得時にカテゴリー情報も一緒に取得
 - [`app/api/products/route.ts`](../../app/api/products/route.ts): API エンドポイントで商品一覧を返す際にカテゴリー情報も一緒に取得
 - [`app/api/products/[id]/route.ts`](../../app/api/products/[id]/route.ts): 単一商品取得時にもカテゴリー情報を一緒に取得
