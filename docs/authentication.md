@@ -11,6 +11,7 @@
   - [ログアウト](#ログアウト)
   - [セッション管理](#セッション管理)
 - [データベーススキーマ](#データベーススキーマ)
+  - [Roleモデル（ロールマスター）](#roleモデルロールマスター)
   - [Userモデル](#userモデル)
   - [Accountモデル（OAuth連携情報）](#accountモデルoauth連携情報)
   - [Sessionモデル](#sessionモデル)
@@ -134,6 +135,32 @@ session: {
 
 ## データベーススキーマ
 
+### Roleモデル（ロールマスター）
+
+**場所**: [prisma/schema.prisma](../prisma/schema.prisma)
+
+ロールを一元管理するマスターテーブルです。`name`をプライマリキーとして使用し、UserとAllowedAdminから参照されます。
+
+```prisma
+model Role {
+  name          String         @id
+  description   String?
+  users         User[]
+  allowedAdmins AllowedAdmin[]
+  createdAt     DateTime       @default(now()) @map("created_at")
+
+  @@map("roles")
+}
+```
+
+シードで以下の3つのロールが作成されます:
+
+| name | description |
+|------|-------------|
+| `admin` | すべてのダッシュボード機能にアクセス可能 |
+| `homepage` | ホームページ関連の機能のみ |
+| `shop` | ECサイト関連の機能のみ |
+
 ### Userモデル
 
 **場所**: [prisma/schema.prisma](../prisma/schema.prisma)
@@ -145,7 +172,8 @@ model User {
   email         String?   @unique
   emailVerified DateTime? @map("email_verified")
   image         String?
-  role          String    @default("user")
+  roleName      String?   @map("role_name")
+  role          Role?     @relation(fields: [roleName], references: [name])
   accounts      Account[]
   sessions      Session[]
   createdAt     DateTime  @default(now()) @map("created_at")
@@ -154,6 +182,8 @@ model User {
   @@map("users")
 }
 ```
+
+`roleName`は`Role`テーブルへの外部キーです。初回ログイン時に`AllowedAdmin`で設定されたロールが自動的に設定されます。未設定の場合はデフォルトで`homepage`が使用されます。
 
 ### Accountモデル（OAuth連携情報）
 
@@ -198,14 +228,15 @@ model Session {
 model AllowedAdmin {
   id        String   @id @default(uuid())
   email     String   @unique
-  role      String   @default("admin")
+  roleName  String   @map("role_name")
+  role      Role     @relation(fields: [roleName], references: [name])
   createdAt DateTime @default(now()) @map("created_at")
 
   @@map("allowed_admins")
 }
 ```
 
-このテーブルでログインを許可するメールアドレスを管理します。
+このテーブルでログインを許可するメールアドレスとそのロールを管理します。`roleName`は`Role`テーブルへの外部キーで、存在しないロール名は設定できません。
 
 ### タイムスタンプについて
 
@@ -306,19 +337,19 @@ export async function isAllowedEmail(email: string | null | undefined): Promise<
   return !!allowedAdmin;
 }
 
-export async function getRoleByEmail(email: string | null | undefined): Promise<string> {
-  if (!email) return 'user';
+export async function getRoleNameByEmail(email: string | null | undefined): Promise<string | null> {
+  if (!email) return null;
 
   const allowedAdmin = await prisma.allowedAdmin.findUnique({
     where: { email },
   });
 
-  return allowedAdmin?.role ?? 'user';
+  return allowedAdmin?.roleName ?? null;
 }
 ```
 
 - `isAllowedEmail`: メールアドレスが許可リストに含まれているかチェック
-- `getRoleByEmail`: メールアドレスに対応するロールを取得（ユーザー作成時に使用）
+- `getRoleNameByEmail`: メールアドレスに対応するロール名を取得（ユーザー作成時に使用）
 
 **使用場所**: [auth.ts](../auth.ts)
 
@@ -334,17 +365,17 @@ callbacks: {
   async session({ session, user }) {
     // セッションにユーザー情報を追加
     session.user.id = user.id;
-    session.user.role = user.role;
+    session.user.role = user.roleName ?? 'homepage';
     return session;
   },
 },
 events: {
   // ユーザー新規作成時にAllowedAdminのロールをUserに反映
   async createUser({ user }) {
-    const role = await getRoleByEmail(user.email);
+    const roleName = (await getRoleNameByEmail(user.email)) ?? 'homepage';
     await prisma.user.update({
       where: { id: user.id },
-      data: { role },
+      data: { roleName },
     });
   },
 },
@@ -352,7 +383,7 @@ events: {
 
 Googleでの認証成功後、`signIn`コールバックで`AllowedAdmin`テーブルをチェックし、許可されていないメールアドレスはログインを拒否します。
 
-新規ユーザーの場合、`createUser`イベントで`AllowedAdmin`テーブルからロールを取得し、`User`テーブルに反映します。これにより、許可リストで設定したロールが自動的にユーザーに割り当てられます。
+新規ユーザーの場合、`createUser`イベントで`AllowedAdmin`テーブルからロール名を取得し、`User`テーブルの`roleName`に反映します。ロールが未設定の場合は`homepage`がデフォルトとして使用されます。
 
 #### DBアクセスについての補足
 
@@ -371,6 +402,14 @@ Googleでの認証成功後、`signIn`コールバックで`AllowedAdmin`テー�
 **実装場所**: [prisma/seed.ts](../prisma/seed.ts)
 
 ```typescript
+// ロールマスター（シード実行時に自動作成）
+const ROLES = [
+  { name: 'admin', description: 'すべてのダッシュボード機能にアクセス可能' },
+  { name: 'homepage', description: 'ホームページ関連の機能のみ' },
+  { name: 'shop', description: 'ECサイト関連の機能のみ' },
+];
+
+// 許可する管理者
 const ALLOWED_ADMINS = [
   { email: 's.murakoshi1201@gmail.com', role: 'admin' },
   // 新しいメールアドレスをここに追加
@@ -393,6 +432,8 @@ const ALLOWED_ADMINS = [
   { email: 'newadmin@example.com', role: 'admin' },  // 新規追加
 ];
 ```
+
+**注意**: `role`には`ROLES`配列で定義されているロール名（`admin`、`homepage`、`shop`）のみ指定できます。
 
 2. シードスクリプトを実行:
 
@@ -420,15 +461,21 @@ SQLを使用して直接データベースを操作できます。
 3. 以下のSQLを実行:
 
 ```sql
--- 管理者を追加
-INSERT INTO allowed_admins (id, email, role, created_at)
+-- 利用可能なロールを確認
+SELECT * FROM roles;
+
+-- 管理者を追加（role_nameはrolesテーブルに存在するnameを指定）
+INSERT INTO allowed_admins (id, email, role_name, created_at)
 VALUES (gen_random_uuid(), 'newadmin@example.com', 'admin', NOW());
 
 -- 管理者を削除
 DELETE FROM allowed_admins WHERE email = 'oldadmin@example.com';
 
--- 管理者一覧を確認
-SELECT * FROM allowed_admins ORDER BY created_at DESC;
+-- 管理者一覧を確認（ロール情報付き）
+SELECT aa.email, aa.role_name, r.description
+FROM allowed_admins aa
+JOIN roles r ON aa.role_name = r.name
+ORDER BY aa.created_at DESC;
 
 -- 特定のメールアドレスの存在確認
 SELECT * FROM allowed_admins WHERE email = 'target@example.com';
@@ -449,23 +496,35 @@ npm run db:studio
 2. ブラウザが自動的に開き、`http://localhost:5555`にアクセス
 3. `AllowedAdmin`テーブルを選択
 4. 以下の操作が可能:
-   - **追加**: 「Add record」ボタンをクリック → `email`と`role`を入力 → 「Save 1 change」
+   - **追加**: 「Add record」ボタンをクリック → `email`と`roleName`を入力 → 「Save 1 change」
    - **編集**: レコードをクリック → フィールドを編集 → 「Save 1 change」
    - **削除**: レコードを選択 → 「Delete 1 record」 → 確認
+
+**注意**: `roleName`には`Role`テーブルに存在するロール名（`admin`、`homepage`、`shop`）を指定してください。
 
 **注意**: Prisma StudioはローカルのデータベースURLに接続するため、本番環境のデータベースを編集する場合は環境変数を一時的に変更する必要があります（推奨しません）。
 
 #### ロールの種類
 
-現在サポートされているロール:
+ロールは`Role`テーブル（ロールマスター）で管理されています。シード実行時に以下のロールが作成されます:
 
-| ロール | 説明 | アクセス範囲 |
-|--------|------|-------------|
+| ロール名 | 説明 | アクセス範囲 |
+|----------|------|-------------|
 | `admin` | 管理者 | すべてのダッシュボード機能 |
 | `homepage` | ホームページ管理者 | ホームページ関連の機能のみ（将来実装予定） |
 | `shop` | ショップ管理者 | ECサイト関連の機能のみ（将来実装予定） |
 
-**注意**: 初回ログイン時に`AllowedAdmin`テーブルで設定されたロールが`User`テーブルに自動的に反映されます。現在はセッションにロール情報が含まれていますが、機能別のアクセス制御は将来実装予定です。
+**ロール管理の仕組み**:
+
+- ロールは`Role`テーブルで一元管理され、`AllowedAdmin`と`User`から外部キーで参照されます
+- `AllowedAdmin.roleName`に設定したロールが、初回ログイン時に`User.roleName`にコピーされます
+- ロールが未設定の場合、デフォルトで`homepage`が使用されます
+- 存在しないロール名は外部キー制約により設定できません
+
+**新しいロールを追加する場合**:
+
+1. `prisma/seed.ts`の`ROLES`配列に新しいロールを追加
+2. `npm run db:seed`を実行
 
 ## セキュリティ
 
@@ -816,9 +875,9 @@ npm run db:seed 2>&1 | tee seed.log
 
 **代替方法**: シードではなく、直接データベースに追加:
 
-```bash
-# Neon コンソールで実行
-INSERT INTO allowed_admins (id, email, role, created_at)
+```sql
+-- Neon コンソールで実行
+INSERT INTO allowed_admins (id, email, role_name, created_at)
 VALUES (gen_random_uuid(), 'newadmin@example.com', 'admin', NOW());
 ```
 
