@@ -112,7 +112,7 @@ App Router では、`app/` ディレクトリ内のファイル構造がその�
 - `layout.tsx`: レイアウトコンポーネント（ネストされたレイアウト） - **このアプリで使用中**
 - `route.ts`: API エンドポイント（API Routes） - **このアプリで使用中**
 - `error.tsx`: エラー UI - **このアプリで使用中**（[`app/(public)/error.tsx`](../../app/(public)/error.tsx)）
-- `loading.tsx`: ローディング UI - **このアプリで使用中**（[`app/(public)/loading.tsx`](../../app/(public)/loading.tsx)）
+- `loading.tsx`: ローディング UI - **このアプリでは未使用**（代わりにSuspenseを使用）
 - `not-found.tsx`: 404 ページ - **このアプリで使用中**（[`app/not-found.tsx`](../../app/not-found.tsx)）
 - `template.tsx`: テンプレートコンポーネント - **このアプリでは未使用**
 
@@ -1217,7 +1217,7 @@ Next.js の `Image` コンポーネントを使用すると、画像の自動最
    - Server Component
    - データベースから商品とカテゴリーを取得
    - Client Component にデータを渡す
-   - `(public)` の `loading.tsx` は適用されない
+   - ルートグループ外なので `(public)` のレイアウト・エラーハンドリングは適用されない
 
 ### API Routes 構成
 
