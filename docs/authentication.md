@@ -20,7 +20,7 @@
 - [環境変数設定](#環境変数設定)
   - [環境変数の取得方法](#環境変数の取得方法)
 - [アクセス制御](#アクセス制御)
-  - [Protected Routes（Server Components）](#protected-routesserver-components)
+  - [Protected Routes（Proxy）](#protected-routesproxy)
   - [許可リストによる認可](#許可リストによる認可)
   - [許可メールアドレスの管理](#許可メールアドレスの管理)
 - [セキュリティ](#セキュリティ)
@@ -51,7 +51,7 @@
 - **Google OAuth認証**: Googleアカウントでのログイン
 - **許可リスト方式**: `AllowedAdmin`テーブルで管理された許可メールアドレスのみアクセス可能
 - **データベースセッション**: Prismaアダプターによる7日間有効なセッション管理
-- **Server Components保護**: ダッシュボード全体をルートレベルで保護
+- **Proxyによるルートガード**: Next.js 16のProxy機能でリダイレクト制御を一元管理
 
 ## 使用技術
 
@@ -304,23 +304,47 @@ openssl rand -base64 32
 
 ## アクセス制御
 
-### Protected Routes（Server Components）
+### Protected Routes（Proxy）
 
-**実装場所**: [app/dashboard/layout.tsx](../app/dashboard/layout.tsx)
+**実装場所**: [proxy.ts](../proxy.ts)
+
+Next.js 16のProxy機能を使用して、認証状態に基づくルートガードを一元管理しています。
 
 ```typescript
-export default async function DashboardLayout({ children }: DashboardLayoutProps) {
-  const session = await auth();
+import { auth } from '@/auth';
 
-  if (!session) {
-    redirect('/auth/signin');
+export const proxy = auth((req) => {
+  const isLoggedIn = !!req.auth;
+  const { pathname } = req.nextUrl;
+
+  // 認証ページへのアクセス（認証済みならダッシュボードへ）
+  if (pathname.startsWith('/auth')) {
+    if (isLoggedIn) {
+      return Response.redirect(new URL('/dashboard/homepage', req.url));
+    }
+    return;
   }
 
-  return <div>{children}</div>;
-}
+  // ダッシュボードへのアクセス（未認証ならログインページへ）
+  if (pathname.startsWith('/dashboard')) {
+    if (!isLoggedIn) {
+      return Response.redirect(new URL('/auth/signin', req.url));
+    }
+    return;
+  }
+});
+
+export const config = {
+  matcher: ['/dashboard/:path*', '/auth/:path*'],
+};
 ```
 
-`/dashboard`以下の全ページで、レイアウトレベルでセッションをチェックしています。未認証の場合は即座にログインページへリダイレクトします。
+**ポイント**:
+- NextAuth v5の`auth()`関数を使用してセッションの有効性を確認
+- クッキーの存在だけでなく、実際のセッションの有効性をチェック
+- `/dashboard`以下への未認証アクセスは`/auth/signin`へリダイレクト
+- `/auth`以下への認証済みアクセスは`/dashboard/homepage`へリダイレクト
+- リダイレクトロジックをproxyに一元化することで、リダイレクトループを防止
 
 ### 許可リストによる認可
 
@@ -886,11 +910,12 @@ VALUES (gen_random_uuid(), 'newadmin@example.com', 'admin', NOW());
 | ファイル | 説明 |
 |---------|------|
 | [auth.ts](../auth.ts) | Auth.js設定（プロバイダー、セッション、コールバック） |
+| [proxy.ts](../proxy.ts) | 認証ルートガード（リダイレクト制御を一元管理） |
 | [lib/auth-config.ts](../lib/auth-config.ts) | 認可チェック（許可リスト） |
 | [app/api/auth/[...nextauth]/route.ts](../app/api/auth/[...nextauth]/route.ts) | Auth.js APIエンドポイント |
 | [app/auth/signin/page.tsx](../app/auth/signin/page.tsx) | ログインページ（Googleボタン） |
 | [app/auth/error/page.tsx](../app/auth/error/page.tsx) | 認証エラーページ |
-| [app/dashboard/layout.tsx](../app/dashboard/layout.tsx) | ダッシュボード保護（セッションチェック） |
+| [app/dashboard/layout.tsx](../app/dashboard/layout.tsx) | ダッシュボード共通レイアウト・ヘッダー |
 | [app/dashboard/components/DashboardHeader.tsx](../app/dashboard/components/DashboardHeader.tsx) | ユーザー情報・ログアウトボタン |
 | [prisma/schema.prisma](../prisma/schema.prisma) | データベーススキーマ（User, Account, Session等） |
 | [prisma/seed.ts](../prisma/seed.ts) | 許可管理者データの初期投入 |

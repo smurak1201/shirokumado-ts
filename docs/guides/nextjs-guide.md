@@ -13,6 +13,7 @@
 - [概要](#概要)
 - [Next.js とは](#nextjs-とは)
 - [App Router](#app-router)
+- [Proxy（Next.js 16）](#proxynextjs-16)
 - [設定ファイル](#設定ファイル)
   - [next.config.ts](#nextconfigts)
 - [画像最適化](#画像最適化)
@@ -166,6 +167,53 @@ Next.js 13 以降で導入された新しいルーティングシステムです
 
 - **ページ**: [`app/page.tsx`](../../app/(public)/page.tsx)（ホームページ）、[`app/faq/page.tsx`](../../app/(public)/faq/page.tsx)（FAQ ページ）、[`app/dashboard/page.tsx`](../../app/dashboard/page.tsx)（ダッシュボード）
 - **API Routes**: `app/api/products/`、`app/api/categories/`
+
+## Proxy（Next.js 16）
+
+Next.js 16では、従来の`middleware.ts`に代わり`proxy.ts`を使用してリクエストの前処理を行います。
+
+**このアプリでの使用箇所**:
+
+- [`proxy.ts`](../../proxy.ts): 認証状態に基づくルートガード
+
+**Proxyの特徴**:
+
+- **リクエストの前処理**: ページやAPIへのリクエストが処理される前に実行される
+- **認証ガード**: 認証状態に基づいてリダイレクトを制御
+- **パターンマッチング**: `matcher`設定で対象となるパスを指定
+
+**このアプリでの実装**:
+
+```typescript
+import { auth } from '@/auth';
+
+export const proxy = auth((req) => {
+  const isLoggedIn = !!req.auth;
+  const { pathname } = req.nextUrl;
+
+  // 未認証ユーザーがダッシュボードへアクセス → ログインページへ
+  if (pathname.startsWith('/dashboard') && !isLoggedIn) {
+    return Response.redirect(new URL('/auth/signin', req.url));
+  }
+
+  // 認証済みユーザーが認証ページへアクセス → ダッシュボードへ
+  if (pathname.startsWith('/auth') && isLoggedIn) {
+    return Response.redirect(new URL('/dashboard/homepage', req.url));
+  }
+});
+
+export const config = {
+  matcher: ['/dashboard/:path*', '/auth/:path*'],
+};
+```
+
+**ポイント**:
+
+- NextAuth v5の`auth()`関数をラップして使用することで、セッションの有効性を確認
+- リダイレクトロジックを一元管理し、リダイレクトループを防止
+- `matcher`で対象パスを限定することで、不要なパス（静的ファイルなど）での実行を回避
+
+**詳細な認証フローについては、[認証システム](../authentication.md#protected-routesproxy) を参照してください。**
 
 ## 設定ファイル
 
