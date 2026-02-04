@@ -33,144 +33,25 @@
 
 ## ディレクトリ構造
 
+ルートディレクトリの主要な構成です。詳細は各ディレクトリのセクションを参照してください。
+
 ```
 shirokumado-ts/
-├── app/                    # Next.js App Router
-│   ├── api/               # API Routes
-│   │   ├── products/     # 商品API
-│   │   │   ├── route.ts  # GET, POST /api/products
-│   │   │   ├── upload/   # 画像アップロード
-│   │   │   │   └── route.ts
-│   │   │   ├── reorder/  # 商品順序変更
-│   │   │   │   └── route.ts
-│   │   │   └── [id]/     # 個別商品操作
-│   │   │       ├── route.ts      # GET, PUT, DELETE /api/products/[id]
-│   │   │       ├── get.ts        # GET処理
-│   │   │       ├── put.ts        # PUT処理
-│   │   │       ├── put-validation.ts  # PUT用バリデーション
-│   │   │       └── delete.ts     # DELETE処理
-│   │   ├── categories/   # カテゴリーAPI
-│   │   │   └── route.ts
-│   │   ├── auth/         # 認証API
-│   │   │   └── [...nextauth]/
-│   │   │       └── route.ts
-│   │   └── cron/         # Cronジョブ
-│   │       └── cleanup-sessions/
-│   │           └── route.ts
-│   ├── dashboard/         # ダッシュボード
-│   │   ├── page.tsx      # ダッシュボードルートページ
-│   │   ├── layout.tsx    # ダッシュボードレイアウト（認証チェック）
-│   │   ├── components/   # ダッシュボード共通コンポーネント
-│   │   │   └── DashboardHeader.tsx  # ダッシュボードヘッダー
-│   │   ├── homepage/     # 商品管理ページ
-│   │   │   ├── page.tsx      # エントリーポイント（Server Component）
-│   │   │   ├── types.ts      # 共通型定義
-│   │   │   ├── components/   # UIコンポーネント
-│   │   │   │   ├── DashboardContent.tsx
-│   │   │   │   ├── form/     # フォーム関連
-│   │   │   │   ├── layout/   # レイアウト関連
-│   │   │   │   └── list/     # リスト表示関連
-│   │   │   ├── hooks/        # カスタムフック
-│   │   │   └── utils/        # ユーティリティ関数
-│   │   └── shop/         # ショップ管理ページ
-│   │       └── page.tsx
-│   ├── types.ts          # フロントエンド共通型定義
-│   ├── hooks/            # カスタムフック
-│   │   └── useProductModal.ts # 商品モーダル管理フック
-│   ├── components/       # フロントエンド共通コンポーネント
-│   │   ├── ui/          # shadcn/ui コンポーネントとラッパーコンポーネント
-│   │   ├── ErrorBoundary.tsx # エラーバウンダリーコンポーネント
-│   │   ├── FixedHeader.tsx   # 固定ヘッダーコンポーネント
-│   │   ├── HeroSection.tsx   # ヒーローセクション
-│   │   ├── Footer.tsx    # フッターコンポーネント
-│   │   ├── FAQSection.tsx    # FAQセクション
-│   │   ├── ProductCategoryTabs.tsx # カテゴリーをTabsで切り替えるコンポーネント
-│   │   ├── ProductGrid.tsx # 商品グリッドコンポーネント
-│   │   ├── ProductTile.tsx # 商品タイルコンポーネント
-│   │   └── ProductModal.tsx # 商品詳細モーダルコンポーネント
-│   ├── (public)/         # 公開ページ（Route Group）
-│   │   ├── page.tsx      # ホームページ
-│   │   ├── HomeContent.tsx # ホームページコンテンツ
-│   │   ├── error.tsx     # エラーページ
-│   │   ├── faq/          # FAQページ
-│   │   │   ├── page.tsx  # よくある質問ページ
-│   │   │   └── data.ts   # FAQデータ
-│   │   └── shop/         # ショップページ
-│   │       └── page.tsx
-│   ├── auth/             # 認証ページ
-│   │   ├── signin/       # サインインページ
-│   │   │   └── page.tsx
-│   │   └── error/        # 認証エラーページ
-│   │       └── page.tsx
-│   ├── favicon.ico       # ファビコン
-│   ├── globals.css       # グローバルスタイル
-│   ├── layout.tsx        # ルートレイアウト
-│   └── not-found.tsx     # 404ページ
-│
+├── app/                    # Next.js App Router（ページ、API、コンポーネント）
+├── docs/                   # ドキュメント
 ├── lib/                    # ユーティリティ・ライブラリ
-│   ├── prisma.ts         # Prisma Clientインスタンス
-│   ├── blob.ts           # Blobストレージユーティリティ
-│   ├── env.ts            # 環境変数管理
-│   ├── errors.ts         # 統一されたエラーハンドリング（エラーコード定数含む）
-│   ├── api-helpers.ts    # API Routes用ヘルパー
-│   ├── api-types.ts      # API レスポンスの型定義
-│   ├── auth-config.ts    # 認証設定（許可リストチェック）
-│   ├── config.ts         # アプリケーション設定
-│   ├── logger.ts         # 構造化ログユーティリティ
-│   ├── utils.ts          # 汎用ユーティリティ（clsx/tailwind-merge）
-│   ├── products.ts       # 商品データ取得関数
-│   ├── product-utils.ts  # 商品関連ユーティリティ
-│   └── image-compression/ # 画像圧縮ユーティリティ
-│       ├── index.ts      # エントリーポイント
-│       ├── heic.ts       # HEIC変換処理
-│       ├── utils.ts      # 圧縮用ユーティリティ
-│       ├── load.ts       # 画像読み込み処理
-│       ├── blob-loader.ts # Blob URL読み込み
-│       ├── bitmap-loader.ts # ImageBitmap読み込み
-│       ├── blob-handlers.ts # Blob変換処理
-│       ├── canvas.ts     # Canvas描画処理
-│       └── errors.ts     # エラー定義
+├── prisma/                 # Prisma設定・スキーマ
+├── public/                 # 静的ファイル（画像など）
+├── types/                  # グローバル型定義
 │
-├── prisma/                 # Prisma設定
-│   ├── schema.prisma     # データベーススキーマ定義
-│   └── migrations/       # マイグレーションファイル
-│
-├── public/                 # 静的ファイル
-│   ├── logo.webp         # ロゴ画像
-│   ├── logo-instagram.svg # Instagramアイコン
-│   └── hero.webp         # ヒーロー画像
-│
-├── docs/                    # ドキュメント
-│   ├── architecture.md     # アーキテクチャと設計思想
-│   ├── project-structure.md # プロジェクト構造（このファイル）
-│   ├── tech-stack.md       # 技術スタック
-│   ├── development-guide.md # 開発ガイドライン
-│   ├── setup-prisma-blob.md # Prisma & Blob セットアップ
-│   └── guides/            # ガイド系ドキュメント
-│       ├── learning-guide.md   # 勉強用ガイド
-│       ├── frontend-guide.md   # フロントエンドガイド
-│       ├── dashboard-guide.md  # ダッシュボードガイド
-│       ├── nextjs-guide.md     # Next.js ガイド
-│       ├── app-router-guide.md # App Router ガイド
-│       ├── react-guide.md      # React ガイド
-│       ├── jsx-guide.md        # JSX ガイド
-│       ├── typescript-guide.md # TypeScript ガイド
-│       ├── async-await-guide.md # Async/Await ガイド
-│       ├── prisma-guide.md     # Prisma ガイド
-│       ├── authjs-guide.md     # Auth.js ガイド
-│       ├── shadcn-ui-guide.md  # shadcn/ui ガイド
-│       ├── utilities-guide.md  # ユーティリティ関数ガイド
-│       ├── styling-best-practices.md # スタイリングベストプラクティス
-│       └── git-github-guide.md # Git/GitHub ガイド
-│
-├── .env                    # 環境変数（.gitignoreに含まれる）
-├── .gitignore            # Git除外設定
-├── eslint.config.mjs      # ESLint設定
-├── next.config.ts         # Next.js設定（セキュリティヘッダーなど）
-├── package.json           # 依存関係
-├── prisma.config.ts       # Prisma設定（Prisma 7）
-├── tsconfig.json          # TypeScript設定
-└── README.md              # プロジェクト概要
+├── auth.ts                 # Auth.js エントリーポイント
+├── eslint.config.mjs       # ESLint設定
+├── next.config.ts          # Next.js設定
+├── package.json            # 依存関係
+├── postcss.config.mjs      # PostCSS設定
+├── prisma.config.ts        # Prisma設定（Prisma 7）
+├── tsconfig.json           # TypeScript設定
+└── README.md               # プロジェクト概要
 ```
 
 ## 各ディレクトリの詳細
@@ -179,92 +60,21 @@ shirokumado-ts/
 
 Next.js 16 の App Router を使用しています。
 
-##### `app/api/` - API Routes
-
-サーバーサイドの API エンドポイントを定義します。App Router の規約に従い、各ディレクトリに `route.ts` ファイルを配置します。
-
-**実際の構造**:
-
 ```
-app/api/
-├── products/
-│   ├── route.ts          # GET, POST /api/products
-│   ├── upload/
-│   │   └── route.ts      # POST /api/products/upload
-│   ├── reorder/
-│   │   └── route.ts      # POST /api/products/reorder
-│   └── [id]/
-│       └── route.ts      # GET, PUT, DELETE /api/products/[id]（GETは未使用）
-└── categories/
-    └── route.ts          # GET /api/categories（未使用）
+app/
+├── (public)/             # 公開ページ（Route Group）
+├── api/                  # API Routes
+├── auth/                 # 認証ページ
+├── components/           # フロントエンド共通コンポーネント
+├── dashboard/            # ダッシュボード
+├── hooks/                # カスタムフック
+│
+├── favicon.ico           # ファビコン
+├── globals.css           # グローバルスタイル
+├── layout.tsx            # ルートレイアウト
+├── not-found.tsx         # 404ページ
+└── types.ts              # フロントエンド共通型定義
 ```
-
-**詳細については、[App Router ガイド](./guides/app-router-guide.md#api-routes) を参照してください。**
-
-#### [`app/types.ts`](../app/types.ts) - フロントエンド共通型定義
-
-フロントエンドで使用する型定義を一元管理します。
-
-```
-[app/types.ts](../app/types.ts)
-├── Category              # カテゴリー情報
-├── Product               # 商品情報（詳細表示用）
-└── ProductTile          # 商品情報（タイル表示用）
-```
-
-**設計の特徴**:
-
-- **型の一元管理**: 型定義の重複を防止
-- **一貫性の確保**: 全コンポーネントで同じ型を使用
-- **変更時の影響範囲が明確**: 型定義を変更する際の影響範囲が明確
-
-#### `app/hooks/` - カスタムフック
-
-フロントエンドで使用するカスタムフックを配置します。
-
-```
-app/hooks/
-└── [useProductModal.ts](../app/hooks/useProductModal.ts)   # 商品モーダル管理フック（状態管理）
-```
-
-**設計の特徴**:
-
-- **再利用性**: 複数のコンポーネントで使用可能
-- **関心の分離**: UI ロジックと状態管理ロジックを分離
-- **テストしやすさ**: フック単体でテスト可能
-
-#### `app/components/` - フロントエンド共通コンポーネント
-
-フロントエンドで使用する共通コンポーネントを配置します。
-
-```
-app/components/
-├── ui/                  # shadcn/ui コンポーネントとラッパーコンポーネント
-│   ├── card.tsx        # shadcn/ui の Card コンポーネント
-│   ├── dialog.tsx      # shadcn/ui の Dialog コンポーネント
-│   ├── badge.tsx       # shadcn/ui の Badge コンポーネント
-│   ├── card-product.tsx    # 商品タイル用の Card ラッパー
-│   ├── card-modal.tsx      # モーダル内で使用する Card ラッパー
-│   ├── badge-price.tsx     # 価格表示用の Badge ラッパー
-│   └── ...             # その他の shadcn/ui コンポーネントとラッパー
-├── [ErrorBoundary.tsx](../app/components/ErrorBoundary.tsx)     # エラーバウンダリーコンポーネント
-├── [FixedHeader.tsx](../app/components/FixedHeader.tsx) # 固定ヘッダー（ロゴ、Instagramリンク、ナビゲーション）
-├── [Footer.tsx](../app/components/Footer.tsx)           # フッター（店舗情報、地図、連絡先）
-├── [ProductCategoryTabs.tsx](../app/components/ProductCategoryTabs.tsx)  # カテゴリーをTabsで切り替えるコンポーネント（Client Component）
-├── [ProductGrid.tsx](../app/components/ProductGrid.tsx)      # カテゴリーごとの商品グリッド表示（Client Component）
-├── [ProductTile.tsx](../app/components/ProductTile.tsx)      # 商品タイルコンポーネント
-└── [ProductModal.tsx](../app/components/ProductModal.tsx)     # 商品詳細モーダルコンポーネント
-```
-
-**設計の特徴**:
-
-- **再利用性**: 複数のページで使用される共通コンポーネント
-- **Server/Client 分離**: Server Component と Client Component を適切に使い分け
-- **レスポンシブデザイン**: モバイルからデスクトップまで対応
-- **関心の分離**: UI コンポーネントとロジック（フック）を分離
-- **shadcn/ui の活用**: 統一されたデザインシステムを実現するために shadcn/ui を使用
-
-**詳細**: shadcn/ui の使用方法とラッパーコンポーネントの作成については、[shadcn/ui ガイド](./guides/shadcn-ui-guide.md) を参照してください。
 
 #### `app/(public)/` - 公開ページ
 
@@ -272,15 +82,92 @@ Route Group を使用して公開ページをグループ化しています。
 
 ```
 app/(public)/
-├── page.tsx              # ホームページ（Server Component）
-├── HomeContent.tsx       # ホームページのコンテンツ（Client Component）
-├── error.tsx             # エラーページ
 ├── faq/                  # FAQページ
-│   ├── page.tsx          # FAQページ（Server Component）
-│   └── data.ts           # FAQデータ
-└── shop/                 # ショップページ
-    └── page.tsx          # ショップページ（Server Component）
+│   ├── data.ts           # FAQデータ
+│   └── page.tsx          # FAQページ（Server Component）
+├── shop/                 # ショップページ
+│   └── page.tsx          # ショップページ（Server Component）
+│
+├── error.tsx             # エラーページ
+├── HomeContent.tsx       # ホームページのコンテンツ（Client Component）
+└── page.tsx              # ホームページ（Server Component）
 ```
+
+#### `app/api/` - API Routes
+
+サーバーサイドの API エンドポイントを定義します。App Router の規約に従い、各ディレクトリに `route.ts` ファイルを配置します。
+
+```
+app/api/
+├── auth/                 # 認証API
+│   └── [...nextauth]/
+│       └── route.ts      # NextAuth.js ハンドラー
+├── categories/           # カテゴリーAPI
+│   └── route.ts          # GET /api/categories
+├── cron/                 # Cronジョブ
+│   └── cleanup-sessions/
+│       └── route.ts      # セッションクリーンアップ
+└── products/             # 商品API
+    ├── [id]/             # 個別商品操作
+    │   ├── delete.ts     # DELETE処理
+    │   ├── get.ts        # GET処理
+    │   ├── put-validation.ts  # PUT用バリデーション
+    │   ├── put.ts        # PUT処理
+    │   └── route.ts      # GET, PUT, DELETE /api/products/[id]
+    ├── reorder/          # 商品順序変更
+    │   └── route.ts      # POST /api/products/reorder
+    ├── upload/           # 画像アップロード
+    │   └── route.ts      # POST /api/products/upload
+    └── route.ts          # GET, POST /api/products
+```
+
+**詳細については、[App Router ガイド](./guides/app-router-guide.md#api-routes) を参照してください。**
+
+#### `app/auth/` - 認証ページ
+
+```
+app/auth/
+├── error/                # 認証エラーページ
+│   └── page.tsx
+└── signin/               # サインインページ
+    └── page.tsx
+```
+
+#### `app/components/` - フロントエンド共通コンポーネント
+
+フロントエンドで使用する共通コンポーネントを配置します。
+
+```
+app/components/
+├── ui/                       # shadcn/ui コンポーネントとラッパー
+│   ├── badge.tsx             # shadcn/ui の Badge
+│   ├── badge-price.tsx       # 価格表示用ラッパー
+│   ├── card.tsx              # shadcn/ui の Card
+│   ├── card-modal.tsx        # モーダル用ラッパー
+│   ├── card-product.tsx      # 商品タイル用ラッパー
+│   ├── dialog.tsx            # shadcn/ui の Dialog
+│   └── ...                   # その他のコンポーネント
+│
+├── ErrorBoundary.tsx         # エラーバウンダリー
+├── FAQSection.tsx            # FAQセクション
+├── FixedHeader.tsx           # 固定ヘッダー（ロゴ、ナビゲーション）
+├── Footer.tsx                # フッター（店舗情報、地図、連絡先）
+├── HeroSection.tsx           # ヒーローセクション
+├── LoadingScreen.tsx         # ローディング画面
+├── ProductCategoryTabs.tsx   # カテゴリータブ切り替え（Client Component）
+├── ProductGrid.tsx           # 商品グリッド表示（Client Component）
+├── ProductModal.tsx          # 商品詳細モーダル
+└── ProductTile.tsx           # 商品タイル
+```
+
+**設計の特徴**:
+
+- **再利用性**: 複数のページで使用される共通コンポーネント
+- **Server/Client 分離**: Server Component と Client Component を適切に使い分け
+- **レスポンシブデザイン**: モバイルからデスクトップまで対応
+- **shadcn/ui の活用**: 統一されたデザインシステムを実現
+
+**詳細**: [shadcn/ui ガイド](./guides/shadcn-ui-guide.md) を参照してください。
 
 #### `app/dashboard/` - ダッシュボード
 
@@ -288,52 +175,71 @@ app/(public)/
 
 ```
 app/dashboard/
-├── page.tsx              # ダッシュボードルートページ
-├── layout.tsx            # ダッシュボードレイアウト（認証チェック）
 ├── components/           # ダッシュボード共通コンポーネント
-│   └── DashboardHeader.tsx  # ダッシュボードヘッダー
+│   └── DashboardHeader.tsx
 ├── homepage/             # 商品管理ページ
+│   ├── components/       # UIコンポーネント
+│   │   ├── form/         # フォーム関連（10ファイル）
+│   │   ├── layout/       # レイアウト関連（3ファイル）
+│   │   ├── list/         # リスト表示関連（6ファイル）
+│   │   └── DashboardContent.tsx
+│   ├── hooks/            # カスタムフック（7ファイル）
+│   ├── utils/            # ユーティリティ関数（3ファイル）
 │   ├── page.tsx          # エントリーポイント（Server Component）
-│   ├── types.ts          # 共通型定義（Category, Product）
-│   ├── components/       # UI コンポーネント
-│   │   ├── DashboardContent.tsx  # メインコンテナ
-│   │   ├── form/         # フォーム関連
-│   │   │   ├── ProductForm.tsx
-│   │   │   ├── ProductFormModal.tsx
-│   │   │   ├── ProductFormFields.tsx
-│   │   │   ├── ProductFormFooter.tsx
-│   │   │   ├── ProductBasicFields.tsx
-│   │   │   ├── ProductImageField.tsx
-│   │   │   ├── ProductPriceFields.tsx
-│   │   │   ├── ProductDateFields.tsx
-│   │   │   ├── ProductDateInput.tsx
-│   │   │   └── ProductPublishedField.tsx
-│   │   ├── layout/       # レイアウト関連
-│   │   │   ├── ProductLayoutTab.tsx
-│   │   │   ├── LayoutCategoryTabs.tsx
-│   │   │   └── SortableProductItem.tsx
-│   │   └── list/         # リスト表示関連
-│   │       ├── ProductList.tsx
-│   │       ├── ProductListTabs.tsx
-│   │       ├── ProductListContent.tsx
-│   │       ├── ProductCard.tsx
-│   │       ├── ProductCardContent.tsx
-│   │       └── ProductSearchFilters.tsx
-│   ├── hooks/            # カスタムフック
-│   │   ├── useTabState.ts
-│   │   ├── useProductForm.ts
-│   │   ├── useProductReorder.ts
-│   │   ├── useProductSearch.ts
-│   │   ├── useImageCompression.ts
-│   │   ├── useImageUpload.ts
-│   │   └── useScrollPosition.ts
-│   └── utils/            # ユーティリティ関数
-│       ├── productUtils.ts
-│       ├── productFormData.ts
-│       └── productFormSubmit.ts
-└── shop/                 # ショップ管理ページ
-    └── page.tsx
+│   └── types.ts          # 共通型定義
+├── shop/                 # ショップ管理ページ
+│   └── page.tsx
+│
+├── layout.tsx            # ダッシュボードレイアウト（認証チェック）
+└── page.tsx              # ダッシュボードルートページ
 ```
+
+<details>
+<summary>homepage/ の詳細構造</summary>
+
+```
+app/dashboard/homepage/
+├── components/
+│   ├── form/
+│   │   ├── ProductBasicFields.tsx
+│   │   ├── ProductDateFields.tsx
+│   │   ├── ProductDateInput.tsx
+│   │   ├── ProductForm.tsx
+│   │   ├── ProductFormFields.tsx
+│   │   ├── ProductFormFooter.tsx
+│   │   ├── ProductFormModal.tsx
+│   │   ├── ProductImageField.tsx
+│   │   ├── ProductPriceFields.tsx
+│   │   └── ProductPublishedField.tsx
+│   ├── layout/
+│   │   ├── LayoutCategoryTabs.tsx
+│   │   ├── ProductLayoutTab.tsx
+│   │   └── SortableProductItem.tsx
+│   ├── list/
+│   │   ├── ProductCard.tsx
+│   │   ├── ProductCardContent.tsx
+│   │   ├── ProductList.tsx
+│   │   ├── ProductListContent.tsx
+│   │   ├── ProductListTabs.tsx
+│   │   └── ProductSearchFilters.tsx
+│   └── DashboardContent.tsx
+├── hooks/
+│   ├── useImageCompression.ts
+│   ├── useImageUpload.ts
+│   ├── useProductForm.ts
+│   ├── useProductReorder.ts
+│   ├── useProductSearch.ts
+│   ├── useScrollPosition.ts
+│   └── useTabState.ts
+├── utils/
+│   ├── productFormData.ts
+│   ├── productFormSubmit.ts
+│   └── productUtils.ts
+├── page.tsx
+└── types.ts
+```
+
+</details>
 
 **設計の特徴**:
 
@@ -342,145 +248,148 @@ app/dashboard/
 - **カスタムフック**: 状態管理ロジックを再利用可能なフックに分離
 - **ユーティリティ関数**: ビジネスロジックを純粋関数として実装
 
+#### `app/hooks/` - カスタムフック
+
+フロントエンドで使用するカスタムフックを配置します。
+
+```
+app/hooks/
+└── useProductModal.ts    # 商品モーダル管理フック（状態管理）
+```
+
+#### [`app/types.ts`](../app/types.ts) - フロントエンド共通型定義
+
+フロントエンドで使用する型定義を一元管理します。
+
+- `Category` - カテゴリー情報
+- `Product` - 商品情報（詳細表示用）
+- `ProductTile` - 商品情報（タイル表示用）
+
 ### `lib/` - ユーティリティ・ライブラリ
 
 再利用可能な関数やユーティリティを定義します。
 
-#### [`lib/prisma.ts`](../lib/prisma.ts)
-
-Prisma Client のシングルトンインスタンスを管理します。
-
-**主な機能**:
-
-- Prisma Client の初期化
-- シングルトンインスタンスの管理（開発環境でのホットリロード対応）
-- 安全な Prisma 操作のラッパー関数（`safePrismaOperation`）
-
-[`lib/prisma.ts`](../lib/prisma.ts) (`safePrismaOperation`関数)
-
-```typescript
-import { prisma, safePrismaOperation } from "@/lib/prisma";
-
-// 使用例（ジェネリクスにより、戻り値の型が推論される）
-const users = await safePrismaOperation(
-  () => prisma.user.findMany(),
-  "getUsers"
-); // users の型は User[] と推論される
 ```
-
-**詳細**: ジェネリクスの詳細な説明については、[TypeScript ガイド - ジェネリクス](./guides/typescript-guide.md#ジェネリクス)を参照してください。
-
-#### [`lib/blob.ts`](../lib/blob.ts)
-
-Vercel Blob Storage の操作を提供します。
-
-[`lib/blob.ts`](../lib/blob.ts) (`uploadFile`関数)
-
-```typescript
-import { uploadImage, deleteFile } from "@/lib/blob";
-
-// 使用例
-const blob = await uploadImage("images/product.jpg", buffer, "image/jpeg");
-```
-
-#### [`lib/errors.ts`](../lib/errors.ts)
-
-統一されたエラーハンドリングを提供します。エラーコードの定数定義も含まれます。
-
-[`lib/errors.ts`](../lib/errors.ts) (`ValidationError`クラス、`ErrorCodes`定数)
-
-```typescript
-import {
-  AppError,
-  DatabaseError,
-  ValidationError,
-  ErrorCodes,
-} from "@/lib/errors";
-
-// 使用例
-throw new ValidationError("Invalid input"); // ErrorCodes.VALIDATION_ERROR が自動的に設定される
-
-// エラーコードの定数
-export const ErrorCodes = {
-  VALIDATION_ERROR: "VALIDATION_ERROR",
-  DATABASE_ERROR: "DATABASE_ERROR",
-  BLOB_STORAGE_ERROR: "BLOB_STORAGE_ERROR",
-  NOT_FOUND: "NOT_FOUND",
-  // ...
-} as const;
+lib/
+├── image-compression/    # クライアントサイド画像圧縮
+│   ├── bitmap-loader.ts  # ImageBitmap読み込み
+│   ├── blob-handlers.ts  # Blob変換処理
+│   ├── blob-loader.ts    # Blob URL読み込み
+│   ├── canvas.ts         # Canvas描画処理
+│   ├── errors.ts         # エラー定義
+│   ├── heic.ts           # HEIC変換処理
+│   ├── index.ts          # エントリーポイント
+│   ├── load.ts           # 画像読み込み処理
+│   └── utils.ts          # 圧縮用ユーティリティ
+│
+├── api-helpers.ts        # API Routes用ヘルパー
+├── api-types.ts          # APIレスポンスの型定義
+├── auth-config.ts        # 認証設定（許可リストチェック）
+├── blob.ts               # Blobストレージユーティリティ
+├── config.ts             # アプリケーション設定
+├── env.ts                # 環境変数管理
+├── errors.ts             # 統一されたエラーハンドリング
+├── logger.ts             # 構造化ログユーティリティ
+├── prisma.ts             # Prisma Clientインスタンス
+├── product-utils.ts      # 商品関連ユーティリティ
+├── products.ts           # 商品データ取得関数
+└── utils.ts              # 汎用ユーティリティ（clsx/tailwind-merge）
 ```
 
 #### [`lib/api-helpers.ts`](../lib/api-helpers.ts)
 
 API Routes 用のヘルパー関数を提供します。
 
-**主な関数**:
-
-- `withErrorHandling<T extends unknown[]>`: エラーハンドリングラッパー（ジェネリクスを使用）
-- `apiSuccess<T>`: 成功レスポンスの生成（ジェネリクスを使用）
+- `withErrorHandling<T extends unknown[]>`: エラーハンドリングラッパー
+- `apiSuccess<T>`: 成功レスポンスの生成
 - `apiError`: エラーレスポンスの生成
-
-[`lib/api-helpers.ts`](../lib/api-helpers.ts) (`withErrorHandling`関数)
 
 ```typescript
 import { withErrorHandling, apiSuccess } from "@/lib/api-helpers";
 
 export const GET = withErrorHandling(async () => {
   const data = await fetchData();
-  return apiSuccess({ data }); // ジェネリクスにより、dataの型が推論される
+  return apiSuccess({ data });
 });
 ```
 
-**詳細**: ジェネリクスの詳細な説明については、[TypeScript ガイド - ジェネリクス](./guides/typescript-guide.md#ジェネリクス)を参照してください。
-
 #### [`lib/api-types.ts`](../lib/api-types.ts)
 
-API レスポンスの型定義を提供します。クライアント側での型安全性を確保します。
+API レスポンスの型定義を提供します。
 
 ```typescript
 import type { GetProductsResponse, PostProductResponse } from "@/lib/api-types";
 
-// 使用例（クライアント側）
 const response: GetProductsResponse = await fetch("/api/products").then((r) =>
   r.json()
 );
 ```
 
-#### [`lib/logger.ts`](../lib/logger.ts)
+#### [`lib/blob.ts`](../lib/blob.ts)
 
-構造化ログユーティリティを提供します。本番環境では JSON 形式で出力し、開発環境では読みやすい形式で出力します。
+Vercel Blob Storage の操作を提供します。
 
 ```typescript
-import { log } from "@/lib/logger";
+import { uploadImage, deleteFile } from "@/lib/blob";
 
-// 使用例
-log.info("User logged in", { userId: user.id });
-log.error("Database operation failed", { context: "getProducts", error });
+const blob = await uploadImage("images/product.jpg", buffer, "image/jpeg");
 ```
 
-#### `lib/` - その他のユーティリティ
+#### [`lib/config.ts`](../lib/config.ts)
 
-```
-lib/
-├── [config.ts](../lib/config.ts)              # アプリケーション設定（画像サイズ、キャッシュなど）
-├── [utils.ts](../lib/utils.ts)                # 汎用ユーティリティ（clsx/tailwind-merge）
-├── [products.ts](../lib/products.ts)          # 商品データ取得関数
-├── [product-utils.ts](../lib/product-utils.ts)       # 商品関連ユーティリティ（公開状態計算など）
-└── [image-compression/](../lib/image-compression/)   # クライアントサイド画像圧縮（ディレクトリ）
-```
-
-**設定の一元管理** ([`lib/config.ts`](../lib/config.ts)):
+アプリケーション設定の一元管理:
 
 - 画像アップロード設定（最大サイズ、圧縮品質など）
 - Blob Storage 設定（フォルダ名、キャッシュ期間など）
 - API 設定（キャッシュ期間など）
 - 表示設定（グリッド列数など）
 
-**詳細**: ユーティリティ関数の詳細については、[ユーティリティ関数ガイド](./guides/utilities-guide.md)を参照してください。
+#### [`lib/errors.ts`](../lib/errors.ts)
+
+統一されたエラーハンドリングとエラーコード定数を提供します。
+
+```typescript
+import { AppError, DatabaseError, ValidationError, ErrorCodes } from "@/lib/errors";
+
+throw new ValidationError("Invalid input");
+```
+
+#### [`lib/logger.ts`](../lib/logger.ts)
+
+構造化ログユーティリティを提供します。
+
+```typescript
+import { log } from "@/lib/logger";
+
+log.info("User logged in", { userId: user.id });
+log.error("Database operation failed", { context: "getProducts", error });
+```
+
+#### [`lib/prisma.ts`](../lib/prisma.ts)
+
+Prisma Client のシングルトンインスタンスを管理します。
+
+```typescript
+import { prisma, safePrismaOperation } from "@/lib/prisma";
+
+const users = await safePrismaOperation(
+  () => prisma.user.findMany(),
+  "getUsers"
+);
+```
+
+**詳細**: [ユーティリティ関数ガイド](./guides/utilities-guide.md)、[TypeScript ガイド - ジェネリクス](./guides/typescript-guide.md#ジェネリクス)を参照してください。
 
 ### `prisma/` - Prisma 設定
 
 データベーススキーマとマイグレーションを管理します。
+
+```
+prisma/
+├── migrations/           # マイグレーションファイル（自動生成）
+├── schema.prisma         # データベーススキーマ定義
+└── seed.ts               # シードデータ
+```
 
 #### [`prisma/schema.prisma`](../prisma/schema.prisma)
 
@@ -495,29 +404,22 @@ model User {
 }
 ```
 
-#### `prisma/migrations/`
-
-マイグレーションファイルが自動生成されます。
-
-```
-prisma/migrations/
-├── 20240101000000_init/
-│   └── migration.sql
-└── 20240102000000_add_user_table/
-    └── migration.sql
-```
-
 ### `public/` - 静的ファイル
 
-静的ファイル（画像、ファビコンなど）を配置します。
+静的ファイル（画像など）を配置します。
 
 ```
 public/
-├── images/
-│   ├── logo.png
-│   └── products/
-├── favicon.ico
-└── robots.txt
+├── hero.webp             # ヒーロー画像
+├── logo-instagram.svg    # Instagramアイコン
+└── logo.webp             # ロゴ画像
+```
+
+### `types/` - グローバル型定義
+
+```
+types/
+└── next-auth.d.ts        # NextAuth.js の型拡張
 ```
 
 ## ファイル命名規則
@@ -535,31 +437,44 @@ public/
 
 ### 設定ファイル
 
-- **[`next.config.ts`](../next.config.ts)**: Next.js の設定（画像最適化、セキュリティヘッダーなど）
-- **[`tsconfig.json`](../tsconfig.json)**: TypeScript の設定
-- **[`prisma.config.ts`](../prisma.config.ts)**: Prisma 7 の設定（接続情報など）
+- **[`auth.ts`](../auth.ts)**: Auth.js エントリーポイント
 - **[`eslint.config.mjs`](../eslint.config.mjs)**: ESLint の設定
+- **[`next.config.ts`](../next.config.ts)**: Next.js の設定（画像最適化、セキュリティヘッダーなど）
+- **[`postcss.config.mjs`](../postcss.config.mjs)**: PostCSS の設定
+- **[`prisma.config.ts`](../prisma.config.ts)**: Prisma 7 の設定（接続情報など）
+- **[`tsconfig.json`](../tsconfig.json)**: TypeScript の設定
 
 ### ドキュメント
 
+```
+docs/
+├── guides/                    # ガイド系ドキュメント
+│   ├── app-router-guide.md    # App Router ガイド
+│   ├── async-await-guide.md   # Async/Await ガイド
+│   ├── authjs-guide.md        # Auth.js ガイド
+│   ├── claude-skills-guide.md # Claude スキルガイド
+│   ├── dashboard-guide.md     # ダッシュボードガイド
+│   ├── frontend-guide.md      # フロントエンドガイド
+│   ├── git-github-guide.md    # Git/GitHub ガイド
+│   ├── jsx-guide.md           # JSX ガイド
+│   ├── learning-guide.md      # 勉強用ガイド
+│   ├── nextjs-guide.md        # Next.js ガイド
+│   ├── prisma-guide.md        # Prisma ガイド
+│   ├── react-guide.md         # React ガイド
+│   ├── shadcn-ui-guide.md     # shadcn/ui ガイド
+│   ├── styling-best-practices.md # スタイリングベストプラクティス
+│   ├── typescript-guide.md    # TypeScript ガイド
+│   └── utilities-guide.md     # ユーティリティ関数ガイド
+│
+├── architecture.md            # アーキテクチャと設計思想
+├── authentication.md          # 認証の詳細
+├── development-guide.md       # 開発ガイドライン
+├── project-structure.md       # プロジェクト構造（このファイル）
+├── setup-prisma-blob.md       # Prisma & Blob セットアップ
+└── tech-stack.md              # 技術スタック
+```
+
 - **[`README.md`](../README.md)**: プロジェクトの概要とセットアップ手順
-- **[`docs/getting-started.md`](./getting-started.md)**: コードリーディングガイド
-- **[`docs/guides/learning-guide.md`](./guides/learning-guide.md)**: 勉強用ガイド（学習の進め方、ファイルの読み順序、技術スタック別おすすめファイル）
-- **[`docs/architecture.md`](./architecture.md)**: アーキテクチャと設計思想
-- **[`docs/project-structure.md`](./project-structure.md)**: プロジェクト構造（このファイル）
-- **[`docs/tech-stack.md`](./tech-stack.md)**: 技術スタックの詳細
-- **[`docs/guides/frontend-guide.md`](./guides/frontend-guide.md)**: フロントエンドガイド
-- **[`docs/guides/dashboard-guide.md`](./guides/dashboard-guide.md)**: ダッシュボードガイド
-- **[`docs/development-guide.md`](./development-guide.md)**: 開発ガイドライン
-- **[`docs/guides/nextjs-guide.md`](./guides/nextjs-guide.md)**: Next.js の詳細な使用方法
-- **[`docs/guides/app-router-guide.md`](./guides/app-router-guide.md)**: Next.js App Router の詳細な使用方法
-- **[`docs/guides/react-guide.md`](./guides/react-guide.md)**: React の詳細な使用方法
-- **[`docs/guides/jsx-guide.md`](./guides/jsx-guide.md)**: JSX の構文と使用方法
-- **[`docs/guides/typescript-guide.md`](./guides/typescript-guide.md)**: TypeScript の詳細な使用方法
-- **[`docs/guides/prisma-guide.md`](./guides/prisma-guide.md)**: Prisma の詳細な使用方法
-- **[`docs/guides/shadcn-ui-guide.md`](./guides/shadcn-ui-guide.md)**: shadcn/ui の使用方法とラッパーコンポーネントの作成
-- **[`docs/setup-prisma-blob.md`](./setup-prisma-blob.md)**: Prisma と Blob のセットアップガイド
-- **[`docs/deployment.md`](./deployment.md)**: デプロイメントガイド
 
 ## ベストプラクティス
 
