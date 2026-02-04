@@ -108,7 +108,7 @@ Java、PHP、Laravel の経験がある方は、以下のような知識を活�
 
 **推奨ファイル**:
 
-- [`app/page.tsx`](../../app/page.tsx) - Server Component の例
+- [`app/page.tsx`](../../app/(public)/page.tsx) - Server Component の例
 - [`app/api/products/route.ts`](../../app/api/products/route.ts) - API Route の例
 - [`lib/prisma.ts`](../../lib/prisma.ts) - Prisma Client の設定
 
@@ -131,8 +131,8 @@ Java、PHP、Laravel の経験がある方は、以下のような知識を活�
 **推奨ファイル**:
 
 - [`app/dashboard/page.tsx`](../../app/dashboard/page.tsx) - ダッシュボードページ
-- [`app/dashboard/components/form/ProductForm.tsx`](../../app/dashboard/components/form/ProductForm.tsx) - 商品作成・編集フォーム（`useProductForm`フックと`ProductFormFields`コンポーネントを使用）
-- [`app/dashboard/components/form/ProductFormFields.tsx`](../../app/dashboard/components/form/ProductFormFields.tsx) - 商品フォームフィールド（共通コンポーネント）
+- [`app/dashboard/homepage/components/form/ProductForm.tsx`](../../app/dashboard/homepage/components/form/ProductForm.tsx) - 商品作成・編集フォーム（`useProductForm`フックと`ProductFormFields`コンポーネントを使用）
+- [`app/dashboard/homepage/components/form/ProductFormFields.tsx`](../../app/dashboard/homepage/components/form/ProductFormFields.tsx) - 商品フォームフィールド（共通コンポーネント）
 - [`app/dashboard/homepage/hooks/useProductForm.ts`](../../app/dashboard/homepage/hooks/useProductForm.ts) - 商品フォームの状態管理フック
 - [`app/components/ProductGrid.tsx`](../../app/components/ProductGrid.tsx) - コンポーネント実装
 
@@ -287,7 +287,7 @@ Java、PHP、Laravel の経験がある方は、以下のような知識を活�
    - フロントエンド共通型定義
    - Category、Product、ProductTile の型
 
-10. [`app/dashboard/types.ts`](../../app/dashboard/types.ts)
+10. [`app/dashboard/homepage/types.ts`](../../app/dashboard/homepage/types.ts)
     - ダッシュボード用の型定義
     - フォームデータの型
 
@@ -308,14 +308,14 @@ Java、PHP、Laravel の経験がある方は、以下のような知識を活�
 
 **目的**: Server Component の概念を理解する
 
-13. [`app/page.tsx`](../../app/page.tsx)
+13. [`app/page.tsx`](../../app/(public)/page.tsx)
 
     - Server Component の例
     - データベースからのデータ取得
     - データの変換とフィルタリング
     - `ProductCategoryTabs` コンポーネントへのデータ受け渡し
 
-14. [`app/faq/page.tsx`](../../app/faq/page.tsx)
+14. [`app/faq/page.tsx`](../../app/(public)/faq/page.tsx)
     - シンプルな Server Component の例
     - 静的コンテンツの表示
 
@@ -368,7 +368,7 @@ Java、PHP、Laravel の経験がある方は、以下のような知識を活�
     - ダッシュボードページの実装
     - Server Component と Client Component の連携
 
-22. [`app/dashboard/components/form/ProductForm.tsx`](../../app/dashboard/components/form/ProductForm.tsx)
+22. [`app/dashboard/homepage/components/form/ProductForm.tsx`](../../app/dashboard/homepage/components/form/ProductForm.tsx)
 
     - 商品作成・編集フォームの実装
     - `useProductForm`フックの使用
@@ -382,7 +382,7 @@ Java、PHP、Laravel の経験がある方は、以下のような知識を活�
     - 画像の圧縮とアップロード
     - 公開状態の自動計算
 
-24. [`app/dashboard/components/list/ProductList.tsx`](../../app/dashboard/components/list/ProductList.tsx)
+24. [`app/dashboard/homepage/components/list/ProductList.tsx`](../../app/dashboard/homepage/components/list/ProductList.tsx)
 
     - 複雑な状態管理
     - コンポーネントの分割（`ProductListContent`、`ProductSearchFilters`）
@@ -396,10 +396,10 @@ Java、PHP、Laravel の経験がある方は、以下のような知識を活�
 
 **良い例**:
 
-- 「商品一覧を表示する機能を理解したい」→ [`app/page.tsx`](../../app/page.tsx)、[`app/components/ProductCategoryTabs.tsx`](../../app/components/ProductCategoryTabs.tsx)、[`app/components/ProductGrid.tsx`](../../app/components/ProductGrid.tsx)を読む
-- 「商品を追加する機能を理解したい」→ [`app/dashboard/components/form/ProductForm.tsx`](../../app/dashboard/components/form/ProductForm.tsx)、[`app/dashboard/homepage/hooks/useProductForm.ts`](../../app/dashboard/homepage/hooks/useProductForm.ts)、[`app/dashboard/components/form/ProductFormFields.tsx`](../../app/dashboard/components/form/ProductFormFields.tsx)を読む
-- 「商品を編集する機能を理解したい」→ [`app/dashboard/components/form/ProductForm.tsx`](../../app/dashboard/components/form/ProductForm.tsx)、[`app/dashboard/homepage/hooks/useProductForm.ts`](../../app/dashboard/homepage/hooks/useProductForm.ts)を読む
-- 「商品一覧の検索機能を理解したい」→ [`app/dashboard/components/ProductList.tsx`](../../app/dashboard/components/ProductList.tsx)、[`app/dashboard/components/ProductSearchFilters.tsx`](../../app/dashboard/components/ProductSearchFilters.tsx)、[`app/dashboard/utils/productUtils.ts`](../../app/dashboard/utils/productUtils.ts)を読む
+- 「商品一覧を表示する機能を理解したい」→ [`app/page.tsx`](../../app/(public)/page.tsx)、[`app/components/ProductCategoryTabs.tsx`](../../app/components/ProductCategoryTabs.tsx)、[`app/components/ProductGrid.tsx`](../../app/components/ProductGrid.tsx)を読む
+- 「商品を追加する機能を理解したい」→ [`app/dashboard/homepage/components/form/ProductForm.tsx`](../../app/dashboard/homepage/components/form/ProductForm.tsx)、[`app/dashboard/homepage/hooks/useProductForm.ts`](../../app/dashboard/homepage/hooks/useProductForm.ts)、[`app/dashboard/homepage/components/form/ProductFormFields.tsx`](../../app/dashboard/homepage/components/form/ProductFormFields.tsx)を読む
+- 「商品を編集する機能を理解したい」→ [`app/dashboard/homepage/components/form/ProductForm.tsx`](../../app/dashboard/homepage/components/form/ProductForm.tsx)、[`app/dashboard/homepage/hooks/useProductForm.ts`](../../app/dashboard/homepage/hooks/useProductForm.ts)を読む
+- 「商品一覧の検索機能を理解したい」→ [`app/dashboard/homepage/components/ProductList.tsx`](../../app/dashboard/homepage/components/ProductList.tsx)、[`app/dashboard/homepage/components/ProductSearchFilters.tsx`](../../app/dashboard/homepage/components/ProductSearchFilters.tsx)、[`app/dashboard/homepage/utils/productUtils.ts`](../../app/dashboard/homepage/utils/productUtils.ts)を読む
 - 「データベースから商品を取得する方法を知りたい」→ [`app/api/products/route.ts`](../../app/api/products/route.ts)を読む
 
 ### 2. 型定義を先に確認する
@@ -431,7 +431,7 @@ import { ValidationError } from "@/lib/errors";
 - **カスタムフック**: [`app/dashboard/homepage/hooks/useProductForm.ts`](../../app/dashboard/homepage/hooks/useProductForm.ts) - 商品フォームの状態管理フックの機能説明
 - **APIエンドポイント**: [`app/api/products/route.ts`](../../app/api/products/route.ts) - 商品一覧取得APIの機能説明
 
-**特殊な実装の説明の例**: [`app/page.tsx`](../../app/page.tsx)のコメントで、なぜ`dynamic = "force-dynamic"`を設定しているかが説明されている
+**特殊な実装の説明の例**: [`app/page.tsx`](../../app/(public)/page.tsx)のコメントで、なぜ`dynamic = "force-dynamic"`を設定しているかが説明されている
 
 **注意**: コードから明らかに分かるコメント（例：「商品名を設定」「フォームを閉じる」など）は書かれていません。コメントは、コードからは明確に分からない情報（コンポーネントの目的、提供する機能、使用方法など）のみを簡潔に記述しています。
 
@@ -507,7 +507,7 @@ import { ValidationError } from "@/lib/errors";
    - インターフェース、型エイリアス
    - オプショナルプロパティ（`?`）
 
-2. **[`app/dashboard/types.ts`](../../app/dashboard/types.ts)**
+2. **[`app/dashboard/homepage/types.ts`](../../app/dashboard/homepage/types.ts)**
 
    - より複雑な型定義
    - 型の再利用
@@ -567,7 +567,7 @@ import { ValidationError } from "@/lib/errors";
    - `useState`の使い方
    - shadcn/ui の Tabs コンポーネントの使用例
 
-5. **[`app/dashboard/components/ProductList.tsx`](../../app/dashboard/components/ProductList.tsx)**
+5. **[`app/dashboard/homepage/components/ProductList.tsx`](../../app/dashboard/homepage/components/ProductList.tsx)**
    - 複雑な状態管理
    - 複数の Hooks の組み合わせ
 
@@ -591,7 +591,7 @@ import { ValidationError } from "@/lib/errors";
 
 **おすすめファイル**:
 
-1. **[`app/page.tsx`](../../app/page.tsx)**
+1. **[`app/page.tsx`](../../app/(public)/page.tsx)**
 
    - Server Component の例
    - データベースからのデータ取得
@@ -754,7 +754,7 @@ import { ValidationError } from "@/lib/errors";
    - Tabs コンポーネントの使用例
    - タブ切り替えの実装
 
-6. **[`app/faq/page.tsx`](../../app/faq/page.tsx)**
+6. **[`app/faq/page.tsx`](../../app/(public)/faq/page.tsx)**
 
    - Card コンポーネントの使用例
    - Badge コンポーネントの使用例
@@ -794,7 +794,7 @@ import { ValidationError } from "@/lib/errors";
 
 - **Model**: Prisma のスキーマ（[`prisma/schema.prisma`](../../prisma/schema.prisma)）と Prisma Client（[`lib/prisma.ts`](../../lib/prisma.ts)）
 - **View**: React コンポーネント（[`app/components/`](../../app/components/)）
-- **Controller**: Next.js の API Routes（[`app/api/`](../../app/api/)）と Server Components（[`app/page.tsx`](../../app/page.tsx)）
+- **Controller**: Next.js の API Routes（[`app/api/`](../../app/api/)）と Server Components（[`app/page.tsx`](../../app/(public)/page.tsx)）
 
 **違い**:
 
@@ -870,7 +870,7 @@ import { ValidationError } from "@/lib/errors";
 
 **おすすめファイル**:
 
-- Server Component: [`app/page.tsx`](../../app/page.tsx)
+- Server Component: [`app/page.tsx`](../../app/(public)/page.tsx)
 - Client Component: [`app/components/ProductCategoryTabs.tsx`](../../app/components/ProductCategoryTabs.tsx)、[`app/components/ProductGrid.tsx`](../../app/components/ProductGrid.tsx)
 
 **詳細**: [`doc/guides/app-router-guide.md`](./app-router-guide.md)を参照
@@ -943,7 +943,7 @@ import { ValidationError } from "@/lib/errors";
 
 1. [`app/components/ProductTile.tsx`](../../app/components/ProductTile.tsx)（小さなコンポーネント）
 2. [`app/components/ProductGrid.tsx`](../../app/components/ProductGrid.tsx)（コンポーネントの組み合わせ）
-3. [`app/dashboard/components/DashboardContent.tsx`](../../app/dashboard/components/DashboardContent.tsx)（大きなコンポーネントの分割例）
+3. [`app/dashboard/homepage/components/DashboardContent.tsx`](../../app/dashboard/homepage/components/DashboardContent.tsx)（大きなコンポーネントの分割例）
 
 **詳細**: [`doc/guides/frontend-guide.md`](./frontend-guide.md)を参照
 
@@ -955,7 +955,7 @@ import { ValidationError } from "@/lib/errors";
 
 1. [`app/hooks/useProductModal.ts`](../../app/hooks/useProductModal.ts)（シンプルな状態管理）
 2. [`app/dashboard/homepage/hooks/useTabState.ts`](../../app/dashboard/homepage/hooks/useTabState.ts)（localStorage との連携）
-3. [`app/dashboard/components/ProductList.tsx`](../../app/dashboard/components/ProductList.tsx)（複雑な状態管理）
+3. [`app/dashboard/homepage/components/ProductList.tsx`](../../app/dashboard/homepage/components/ProductList.tsx)（複雑な状態管理）
 
 **詳細**: [`doc/guides/react-guide.md`](./react-guide.md)の「状態管理」セクションを参照
 

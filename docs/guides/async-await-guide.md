@@ -114,7 +114,7 @@ const data = await fetchData();
 
 **このアプリでの使用箇所**:
 
-1. **Server Components** ([`app/page.tsx`](../../app/page.tsx))
+1. **Server Components** ([`app/page.tsx`](../../app/(public)/page.tsx))
 
 ```typescript
 async function getPublishedProductsByCategory(): Promise<
@@ -230,7 +230,7 @@ async function example() {
 
 **このアプリでの使用例**:
 
-1. **Server Components** ([`app/page.tsx`](../../app/page.tsx))
+1. **Server Components** ([`app/page.tsx`](../../app/(public)/page.tsx))
 
 ```typescript
 async function getPublishedProductsByCategory(): Promise<
@@ -306,7 +306,7 @@ const [result1, result2] = await Promise.all([
 
 **このアプリでの使用箇所**:
 
-1. **Server Components** ([`app/page.tsx`](../../app/page.tsx))
+1. **Server Components** ([`app/page.tsx`](../../app/(public)/page.tsx))
 
 ```typescript
 // カテゴリーと商品を並列で取得（パフォーマンス向上）
@@ -605,7 +605,7 @@ await prisma.$transaction(async (tx) => {
 
 **このアプリでの使用例**:
 
-[`app/page.tsx`](../../app/page.tsx) (`getPublishedProductsByCategory`関数)
+[`app/page.tsx`](../../app/(public)/page.tsx) (`getPublishedProductsByCategory`関数)
 
 ```typescript
 // カテゴリーと商品を並列で取得

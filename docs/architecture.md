@@ -68,16 +68,19 @@ app/
 
 ```
 app/dashboard/
-├── types.ts           # 共通型定義
-├── components/        # UIコンポーネント
-├── hooks/            # 状態管理ロジック
-└── utils/            # ビジネスロジック
+├── layout.tsx         # 共通レイアウト（認証チェック）
+├── components/        # 共通コンポーネント（DashboardHeader）
+└── homepage/          # 商品管理ページ
+    ├── types.ts       # 共通型定義
+    ├── components/    # UIコンポーネント
+    ├── hooks/         # 状態管理ロジック
+    └── utils/         # ビジネスロジック
 ```
 
 **設計思想**:
 
-- **[`types.ts`](../app/dashboard/types.ts)**: その機能で使用する型を一元管理
-- **`components/`**: UI コンポーネントのみを配置
+- **[`types.ts`](../app/dashboard/homepage/types.ts)**: その機能で使用する型を一元管理
+- **`components/`**: UI コンポーネントのみを配置（form/, layout/, list/ でさらに分類）
 - **`hooks/`**: 状態管理や副作用をカスタムフックに分離
 - **`utils/`**: 純粋関数として実装可能なビジネスロジック
 
@@ -165,12 +168,12 @@ DashboardPage (Server Component)
 
 **After** (分割後):
 
-- [`ProductList.tsx`](../app/dashboard/components/ProductList.tsx): メインロジック（約 490 行）
-- [`LayoutCategoryTabs.tsx`](../app/dashboard/components/LayoutCategoryTabs.tsx): 配置変更用カテゴリータブ UI
-- [`SortableProductItem.tsx`](../app/dashboard/components/SortableProductItem.tsx): ドラッグ&ドロップ可能な商品アイテム
+- [`ProductList.tsx`](../app/dashboard/homepage/components/ProductList.tsx): メインロジック（約 490 行）
+- [`LayoutCategoryTabs.tsx`](../app/dashboard/homepage/components/LayoutCategoryTabs.tsx): 配置変更用カテゴリータブ UI
+- [`SortableProductItem.tsx`](../app/dashboard/homepage/components/SortableProductItem.tsx): ドラッグ&ドロップ可能な商品アイテム
 - [`useTabState.ts`](../app/dashboard/homepage/hooks/useTabState.ts): タブ状態管理フック
 - [`useProductReorder.ts`](../app/dashboard/homepage/hooks/useProductReorder.ts): 商品順序変更フック
-- [`productUtils.ts`](../app/dashboard/utils/productUtils.ts): 商品のグループ化・フィルタリング関数
+- [`productUtils.ts`](../app/dashboard/homepage/utils/productUtils.ts): 商品のグループ化・フィルタリング関数
 
 ## 状態管理
 
@@ -369,7 +372,7 @@ export const config = {
 
 機能内で使用する型を一元管理：
 
-[`app/dashboard/types.ts`](../app/dashboard/types.ts) (型定義)
+[`app/dashboard/homepage/types.ts`](../app/dashboard/homepage/types.ts) (型定義)
 
 ```typescript
 export interface Category {

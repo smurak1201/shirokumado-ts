@@ -400,7 +400,7 @@ export default async function HomeContent() {
 
 - [`app/components/ProductGrid.tsx`](../../app/components/ProductGrid.tsx): 商品グリッド（モーダル表示などのインタラクティブ機能）
 - [`app/components/ProductModal.tsx`](../../app/components/ProductModal.tsx): 商品詳細モーダル（開閉状態の管理）
-- [`app/dashboard/components/DashboardContent.tsx`](../../app/dashboard/components/DashboardContent.tsx): ダッシュボードコンテンツ（フォーム送信、状態管理）
+- [`app/dashboard/homepage/components/DashboardContent.tsx`](../../app/dashboard/homepage/components/DashboardContent.tsx): ダッシュボードコンテンツ（フォーム送信、状態管理）
 
 **Server Components と Client Components の使い分け**:
 
@@ -488,7 +488,7 @@ async function getDashboardData() {
 
 **このアプリでの使用箇所**:
 
-1. **[`app/dashboard/components/DashboardContent.tsx`](../../app/dashboard/components/DashboardContent.tsx) (`refreshProducts`関数)** - 商品一覧の更新
+1. **[`app/dashboard/homepage/components/DashboardContent.tsx`](../../app/dashboard/homepage/components/DashboardContent.tsx) (`refreshProducts`関数)** - 商品一覧の更新
 
 ```typescript
     try {
@@ -510,7 +510,7 @@ async function getDashboardData() {
 ```
 
 
-2. **[`app/dashboard/components/ProductList.tsx`](../../app/dashboard/components/ProductList.tsx) (`handleDelete`関数)** - 商品の削除
+2. **[`app/dashboard/homepage/components/ProductList.tsx`](../../app/dashboard/homepage/components/ProductList.tsx) (`handleDelete`関数)** - 商品の削除
 
 ```typescript
     // 削除前に確認ダイアログを表示
@@ -560,7 +560,7 @@ if (!response.ok) {
 }
 ```
 
-4. **`app/dashboard/components/form/ProductForm.tsx`** - 商品の作成と画像アップロード
+4. **`app/dashboard/homepage/components/form/ProductForm.tsx`** - 商品の作成と画像アップロード
 
 **画像アップロード（FormData を使用）**:
 
@@ -609,7 +609,7 @@ const uploadImage = useCallback(async (): Promise<string | null> => {
 }, [formData.imageFile, formData.imageUrl]);
 ```
 
-[`app/dashboard/components/form/ProductForm.tsx`](../../app/dashboard/components/form/ProductForm.tsx) (商品登録処理)
+[`app/dashboard/homepage/components/form/ProductForm.tsx`](../../app/dashboard/homepage/components/form/ProductForm.tsx) (商品登録処理)
 
 ```typescript
 const handleSubmit = async (e: React.FormEvent) => {
