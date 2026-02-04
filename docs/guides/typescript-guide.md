@@ -501,7 +501,7 @@ if (!body.name || typeof body.name !== "string") {
 }
 ```
 
-2. **サーバーサイドレンダリング時の環境チェック** ([`app/dashboard/hooks/useTabState.ts`](../../app/dashboard/hooks/useTabState.ts))
+2. **サーバーサイドレンダリング時の環境チェック** ([`app/dashboard/homepage/hooks/useTabState.ts`](../../app/dashboard/homepage/hooks/useTabState.ts))
 
 ```typescript
 if (typeof window !== "undefined") {
@@ -1339,7 +1339,7 @@ interface Product extends BaseProduct {
 
 1. **文字列リテラル型のユニオン型**: `"list" | "layout"`
 
-[`app/dashboard/hooks/useTabState.ts`](../../app/dashboard/hooks/useTabState.ts) (`TabType`型)
+[`app/dashboard/homepage/hooks/useTabState.ts`](../../app/dashboard/homepage/hooks/useTabState.ts) (`TabType`型)
 
 ```typescript
 type TabType = "list" | "layout";
@@ -1347,7 +1347,7 @@ type TabType = "list" | "layout";
 
 **使用例**:
 
-[`app/dashboard/hooks/useTabState.ts`](../../app/dashboard/hooks/useTabState.ts) (`useTabState`フック)
+[`app/dashboard/homepage/hooks/useTabState.ts`](../../app/dashboard/homepage/hooks/useTabState.ts) (`useTabState`フック)
 
 ```typescript
 const [activeTab, setActiveTab] = useState<TabType>(() => {
@@ -1752,7 +1752,7 @@ export function determinePublishedStatus(
    - `Category`: カテゴリー情報（カテゴリーオブジェクトを含む）
    - `Product`: 商品情報（公開状態、日付情報を含む）
 
-3. **型エイリアス** ([`app/dashboard/hooks/useTabState.ts`](../../app/dashboard/hooks/useTabState.ts))
+3. **型エイリアス** ([`app/dashboard/homepage/hooks/useTabState.ts`](../../app/dashboard/homepage/hooks/useTabState.ts))
    - `TabType`: 文字列リテラル型のユニオン型（`"list" | "layout"`）
 
 ### 型安全性の実装 {#型安全性の実装-1}

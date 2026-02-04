@@ -98,8 +98,8 @@ React Hooks は、関数コンポーネントで状態管理や副作用を扱�
   - [`app/dashboard/components/DashboardContent.tsx`](../../app/dashboard/components/DashboardContent.tsx): `useState` を使用
   - [`app/dashboard/components/form/ProductForm.tsx`](../../app/dashboard/components/form/ProductForm.tsx): `useProductForm` カスタムフックを使用
   - [`app/dashboard/components/form/ProductForm.tsx`](../../app/dashboard/components/form/ProductForm.tsx): `useProductForm` カスタムフックを使用
-  - [`app/dashboard/hooks/useTabState.ts`](../../app/dashboard/hooks/useTabState.ts): `useState`、`useEffect`、`localStorage` を使用
-  - [`app/dashboard/hooks/useProductForm.ts`](../../app/dashboard/hooks/useProductForm.ts): `useState`、`useEffect`、`useCallback` を使用
+  - [`app/dashboard/homepage/hooks/useTabState.ts`](../../app/dashboard/homepage/hooks/useTabState.ts): `useState`、`useEffect`、`localStorage` を使用
+  - [`app/dashboard/homepage/hooks/useProductForm.ts`](../../app/dashboard/homepage/hooks/useProductForm.ts): `useState`、`useEffect`、`useCallback` を使用
   - [`app/hooks/useProductModal.ts`](../../app/hooks/useProductModal.ts): `useState` を使用
   - [`app/hooks/useProductModal.ts`](../../app/hooks/useProductModal.ts): `useState`、`useRef` を使用
 - **バックエンド（Server Components、API Routes）**: React Hooks は使用していない。サーバーサイドで実行されるため、状態管理は不要
@@ -125,7 +125,7 @@ const [isModalOpen, setIsModalOpen] = useState(false);
 const [isFormOpen, setIsFormOpen] = useState(false);
 ```
 
-3. **[`app/dashboard/hooks/useTabState.ts`](../../app/dashboard/hooks/useTabState.ts) (`useTabState`フック)** - タブ状態の管理（localStorage と同期）
+3. **[`app/dashboard/homepage/hooks/useTabState.ts`](../../app/dashboard/homepage/hooks/useTabState.ts) (`useTabState`フック)** - タブ状態の管理（localStorage と同期）
 
 ```typescript
 const [activeTab, setActiveTab] = useState<TabType>(() => {
@@ -201,7 +201,7 @@ useEffect(() => {
 
 `ProductModal`コンポーネントでは、shadcn/ui の Dialog コンポーネントを使用しており、ESC キー処理と背景スクロール無効化が自動的に行われます。詳細については、[shadcn/ui ガイド](./shadcn-ui-guide.md) を参照してください。
 
-2. **[`app/dashboard/hooks/useTabState.ts`](../../app/dashboard/hooks/useTabState.ts) (`useTabState`フック内の`useEffect`)** - localStorage への保存
+2. **[`app/dashboard/homepage/hooks/useTabState.ts`](../../app/dashboard/homepage/hooks/useTabState.ts) (`useTabState`フック内の`useEffect`)** - localStorage への保存
 
 `useTabState`フックでは、`useEffect`を使用してタブの状態を localStorage に保存しています。詳細な実装については、[useTabState](#usetabstate)セクションを参照してください。
 
@@ -224,7 +224,7 @@ const memoizedValue = useMemo(() => {
 }, [dependencies]);
 ```
 
-1. **[`app/dashboard/hooks/useTabState.ts`](../../app/dashboard/hooks/useTabState.ts) (`useCategoryTabState`フック内の`initialCategoryTab`)** - 初期カテゴリータブの計算
+1. **[`app/dashboard/homepage/hooks/useTabState.ts`](../../app/dashboard/homepage/hooks/useTabState.ts) (`useCategoryTabState`フック内の`initialCategoryTab`)** - 初期カテゴリータブの計算
 
 `useCategoryTabState`フックでは、`useMemo`を使用して初期カテゴリータブを計算しています。詳細な実装については、[useCategoryTabState](#usecategorytabstate)セクションを参照してください。
 
@@ -600,12 +600,12 @@ export default function ProductGrid({ category, products }: ProductGridProps) {
 
 **このアプリでの使用箇所**:
 
-- [`app/dashboard/hooks/useTabState.ts`](../../app/dashboard/hooks/useTabState.ts): フックの実装
+- [`app/dashboard/homepage/hooks/useTabState.ts`](../../app/dashboard/homepage/hooks/useTabState.ts): フックの実装
 - [`app/dashboard/components/ProductList.tsx`](../../app/dashboard/components/ProductList.tsx): 商品一覧で使用
 
 **実装コード**:
 
-[`app/dashboard/hooks/useTabState.ts`](../../app/dashboard/hooks/useTabState.ts) (`useTabState`フック)
+[`app/dashboard/homepage/hooks/useTabState.ts`](../../app/dashboard/homepage/hooks/useTabState.ts) (`useTabState`フック)
 
 ```typescript
   // 初期値を localStorage から読み込む
@@ -643,7 +643,7 @@ export default function ProductGrid({ category, products }: ProductGridProps) {
 
 **このアプリでの使用箇所**:
 
-- [`app/dashboard/hooks/useTabState.ts`](../../app/dashboard/hooks/useTabState.ts): フックの実装
+- [`app/dashboard/homepage/hooks/useTabState.ts`](../../app/dashboard/homepage/hooks/useTabState.ts): フックの実装
 - [`app/dashboard/components/ProductList.tsx`](../../app/dashboard/components/ProductList.tsx): 商品一覧で使用
 
 ### useProductForm
@@ -658,7 +658,7 @@ export default function ProductGrid({ category, products }: ProductGridProps) {
 
 **このアプリでの使用箇所**:
 
-- [`app/dashboard/hooks/useProductForm.ts`](../../app/dashboard/hooks/useProductForm.ts): フックの実装
+- [`app/dashboard/homepage/hooks/useProductForm.ts`](../../app/dashboard/homepage/hooks/useProductForm.ts): フックの実装
 - [`app/dashboard/components/form/ProductForm.tsx`](../../app/dashboard/components/form/ProductForm.tsx): 新規商品登録フォームで使用
 - [`app/dashboard/components/form/ProductForm.tsx`](../../app/dashboard/components/form/ProductForm.tsx): 商品編集フォームで使用
 
@@ -666,7 +666,7 @@ export default function ProductGrid({ category, products }: ProductGridProps) {
 
 **実装コード**:
 
-[`app/dashboard/hooks/useTabState.ts`](../../app/dashboard/hooks/useTabState.ts) (`useCategoryTabState`フック)
+[`app/dashboard/homepage/hooks/useTabState.ts`](../../app/dashboard/homepage/hooks/useTabState.ts) (`useCategoryTabState`フック)
 
 ```typescript
 export function useCategoryTabState(
@@ -735,12 +735,12 @@ export function useCategoryTabState(
 
 **このアプリでの使用箇所**:
 
-- [`app/dashboard/hooks/useProductReorder.ts`](../../app/dashboard/hooks/useProductReorder.ts): フックの実装
+- [`app/dashboard/homepage/hooks/useProductReorder.ts`](../../app/dashboard/homepage/hooks/useProductReorder.ts): フックの実装
 - [`app/dashboard/components/ProductList.tsx`](../../app/dashboard/components/ProductList.tsx): 商品一覧で使用
 
 **実装コード**:
 
-[`app/dashboard/hooks/useProductReorder.ts`](../../app/dashboard/hooks/useProductReorder.ts) (`useProductReorder`フック)
+[`app/dashboard/homepage/hooks/useProductReorder.ts`](../../app/dashboard/homepage/hooks/useProductReorder.ts) (`useProductReorder`フック)
 
 ```typescript
 export function useProductReorder(
@@ -860,12 +860,12 @@ export function useProductReorder(
 
 **このアプリでの使用箇所**:
 
-- [`app/dashboard/hooks/useImageCompression.ts`](../../app/dashboard/hooks/useImageCompression.ts): フックの実装
-- [`app/dashboard/hooks/useImageUpload.ts`](../../app/dashboard/hooks/useImageUpload.ts): `useImageUpload`から使用
+- [`app/dashboard/homepage/hooks/useImageCompression.ts`](../../app/dashboard/homepage/hooks/useImageCompression.ts): フックの実装
+- [`app/dashboard/homepage/hooks/useImageUpload.ts`](../../app/dashboard/homepage/hooks/useImageUpload.ts): `useImageUpload`から使用
 
 **実装コード**:
 
-[`app/dashboard/hooks/useImageCompression.ts`](../../app/dashboard/hooks/useImageCompression.ts) (`useImageCompression`フック)
+[`app/dashboard/homepage/hooks/useImageCompression.ts`](../../app/dashboard/homepage/hooks/useImageCompression.ts) (`useImageCompression`フック)
 
 ```typescript
 export function useImageCompression() {
@@ -920,12 +920,12 @@ export function useImageCompression() {
 
 **このアプリでの使用箇所**:
 
-- [`app/dashboard/hooks/useImageUpload.ts`](../../app/dashboard/hooks/useImageUpload.ts): フックの実装
-- [`app/dashboard/hooks/useProductForm.ts`](../../app/dashboard/hooks/useProductForm.ts): 商品フォームで使用
+- [`app/dashboard/homepage/hooks/useImageUpload.ts`](../../app/dashboard/homepage/hooks/useImageUpload.ts): フックの実装
+- [`app/dashboard/homepage/hooks/useProductForm.ts`](../../app/dashboard/homepage/hooks/useProductForm.ts): 商品フォームで使用
 
 **実装コード**:
 
-[`app/dashboard/hooks/useImageUpload.ts`](../../app/dashboard/hooks/useImageUpload.ts) (`useImageUpload`フック)
+[`app/dashboard/homepage/hooks/useImageUpload.ts`](../../app/dashboard/homepage/hooks/useImageUpload.ts) (`useImageUpload`フック)
 
 ```typescript
 export function useImageUpload() {
@@ -1004,12 +1004,12 @@ export function useImageUpload() {
 
 **このアプリでの使用箇所**:
 
-- [`app/dashboard/hooks/useScrollPosition.ts`](../../app/dashboard/hooks/useScrollPosition.ts): フックの実装
+- [`app/dashboard/homepage/hooks/useScrollPosition.ts`](../../app/dashboard/homepage/hooks/useScrollPosition.ts): フックの実装
 - [`app/dashboard/components/LayoutCategoryTabs.tsx`](../../app/dashboard/components/LayoutCategoryTabs.tsx): 配置変更用カテゴリータブで使用
 
 **実装コード**:
 
-[`app/dashboard/hooks/useScrollPosition.ts`](../../app/dashboard/hooks/useScrollPosition.ts) (`useScrollPosition`フック)
+[`app/dashboard/homepage/hooks/useScrollPosition.ts`](../../app/dashboard/homepage/hooks/useScrollPosition.ts) (`useScrollPosition`フック)
 
 ```typescript
 export function useScrollPosition() {
@@ -1324,10 +1324,10 @@ function ProductTile({ product, onClick }: ProductTileProps) {
 
    - [`useProductModal.ts`](../../app/hooks/useProductModal.ts): 商品モーダルの状態管理
 
-2. **ダッシュボード用フック** (`app/dashboard/hooks/`)
+2. **ダッシュボード用フック** (`app/dashboard/homepage/hooks/`)
 
-   - [`useTabState.ts`](../../app/dashboard/hooks/useTabState.ts): タブ状態管理（localStorage との連携）
-   - [`useProductReorder.ts`](../../app/dashboard/hooks/useProductReorder.ts): 商品順序変更ロジック（楽観的 UI 更新）
+   - [`useTabState.ts`](../../app/dashboard/homepage/hooks/useTabState.ts): タブ状態管理（localStorage との連携）
+   - [`useProductReorder.ts`](../../app/dashboard/homepage/hooks/useProductReorder.ts): 商品順序変更ロジック（楽観的 UI 更新）
 
 ### 状態管理のパターン
 

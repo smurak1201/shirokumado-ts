@@ -520,7 +520,7 @@ React のベストプラクティスに従い、共有状態は親コンポー�
 
 ### カスタムフック
 
-#### useTabState ([`hooks/useTabState.ts`](../../app/dashboard/hooks/useTabState.ts))
+#### useTabState ([`hooks/useTabState.ts`](../../app/dashboard/homepage/hooks/useTabState.ts))
 
 タブ状態を localStorage と同期するカスタムフックです。
 
@@ -535,7 +535,7 @@ React のベストプラクティスに従い、共有状態は親コンポー�
 const { activeTab, setActiveTab } = useTabState();
 ```
 
-#### useCategoryTabState ([`hooks/useTabState.ts`](../../app/dashboard/hooks/useTabState.ts))
+#### useCategoryTabState ([`hooks/useTabState.ts`](../../app/dashboard/homepage/hooks/useTabState.ts))
 
 カテゴリータブの状態を管理するカスタムフックです。
 
@@ -553,7 +553,7 @@ const { activeCategoryTab, setActiveCategoryTab, initialCategoryTab } = useCateg
 );
 ```
 
-#### useProductForm ([`hooks/useProductForm.ts`](../../app/dashboard/hooks/useProductForm.ts))
+#### useProductForm ([`hooks/useProductForm.ts`](../../app/dashboard/homepage/hooks/useProductForm.ts))
 
 商品フォームの状態管理を行うカスタムフックです。
 
@@ -587,7 +587,7 @@ const {
 });
 ```
 
-#### useProductReorder ([`hooks/useProductReorder.ts`](../../app/dashboard/hooks/useProductReorder.ts))
+#### useProductReorder ([`hooks/useProductReorder.ts`](../../app/dashboard/homepage/hooks/useProductReorder.ts))
 
 商品順序変更のロジックを実装したカスタムフックです。
 
@@ -609,7 +609,7 @@ const { reorderProducts } = useProductReorder(
 await reorderProducts(categoryGroup, oldIndex, newIndex);
 ```
 
-#### useImageCompression ([`hooks/useImageCompression.ts`](../../app/dashboard/hooks/useImageCompression.ts))
+#### useImageCompression ([`hooks/useImageCompression.ts`](../../app/dashboard/homepage/hooks/useImageCompression.ts))
 
 画像圧縮処理を行うカスタムフックです。
 
@@ -626,7 +626,7 @@ const { compressing, compressImageFile } = useImageCompression();
 const processedFile = await compressImageFile(file);
 ```
 
-#### useImageUpload ([`hooks/useImageUpload.ts`](../../app/dashboard/hooks/useImageUpload.ts))
+#### useImageUpload ([`hooks/useImageUpload.ts`](../../app/dashboard/homepage/hooks/useImageUpload.ts))
 
 画像アップロード処理を行うカスタムフックです。
 
@@ -644,7 +644,7 @@ const result = await handleImageChange(file, fallbackImageUrl);
 const imageUrl = await uploadImage(imageFile, existingImageUrl);
 ```
 
-#### useScrollPosition ([`hooks/useScrollPosition.ts`](../../app/dashboard/hooks/useScrollPosition.ts))
+#### useScrollPosition ([`hooks/useScrollPosition.ts`](../../app/dashboard/homepage/hooks/useScrollPosition.ts))
 
 スクロール位置を監視するカスタムフックです。
 
@@ -816,7 +816,7 @@ file: [画像ファイル]
 
 1. **型定義の追加**: [`app/dashboard/types.ts`](../../app/dashboard/types.ts)に追加
 2. **コンポーネントの作成**: `app/dashboard/components/`に追加
-3. **カスタムフックの作成**: `app/dashboard/hooks/`に追加（必要に応じて）
+3. **カスタムフックの作成**: `app/dashboard/homepage/hooks/`に追加（必要に応じて）
 4. **API Route の作成**: `app/api/`に追加（必要に応じて）
 
 ### バリデーション
@@ -871,7 +871,7 @@ file: [画像ファイル]
   - [`app/dashboard/components/DashboardContent.tsx`](../../app/dashboard/components/DashboardContent.tsx): `fetch` API を使用して `/api/products` にアクセス
   - [`app/dashboard/components/form/ProductForm.tsx`](../../app/dashboard/components/form/ProductForm.tsx): `fetch` API を使用して `/api/products` に POST/PUT リクエスト
   - [`app/dashboard/components/ProductList.tsx`](../../app/dashboard/components/ProductList.tsx): `fetch` API を使用して `/api/products/[id]` に DELETE リクエスト
-  - [`app/dashboard/hooks/useProductReorder.ts`](../../app/dashboard/hooks/useProductReorder.ts): `fetch` API を使用して `/api/products/reorder` に POST リクエスト
+  - [`app/dashboard/homepage/hooks/useProductReorder.ts`](../../app/dashboard/homepage/hooks/useProductReorder.ts): `fetch` API を使用して `/api/products/reorder` に POST リクエスト
 - **並列データ取得（`Promise.all`を使用）** - **このアプリで使用中**（詳細は [Async/Await ガイド - Promise.all](./async-await-guide.md#promiseall---このアプリで使用中) を参照）
 
 **Prisma の`select`について**:

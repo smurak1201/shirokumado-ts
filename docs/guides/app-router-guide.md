@@ -541,7 +541,7 @@ async function getDashboardData() {
   };
 ```
 
-3. **[`app/dashboard/hooks/useProductReorder.ts`](../../app/dashboard/hooks/useProductReorder.ts) (`reorderProducts`関数)** - 商品順序の変更
+3. **[`app/dashboard/homepage/hooks/useProductReorder.ts`](../../app/dashboard/homepage/hooks/useProductReorder.ts) (`reorderProducts`関数)** - 商品順序の変更
 
 ```typescript
 // API を呼び出して商品の順序をサーバーに保存
@@ -566,7 +566,7 @@ if (!response.ok) {
 
 このアプリでは、画像アップロード処理は`useProductForm`カスタムフック内で実装されています。
 
-[`app/dashboard/hooks/useProductForm.ts`](../../app/dashboard/hooks/useProductForm.ts) (`uploadImage`関数)
+[`app/dashboard/homepage/hooks/useProductForm.ts`](../../app/dashboard/homepage/hooks/useProductForm.ts) (`uploadImage`関数)
 
 ```typescript
 const uploadImage = useCallback(async (): Promise<string | null> => {

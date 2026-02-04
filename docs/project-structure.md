@@ -325,12 +325,12 @@ app/dashboard/
 │   ├── [LayoutCategoryTabs.tsx](../app/dashboard/components/LayoutCategoryTabs.tsx)  # 配置変更用カテゴリータブ
 │   └── [SortableProductItem.tsx](../app/dashboard/components/SortableProductItem.tsx)  # ドラッグ&ドロップ可能な商品アイテム
 ├── hooks/                # カスタムフック
-│   ├── [useTabState.ts](../app/dashboard/hooks/useTabState.ts)            # タブ状態管理（localStorage連携）
-│   ├── [useProductForm.ts](../app/dashboard/hooks/useProductForm.ts)        # 商品フォームの状態管理
-│   ├── [useProductReorder.ts](../app/dashboard/hooks/useProductReorder.ts)      # 商品順序変更ロジック
-│   ├── [useImageCompression.ts](../app/dashboard/hooks/useImageCompression.ts)  # 画像圧縮処理
-│   ├── [useImageUpload.ts](../app/dashboard/hooks/useImageUpload.ts)        # 画像アップロード処理
-│   └── [useScrollPosition.ts](../app/dashboard/hooks/useScrollPosition.ts)  # スクロール位置監視
+│   ├── [useTabState.ts](../app/dashboard/homepage/hooks/useTabState.ts)            # タブ状態管理（localStorage連携）
+│   ├── [useProductForm.ts](../app/dashboard/homepage/hooks/useProductForm.ts)        # 商品フォームの状態管理
+│   ├── [useProductReorder.ts](../app/dashboard/homepage/hooks/useProductReorder.ts)      # 商品順序変更ロジック
+│   ├── [useImageCompression.ts](../app/dashboard/homepage/hooks/useImageCompression.ts)  # 画像圧縮処理
+│   ├── [useImageUpload.ts](../app/dashboard/homepage/hooks/useImageUpload.ts)        # 画像アップロード処理
+│   └── [useScrollPosition.ts](../app/dashboard/homepage/hooks/useScrollPosition.ts)  # スクロール位置監視
 └── utils/                # ユーティリティ関数
     ├── [productUtils.ts](../app/dashboard/utils/productUtils.ts)           # 商品のグループ化・フィルタリング
     ├── [productFormData.ts](../app/dashboard/utils/productFormData.ts)     # 商品フォームデータ変換（リセット・初期化・準備）

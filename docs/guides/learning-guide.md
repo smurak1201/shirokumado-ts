@@ -133,7 +133,7 @@ Java、PHP、Laravel の経験がある方は、以下のような知識を活�
 - [`app/dashboard/page.tsx`](../../app/dashboard/page.tsx) - ダッシュボードページ
 - [`app/dashboard/components/form/ProductForm.tsx`](../../app/dashboard/components/form/ProductForm.tsx) - 商品作成・編集フォーム（`useProductForm`フックと`ProductFormFields`コンポーネントを使用）
 - [`app/dashboard/components/form/ProductFormFields.tsx`](../../app/dashboard/components/form/ProductFormFields.tsx) - 商品フォームフィールド（共通コンポーネント）
-- [`app/dashboard/hooks/useProductForm.ts`](../../app/dashboard/hooks/useProductForm.ts) - 商品フォームの状態管理フック
+- [`app/dashboard/homepage/hooks/useProductForm.ts`](../../app/dashboard/homepage/hooks/useProductForm.ts) - 商品フォームの状態管理フック
 - [`app/components/ProductGrid.tsx`](../../app/components/ProductGrid.tsx) - コンポーネント実装
 
 **学習のポイント**:
@@ -375,7 +375,7 @@ Java、PHP、Laravel の経験がある方は、以下のような知識を活�
     - `ProductFormFields`コンポーネントの使用
     - 画像アップロード、バリデーション
 
-23. [`app/dashboard/hooks/useProductForm.ts`](../../app/dashboard/hooks/useProductForm.ts)
+23. [`app/dashboard/homepage/hooks/useProductForm.ts`](../../app/dashboard/homepage/hooks/useProductForm.ts)
 
     - カスタムフックの実装例
     - フォーム状態管理
@@ -397,8 +397,8 @@ Java、PHP、Laravel の経験がある方は、以下のような知識を活�
 **良い例**:
 
 - 「商品一覧を表示する機能を理解したい」→ [`app/page.tsx`](../../app/page.tsx)、[`app/components/ProductCategoryTabs.tsx`](../../app/components/ProductCategoryTabs.tsx)、[`app/components/ProductGrid.tsx`](../../app/components/ProductGrid.tsx)を読む
-- 「商品を追加する機能を理解したい」→ [`app/dashboard/components/form/ProductForm.tsx`](../../app/dashboard/components/form/ProductForm.tsx)、[`app/dashboard/hooks/useProductForm.ts`](../../app/dashboard/hooks/useProductForm.ts)、[`app/dashboard/components/form/ProductFormFields.tsx`](../../app/dashboard/components/form/ProductFormFields.tsx)を読む
-- 「商品を編集する機能を理解したい」→ [`app/dashboard/components/form/ProductForm.tsx`](../../app/dashboard/components/form/ProductForm.tsx)、[`app/dashboard/hooks/useProductForm.ts`](../../app/dashboard/hooks/useProductForm.ts)を読む
+- 「商品を追加する機能を理解したい」→ [`app/dashboard/components/form/ProductForm.tsx`](../../app/dashboard/components/form/ProductForm.tsx)、[`app/dashboard/homepage/hooks/useProductForm.ts`](../../app/dashboard/homepage/hooks/useProductForm.ts)、[`app/dashboard/components/form/ProductFormFields.tsx`](../../app/dashboard/components/form/ProductFormFields.tsx)を読む
+- 「商品を編集する機能を理解したい」→ [`app/dashboard/components/form/ProductForm.tsx`](../../app/dashboard/components/form/ProductForm.tsx)、[`app/dashboard/homepage/hooks/useProductForm.ts`](../../app/dashboard/homepage/hooks/useProductForm.ts)を読む
 - 「商品一覧の検索機能を理解したい」→ [`app/dashboard/components/ProductList.tsx`](../../app/dashboard/components/ProductList.tsx)、[`app/dashboard/components/ProductSearchFilters.tsx`](../../app/dashboard/components/ProductSearchFilters.tsx)、[`app/dashboard/utils/productUtils.ts`](../../app/dashboard/utils/productUtils.ts)を読む
 - 「データベースから商品を取得する方法を知りたい」→ [`app/api/products/route.ts`](../../app/api/products/route.ts)を読む
 
@@ -428,7 +428,7 @@ import { ValidationError } from "@/lib/errors";
 **機能説明のコメントの例**:
 
 - **コンポーネント**: [`app/components/ProductTile.tsx`](../../app/components/ProductTile.tsx) - 商品タイルコンポーネントの機能説明
-- **カスタムフック**: [`app/dashboard/hooks/useProductForm.ts`](../../app/dashboard/hooks/useProductForm.ts) - 商品フォームの状態管理フックの機能説明
+- **カスタムフック**: [`app/dashboard/homepage/hooks/useProductForm.ts`](../../app/dashboard/homepage/hooks/useProductForm.ts) - 商品フォームの状態管理フックの機能説明
 - **APIエンドポイント**: [`app/api/products/route.ts`](../../app/api/products/route.ts) - 商品一覧取得APIの機能説明
 
 **特殊な実装の説明の例**: [`app/page.tsx`](../../app/page.tsx)のコメントで、なぜ`dynamic = "force-dynamic"`を設定しているかが説明されている
@@ -851,7 +851,7 @@ import { ValidationError } from "@/lib/errors";
 - React では、クライアントサイドで状態を管理する（`useState`、`useReducer`）
 - 永続化が必要な場合は、`localStorage`や`sessionStorage`を使用する
 
-**例**: [`app/dashboard/hooks/useTabState.ts`](../../app/dashboard/hooks/useTabState.ts)で`localStorage`を使用
+**例**: [`app/dashboard/homepage/hooks/useTabState.ts`](../../app/dashboard/homepage/hooks/useTabState.ts)で`localStorage`を使用
 
 ### ミドルウェア
 
@@ -954,7 +954,7 @@ import { ValidationError } from "@/lib/errors";
 **おすすめファイル**:
 
 1. [`app/hooks/useProductModal.ts`](../../app/hooks/useProductModal.ts)（シンプルな状態管理）
-2. [`app/dashboard/hooks/useTabState.ts`](../../app/dashboard/hooks/useTabState.ts)（localStorage との連携）
+2. [`app/dashboard/homepage/hooks/useTabState.ts`](../../app/dashboard/homepage/hooks/useTabState.ts)（localStorage との連携）
 3. [`app/dashboard/components/ProductList.tsx`](../../app/dashboard/components/ProductList.tsx)（複雑な状態管理）
 
 **詳細**: [`doc/guides/react-guide.md`](./react-guide.md)の「状態管理」セクションを参照

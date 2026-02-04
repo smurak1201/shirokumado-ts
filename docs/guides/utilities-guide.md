@@ -341,7 +341,7 @@ lib/image-compression/
 
 **このアプリでの使用箇所**:
 
-- [`app/dashboard/hooks/useProductForm.ts`](../../app/dashboard/hooks/useProductForm.ts): 商品画像のアップロード前の圧縮（`ProductForm`で使用）
+- [`app/dashboard/homepage/hooks/useProductForm.ts`](../../app/dashboard/homepage/hooks/useProductForm.ts): 商品画像のアップロード前の圧縮（`ProductForm`で使用）
 
 ### compressImage
 
@@ -1005,7 +1005,7 @@ const projectId = env.NEXT_PUBLIC_STACK_PROJECT_ID; // 型安全
 
 ### 画像圧縮
 
-1. **商品画像の圧縮**: [`app/dashboard/hooks/useProductForm.ts`](../../app/dashboard/hooks/useProductForm.ts) で `compressImage()` を使用（`ProductForm`で使用）
+1. **商品画像の圧縮**: [`app/dashboard/homepage/hooks/useProductForm.ts`](../../app/dashboard/homepage/hooks/useProductForm.ts) で `compressImage()` を使用（`ProductForm`で使用）
 
 ### Blob Storage
 
