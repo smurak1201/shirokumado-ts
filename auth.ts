@@ -32,14 +32,14 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     },
     async session({ session, user }) {
       session.user.id = user.id;
-      session.user.role = user.roleName;
+      session.user.role = user.roleName ?? 'homepage';
       return session;
     },
   },
   events: {
     // ユーザー新規作成時にAllowedAdminのロールをUserに反映
     async createUser({ user }) {
-      const roleName = await getRoleNameByEmail(user.email);
+      const roleName = (await getRoleNameByEmail(user.email)) ?? 'homepage';
       await prisma.user.update({
         where: { id: user.id },
         data: { roleName },
