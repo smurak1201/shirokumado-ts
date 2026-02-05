@@ -142,6 +142,7 @@ Next.js の概念と使い方を理解します。
 | 4 | [TypeScript ガイド](./typescript-guide.md) | 型定義、インターフェース、ジェネリクス |
 | 5 | [React ガイド](./react-guide.md) | コンポーネント、Hooks、状態管理 |
 | 6 | [Async/Await ガイド](./async-await-guide.md) | 非同期処理、Promise、エラーハンドリング |
+| 6.5 | [Node.js ガイド](./nodejs-guide.md) | ランタイム、npm、環境変数管理 |
 
 ### フレームワーク（重要）
 
@@ -164,6 +165,7 @@ Next.js の概念と使い方を理解します。
 
 | ドキュメント | 内容 |
 |-------------|------|
+| [Node.js ガイド](./nodejs-guide.md) | ランタイム、npm、環境変数管理 |
 | [JSX ガイド](./jsx-guide.md) | JSX 構文、HTML との違い |
 | [ユーティリティガイド](./utilities-guide.md) | 画像圧縮、Blob Storage、設定管理 |
 | [shadcn/ui ガイド](./shadcn-ui-guide.md) | UI コンポーネントライブラリの使用方法 |
