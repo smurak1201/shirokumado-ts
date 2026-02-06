@@ -69,7 +69,7 @@
    ↓
 [Googleでログイン]
    ↓
-[Google認可画面]
+[Google認可画面（アカウント選択）]
    ↓
 [Auth.js signInコールバック]
    ↓
@@ -103,7 +103,7 @@
 </form>
 ```
 
-ユーザーがGoogleボタンをクリックすると、Server Actionで`signIn('google')`を実行し、Google認可画面へリダイレクトします。
+ユーザーがGoogleボタンをクリックすると、Server Actionで`signIn('google')`を実行し、Google認可画面へリダイレクトします。Googleプロバイダーに`prompt: 'select_account'`を設定しているため、ログアウト後の再ログイン時も毎回アカウント選択画面が表示されます。
 
 ### ログアウト
 
