@@ -114,7 +114,9 @@ npm run db:push        # スキーマをデータベースにプッシュ
 npm run db:migrate     # マイグレーションを作成・適用
 npm run db:migrate:deploy  # 本番環境でマイグレーションを適用
 npm run db:studio      # Prisma Studioを起動
-npm run db:seed        # シードデータを投入
+npm run db:seed        # 全テーブルのシードデータを投入
+npx tsx prisma/seed.ts allowed-admins  # 個別テーブルをシード
+npx tsx prisma/seed.ts --help          # 使い方を表示
 ```
 
 ## プロジェクト構造
@@ -180,7 +182,8 @@ shirokumado-ts/
 ├── prisma/                 # Prisma設定
 │   ├── schema/           # データベーススキーマ定義
 │   ├── migrations/       # マイグレーションファイル
-│   └── seed.ts           # シードデータ
+│   ├── seeds/            # テーブルごとのシードデータ
+│   └── seed.ts           # シーダーエントリーポイント
 ├── public/                 # 静的ファイル
 ├── updates/                # 更新履歴・改修ドキュメント
 │   ├── README.md          # 更新履歴の説明

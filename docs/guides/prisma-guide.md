@@ -570,58 +570,61 @@ npm run db:studio
 
 **このアプリでの使用箇所**:
 
-- [`prisma/seed.ts`](../../prisma/seed.ts): シードデータのスクリプト
+- [`prisma/seed.ts`](../../prisma/seed.ts): シーダーエントリーポイント（個別テーブル指定可能）
+- [`prisma/seeds/`](../../prisma/seeds/): テーブルごとのシードデータ
 - [`prisma.config.ts`](../../prisma.config.ts): シードファイルのパスを設定
 
 **シードファイルの構成**:
 
-[`prisma/seed.ts`](../../prisma/seed.ts) (`main`関数)
+シーダーはテーブルごとにモジュール分割されています:
+
+```
+prisma/
+├── seed.ts                # エントリーポイント（引数で対象テーブルを指定可能）
+└── seeds/
+    ├── roles.ts           # ロールマスター
+    ├── allowed-admins.ts  # 許可管理者
+    ├── categories.ts      # カテゴリー
+    └── products.ts        # 商品
+```
+
+各シードファイルはPrismaClientを引数に受け取るシード関数をエクスポートします:
 
 ```typescript
-import { PrismaClient } from "@prisma/client";
-import "dotenv/config";
+// prisma/seeds/roles.ts の例
+import type { PrismaClient } from "@prisma/client";
 
-const prisma = new PrismaClient();
+const ROLES = [
+  { name: "admin", description: "すべてのダッシュボード機能にアクセス可能" },
+  { name: "homepage", description: "ホームページ関連の機能のみ" },
+  { name: "shop", description: "ECサイト関連の機能のみ" },
+];
 
-async function main() {
-  console.log("シードデータの投入を開始します...");
-
-  // カテゴリーの作成
-  const category1 = await prisma.category.upsert({
-    where: { name: "かき氷" },
-    update: {},
-    create: {
-      name: "かき氷",
-    },
-  });
-
-  const category2 = await prisma.category.upsert({
-    where: { name: "その他" },
-    update: {},
-    create: {
-      name: "その他",
-    },
-  });
-
-  console.log("カテゴリーを作成しました:", category1.name, category2.name);
-  console.log("シードデータの投入が完了しました！");
+export async function seedRoles(prisma: PrismaClient): Promise<void> {
+  for (const role of ROLES) {
+    await prisma.role.upsert({
+      where: { name: role.name },
+      update: { description: role.description },
+      create: { name: role.name, description: role.description },
+    });
+  }
+  console.log("ロールを作成しました:", ROLES.map((r) => r.name).join(", "));
 }
-
-main()
-  .catch((e) => {
-    console.error("シードデータの投入中にエラーが発生しました:", e);
-    process.exit(1);
-  })
-  .finally(async () => {
-    await prisma.$disconnect();
-  });
 ```
 
 **シードデータの実行方法**:
 
 ```bash
-# シードデータを投入
+# 全テーブルをシード
 npm run db:seed
+
+# 個別テーブルをシード
+npx tsx prisma/seed.ts roles              # rolesだけ
+npx tsx prisma/seed.ts allowed-admins     # 許可管理者だけ
+npx tsx prisma/seed.ts roles categories   # 複数指定も可能
+
+# 使い方を表示
+npx tsx prisma/seed.ts --help
 ```
 
 **シードファイルの設定**:
@@ -642,13 +645,14 @@ export default defineConfig({
 - **`upsert` を使用**: 既存のデータを更新し、存在しない場合は作成（冪等性を保証）
 - **エラーハンドリング**: エラーが発生した場合、適切にエラーログを出力
 - **接続の切断**: 処理完了後に `prisma.$disconnect()` を呼び出して接続を切断
-- **開発環境のみ**: 本番環境ではシードデータを実行しない（手動でデータを投入）
+- **モジュール分割**: テーブルごとにファイルを分割し、個別にシード可能
 
 **理由**:
 
 - **開発効率**: 開発環境で毎回同じ初期データを投入でき、開発効率が向上
 - **テスト**: テスト環境で一貫したデータを投入でき、テストの再現性が向上
 - **冪等性**: `upsert` を使用することで、何度実行しても同じ結果になる
+- **運用性**: 本番環境で特定テーブルだけをシードしたい場合に個別指定可能
 
 ## Prisma 関数の説明と使用例
 

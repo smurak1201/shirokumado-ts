@@ -387,8 +387,13 @@ const users = await safePrismaOperation(
 ```
 prisma/
 ├── migrations/           # マイグレーションファイル（自動生成）
+├── seeds/                # テーブルごとのシードデータ
+│   ├── roles.ts          # ロールマスター
+│   ├── allowed-admins.ts # 許可管理者
+│   ├── categories.ts     # カテゴリー
+│   └── products.ts       # 商品
 ├── schema.prisma         # データベーススキーマ定義
-└── seed.ts               # シードデータ
+└── seed.ts               # シーダーエントリーポイント（個別テーブル指定可能）
 ```
 
 #### [`prisma/schema.prisma`](../prisma/schema.prisma)

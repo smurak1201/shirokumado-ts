@@ -423,16 +423,9 @@ Googleでの認証成功後、`signIn`コールバックで`AllowedAdmin`テー�
 
 ### 許可メールアドレスの管理
 
-**実装場所**: [prisma/seed.ts](../prisma/seed.ts)
+**実装場所**: [prisma/seeds/allowed-admins.ts](../prisma/seeds/allowed-admins.ts)
 
 ```typescript
-// ロールマスター（シード実行時に自動作成）
-const ROLES = [
-  { name: 'admin', description: 'すべてのダッシュボード機能にアクセス可能' },
-  { name: 'homepage', description: 'ホームページ関連の機能のみ' },
-  { name: 'shop', description: 'ECサイト関連の機能のみ' },
-];
-
 // 許可する管理者
 const ALLOWED_ADMINS = [
   { email: 's.murakoshi1201@gmail.com', role: 'admin' },
@@ -448,7 +441,7 @@ const ALLOWED_ADMINS = [
 
 **追加手順**:
 
-1. `prisma/seed.ts`の`ALLOWED_ADMINS`配列にメールアドレスを追加:
+1. `prisma/seeds/allowed-admins.ts`の`ALLOWED_ADMINS`配列にメールアドレスを追加:
 
 ```typescript
 const ALLOWED_ADMINS = [
@@ -457,11 +450,15 @@ const ALLOWED_ADMINS = [
 ];
 ```
 
-**注意**: `role`には`ROLES`配列で定義されているロール名（`admin`、`homepage`、`shop`）のみ指定できます。
+**注意**: `role`には`Role`テーブルで定義されているロール名（`admin`、`homepage`、`shop`）のみ指定できます。
 
 2. シードスクリプトを実行:
 
 ```bash
+# 許可管理者だけをシード（推奨）
+npx tsx prisma/seed.ts allowed-admins
+
+# または全テーブルをシード
 npm run db:seed
 ```
 
@@ -469,7 +466,7 @@ npm run db:seed
 
 **削除手順**:
 
-1. `prisma/seed.ts`の`ALLOWED_ADMINS`配列から削除したいメールアドレスを削除
+1. `prisma/seeds/allowed-admins.ts`の`ALLOWED_ADMINS`配列から削除したいメールアドレスを削除
 2. データベースから直接削除（次の方法2または方法3を使用）
 
 **注意**: シーダーは`upsert`を使用しているため、配列から削除してもデータベースのレコードは削除されません。削除したい場合は手動でデータベースから削除する必要があります。
@@ -547,8 +544,16 @@ npm run db:studio
 
 **新しいロールを追加する場合**:
 
-1. `prisma/seed.ts`の`ROLES`配列に新しいロールを追加
-2. `npm run db:seed`を実行
+1. `prisma/seeds/roles.ts`の`ROLES`配列に新しいロールを追加
+2. シードスクリプトを実行:
+
+```bash
+# rolesだけをシード
+npx tsx prisma/seed.ts roles
+
+# または全テーブルをシード
+npm run db:seed
+```
 
 ## セキュリティ
 
@@ -865,7 +870,7 @@ npx prisma studio
 
 ### 許可リストの更新が反映されない
 
-**症状**: `prisma/seed.ts`を編集したが、新しい管理者がログインできない。
+**症状**: `prisma/seeds/allowed-admins.ts`を編集したが、新しい管理者がログインできない。
 
 **原因**: シードスクリプトを実行していない、または実行に失敗している。
 
@@ -874,6 +879,10 @@ npx prisma studio
 1. シードスクリプトを再実行:
 
 ```bash
+# 許可管理者だけをシード
+npx tsx prisma/seed.ts allowed-admins
+
+# または全テーブルをシード
 npm run db:seed
 ```
 
@@ -918,7 +927,8 @@ VALUES (gen_random_uuid(), 'newadmin@example.com', 'admin', NOW());
 | [app/dashboard/layout.tsx](../app/dashboard/layout.tsx) | ダッシュボード共通レイアウト・ヘッダー |
 | [app/dashboard/components/DashboardHeader.tsx](../app/dashboard/components/DashboardHeader.tsx) | ユーザー情報・ログアウトボタン |
 | [prisma/schema.prisma](../prisma/schema.prisma) | データベーススキーマ（User, Account, Session等） |
-| [prisma/seed.ts](../prisma/seed.ts) | 許可管理者データの初期投入 |
+| [prisma/seed.ts](../prisma/seed.ts) | シーダーエントリーポイント（個別テーブル指定可能） |
+| [prisma/seeds/](../prisma/seeds/) | テーブルごとのシードデータ（roles, allowed-admins, categories, products） |
 | [lib/api-helpers.ts](../lib/api-helpers.ts) | APIエラーハンドリング |
 | [lib/prisma.ts](../lib/prisma.ts) | Prismaクライアント設定・safePrismaOperation |
 
