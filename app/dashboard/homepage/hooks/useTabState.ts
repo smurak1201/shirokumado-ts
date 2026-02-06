@@ -5,7 +5,7 @@
  * Next.js hydrationエラー防止のため、初期状態は常にデフォルト値を使用し、
  * マウント後にlocalStorageから読み込む。
  */
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useCallback } from "react";
 import type { Category, Product, TabType } from "../types";
 
 const STORAGE_KEYS = {
@@ -15,24 +15,21 @@ const STORAGE_KEYS = {
 
 export function useTabState() {
   const [activeTab, setActiveTab] = useState<TabType>("list");
-  const [isHydrated, setIsHydrated] = useState(false);
 
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect -- hydration対応のための初期化処理
-    setIsHydrated(true);
     const saved = localStorage.getItem(STORAGE_KEYS.ACTIVE_TAB);
     if (saved === "list" || saved === "layout") {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- hydration対応のための初期化処理
       setActiveTab(saved);
     }
   }, []);
 
-  useEffect(() => {
-    if (isHydrated) {
-      localStorage.setItem(STORAGE_KEYS.ACTIVE_TAB, activeTab);
-    }
-  }, [activeTab, isHydrated]);
+  const handleSetActiveTab = useCallback((tab: TabType) => {
+    setActiveTab(tab);
+    localStorage.setItem(STORAGE_KEYS.ACTIVE_TAB, tab);
+  }, []);
 
-  return { activeTab, setActiveTab };
+  return { activeTab, setActiveTab: handleSetActiveTab };
 }
 
 export function useCategoryTabState(
@@ -56,29 +53,26 @@ export function useCategoryTabState(
   const [activeCategoryTab, setActiveCategoryTab] = useState<string>(
     defaultCategoryTab
   );
-  const [isHydrated, setIsHydrated] = useState(false);
 
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect -- hydration対応のための初期化処理
-    setIsHydrated(true);
     const saved = localStorage.getItem(STORAGE_KEYS.ACTIVE_CATEGORY_TAB);
     if (saved) {
       const categoryExists = categories.some((c) => c.name === saved);
       if (categoryExists) {
+        // eslint-disable-next-line react-hooks/set-state-in-effect -- hydration対応のための初期化処理
         setActiveCategoryTab(saved);
       }
     }
   }, [categories]);
 
-  useEffect(() => {
-    if (isHydrated && activeCategoryTab) {
-      localStorage.setItem(STORAGE_KEYS.ACTIVE_CATEGORY_TAB, activeCategoryTab);
-    }
-  }, [activeCategoryTab, isHydrated]);
+  const handleSetActiveCategoryTab = useCallback((tab: string) => {
+    setActiveCategoryTab(tab);
+    localStorage.setItem(STORAGE_KEYS.ACTIVE_CATEGORY_TAB, tab);
+  }, []);
 
   return {
     activeCategoryTab,
-    setActiveCategoryTab,
+    setActiveCategoryTab: handleSetActiveCategoryTab,
     initialCategoryTab: defaultCategoryTab,
   };
 }

@@ -6,7 +6,7 @@
  */
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useCallback } from "react";
 import dynamic from "next/dynamic";
 import { log } from "@/lib/logger";
 import { getUserFriendlyMessageJa } from "@/lib/errors";
@@ -15,7 +15,7 @@ import ProductListTabs from "./ProductListTabs";
 import ProductListContent from "./ProductListContent";
 import { useTabState, useCategoryTabState } from "../../hooks/useTabState";
 import { useProductSearch } from "../../hooks/useProductSearch";
-import type { Category, Product } from "../../types";
+import type { Category, Product, TabType } from "../../types";
 
 const ProductLayoutTab = dynamic(
   () => import("../layout/ProductLayoutTab"),
@@ -58,11 +58,16 @@ export default function ProductList({
     filteredProducts,
   } = useProductSearch(products);
 
-  useEffect(() => {
-    if (activeTab === "layout" && initialCategoryTab) {
-      setActiveCategoryTab(initialCategoryTab);
-    }
-  }, [activeTab, initialCategoryTab, setActiveCategoryTab]);
+  // タブ切り替え時にカテゴリタブを初期値にリセット（useEffectの連鎖を回避）
+  const handleTabChange = useCallback(
+    (tab: TabType) => {
+      setActiveTab(tab);
+      if (tab === "layout" && initialCategoryTab) {
+        setActiveCategoryTab(initialCategoryTab);
+      }
+    },
+    [setActiveTab, initialCategoryTab, setActiveCategoryTab]
+  );
 
   const handleEdit = useCallback((product: Product) => {
     setEditingProduct(product);
@@ -105,7 +110,7 @@ export default function ProductList({
   return (
     <>
       <div className="rounded-lg bg-white p-6 shadow">
-        <ProductListTabs activeTab={activeTab} onTabChange={setActiveTab} />
+        <ProductListTabs activeTab={activeTab} onTabChange={handleTabChange} />
 
         <div className="min-h-100">
           {activeTab === "list" && (

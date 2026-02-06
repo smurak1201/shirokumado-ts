@@ -8,6 +8,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { useFormStatus } from 'react-dom';
 import type { Session } from 'next-auth';
 
 interface DashboardHeaderProps {
@@ -21,6 +22,21 @@ const tabs = [
   { href: '/dashboard/shop', label: 'ECサイト' },
 ] as const;
 
+// useFormStatus は <form> の子コンポーネントで呼ぶ必要がある
+function SignOutButton() {
+  const { pending } = useFormStatus();
+
+  return (
+    <button
+      type="submit"
+      disabled={pending}
+      className="whitespace-nowrap rounded-lg bg-gray-200 px-3 py-1.5 text-xs text-gray-700 transition-all hover:bg-gray-300 disabled:opacity-50 sm:px-4 sm:py-2 sm:text-sm cursor-pointer active:scale-95"
+    >
+      {pending ? 'ログアウト中...' : 'ログアウト'}
+    </button>
+  );
+}
+
 export default function DashboardHeader({ title, session, onSignOut }: DashboardHeaderProps) {
   const pathname = usePathname();
 
@@ -33,12 +49,7 @@ export default function DashboardHeader({ title, session, onSignOut }: Dashboard
           <span className="truncate text-xs text-gray-600 sm:text-sm">{session?.user?.email}</span>
 
           <form action={onSignOut}>
-            <button
-              type="submit"
-              className="whitespace-nowrap rounded-lg bg-gray-200 px-3 py-1.5 text-xs text-gray-700 transition-all hover:bg-gray-300 sm:px-4 sm:py-2 sm:text-sm cursor-pointer active:scale-95"
-            >
-              ログアウト
-            </button>
+            <SignOutButton />
           </form>
         </div>
       </div>
