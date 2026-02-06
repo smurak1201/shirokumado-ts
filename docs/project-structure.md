@@ -102,8 +102,6 @@ app/api/
 ├── auth/                 # 認証API
 │   └── [...nextauth]/
 │       └── route.ts      # NextAuth.js ハンドラー
-├── categories/           # カテゴリーAPI
-│   └── route.ts          # GET /api/categories
 ├── cron/                 # Cronジョブ
 │   └── cleanup-sessions/
 │       └── route.ts      # セッションクリーンアップ
