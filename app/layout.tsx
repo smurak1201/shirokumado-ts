@@ -6,6 +6,7 @@
 import type { Metadata } from "next";
 import { Noto_Sans_JP } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
+import { Toaster } from "@/app/components/ui/sonner";
 import "./globals.css";
 
 const notoSansJP = Noto_Sans_JP({
@@ -38,6 +39,7 @@ export default function RootLayout({
     <html lang="ja">
       <body className={`${notoSansJP.variable} antialiased`}>
         {children}
+        <Toaster />
         <Analytics />
       </body>
     </html>
