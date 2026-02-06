@@ -835,7 +835,6 @@ ERROR [getProducts] Database operation failed
 - [`lib/image-compression/`](../../lib/image-compression/): 画像圧縮の設定
 - [`lib/blob.ts`](../../lib/blob.ts): Blob Storage の設定
 - [`app/api/products/route.ts`](../../app/api/products/route.ts): API キャッシュの設定
-- [`app/api/categories/route.ts`](../../app/api/categories/route.ts): API キャッシュの設定
 
 ### 設定値の構成
 
@@ -858,8 +857,6 @@ export const config = {
   apiConfig: {
     PRODUCT_LIST_CACHE_SECONDS: 60,
     PRODUCT_LIST_STALE_WHILE_REVALIDATE_SECONDS: 120,
-    CATEGORY_LIST_CACHE_SECONDS: 300,
-    CATEGORY_LIST_STALE_WHILE_REVALIDATE_SECONDS: 600,
   },
   displayConfig: {
     GRID_COLUMNS: 3,
