@@ -5,7 +5,8 @@
  * Next.js hydrationエラー防止のため、初期状態は常にデフォルト値を使用し、
  * マウント後にlocalStorageから読み込む。
  */
-import { useState, useEffect, useMemo, useCallback } from "react";
+import { useMemo } from "react";
+import { useLocalStorageState } from "./useLocalStorageState";
 import type { Category, Product, TabType } from "../types";
 
 const STORAGE_KEYS = {
@@ -13,23 +14,16 @@ const STORAGE_KEYS = {
   ACTIVE_CATEGORY_TAB: "dashboard_active_category_tab",
 } as const;
 
+const TAB_VALUES: TabType[] = ["list", "layout"];
+
 export function useTabState() {
-  const [activeTab, setActiveTab] = useState<TabType>("list");
+  const [activeTab, setActiveTab] = useLocalStorageState<TabType>(
+    STORAGE_KEYS.ACTIVE_TAB,
+    "list",
+    { validate: (v) => TAB_VALUES.includes(v as TabType) }
+  );
 
-  useEffect(() => {
-    const saved = localStorage.getItem(STORAGE_KEYS.ACTIVE_TAB);
-    if (saved === "list" || saved === "layout") {
-      // eslint-disable-next-line react-hooks/set-state-in-effect -- hydration対応のための初期化処理
-      setActiveTab(saved);
-    }
-  }, []);
-
-  const handleSetActiveTab = useCallback((tab: TabType) => {
-    setActiveTab(tab);
-    localStorage.setItem(STORAGE_KEYS.ACTIVE_TAB, tab);
-  }, []);
-
-  return { activeTab, setActiveTab: handleSetActiveTab };
+  return { activeTab, setActiveTab };
 }
 
 export function useCategoryTabState(
@@ -50,29 +44,16 @@ export function useCategoryTabState(
     return sortedCategories[0]?.name || "";
   }, [products, categories]);
 
-  const [activeCategoryTab, setActiveCategoryTab] = useState<string>(
-    defaultCategoryTab
-  );
-
-  useEffect(() => {
-    const saved = localStorage.getItem(STORAGE_KEYS.ACTIVE_CATEGORY_TAB);
-    if (saved) {
-      const categoryExists = categories.some((c) => c.name === saved);
-      if (categoryExists) {
-        // eslint-disable-next-line react-hooks/set-state-in-effect -- hydration対応のための初期化処理
-        setActiveCategoryTab(saved);
-      }
-    }
-  }, [categories]);
-
-  const handleSetActiveCategoryTab = useCallback((tab: string) => {
-    setActiveCategoryTab(tab);
-    localStorage.setItem(STORAGE_KEYS.ACTIVE_CATEGORY_TAB, tab);
-  }, []);
+  const [activeCategoryTab, setActiveCategoryTab] =
+    useLocalStorageState<string>(
+      STORAGE_KEYS.ACTIVE_CATEGORY_TAB,
+      defaultCategoryTab,
+      { validate: (v) => categories.some((c) => c.name === v) }
+    );
 
   return {
     activeCategoryTab,
-    setActiveCategoryTab: handleSetActiveCategoryTab,
+    setActiveCategoryTab,
     initialCategoryTab: defaultCategoryTab,
   };
 }
