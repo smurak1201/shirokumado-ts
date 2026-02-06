@@ -135,8 +135,6 @@ app/
     │   │   └── route.ts   # POST /api/products/upload
     │   └── reorder/
     │       └── route.ts   # POST /api/products/reorder
-    └── categories/
-        └── route.ts       # GET /api/categories（未使用）
 ```
 
 **理由**:
