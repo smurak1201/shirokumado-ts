@@ -73,8 +73,6 @@ App Router では、`app/` ディレクトリ内のファイル構造がその�
 │   └── shop/
 │       └── page.tsx   # ショップページ（/shop）
 ├── api/               # API Routes
-│   ├── categories/
-│   │   └── route.ts   # GET /api/categories
 │   └── products/
 │       ├── [id]/
 │       │   └── route.ts # GET, PUT, DELETE /api/products/[id]
@@ -1229,9 +1227,6 @@ Next.js の `Image` コンポーネントを使用すると、画像の自動最
    - `DELETE /api/products/[id]`: 商品削除
    - `POST /api/products/upload`: 画像アップロード
    - `POST /api/products/reorder`: 商品順序変更
-
-2. **カテゴリー API** (`app/api/categories/`)
-   - `GET /api/categories`: カテゴリー一覧取得（**未使用** - ダッシュボードではサーバーコンポーネントから直接 Prisma で取得しているため、クライアントコンポーネントからの呼び出しは不要です。将来的にクライアント側でカテゴリー一覧を動的に取得する必要が生じた場合に使用する可能性があります）
 
 ### ベストプラクティス
 
