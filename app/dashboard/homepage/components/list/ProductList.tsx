@@ -8,13 +8,12 @@
 
 import { useState, useCallback } from "react";
 import dynamic from "next/dynamic";
-import { log } from "@/lib/logger";
-import { getUserFriendlyMessageJa } from "@/lib/errors";
 import ProductForm from "../form/ProductForm";
 import ProductListTabs from "./ProductListTabs";
 import ProductListContent from "./ProductListContent";
 import { useTabState, useCategoryTabState } from "../../hooks/useTabState";
 import { useProductSearch } from "../../hooks/useProductSearch";
+import { useProductDelete } from "../../hooks/useProductDelete";
 import type { Category, Product, TabType } from "../../types";
 
 const ProductLayoutTab = dynamic(
@@ -57,6 +56,7 @@ export default function ProductList({
     setSearchCategoryId,
     filteredProducts,
   } = useProductSearch(products);
+  const { handleDelete } = useProductDelete(refreshProducts);
 
   // タブ切り替え時にカテゴリタブを初期値にリセット（useEffectの連鎖を回避）
   const handleTabChange = useCallback(
@@ -72,36 +72,6 @@ export default function ProductList({
   const handleEdit = useCallback((product: Product) => {
     setEditingProduct(product);
   }, []);
-
-  const handleDelete = useCallback(
-    async (productId: number): Promise<void> => {
-      if (!confirm("本当にこの商品を削除しますか？")) {
-        return;
-      }
-
-      try {
-        const response = await fetch(`/api/products/${productId}`, {
-          method: "DELETE",
-        });
-
-        if (!response.ok) {
-          const error = await response.json();
-          throw new Error(error.error || "削除に失敗しました");
-        }
-
-        alert("商品を削除しました");
-        await refreshProducts();
-      } catch (error) {
-        log.error("商品の削除に失敗しました", {
-          context: "ProductList.handleDelete",
-          error,
-          metadata: { productId },
-        });
-        alert(getUserFriendlyMessageJa(error));
-      }
-    },
-    [refreshProducts]
-  );
 
   const handleUpdated = useCallback(async () => {
     await refreshProducts();
