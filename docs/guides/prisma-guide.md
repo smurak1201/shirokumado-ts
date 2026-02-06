@@ -60,7 +60,6 @@ Prisma 7 は、モダンなアプリケーション開発のための次世代 O
   - `app/api/products/route.ts`: 商品一覧の取得・作成
   - [`app/api/products/[id]/route.ts`](../../app/api/products/[id]/route.ts): 個別商品の取得・更新・削除
   - `app/api/products/reorder/route.ts`: 商品の並び替え（`$transaction` を使用）
-  - `app/api/categories/route.ts`: カテゴリー一覧の取得
 - **フロントエンド（Client Components）**: Prisma は使用していない。代わりに `fetch` API を使用して API Routes にアクセス
 
 **Prisma 7 の主な特徴**:
@@ -719,16 +718,6 @@ export default defineConfig({
       }),
 ```
 
-[`app/api/categories/route.ts`](../../app/api/categories/route.ts) (`GET`エクスポート内のカテゴリー取得)
-
-```typescript
-      prisma.category.findMany({
-        orderBy: {
-          id: 'asc',
-        },
-      }),
-```
-
 - `where`: フィルタリング条件
 - `orderBy`: ソート順序
 - `include`: 関連データの取得（N+1 問題を回避）
@@ -1146,16 +1135,6 @@ const products = await prisma.product.findMany({
         },
         orderBy: {
           createdAt: 'desc', // 作成日時の降順でソート（新しい順）
-        },
-      }),
-```
-
-[`app/api/categories/route.ts`](../../app/api/categories/route.ts) (`GET`エクスポート内のカテゴリー取得)
-
-```typescript
-      prisma.category.findMany({
-        orderBy: {
-          id: 'asc',
         },
       }),
 ```
