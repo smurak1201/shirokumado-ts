@@ -29,6 +29,7 @@ const ROLES = [
 // 許可する管理者
 const ALLOWED_ADMINS = [
   { email: 's.murakoshi1201@gmail.com', role: 'admin' },
+  { email: 'shirokumado.co.jp@gmail.com', role: 'admin' },
 ];
 
 // カテゴリーデータ
