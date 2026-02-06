@@ -146,6 +146,7 @@ app/components/
 │   ├── card-modal.tsx        # モーダル用ラッパー
 │   ├── card-product.tsx      # 商品タイル用ラッパー
 │   ├── dialog.tsx            # shadcn/ui の Dialog
+│   ├── sonner.tsx            # Toast通知（sonner ラッパー）
 │   └── ...                   # その他のコンポーネント
 │
 ├── ErrorBoundary.tsx         # エラーバウンダリー
@@ -183,7 +184,7 @@ app/dashboard/
 │   │   ├── layout/       # レイアウト関連（3ファイル）
 │   │   ├── list/         # リスト表示関連（6ファイル）
 │   │   └── DashboardContent.tsx
-│   ├── hooks/            # カスタムフック（7ファイル）
+│   ├── hooks/            # カスタムフック（9ファイル）
 │   ├── utils/            # ユーティリティ関数（3ファイル）
 │   ├── page.tsx          # エントリーポイント（Server Component）
 │   └── types.ts          # 共通型定義
@@ -226,6 +227,8 @@ app/dashboard/homepage/
 ├── hooks/
 │   ├── useImageCompression.ts
 │   ├── useImageUpload.ts
+│   ├── useLocalStorageState.ts
+│   ├── useProductDelete.ts
 │   ├── useProductForm.ts
 │   ├── useProductReorder.ts
 │   ├── useProductSearch.ts
@@ -286,6 +289,7 @@ lib/
 ├── api-types.ts          # APIレスポンスの型定義
 ├── auth-config.ts        # 認証設定（許可リストチェック）
 ├── blob.ts               # Blobストレージユーティリティ
+├── client-fetch.ts       # クライアントサイドAPI呼び出しユーティリティ
 ├── config.ts             # アプリケーション設定
 ├── env.ts                # 環境変数管理
 ├── errors.ts             # 統一されたエラーハンドリング
@@ -311,6 +315,18 @@ export const GET = withErrorHandling(async () => {
   const data = await fetchData();
   return apiSuccess({ data });
 });
+```
+
+#### [`lib/client-fetch.ts`](../lib/client-fetch.ts)
+
+クライアントサイドのAPI呼び出しユーティリティを提供します。
+
+- `fetchJson<T>`: レスポンスの`ok`チェックとJSONパースを統一したfetchラッパー
+
+```typescript
+import { fetchJson } from "@/lib/client-fetch";
+
+const data = await fetchJson<{ products: Product[] }>("/api/products");
 ```
 
 #### [`lib/api-types.ts`](../lib/api-types.ts)
