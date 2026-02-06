@@ -2,8 +2,10 @@
  * 商品フォーム送信処理ユーティリティ
  */
 
+import { toast } from "sonner";
 import { log } from "@/lib/logger";
 import { getUserFriendlyMessageJa } from "@/lib/errors";
+import { fetchJson } from "@/lib/client-fetch";
 import type { ProductFormData } from "../hooks/useProductForm";
 import {
   resetProductFormData,
@@ -41,20 +43,11 @@ export async function handleProductCreateSubmit({
     const imageUrl = await uploadImage();
     const submitData = prepareProductSubmitData(formData, imageUrl);
 
-    const response = await fetch("/api/products", {
+    await fetchJson("/api/products", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify(submitData),
     });
-
-    if (!response.ok) {
-      const error = await response.json();
-      throw new Error(error.error || "登録に失敗しました");
-    }
-
-    await response.json();
 
     if (imagePreview) {
       URL.revokeObjectURL(imagePreview);
@@ -74,7 +67,7 @@ export async function handleProductCreateSubmit({
       context: "handleProductCreateSubmit",
       error,
     });
-    alert(getUserFriendlyMessageJa(error));
+    toast.error(getUserFriendlyMessageJa(error));
   } finally {
     setSubmitting(false);
   }
@@ -117,7 +110,7 @@ export async function handleProductUpdateSubmit({
       try {
         imageUrl = await uploadImage();
       } catch (error) {
-        alert(getUserFriendlyMessageJa(error));
+        toast.error(getUserFriendlyMessageJa(error));
         setSubmitting(false);
         return;
       }
@@ -125,20 +118,11 @@ export async function handleProductUpdateSubmit({
 
     const submitData = prepareProductSubmitData(formData, imageUrl);
 
-    const response = await fetch(`/api/products/${productId}`, {
+    await fetchJson(`/api/products/${productId}`, {
       method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify(submitData),
     });
-
-    if (!response.ok) {
-      const error = await response.json();
-      throw new Error(error.error || "更新に失敗しました");
-    }
-
-    await response.json();
 
     if (imagePreview && imagePreview !== originalImageUrl) {
       URL.revokeObjectURL(imagePreview);
@@ -152,7 +136,7 @@ export async function handleProductUpdateSubmit({
       error,
       metadata: { productId },
     });
-    alert(getUserFriendlyMessageJa(error));
+    toast.error(getUserFriendlyMessageJa(error));
   } finally {
     setSubmitting(false);
   }
