@@ -100,6 +100,7 @@ lib/
 ├── blob.ts           # ストレージ操作
 ├── errors.ts         # エラーハンドリング
 ├── api-helpers.ts    # API共通処理
+├── client-fetch.ts   # クライアントサイドAPI呼び出しユーティリティ
 └── auth-config.ts    # 認証設定（許可リストチェック）
 ```
 
@@ -193,12 +194,23 @@ DashboardPage (Server Component)
 
 #### ダッシュボード用フック
 
+##### `useLocalStorageState`
+
+[`app/dashboard/homepage/hooks/useLocalStorageState.ts`](../app/dashboard/homepage/hooks/useLocalStorageState.ts) (`useLocalStorageState`フック)
+
+```typescript
+// localStorage永続化の汎用フック（hydration対応）
+const [value, setValue] = useLocalStorageState("key", defaultValue, {
+  validate: (v) => isValid(v),
+});
+```
+
 ##### `useTabState`
 
 [`app/dashboard/homepage/hooks/useTabState.ts`](../app/dashboard/homepage/hooks/useTabState.ts) (`useTabState`フック)
 
 ```typescript
-// タブ状態をlocalStorageと同期
+// タブ状態をlocalStorageと同期（内部でuseLocalStorageStateを使用）
 const { activeTab, setActiveTab } = useTabState();
 ```
 
@@ -207,7 +219,7 @@ const { activeTab, setActiveTab } = useTabState();
 [`app/dashboard/homepage/hooks/useTabState.ts`](../app/dashboard/homepage/hooks/useTabState.ts) (`useCategoryTabState`フック)
 
 ```typescript
-// カテゴリータブの状態管理
+// カテゴリータブの状態管理（内部でuseLocalStorageStateを使用）
 const { activeCategoryTab, setActiveCategoryTab } = useCategoryTabState(
   products,
   categories
@@ -239,6 +251,15 @@ const { compressing, compressImageFile } = useImageCompression();
 ```typescript
 // 画像アップロード処理
 const { uploading, compressing, handleImageChange, uploadImage } = useImageUpload();
+```
+
+##### `useProductDelete`
+
+[`app/dashboard/homepage/hooks/useProductDelete.ts`](../app/dashboard/homepage/hooks/useProductDelete.ts) (`useProductDelete`フック)
+
+```typescript
+// 商品削除処理（確認ダイアログ → API呼び出し → Toast通知 → リフレッシュ）
+const { handleDelete } = useProductDelete(refreshProducts);
 ```
 
 ##### `useScrollPosition`
@@ -312,11 +333,11 @@ ProductList (Client Component)
 
 ```
 Client Component
-  ↓ fetch('/api/products')
+  ↓ fetchJson('/api/products')  ← lib/client-fetch.ts
 API Route
   ↓ Prismaクエリ
 Database
-  ↓ レスポンス
+  ↓ レスポンス（自動パース・エラーハンドリング）
 Client Component (状態更新)
 ```
 
@@ -437,6 +458,22 @@ export const GET = withErrorHandling(async () => {
   const data = await fetchData();
   return apiSuccess({ data });
 });
+```
+
+### クライアントサイドのエラーハンドリング
+
+[`lib/client-fetch.ts`](../lib/client-fetch.ts) (`fetchJson`関数) でレスポンスのエラーチェックとJSONパースを統一し、[`sonner`](https://sonner.emilkowal.dev/) の `toast` でユーザーに通知します。
+
+```typescript
+import { fetchJson } from "@/lib/client-fetch";
+import { toast } from "sonner";
+
+try {
+  await fetchJson("/api/products", { method: "POST", ... });
+  toast.success("商品を登録しました");
+} catch (error) {
+  toast.error(getUserFriendlyMessageJa(error));
+}
 ```
 
 **詳細**: エラーハンドリングの詳細については、[開発ガイドライン - エラーハンドリング](./development-guide.md#エラーハンドリング) と [ユーティリティ関数ガイド - エラーハンドリング](./guides/utilities-guide.md#エラーハンドリング-liberrorsts) を参照してください。
