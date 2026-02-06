@@ -467,7 +467,6 @@ className = "grid grid-cols-1 md:grid-cols-3";
   - `app/api/products/route.ts`: Prisma を使用して商品の CRUD 操作を実行
   - [`app/api/products/[id]/route.ts`](../../app/api/products/[id]/route.ts): Prisma を使用して個別商品の操作を実行
   - `app/api/products/reorder/route.ts`: Prisma の `$transaction` を使用して並び替えを実行
-  - `app/api/categories/route.ts`: Prisma を使用してカテゴリー一覧を取得
 - **`safePrismaOperation`**: Prisma 操作のエラーハンドリング
   - すべての API Routes で使用
 - **`FormData` の受信**: 画像アップロード時に `FormData` を受信
