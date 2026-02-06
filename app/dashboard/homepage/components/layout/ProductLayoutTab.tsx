@@ -8,6 +8,7 @@
 "use client";
 
 import { useMemo, useCallback } from "react";
+import { toast } from "sonner";
 import { getUserFriendlyMessageJa } from "@/lib/errors";
 import { config } from "@/lib/config";
 import {
@@ -99,7 +100,7 @@ export default function ProductLayoutTab({
       try {
         await reorderProducts(categoryGroup, oldIndex, newIndex);
       } catch (error) {
-        alert(getUserFriendlyMessageJa(error));
+        toast.error(getUserFriendlyMessageJa(error));
       }
     },
     [publishedProductsByCategory, reorderProducts]
