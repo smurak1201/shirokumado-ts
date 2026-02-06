@@ -35,6 +35,7 @@
 - **TypeScript**
 - **Prisma** (ORM)
 - **Tailwind CSS**
+- **sonner** (Toast通知)
 - **@dnd-kit** (ドラッグ&ドロップ)
 
 ### アクセス方法
@@ -109,9 +110,11 @@ app/dashboard/
 │   │       ├── ProductCardContent.tsx # 商品カードコンテンツ
 │   │       └── ProductSearchFilters.tsx # 商品検索フィルター
 │   ├── hooks/                  # カスタムフック
+│   │   ├── useLocalStorageState.ts # localStorage永続化の汎用フック
 │   │   ├── useTabState.ts          # タブ状態管理
 │   │   ├── useProductForm.ts       # 商品フォームの状態管理
 │   │   ├── useProductReorder.ts    # 商品順序変更ロジック
+│   │   ├── useProductDelete.ts     # 商品削除ロジック
 │   │   ├── useImageCompression.ts  # 画像圧縮処理
 │   │   ├── useImageUpload.ts       # 画像アップロード処理
 │   │   ├── useProductSearch.ts     # 商品検索ロジック
@@ -210,10 +213,9 @@ const [isFormOpen, setIsFormOpen] = useState(false);
 
 // 商品一覧をサーバーから取得して更新する関数
 const refreshProducts = async () => {
-  const response = await fetch(`/api/products?t=${Date.now()}`, {
-    cache: "no-store",
-  });
-  const data = await response.json();
+  const data = await fetchJson<{ products: Product[] }>(
+    `/api/products?t=${Date.now()}`
+  );
   setProducts(data.products || []);
 };
 ```
@@ -462,14 +464,14 @@ DashboardContent (Client Component)
 ```
 フォーム入力
   ↓ バリデーション
-  ↓ fetch('/api/products', { method: 'POST' })
+  ↓ fetchJson('/api/products', { method: 'POST' })
 API Route
   ↓ Prisma 操作
 Database
-  ↓ レスポンス
+  ↓ レスポンス（自動パース・エラーハンドリング）
 DashboardContent
   ↓ refreshProducts() を呼び出し
-  ↓ fetch('/api/products') で最新データを取得
+  ↓ fetchJson('/api/products') で最新データを取得
   ↓ setProducts() で状態更新
   ↓ props で ProductList に渡す
   ↓ UI 更新
@@ -484,15 +486,15 @@ DashboardContent
 ### 商品順序変更フロー
 
 ```
-ProductList
+ProductLayoutTab
   ↓ ドラッグ&ドロップ
   ↓ 楽観的 UI 更新（即座に状態更新）
-  ↓ fetch('/api/products/reorder', { method: 'POST' })
+  ↓ fetchJson('/api/products/reorder', { method: 'POST' })
 API Route
   ↓ Prisma 操作
 Database
   ↓ 成功: 最新データを取得
-  ↓ 失敗: エラー表示 + 元の状態に戻す
+  ↓ 失敗: Toast通知 + 元の状態に戻す
 ```
 
 ## 状態管理
@@ -528,14 +530,32 @@ React のベストプラクティスに従い、共有状態は親コンポー�
 
 ### カスタムフック
 
+#### useLocalStorageState ([`hooks/useLocalStorageState.ts`](../../app/dashboard/homepage/hooks/useLocalStorageState.ts))
+
+localStorage永続化の汎用フックです。hydration対応（初期値はdefaultValue、マウント後にlocalStorageから読み込み）。
+
+**機能**:
+
+- localStorageとの自動同期
+- オプションの `validate` 関数で保存値の検証
+- SSR/hydrationに対応（初回レンダリングはdefaultValueを使用）
+
+**使用例**:
+
+```typescript
+const [value, setValue] = useLocalStorageState("key", defaultValue, {
+  validate: (v) => isValid(v),
+});
+```
+
 #### useTabState ([`hooks/useTabState.ts`](../../app/dashboard/homepage/hooks/useTabState.ts))
 
-タブ状態を localStorage と同期するカスタムフックです。
+タブ状態を localStorage と同期するカスタムフックです。内部で `useLocalStorageState` を使用しています。
 
 **機能**:
 
 - タブ状態の保存・復元
-- `setActiveTab` 呼び出し時に localStorage へ直接書き込み（useEffect チェーンを使わず1回のレンダリングで完結）
+- `setActiveTab` 呼び出し時に localStorage へ直接書き込み
 
 **使用例**:
 
@@ -545,7 +565,7 @@ const { activeTab, setActiveTab } = useTabState();
 
 #### useCategoryTabState ([`hooks/useTabState.ts`](../../app/dashboard/homepage/hooks/useTabState.ts))
 
-カテゴリータブの状態を管理するカスタムフックです。
+カテゴリータブの状態を管理するカスタムフックです。内部で `useLocalStorageState` を使用しています。
 
 **機能**:
 
@@ -560,6 +580,26 @@ const { activeCategoryTab, setActiveCategoryTab, initialCategoryTab } = useCateg
   products,
   categories
 );
+```
+
+#### useProductDelete ([`hooks/useProductDelete.ts`](../../app/dashboard/homepage/hooks/useProductDelete.ts))
+
+商品削除の一連の処理を管理するカスタムフックです。
+
+**機能**:
+
+- 確認ダイアログの表示
+- `fetchJson` によるAPI呼び出し
+- Toast通知（成功・エラー）
+- 商品一覧のリフレッシュ
+
+**使用例**:
+
+```typescript
+const { handleDelete } = useProductDelete(refreshProducts);
+
+// 使用
+await handleDelete(productId);
 ```
 
 #### useProductForm ([`hooks/useProductForm.ts`](../../app/dashboard/homepage/hooks/useProductForm.ts))
@@ -850,7 +890,8 @@ file: [画像ファイル]
 
 - **API Routes**: [`lib/api-helpers.ts`](../../lib/api-helpers.ts)の`withErrorHandling`を使用
 - **エラークラス**: [`lib/errors.ts`](../../lib/errors.ts)で定義
-- **クライアントサイド**: try-catch でエラーをキャッチし、ユーザーに通知
+- **クライアントサイドAPI呼び出し**: [`lib/client-fetch.ts`](../../lib/client-fetch.ts)の`fetchJson`でレスポンスパース・エラーチェックを統一
+- **ユーザー通知**: `sonner`の`toast`でToast通知（`alert()`は使用禁止）
 
 ### テスト
 
@@ -877,10 +918,11 @@ file: [画像ファイル]
 - **Server Component でデータを取得** - **このアプリで使用中**
   - [`app/dashboard/page.tsx`](../../app/dashboard/page.tsx): Prisma を使用してデータベースから直接データを取得（`Promise.all`と`safePrismaOperation`を使用して並列取得とエラーハンドリングを実装）
 - **Client Component で API Routes にアクセス** - **このアプリで使用中**
-  - [`app/dashboard/homepage/components/DashboardContent.tsx`](../../app/dashboard/homepage/components/DashboardContent.tsx): `fetch` API を使用して `/api/products` にアクセス
-  - [`app/dashboard/homepage/components/form/ProductForm.tsx`](../../app/dashboard/homepage/components/form/ProductForm.tsx): `fetch` API を使用して `/api/products` に POST/PUT リクエスト
-  - [`app/dashboard/homepage/components/list/ProductList.tsx`](../../app/dashboard/homepage/components/list/ProductList.tsx): `fetch` API を使用して `/api/products/[id]` に DELETE リクエスト
-  - [`app/dashboard/homepage/hooks/useProductReorder.ts`](../../app/dashboard/homepage/hooks/useProductReorder.ts): `fetch` API を使用して `/api/products/reorder` に POST リクエスト
+  - [`lib/client-fetch.ts`](../../lib/client-fetch.ts)の`fetchJson`で統一的にAPI呼び出し（レスポンスパース・エラーハンドリング込み）
+  - [`app/dashboard/homepage/components/DashboardContent.tsx`](../../app/dashboard/homepage/components/DashboardContent.tsx): `fetchJson` で `/api/products` にアクセス
+  - [`app/dashboard/homepage/utils/productFormSubmit.ts`](../../app/dashboard/homepage/utils/productFormSubmit.ts): `fetchJson` で `/api/products` に POST/PUT リクエスト
+  - [`app/dashboard/homepage/hooks/useProductDelete.ts`](../../app/dashboard/homepage/hooks/useProductDelete.ts): `fetchJson` で `/api/products/[id]` に DELETE リクエスト
+  - [`app/dashboard/homepage/hooks/useProductReorder.ts`](../../app/dashboard/homepage/hooks/useProductReorder.ts): `fetchJson` で `/api/products/reorder` に POST リクエスト
 - **並列データ取得（`Promise.all`を使用）** - **このアプリで使用中**（詳細は [Async/Await ガイド - Promise.all](./async-await-guide.md#promiseall---このアプリで使用中) を参照）
 
 **Prisma の`select`について**:
