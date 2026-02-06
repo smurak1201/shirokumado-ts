@@ -83,12 +83,17 @@ export function getUserFriendlyMessage(error: unknown): string {
   return 'An unexpected error occurred';
 }
 
+/**
+ * 本番環境では予期しないエラーの詳細を隠す（セキュリティ対策）
+ */
 export function getUserFriendlyMessageJa(error: unknown): string {
   if (error instanceof AppError) {
     return error.message;
   }
   if (error instanceof Error) {
-    return error.message;
+    return process.env.NODE_ENV === 'production'
+      ? '処理に失敗しました'
+      : error.message;
   }
   return "処理に失敗しました";
 }
