@@ -13,7 +13,16 @@ import type { Adapter } from 'next-auth/adapters';
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   adapter: PrismaAdapter(prisma) as Adapter,
-  providers: [Google],
+  providers: [
+    Google({
+      authorization: {
+        params: {
+          // ログイン時に毎回アカウント選択画面を表示する
+          prompt: 'select_account',
+        },
+      },
+    }),
+  ],
   session: {
     strategy: 'database',
     maxAge: 7 * 24 * 60 * 60, // 1週間
