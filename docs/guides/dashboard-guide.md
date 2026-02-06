@@ -286,6 +286,7 @@ interface ProductListProps {
 - `@dnd-kit`を使用したドラッグ&ドロップ
 - 楽観的 UI 更新
 - タブ状態の localStorage 連携
+- タブ切り替え時にカテゴリタブを直接リセット（useEffect チェーンを使わず1回のレンダリングで完結）
 - コンポーネントの分割（`ProductListTabs`、`ProductListContent`、`ProductSearchFilters`、`ProductLayoutTab`、`LayoutCategoryTabs`）
 
 ### ProductListTabs ([`components/list/ProductListTabs.tsx`](../../app/dashboard/homepage/components/list/ProductListTabs.tsx))
@@ -534,7 +535,7 @@ React のベストプラクティスに従い、共有状態は親コンポー�
 **機能**:
 
 - タブ状態の保存・復元
-- localStorage との同期
+- `setActiveTab` 呼び出し時に localStorage へ直接書き込み（useEffect チェーンを使わず1回のレンダリングで完結）
 
 **使用例**:
 
@@ -550,6 +551,7 @@ const { activeTab, setActiveTab } = useTabState();
 
 - カテゴリータブの状態を localStorage に保存・復元
 - 公開商品がある最初のカテゴリーを自動選択
+- `setActiveCategoryTab` 呼び出し時に localStorage へ直接書き込み
 
 **使用例**:
 

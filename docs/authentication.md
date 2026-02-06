@@ -109,14 +109,23 @@
 
 **実装場所**: [app/dashboard/components/DashboardHeader.tsx](../app/dashboard/components/DashboardHeader.tsx)
 
+Server Actionをform actionで呼び出し、`useFormStatus`で送信中の状態を表示します。
+
 ```tsx
-<form
-  action={async () => {
-    'use server';
-    await signOut({ redirectTo: '/auth/signin' });
-  }}
->
-  <button type="submit">ログアウト</button>
+// useFormStatus は <form> の子コンポーネントで呼ぶ必要がある
+function SignOutButton() {
+  const { pending } = useFormStatus();
+
+  return (
+    <button type="submit" disabled={pending}>
+      {pending ? 'ログアウト中...' : 'ログアウト'}
+    </button>
+  );
+}
+
+// layout.tsx から Server Action を props で受け取る
+<form action={onSignOut}>
+  <SignOutButton />
 </form>
 ```
 
