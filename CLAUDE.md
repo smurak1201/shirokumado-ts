@@ -169,6 +169,29 @@
 - **エラーメッセージはユーザーにとって分かりやすく**
 - **API Routesではエラーハンドリングを統一すること**
 
+### クライアントサイドAPI呼び出し
+
+- **`fetchJson`（`lib/client-fetch.ts`）を使用すること**
+  - レスポンスの`ok`チェックとJSONパースを統一
+  - エラー時はAPIレスポンスの`error`フィールドからメッセージを取得
+
+  ```typescript
+  import { fetchJson } from "@/lib/client-fetch";
+
+  const data = await fetchJson<{ products: Product[] }>("/api/products");
+  ```
+
+### ユーザー通知
+
+- **`alert()`は使用禁止。`sonner`のtoastを使用すること**
+
+  ```typescript
+  import { toast } from "sonner";
+
+  toast.success("商品を削除しました");
+  toast.error(getUserFriendlyMessageJa(error));
+  ```
+
 ### セキュリティ
 
 - **ユーザー入力はサニタイズすること**
