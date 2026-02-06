@@ -9,6 +9,7 @@
  */
 import { prisma, safePrismaOperation } from '@/lib/prisma';
 import { withErrorHandling, apiSuccess, apiError } from '@/lib/api-helpers';
+import { log } from '@/lib/logger';
 
 export const GET = withErrorHandling(async (request: Request) => {
   // Vercel Cronからのリクエストを検証
@@ -16,7 +17,7 @@ export const GET = withErrorHandling(async (request: Request) => {
   const cronSecret = process.env.CRON_SECRET;
 
   if (!cronSecret) {
-    console.error('CRON_SECRET is not configured');
+    log.error('CRON_SECRET is not configured', { context: 'cleanup-sessions' });
     return apiError('Server configuration error', 500);
   }
 
@@ -35,7 +36,10 @@ export const GET = withErrorHandling(async (request: Request) => {
     return deleted;
   }, 'cleanup-sessions');
 
-  console.log(`Cleanup completed: ${result.count} expired sessions deleted`);
+  log.info(`Cleanup completed: ${result.count} expired sessions deleted`, {
+    context: 'cleanup-sessions',
+    metadata: { deletedCount: result.count },
+  });
 
   return apiSuccess({
     deletedCount: result.count,
