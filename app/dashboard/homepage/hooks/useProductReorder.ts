@@ -5,6 +5,7 @@
  * 楽観的UI更新でAPIレスポンス前に画面を更新し、エラー時はロールバックする。
  */
 import { arrayMove } from "@dnd-kit/sortable";
+import { fetchJson } from "@/lib/client-fetch";
 import type { Product } from "../types";
 
 export function useProductReorder(
@@ -39,18 +40,11 @@ export function useProductReorder(
     });
 
     try {
-      const response = await fetch("/api/products/reorder", {
+      await fetchJson("/api/products/reorder", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ productOrders }),
       });
-
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}));
-        throw new Error(errorData.error || "順序の更新に失敗しました");
-      }
 
       await refreshProducts();
     } catch (error) {
