@@ -6,30 +6,29 @@
  */
 import { useState, useEffect, useCallback } from "react";
 
-interface UseLocalStorageStateOptions<T> {
+interface UseLocalStorageStateOptions {
   /** localStorageの値が有効かどうかを検証する関数 */
   validate?: (value: string) => boolean;
-  /** localStorageから読み込んだ文字列をTに変換する関数（デフォルト: そのまま返す） */
-  deserialize?: (value: string) => T;
 }
 
 export function useLocalStorageState<T extends string>(
   key: string,
   defaultValue: T,
-  options?: UseLocalStorageStateOptions<T>
+  options?: UseLocalStorageStateOptions
 ): [T, (value: T) => void] {
+  const validate = options?.validate;
   const [value, setValue] = useState<T>(defaultValue);
 
   useEffect(() => {
     const saved = localStorage.getItem(key);
     if (saved !== null) {
-      if (options?.validate && !options.validate(saved)) {
+      if (validate && !validate(saved)) {
         return;
       }
       // eslint-disable-next-line react-hooks/set-state-in-effect -- hydration対応のための初期化処理
-      setValue(options?.deserialize ? options.deserialize(saved) : (saved as T));
+      setValue(saved as T);
     }
-  }, [key, options?.validate, options?.deserialize]);
+  }, [key, validate]);
 
   const handleSetValue = useCallback(
     (newValue: T) => {
