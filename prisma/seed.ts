@@ -2,7 +2,7 @@
  * Prisma シーダー
  *
  * コマンドライン引数でシード対象を指定可能
- *   npm run db:seed                            # 使い方を表示
+ *   npm run db:seed                            # 対話モード
  *   npm run db:seed -- help                    # 使い方を表示
  *   npm run db:seed -- all                     # 全テーブル
  *   npm run db:seed -- roles                   # rolesだけ
@@ -10,6 +10,7 @@
  */
 import { PrismaClient } from '@prisma/client';
 import { PrismaNeon } from '@prisma/adapter-neon';
+import * as readline from 'readline';
 import 'dotenv/config';
 import { seedRoles } from './seeds/roles';
 import { seedAllowedAdmins } from './seeds/allowed-admins';
@@ -36,7 +37,7 @@ function showHelp(): void {
   ${SEEDER_NAMES.join('\n  ')}
 
 例:
-  npm run db:seed                            使い方を表示
+  npm run db:seed                            対話モード
   npm run db:seed -- help                    使い方を表示
   npm run db:seed -- all                     全テーブルをシード
   npm run db:seed -- roles                   rolesだけシード
@@ -44,12 +45,66 @@ function showHelp(): void {
 `);
 }
 
-function parseArgs(): SeederName[] {
+function prompt(question: string): Promise<string> {
+  const rl = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout,
+  });
+  return new Promise((resolve) => {
+    rl.question(question, (answer) => {
+      rl.close();
+      resolve(answer.trim());
+    });
+  });
+}
+
+async function interactiveSelect(): Promise<SeederName[]> {
+  console.log('\nどのテーブルのデータを投入しますか？\n');
+  console.log('  0) all（全テーブル）');
+  SEEDER_NAMES.forEach((name, i) => {
+    console.log(`  ${i + 1}) ${name}（${SEEDERS[name].label}）`);
+  });
+  console.log();
+
+  const answer = await prompt('番号を入力（複数はスペース区切り）: ');
+
+  if (!answer) {
+    console.error('入力がありません。');
+    process.exit(1);
+  }
+
+  const numbers = answer.split(/[\s,]+/).map(Number);
+
+  if (numbers.some((n) => isNaN(n) || n < 0 || n > SEEDER_NAMES.length)) {
+    console.error('無効な番号が含まれています。');
+    process.exit(1);
+  }
+
+  const targets = numbers.includes(0)
+    ? SEEDER_NAMES
+    : numbers.map((n) => SEEDER_NAMES[n - 1]!);
+
+  const labels = targets.map((t) => SEEDERS[t].label).join(', ');
+  const confirm = await prompt(`\n対象: ${labels}\n実行しますか？ (y/N): `);
+
+  if (confirm.toLowerCase() !== 'y') {
+    console.log('キャンセルしました。');
+    process.exit(0);
+  }
+
+  return targets;
+}
+
+async function parseArgs(): Promise<SeederName[]> {
   const args = process.argv.slice(2);
 
-  if (args.length === 0 || args.includes('help') || args.includes('h')) {
+  if (args.includes('help') || args.includes('h')) {
     showHelp();
     process.exit(0);
+  }
+
+  if (args.length === 0) {
+    return interactiveSelect();
   }
 
   if (args.includes('all')) {
@@ -69,7 +124,7 @@ function parseArgs(): SeederName[] {
 }
 
 async function main(): Promise<void> {
-  const targets = parseArgs();
+  const targets = await parseArgs();
 
   const databaseUrl = process.env.DATABASE_URL;
   if (!databaseUrl) {
