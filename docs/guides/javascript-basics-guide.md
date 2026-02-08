@@ -31,6 +31,8 @@
   - [find](#find)
   - [includes（存在チェック）](#includes存在チェック)
   - [join（結合）](#join結合)
+  - [some（1 つでも条件を満たすか）](#some1-つでも条件を満たすか)
+  - [every（すべてが条件を満たすか）](#everyすべてが条件を満たすか)
 - [条件分岐の構文](#条件分岐の構文)
   - [三項演算子](#三項演算子)
   - [論理積演算子（&&）](#論理積演算子)
@@ -40,6 +42,15 @@
   - [テンプレート文字列](#テンプレート文字列)
 - [オブジェクトの操作](#オブジェクトの操作)
   - [Object.keys / Object.values / Object.entries](#objectkeys--objectvalues--objectentries)
+- [コールバック関数](#コールバック関数)
+- [import / export（モジュールシステム）](#import--exportモジュールシステム)
+  - [名前付きインポート / エクスポート](#名前付きインポート--エクスポート)
+  - [デフォルトインポート / エクスポート](#デフォルトインポート--エクスポート)
+- [配列の非破壊的な更新パターン](#配列の非破壊的な更新パターン)
+  - [要素の追加](#要素の追加)
+  - [要素の削除](#要素の削除)
+  - [要素の更新](#要素の更新)
+- [async / await の基本](#async--await-の基本)
 - [コードスタイルと可読性](#コードスタイルと可読性)
   - [三項演算子の使い分け](#三項演算子の使い分け)
   - [関数呼び出しによるコードの整理](#関数呼び出しによるコードの整理)
@@ -284,6 +295,26 @@ const fruitList = fruits.join(", "); // 'りんご, バナナ, オレンジ'
 const html = fruits.map((fruit) => `<li>${fruit}</li>`).join("\n");
 ```
 
+### some（1 つでも条件を満たすか）
+
+配列の中に条件を満たす要素が 1 つでもあれば `true` を返します。
+
+```typescript
+const products = [
+  { name: "商品A", published: true },
+  { name: "商品B", published: false },
+];
+const hasPublished = products.some((p) => p.published); // true
+```
+
+### every（すべてが条件を満たすか）
+
+配列のすべての要素が条件を満たす場合のみ `true` を返します。
+
+```typescript
+const allPublished = products.every((p) => p.published); // false
+```
+
 ## 条件分岐の構文
 
 ### 三項演算子
@@ -384,6 +415,142 @@ console.log(entries); // [['name', '太郎'], ['age', 25], ['city', '東京']]
 - `Object.keys()`: キーの一覧が必要な場合（バリデーション、フィルタリング等）
 - `Object.values()`: 値だけを処理したい場合
 - `Object.entries()`: キーと値の両方が必要な場合（`map` や `forEach` との組み合わせ）
+
+## コールバック関数
+
+関数を別の関数の引数として渡すパターンです。React のイベントハンドラーや配列メソッドの基盤となる概念です。
+
+```typescript
+// 関数を引数として渡す
+function executeAction(action: () => void) {
+  action();
+}
+
+const sayHello = () => console.log("こんにちは");
+executeAction(sayHello); // 'こんにちは'
+
+// setTimeout でのコールバック
+setTimeout(() => {
+  console.log("1秒後に実行");
+}, 1000);
+
+// 配列メソッドでのコールバック
+const numbers = [1, 2, 3];
+numbers.forEach((num) => console.log(num));
+```
+
+**React での典型例**:
+
+```tsx
+// イベントハンドラーとしてコールバックを渡す
+<button onClick={() => setCount(count + 1)}>カウントアップ</button>
+
+// 親コンポーネントから子にコールバックを渡す
+<ProductTile onClick={() => handleProductClick(product)} />
+```
+
+## import / export（モジュールシステム）
+
+JavaScript のモジュールシステムにより、コードをファイル単位で分割・再利用できます。React / Next.js のすべてのファイルで使用する基本構文です。
+
+### 名前付きインポート / エクスポート
+
+```typescript
+// エクスポート側（lib/product-utils.ts）
+export function formatPrice(value: number): string {
+  return `¥${value.toLocaleString("ja-JP")}`;
+}
+
+export function isNumericKey(e: React.KeyboardEvent): boolean {
+  return e.key >= "0" && e.key <= "9";
+}
+
+// インポート側
+import { formatPrice, isNumericKey } from "@/lib/product-utils";
+```
+
+### デフォルトインポート / エクスポート
+
+1 つのファイルから 1 つだけエクスポートする場合に使用します。React コンポーネントで一般的です。
+
+```typescript
+// エクスポート側（app/components/ProductGrid.tsx）
+export default function ProductGrid({ category, products }: ProductGridProps) {
+  // ...
+}
+
+// インポート側（名前を自由につけられる）
+import ProductGrid from "@/app/components/ProductGrid";
+```
+
+**使い分け**:
+
+- **名前付き**: ユーティリティ関数、型定義、定数など（1 ファイルから複数エクスポート）
+- **デフォルト**: React コンポーネント、ページなど（1 ファイルから 1 つエクスポート）
+
+## 配列の非破壊的な更新パターン
+
+React の状態更新では、配列を直接変更（ミューテーション）せず、新しい配列を作成する必要があります。`push`、`splice`、`sort` などの破壊的メソッドは避け、スプレッド構文や `map`、`filter` を使います。
+
+### 要素の追加
+
+```typescript
+const [items, setItems] = useState(["りんご", "バナナ"]);
+
+// 末尾に追加
+setItems([...items, "オレンジ"]);
+
+// 先頭に追加
+setItems(["メロン", ...items]);
+```
+
+### 要素の削除
+
+```typescript
+const [products, setProducts] = useState([
+  { id: 1, name: "商品A" },
+  { id: 2, name: "商品B" },
+]);
+
+// id が一致する要素を除外
+setProducts(products.filter((p) => p.id !== targetId));
+```
+
+### 要素の更新
+
+```typescript
+// id が一致する要素のみ更新、それ以外はそのまま返す
+setProducts(
+  products.map((p) => (p.id === targetId ? { ...p, name: "新しい名前" } : p))
+);
+```
+
+**なぜ非破壊的に更新するのか**: React は状態の参照（メモリアドレス）が変わったかどうかで再レンダリングを判断します。`push` で直接変更しても同じ配列オブジェクトのため、React は変更を検知できません。
+
+## async / await の基本
+
+`async/await` は非同期処理を同期的なコードのように書ける構文です。API 呼び出しやデータベース操作で多用します。
+
+```typescript
+// async 関数の定義
+async function fetchProduct(id: number): Promise<Product> {
+  const response = await fetch(`/api/products/${id}`);
+  const data = await response.json();
+  return data;
+}
+
+// エラーハンドリング
+async function safeDelete(id: number): Promise<void> {
+  try {
+    await fetch(`/api/products/${id}`, { method: "DELETE" });
+    toast.success("商品を削除しました");
+  } catch (error) {
+    toast.error("削除に失敗しました");
+  }
+}
+```
+
+**詳細**: Promise、並列処理（`Promise.all`）、ベストプラクティスについては [Async/Await ガイド](./async-await-guide.md) を参照してください。
 
 ## コードスタイルと可読性
 
@@ -572,4 +739,5 @@ export function determinePublishedStatus(
 - **[JSX ガイド](./jsx-guide.md)**: JSX の構文（条件付きレンダリング、リストのレンダリング）
 - **[React ガイド](./react-guide.md)**: コンポーネントと状態管理
 - **[TypeScript ガイド](./typescript-guide.md)**: 型システム
+- **[Async/Await ガイド](./async-await-guide.md)**: 非同期処理の詳細（Promise、並列処理、ベストプラクティス）
 - **[MDN Web Docs - JavaScript](https://developer.mozilla.org/ja/docs/Web/JavaScript)**: JavaScript の包括的なリファレンス
