@@ -614,8 +614,10 @@ export async function seedRoles(prisma: PrismaClient): Promise<void> {
 **シードデータの実行方法**:
 
 ```bash
-# 使い方を表示
+# 対話モード（テーブルを番号で選択）
 npm run db:seed
+
+# 使い方を表示
 npm run db:seed -- help
 
 # 全テーブルをシード
