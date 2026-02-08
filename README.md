@@ -114,7 +114,7 @@ npm run db:push        # スキーマをデータベースにプッシュ
 npm run db:migrate     # マイグレーションを作成・適用
 npm run db:migrate:deploy  # 本番環境でマイグレーションを適用
 npm run db:studio      # Prisma Studioを起動
-npm run db:seed                         # 使い方を表示
+npm run db:seed                         # 対話モード
 npm run db:seed -- help                 # 使い方を表示
 npm run db:seed -- all                  # 全テーブルのシードデータを投入
 npm run db:seed -- allowed-admins       # 個別テーブルをシード
