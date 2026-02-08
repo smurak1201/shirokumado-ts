@@ -614,16 +614,17 @@ export async function seedRoles(prisma: PrismaClient): Promise<void> {
 **シードデータの実行方法**:
 
 ```bash
-# 全テーブルをシード
+# 使い方を表示
 npm run db:seed
+npm run db:seed -- help
+
+# 全テーブルをシード
+npm run db:seed -- all
 
 # 個別テーブルをシード
-npx tsx prisma/seed.ts roles              # rolesだけ
-npx tsx prisma/seed.ts allowed-admins     # 許可管理者だけ
-npx tsx prisma/seed.ts roles categories   # 複数指定も可能
-
-# 使い方を表示
-npx tsx prisma/seed.ts --help
+npm run db:seed -- roles                  # rolesだけ
+npm run db:seed -- allowed-admins         # 許可管理者だけ
+npm run db:seed -- roles categories       # 複数指定も可能
 ```
 
 **シードファイルの設定**:
