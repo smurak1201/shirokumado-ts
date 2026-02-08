@@ -2,10 +2,11 @@
  * Prisma シーダー
  *
  * コマンドライン引数でシード対象を指定可能
- *   npx tsx prisma/seed.ts              # 全テーブル
- *   npx tsx prisma/seed.ts roles        # rolesだけ
- *   npx tsx prisma/seed.ts roles allowed-admins  # 複数指定
- *   npx tsx prisma/seed.ts --help       # 使い方を表示
+ *   npm run db:seed                            # 使い方を表示
+ *   npm run db:seed -- help                    # 使い方を表示
+ *   npm run db:seed -- all                     # 全テーブル
+ *   npm run db:seed -- roles                   # rolesだけ
+ *   npm run db:seed -- roles allowed-admins    # 複数指定
  */
 import { PrismaClient } from '@prisma/client';
 import { PrismaNeon } from '@prisma/adapter-neon';
@@ -28,27 +29,30 @@ const SEEDER_NAMES = Object.keys(SEEDERS) as SeederName[];
 
 function showHelp(): void {
   console.log(`
-使い方: npx tsx prisma/seed.ts [テーブル名...]
+使い方: npm run db:seed -- <テーブル名...>
 
 テーブル名:
+  all
   ${SEEDER_NAMES.join('\n  ')}
 
 例:
-  npx tsx prisma/seed.ts                       全テーブルをシード
-  npx tsx prisma/seed.ts roles                 rolesだけシード
-  npx tsx prisma/seed.ts roles allowed-admins  複数指定
+  npm run db:seed                            使い方を表示
+  npm run db:seed -- help                    使い方を表示
+  npm run db:seed -- all                     全テーブルをシード
+  npm run db:seed -- roles                   rolesだけシード
+  npm run db:seed -- roles allowed-admins    複数指定
 `);
 }
 
 function parseArgs(): SeederName[] {
   const args = process.argv.slice(2);
 
-  if (args.includes('--help') || args.includes('-h')) {
+  if (args.length === 0 || args.includes('help') || args.includes('h')) {
     showHelp();
     process.exit(0);
   }
 
-  if (args.length === 0) {
+  if (args.includes('all')) {
     return SEEDER_NAMES;
   }
 
