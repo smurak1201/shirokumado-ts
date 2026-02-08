@@ -5,6 +5,7 @@
 このドキュメントは「**React の基礎とフック**」を説明します。useState、useEffect、カスタムフックなど、React でのコンポーネント開発を理解したいときに参照してください。
 
 **関連ドキュメント**:
+- [JavaScript 基本構文ガイド](./javascript-basics-guide.md): JavaScript の基本構文（分割代入、配列メソッド等）
 - [JSX ガイド](./jsx-guide.md): JSX の構文
 - [Next.js ガイド](./nextjs-guide.md): Next.js との統合
 - [App Router ガイド](./app-router-guide.md): Server/Client Components
@@ -1387,6 +1388,7 @@ const fullName = `${firstName} ${lastName}`;
 
 ## 参考リンク
 
+- **[JavaScript 基本構文ガイド](./javascript-basics-guide.md)**: JavaScript の基本構文（分割代入、配列メソッド、コードスタイル）
 - **[JSX ガイド](./jsx-guide.md)**: JSX の構文と使用方法
 - **[Next.js ガイド](./nextjs-guide.md)**: Next.js での React の使用方法
 - **[TypeScript ガイド](./typescript-guide.md)**: TypeScript での React の使用方法
