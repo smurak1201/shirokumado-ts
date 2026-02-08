@@ -465,10 +465,10 @@ const ALLOWED_ADMINS = [
 
 ```bash
 # 許可管理者だけをシード（推奨）
-npx tsx prisma/seed.ts allowed-admins
+npm run db:seed -- allowed-admins
 
 # または全テーブルをシード
-npm run db:seed
+npm run db:seed -- all
 ```
 
 既存のメールアドレスは自動的にupsert（更新または挿入）されるため、複数回実行しても安全です。
@@ -558,10 +558,10 @@ npm run db:studio
 
 ```bash
 # rolesだけをシード
-npx tsx prisma/seed.ts roles
+npm run db:seed -- roles
 
 # または全テーブルをシード
-npm run db:seed
+npm run db:seed -- all
 ```
 
 ## セキュリティ
@@ -889,10 +889,10 @@ npx prisma studio
 
 ```bash
 # 許可管理者だけをシード
-npx tsx prisma/seed.ts allowed-admins
+npm run db:seed -- allowed-admins
 
 # または全テーブルをシード
-npm run db:seed
+npm run db:seed -- all
 ```
 
 2. シード実行後、データベースに反映されているか確認:
