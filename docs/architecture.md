@@ -39,7 +39,7 @@
 
 ## ディレクトリ構造の設計思想
 
-**注意**: 詳細なディレクトリ構造と各ファイルの役割については、[プロジェクト構造ドキュメント](./project-structure.md)を参照してください。App Router のディレクトリ構造については、[App Router ガイド](./guides/app-router-guide.md#app-router-のディレクトリ構造)を参照してください。
+**注意**: 詳細なディレクトリ構造と各ファイルの役割については、[プロジェクト構造ドキュメント](./project-structure.md)を参照してください。App Router のディレクトリ構造については、[App Router ガイド](./guides/frontend/app-router-guide.md#app-router-のディレクトリ構造)を参照してください。
 
 ### フロントエンド (`app/`)
 
@@ -290,7 +290,7 @@ const { selectedProduct, isModalOpen, handleProductClick, handleCloseModal } =
 
 ## データフロー
 
-**注意**: 技術的な詳細（使用している API、具体的な実装方法）については、[フロントエンドガイド](./guides/frontend-guide.md#データフロー)を参照してください。
+**注意**: 技術的な詳細（使用している API、具体的な実装方法）については、[フロントエンドガイド](./guides/frontend/frontend-guide.md#データフロー)を参照してください。
 
 ### フロントエンド（公開ページ）
 
@@ -355,7 +355,7 @@ Client Component (状態更新)
 
 ## 設定管理
 
-**詳細**: 設定管理の詳細については、[ユーティリティ関数ガイド](./guides/utilities-guide.md#設定の一元管理-libconfigts)を参照してください。
+**詳細**: 設定管理の詳細については、[ユーティリティ関数ガイド](./guides/backend/utilities-guide.md#設定の一元管理-libconfigts)を参照してください。
 
 ### 一元管理
 
@@ -474,7 +474,7 @@ try {
 }
 ```
 
-**詳細**: エラーハンドリングの詳細については、[開発ガイドライン - エラーハンドリング](./development-guide.md#エラーハンドリング) と [ユーティリティ関数ガイド - エラーハンドリング](./guides/utilities-guide.md#エラーハンドリング-liberrorsts) を参照してください。
+**詳細**: エラーハンドリングの詳細については、[開発ガイドライン - エラーハンドリング](./development-guide.md#エラーハンドリング) と [ユーティリティ関数ガイド - エラーハンドリング](./guides/backend/utilities-guide.md#エラーハンドリング-liberrorsts) を参照してください。
 
 ## パフォーマンス最適化
 
@@ -504,9 +504,9 @@ try {
 - **[開発ガイドライン](./development-guide.md)**: コーディング規約とベストプラクティス
 - **[プロジェクト構造](./project-structure.md)**: ディレクトリ構造の詳細
 - **[技術スタック](./tech-stack.md)**: 使用している技術の詳細
-- **[Async/Await ガイド](./guides/async-await-guide.md)**: async/await と Promise の使用方法
-- **[ユーティリティ関数ガイド](./guides/utilities-guide.md)**: ユーティリティ関数の詳細
-- **[shadcn/ui ガイド](./guides/shadcn-ui-guide.md)**: shadcn/ui の使用方法とラッパーコンポーネントの作成
+- **[Async/Await ガイド](./guides/basics/async-await-guide.md)**: async/await と Promise の使用方法
+- **[ユーティリティ関数ガイド](./guides/backend/utilities-guide.md)**: ユーティリティ関数の詳細
+- **[shadcn/ui ガイド](./guides/frontend/shadcn-ui-guide.md)**: shadcn/ui の使用方法とラッパーコンポーネントの作成
 
 ### 外部ドキュメント
 

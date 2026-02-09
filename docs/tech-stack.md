@@ -73,7 +73,7 @@
   - Next.js Image コンポーネントで画像の自動最適化と WebP 変換を実現
   - メタデータとフォント最適化により、SEO とパフォーマンスを向上
 
-  **詳細な使用方法については、[Next.js ガイド](./guides/nextjs-guide.md) と [App Router ガイド](./guides/app-router-guide.md) を参照してください。**
+  **詳細な使用方法については、[Next.js ガイド](./guides/frontend/nextjs-guide.md) と [App Router ガイド](./guides/frontend/app-router-guide.md) を参照してください。**
 
 ### UI ライブラリ
 
@@ -96,7 +96,7 @@
   - カスタムフックで状態管理ロジックを分離
   - コンポーネントの再利用性を重視した設計
 
-  **詳細な使用方法については、[React ガイド](./guides/react-guide.md) と [JSX ガイド](./guides/jsx-guide.md) を参照してください。**
+  **詳細な使用方法については、[React ガイド](./guides/frontend/react-guide.md) と [JSX ガイド](./guides/basics/jsx-guide.md) を参照してください。**
 
 - **shadcn/ui**
 
@@ -117,7 +117,7 @@
   - アクセシビリティの向上
   - ラッパーコンポーネントを作成して、アプリ固有のデフォルトスタイルを適用
 
-  **詳細な使用方法については、[shadcn/ui ガイド](./guides/shadcn-ui-guide.md) を参照してください。**
+  **詳細な使用方法については、[shadcn/ui ガイド](./guides/frontend/shadcn-ui-guide.md) を参照してください。**
 
 - **React DOM** `19.2.3`
 
@@ -147,7 +147,7 @@
   - ユーティリティクラスで一貫したスペーシング、タイポグラフィ、カラーを適用
   - ホバーエフェクト（`hover:opacity-80`, `hover:shadow-lg`）でインタラクティブな UI を実現
 
-  **詳細なベストプラクティスについては、[スタイリングのベストプラクティス](./guides/styling-best-practices.md) を参照してください。**
+  **詳細なベストプラクティスについては、[スタイリングのベストプラクティス](./guides/frontend/styling-best-practices.md) を参照してください。**
 
 - **PostCSS** (`@tailwindcss/postcss` `^4`)
 
@@ -234,7 +234,7 @@
   - マイグレーション機能でスキーマ変更を管理
   - N+1 問題を回避するためのクエリ最適化
 
-  **詳細な使用方法については、[Prisma ガイド](./guides/prisma-guide.md) を参照してください。**
+  **詳細な使用方法については、[Prisma ガイド](./guides/backend/prisma-guide.md) を参照してください。**
 
 ### ストレージ
 
@@ -257,7 +257,7 @@
   - クライアントサイドで画像を圧縮（[`lib/image-compression/`](../lib/image-compression/)）してからアップロードし、ストレージ容量を最適化
   - 開発環境と本番環境で同じストレージサービスを使用し、環境の一貫性を確保
 
-  **詳細**: Blob Storage と画像圧縮の詳細については、[ユーティリティ関数ガイド](./guides/utilities-guide.md)を参照してください。
+  **詳細**: Blob Storage と画像圧縮の詳細については、[ユーティリティ関数ガイド](./guides/backend/utilities-guide.md)を参照してください。
 
 - **@vercel/blob** `^2.0.0`
 
@@ -286,7 +286,7 @@
   - Prisma の型生成機能と統合し、データベーススキーマから自動的に型を生成
   - API Routes のリクエスト・レスポンスの型を定義
 
-  **詳細な使用方法については、[TypeScript ガイド](./guides/typescript-guide.md) を参照してください。**
+  **詳細な使用方法については、[TypeScript ガイド](./guides/basics/typescript-guide.md) を参照してください。**
 
 ### 型定義
 
@@ -377,8 +377,8 @@
 詳細は以下のドキュメントを参照してください：
 
 - [プロジェクト構造](./project-structure.md): ディレクトリ構造とファイル配置
-- [フロントエンドガイド](./guides/frontend-guide.md): 公開ページの実装
-- [ダッシュボードガイド](./guides/dashboard-guide.md): 管理画面の実装
+- [フロントエンドガイド](./guides/frontend/frontend-guide.md): 公開ページの実装
+- [ダッシュボードガイド](./guides/frontend/dashboard-guide.md): 管理画面の実装
 
 ## 今後の追加予定
 

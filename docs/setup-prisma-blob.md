@@ -7,9 +7,9 @@
 | 目的 | 参照するドキュメント |
 |---|---|
 | **セットアップ・初期設定** | **このドキュメント** |
-| Prisma の詳細な使用方法 | [Prisma ガイド](./guides/prisma-guide.md) |
-| Blob Storage の詳細な使用方法 | [ユーティリティ関数ガイド](./guides/utilities-guide.md#blob-storage-ユーティリティ-libblobts) |
-| 環境変数の型安全な管理 | [ユーティリティ関数ガイド](./guides/utilities-guide.md#環境変数の型安全な管理-libenvts) |
+| Prisma の詳細な使用方法 | [Prisma ガイド](./guides/backend/prisma-guide.md) |
+| Blob Storage の詳細な使用方法 | [ユーティリティ関数ガイド](./guides/backend/utilities-guide.md#blob-storage-ユーティリティ-libblobts) |
+| 環境変数の型安全な管理 | [ユーティリティ関数ガイド](./guides/backend/utilities-guide.md#環境変数の型安全な管理-libenvts) |
 
 ## 目次
 
@@ -67,7 +67,7 @@ BLOB_READ_WRITE_TOKEN=vercel_blob_rw_...
 
 **詳細な情報**:
 
-- [Prisma ガイド](./guides/prisma-guide.md): Prisma の詳細な使用方法
+- [Prisma ガイド](./guides/backend/prisma-guide.md): Prisma の詳細な使用方法
 - [Vercel Neon Documentation](https://vercel.com/docs/storage/vercel-postgres): Vercel Neon の公式ドキュメント
 
 ### 環境変数の型安全な管理
@@ -81,7 +81,7 @@ const env = getServerEnv();
 const dbUrl = env.DATABASE_URL; // 型安全
 ```
 
-**詳細**については、[ユーティリティ関数ガイド - 環境変数](./guides/utilities-guide.md#環境変数の型安全な管理-libenvts)を参照してください。
+**詳細**については、[ユーティリティ関数ガイド - 環境変数](./guides/backend/utilities-guide.md#環境変数の型安全な管理-libenvts)を参照してください。
 
 ## Prisma のセットアップ
 
@@ -115,7 +115,7 @@ npm run db:migrate:deploy
 npm run db:generate
 ```
 
-**詳細な使用方法**（CRUD 操作、トランザクション、リレーションなど）については、[Prisma ガイド](./guides/prisma-guide.md)を参照してください。
+**詳細な使用方法**（CRUD 操作、トランザクション、リレーションなど）については、[Prisma ガイド](./guides/backend/prisma-guide.md)を参照してください。
 
 ## Blob Storage のセットアップ
 
@@ -134,7 +134,7 @@ console.log(imageBlob.url);
 await deleteFile("https://...blob.vercel-storage.com/...");
 ```
 
-**詳細な使用方法**（ファイル一覧取得、ファイル情報取得など）については、[ユーティリティ関数ガイド - Blob Storage](./guides/utilities-guide.md#blob-storage-ユーティリティ-libblobts)を参照してください。
+**詳細な使用方法**（ファイル一覧取得、ファイル情報取得など）については、[ユーティリティ関数ガイド - Blob Storage](./guides/backend/utilities-guide.md#blob-storage-ユーティリティ-libblobts)を参照してください。
 
 ## Prisma Studio
 
@@ -166,7 +166,7 @@ npm run db:studio
 
 - [Prisma Documentation](https://www.prisma.io/docs)
 - [Prisma Client API Reference](https://www.prisma.io/docs/reference/api-reference/prisma-client-reference)
-- [Prisma ガイド](./guides/prisma-guide.md): Prisma の詳細な使用方法
+- [Prisma ガイド](./guides/backend/prisma-guide.md): Prisma の詳細な使用方法
 - [Vercel Blob Documentation](https://vercel.com/docs/storage/vercel-blob)
 - [Neon Documentation](https://neon.tech/docs)
 - [Prisma with Neon](https://www.prisma.io/docs/guides/deployment/deployment-guides/deploying-to-vercel)

@@ -952,7 +952,7 @@ VALUES (gen_random_uuid(), 'newadmin@example.com', 'admin', NOW());
 
 ### プロジェクト内ドキュメント
 
-- [Auth.jsガイド](guides/authjs-guide.md) - このプロジェクトのAuth.js設定の詳細
+- [Auth.jsガイド](guides/backend/authjs-guide.md) - このプロジェクトのAuth.js設定の詳細
 - [開発ガイド](development-guide.md) - 開発環境のセットアップ
 - [Prismaセットアップガイド](setup-prisma-blob.md) - データベース設定
 

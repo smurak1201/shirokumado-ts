@@ -12,7 +12,7 @@
 | [development-guide.md](./development-guide.md) | コーディング規約の詳細（「どう書くか」） |
 | **project-structure.md（このドキュメント）** | ファイル配置のリファレンス（「何がどこに」） |
 
-**注意**: App Router のディレクトリ構造については、[App Router ガイド](./guides/app-router-guide.md#app-router-のディレクトリ構造)を参照してください。設計思想については、[アーキテクチャドキュメント](./architecture.md#ディレクトリ構造の設計思想)を参照してください。
+**注意**: App Router のディレクトリ構造については、[App Router ガイド](./guides/frontend/app-router-guide.md#app-router-のディレクトリ構造)を参照してください。設計思想については、[アーキテクチャドキュメント](./architecture.md#ディレクトリ構造の設計思想)を参照してください。
 
 ## 目次
 
@@ -119,7 +119,7 @@ app/api/
     └── route.ts          # GET, POST /api/products
 ```
 
-**詳細については、[App Router ガイド](./guides/app-router-guide.md#api-routes) を参照してください。**
+**詳細については、[App Router ガイド](./guides/frontend/app-router-guide.md#api-routes) を参照してください。**
 
 #### `app/auth/` - 認証ページ
 
@@ -166,7 +166,7 @@ app/components/
 - **レスポンシブデザイン**: モバイルからデスクトップまで対応
 - **shadcn/ui の活用**: 統一されたデザインシステムを実現
 
-**詳細**: [shadcn/ui ガイド](./guides/shadcn-ui-guide.md) を参照してください。
+**詳細**: [shadcn/ui ガイド](./guides/frontend/shadcn-ui-guide.md) を参照してください。
 
 #### `app/dashboard/` - ダッシュボード
 
@@ -392,7 +392,7 @@ const users = await safePrismaOperation(
 );
 ```
 
-**詳細**: [ユーティリティ関数ガイド](./guides/utilities-guide.md)、[TypeScript ガイド - ジェネリクス](./guides/typescript-guide.md#ジェネリクス)を参照してください。
+**詳細**: [ユーティリティ関数ガイド](./guides/backend/utilities-guide.md)、[TypeScript ガイド - ジェネリクス](./guides/basics/typescript-guide.md#ジェネリクス)を参照してください。
 
 ### `prisma/` - Prisma 設定
 
