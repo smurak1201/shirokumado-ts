@@ -7,7 +7,7 @@
 **関連ドキュメント**:
 
 - [JSX ガイド](./jsx-guide.md): JSX の構文（条件付きレンダリング、リストのレンダリング）
-- [React ガイド](./react-guide.md): コンポーネントと状態管理
+- [React ガイド](../frontend/react-guide.md): コンポーネントと状態管理
 - [TypeScript ガイド](./typescript-guide.md): 型システム
 
 ## 目次
@@ -737,7 +737,7 @@ export function determinePublishedStatus(
 ## 参考リンク
 
 - **[JSX ガイド](./jsx-guide.md)**: JSX の構文（条件付きレンダリング、リストのレンダリング）
-- **[React ガイド](./react-guide.md)**: コンポーネントと状態管理
+- **[React ガイド](../frontend/react-guide.md)**: コンポーネントと状態管理
 - **[TypeScript ガイド](./typescript-guide.md)**: 型システム
 - **[Async/Await ガイド](./async-await-guide.md)**: 非同期処理の詳細（Promise、並列処理、ベストプラクティス）
 - **[MDN Web Docs - JavaScript](https://developer.mozilla.org/ja/docs/Web/JavaScript)**: JavaScript の包括的なリファレンス

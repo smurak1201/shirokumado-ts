@@ -6,7 +6,7 @@
 
 **関連ドキュメント**:
 - [App Router ガイド](./app-router-guide.md): ルーティングとデータフェッチの詳細
-- [開発ガイドライン](../development-guide.md#nextjs-app-router): コーディング規約
+- [開発ガイドライン](../../development-guide.md#nextjs-app-router): コーディング規約
 
 ## 目次
 
@@ -213,7 +213,7 @@ export const config = {
 - リダイレクトロジックを一元管理し、リダイレクトループを防止
 - `matcher`で対象パスを限定することで、不要なパス（静的ファイルなど）での実行を回避
 
-**詳細な認証フローについては、[認証システム](../authentication.md#protected-routesproxy) を参照してください。**
+**詳細な認証フローについては、[認証システム](../../authentication.md#protected-routesproxy) を参照してください。**
 
 ## 設定ファイル
 
@@ -486,7 +486,7 @@ Next.js は、`npm run build` コマンドでプロダクションビルドを�
 - **エッジネットワーク**: グローバル CDN により、世界中で高速な配信を実現
 - **サーバーレス関数**: API Routes を自動的にサーバーレス関数としてデプロイ
 
-**詳細は [デプロイメントガイド](../deployment.md) を参照してください。**
+**詳細は [デプロイメントガイド](../../deployment.md) を参照してください。**
 
 ## パフォーマンス最適化
 

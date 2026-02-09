@@ -6,8 +6,8 @@
 
 **関連ドキュメント**:
 - [Next.js ガイド](./nextjs-guide.md): フレームワークの全体像
-- [開発ガイドライン](../development-guide.md#nextjs-app-router): コーディング規約
-- [プロジェクト構造](../project-structure.md): ディレクトリ構造
+- [開発ガイドライン](../../development-guide.md#nextjs-app-router): コーディング規約
+- [プロジェクト構造](../../project-structure.md): ディレクトリ構造
 
 ## 目次
 
@@ -59,7 +59,7 @@ Next.js App Router は、Next.js 13 以降で導入された新しいルーテ�
 
 App Router では、`app/` ディレクトリ内のファイル構造がそのまま URL ルートになります。
 
-**注意**: プロジェクト全体のディレクトリ構造の詳細については、[プロジェクト構造ドキュメント](../project-structure.md)を参照してください。設計思想については、[アーキテクチャドキュメント](../architecture.md#ディレクトリ構造の設計思想)を参照してください。
+**注意**: プロジェクト全体のディレクトリ構造の詳細については、[プロジェクト構造ドキュメント](../../project-structure.md)を参照してください。設計思想については、[アーキテクチャドキュメント](../../architecture.md#ディレクトリ構造の設計思想)を参照してください。
 
 **このアプリでの App Router のディレクトリ構造**:
 
@@ -417,7 +417,7 @@ export default async function HomeContent() {
 
 **説明**: Server Components では、`async/await` を使用してデータベースから直接データを取得できます。`fetch` API を使用する必要はありません。
 
-**詳細は [Async/Await ガイド - Server Components でのデータフェッチング](./async-await-guide.md#server-components-でのデータフェッチング) を参照してください。**
+**詳細は [Async/Await ガイド - Server Components でのデータフェッチング](../basics/async-await-guide.md#server-components-でのデータフェッチング) を参照してください。**
 
 **このアプリでの使用箇所**:
 
@@ -460,7 +460,7 @@ async function getDashboardData() {
 }
 ```
 
-**async/await と Promise.all の詳細な使用方法は [Async/Await ガイド](./async-await-guide.md) を参照してください。**
+**async/await と Promise.all の詳細な使用方法は [Async/Await ガイド](../basics/async-await-guide.md) を参照してください。**
 
 ### Client Components でのデータフェッチング（fetch API）
 

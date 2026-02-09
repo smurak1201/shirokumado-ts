@@ -8,7 +8,7 @@
 
 **関連ドキュメント**:
 - [フロントエンドガイド](./frontend-guide.md): 公開ページの実装
-- [Prisma ガイド](./prisma-guide.md): データベース操作
+- [Prisma ガイド](../backend/prisma-guide.md): データベース操作
 
 ## 目次
 
@@ -857,7 +857,7 @@ file: [画像ファイル]
 - **最大ファイルサイズ**: 4MB（Vercel の関数ペイロードサイズ制限に合わせて設定）
 - **圧縮後の目標サイズ**: 3.5MB（安全マージンを確保）
 
-詳細は [画像圧縮ユーティリティ - 画像ファイルサイズの制限と推奨サイズ](./utilities-guide.md#画像ファイルサイズの制限と推奨サイズ) を参照してください。
+詳細は [画像圧縮ユーティリティ - 画像ファイルサイズの制限と推奨サイズ](../backend/utilities-guide.md#画像ファイルサイズの制限と推奨サイズ) を参照してください。
 
 ## 開発ガイド
 
@@ -884,7 +884,7 @@ file: [画像ファイル]
 
 ### エラーハンドリング
 
-エラーハンドリングの詳細については、[ユーティリティ関数ガイド - エラーハンドリング](./utilities-guide.md#エラーハンドリング-liberrorsts) を参照してください。
+エラーハンドリングの詳細については、[ユーティリティ関数ガイド - エラーハンドリング](../backend/utilities-guide.md#エラーハンドリング-liberrorsts) を参照してください。
 
 **このアプリでの実装**:
 
@@ -923,7 +923,7 @@ file: [画像ファイル]
   - [`app/dashboard/homepage/utils/productFormSubmit.ts`](../../app/dashboard/homepage/utils/productFormSubmit.ts): `fetchJson` で `/api/products` に POST/PUT リクエスト
   - [`app/dashboard/homepage/hooks/useProductDelete.ts`](../../app/dashboard/homepage/hooks/useProductDelete.ts): `fetchJson` で `/api/products/[id]` に DELETE リクエスト
   - [`app/dashboard/homepage/hooks/useProductReorder.ts`](../../app/dashboard/homepage/hooks/useProductReorder.ts): `fetchJson` で `/api/products/reorder` に POST リクエスト
-- **並列データ取得（`Promise.all`を使用）** - **このアプリで使用中**（詳細は [Async/Await ガイド - Promise.all](./async-await-guide.md#promiseall---このアプリで使用中) を参照）
+- **並列データ取得（`Promise.all`を使用）** - **このアプリで使用中**（詳細は [Async/Await ガイド - Promise.all](../basics/async-await-guide.md#promiseall---このアプリで使用中) を参照）
 
 **Prisma の`select`について**:
 
@@ -957,7 +957,7 @@ const products = await prisma.product.findMany({
 - `include`を使用してカテゴリー情報も一緒に取得する方が、コードがシンプルで保守しやすい
 - 商品データの構造が比較的シンプルで、不要なフィールドが少ない
 
-詳細は [Prisma ガイド - select（このアプリでは未使用）](./prisma-guide.md#selectこのアプリでは未使用) を参照してください。
+詳細は [Prisma ガイド - select（このアプリでは未使用）](../backend/prisma-guide.md#selectこのアプリでは未使用) を参照してください。
 
 ### 画像最適化
 
@@ -980,7 +980,7 @@ const products = await prisma.product.findMany({
 4. 圧縮後のサイズが 4MB を超える場合はエラーを表示
 5. アップロード
 
-詳細は [画像圧縮ユーティリティ](./utilities-guide.md#画像圧縮ユーティリティ-libimage-compressionts) を参照してください。
+詳細は [画像圧縮ユーティリティ](../backend/utilities-guide.md#画像圧縮ユーティリティ-libimage-compressionts) を参照してください。
 
 ## セキュリティ
 
@@ -997,8 +997,8 @@ const products = await prisma.product.findMany({
 ## 参考リンク
 
 - **[App Router ガイド](./app-router-guide.md)**: Next.js App Router の詳細な使用方法
-- **[Async/Await ガイド](./async-await-guide.md)**: async/await と Promise の使用方法
-- **[Prisma ガイド](./prisma-guide.md)**: Prisma の詳細な使用方法
+- **[Async/Await ガイド](../basics/async-await-guide.md)**: async/await と Promise の使用方法
+- **[Prisma ガイド](../backend/prisma-guide.md)**: Prisma の詳細な使用方法
 - [Next.js App Router](https://nextjs.org/docs/app)
 - [React Server Components](https://react.dev/blog/2023/03/22/react-labs-what-we-have-been-working-on-march-2023#react-server-components)
 - [Prisma Documentation](https://www.prisma.io/docs)

@@ -727,7 +727,7 @@ export interface ApiSuccessResponse<T> {
 }
 ```
 
-**詳細**: ジェネリクスの詳細な説明については、[TypeScript ガイド - ジェネリクス](./typescript-guide.md#ジェネリクス)を参照してください。
+**詳細**: ジェネリクスの詳細な説明については、[TypeScript ガイド - ジェネリクス](../basics/typescript-guide.md#ジェネリクス)を参照してください。
 
 ### 使用例
 
@@ -1045,7 +1045,7 @@ const projectId = env.NEXT_PUBLIC_STACK_PROJECT_ID; // 型安全
 **関連ドキュメント**:
 
 - **エラーハンドリングの詳細**: [開発ガイドライン - エラーハンドリング](../development-guide.md#エラーハンドリング)
-- **API の使用方法**: [App Router ガイド - API Routes](./app-router-guide.md#api-routes)
+- **API の使用方法**: [App Router ガイド - API Routes](../frontend/app-router-guide.md#api-routes)
 - **セキュリティの詳細**: [開発ガイドライン - セキュリティ](../development-guide.md#セキュリティ)
 
 ## 参考リンク
@@ -1055,8 +1055,8 @@ const projectId = env.NEXT_PUBLIC_STACK_PROJECT_ID; // 型安全
 - **[開発ガイドライン](../development-guide.md)**: コーディング規約とベストプラクティス（エラーハンドリング、セキュリティなど）
 - **[アーキテクチャドキュメント](../architecture.md)**: アーキテクチャと設計思想（エラーハンドリング、設定管理など）
 - **[Prisma & Blob セットアップガイド](../setup-prisma-blob.md)**: Blob Storage のセットアップ方法
-- **[TypeScript ガイド](./typescript-guide.md)**: TypeScript の使用方法
-- **[App Router ガイド](./app-router-guide.md)**: API Routes の使用方法
+- **[TypeScript ガイド](../basics/typescript-guide.md)**: TypeScript の使用方法
+- **[App Router ガイド](../frontend/app-router-guide.md)**: API Routes の使用方法
 
 ### 外部ドキュメント
 

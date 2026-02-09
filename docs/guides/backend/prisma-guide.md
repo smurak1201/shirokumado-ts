@@ -1486,7 +1486,7 @@ async function getProducts(page: number = 1, pageSize: number = 20) {
 }
 ```
 
-**Promise.all の詳細な使用方法は [Async/Await ガイド - Promise.all](./async-await-guide.md#promiseall---このアプリで使用中) を参照してください。**
+**Promise.all の詳細な使用方法は [Async/Await ガイド - Promise.all](../basics/async-await-guide.md#promiseall---このアプリで使用中) を参照してください。**
 
 - 商品数が比較的少ないため、ページネーションが不要
 - すべての商品を一度に取得してもパフォーマンスへの影響が小さい
@@ -1566,9 +1566,9 @@ console.log(product.invalidField); // コンパイルエラー
 
 ## 参考リンク
 
-- **[TypeScript ガイド](./typescript-guide.md)**: Prisma との型統合の詳細
-- **[App Router ガイド](./app-router-guide.md)**: Server Components での Prisma の使用方法
-- **[Async/Await ガイド](./async-await-guide.md)**: async/await と Promise の使用方法
+- **[TypeScript ガイド](../basics/typescript-guide.md)**: Prisma との型統合の詳細
+- **[App Router ガイド](../frontend/app-router-guide.md)**: Server Components での Prisma の使用方法
+- **[Async/Await ガイド](../basics/async-await-guide.md)**: async/await と Promise の使用方法
 - **[ユーティリティ関数ガイド](./utilities-guide.md)**: Blob Storage ユーティリティの詳細
 - **[Prisma & Blob セットアップガイド](../setup-prisma-blob.md)**: Prisma と Blob Storage のセットアップ方法
 - **[Prisma 公式ドキュメント](https://www.prisma.io/docs)**: Prisma の包括的なドキュメント

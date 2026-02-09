@@ -60,7 +60,7 @@
     prisma.product.findMany({ include: { category: true } }),
   ]);
 
-  // Promise.all の詳細は [Async/Await ガイド - Promise.all](./async-await-guide.md#promiseall---このアプリで使用中) を参照
+  // Promise.all の詳細は [Async/Await ガイド - Promise.all](../basics/async-await-guide.md#promiseall---このアプリで使用中) を参照
 
   // 公開商品のみをフィルタリング
   const publishedProducts = products.filter((product) => {
@@ -97,7 +97,7 @@
 ];
 ```
 
-**注意**: プロジェクト全体のディレクトリ構造の詳細については、[プロジェクト構造ドキュメント](../project-structure.md)を参照してください。App Router のディレクトリ構造については、[App Router ガイド](./app-router-guide.md#app-router-のディレクトリ構造)を参照してください。
+**注意**: プロジェクト全体のディレクトリ構造の詳細については、[プロジェクト構造ドキュメント](../../project-structure.md)を参照してください。App Router のディレクトリ構造については、[App Router ガイド](./app-router-guide.md#app-router-のディレクトリ構造)を参照してください。
 
 ## ディレクトリ構造
 
@@ -434,7 +434,7 @@ className = "grid grid-cols-1 md:grid-cols-3";
 
 ## データフロー
 
-**注意**: アーキテクチャ的な視点（コンポーネント階層、状態管理の設計）については、[アーキテクチャドキュメント](../architecture.md#データフロー)を参照してください。
+**注意**: アーキテクチャ的な視点（コンポーネント階層、状態管理の設計）については、[アーキテクチャドキュメント](../../architecture.md#データフロー)を参照してください。
 
 ### フロントエンドとバックエンドの使い分け
 

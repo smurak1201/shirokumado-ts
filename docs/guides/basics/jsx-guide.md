@@ -6,8 +6,8 @@
 
 **関連ドキュメント**:
 - [JavaScript 基本構文ガイド](./javascript-basics-guide.md): JavaScript の基本構文（分割代入、配列メソッド等）
-- [React ガイド](./react-guide.md): コンポーネントと状態管理
-- [勉強用ガイド](./learning-guide.md): 学習の進め方
+- [React ガイド](../frontend/react-guide.md): コンポーネントと状態管理
+- [勉強用ガイド](../learning-guide.md): 学習の進め方
 
 ## 目次
 
@@ -40,7 +40,7 @@ JSX（JavaScript XML）は、React で UI を記述するための構文拡張�
 
 このアプリケーションでは、JSX を使用してすべての React コンポーネントを実装しています。
 
-**関連ドキュメント**: React の概念（Hooks、状態管理、パフォーマンス最適化など）について詳しく知りたい場合は、[React ガイド](./react-guide.md)を参照してください。このガイドでは、JSX の構文と書き方に焦点を当てています。
+**関連ドキュメント**: React の概念（Hooks、状態管理、パフォーマンス最適化など）について詳しく知りたい場合は、[React ガイド](../frontend/react-guide.md)を参照してください。このガイドでは、JSX の構文と書き方に焦点を当てています。
 
 **JSX の主な特徴**:
 
@@ -615,7 +615,7 @@ const handleClick = () => console.log("clicked");
 
 JSX では、条件に応じて要素を表示/非表示できます。
 
-**注意**: このセクションでは JSX 構文での条件付きレンダリングに焦点を当てています。React での実装パターンについては、[React ガイド](./react-guide.md)も参照してください。
+**注意**: このセクションでは JSX 構文での条件付きレンダリングに焦点を当てています。React での実装パターンについては、[React ガイド](../frontend/react-guide.md)も参照してください。
 
 **方法 1: 三項演算子**
 
@@ -824,7 +824,7 @@ L: {formatPrice(product.priceL)}
 
 ### イベントハンドラー
 
-**関連**: React でのイベントハンドリングの実装パターンについては、[React ガイド - イベントハンドリング](./react-guide.md#イベントハンドリング)を参照してください。
+**関連**: React でのイベントハンドリングの実装パターンについては、[React ガイド - イベントハンドリング](../frontend/react-guide.md#イベントハンドリング)を参照してください。
 
 ```tsx
 <button onClick={onClick} className="group w-full overflow-hidden rounded-lg">
@@ -1267,7 +1267,7 @@ JSX は React でユーザーインターフェースを記述するための構
 ## 参考リンク
 
 - **[JavaScript 基本構文ガイド](./javascript-basics-guide.md)**: JavaScript の基本構文（分割代入、配列メソッド、コードスタイル）
-- **[React ガイド](./react-guide.md)**: コンポーネントと状態管理
+- **[React ガイド](../frontend/react-guide.md)**: コンポーネントと状態管理
 - **[TypeScript ガイド](./typescript-guide.md)**: 型システム（Props の型定義など）
-- **[Next.js ガイド](./nextjs-guide.md)**: Next.js での JSX の使用方法
+- **[Next.js ガイド](../frontend/nextjs-guide.md)**: Next.js での JSX の使用方法
 - **[React 公式ドキュメント - JSX](https://react.dev/learn/writing-markup-with-jsx)**: JSX の公式ドキュメント

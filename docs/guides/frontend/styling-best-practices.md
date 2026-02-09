@@ -8,7 +8,7 @@
 
 **関連ドキュメント**:
 - [shadcn/ui ガイド](./shadcn-ui-guide.md): UI コンポーネントライブラリ
-- [開発ガイドライン](../development-guide.md): 全体的なコーディング規約
+- [開発ガイドライン](../../development-guide.md): 全体的なコーディング規約
 
 ## 目次
 

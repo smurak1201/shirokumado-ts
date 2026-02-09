@@ -5,8 +5,8 @@
 このドキュメントは「**React の基礎とフック**」を説明します。useState、useEffect、カスタムフックなど、React でのコンポーネント開発を理解したいときに参照してください。
 
 **関連ドキュメント**:
-- [JavaScript 基本構文ガイド](./javascript-basics-guide.md): JavaScript の基本構文（分割代入、配列メソッド等）
-- [JSX ガイド](./jsx-guide.md): JSX の構文
+- [JavaScript 基本構文ガイド](../basics/javascript-basics-guide.md): JavaScript の基本構文（分割代入、配列メソッド等）
+- [JSX ガイド](../basics/jsx-guide.md): JSX の構文
 - [Next.js ガイド](./nextjs-guide.md): Next.js との統合
 - [App Router ガイド](./app-router-guide.md): Server/Client Components
 
@@ -53,7 +53,7 @@ React は、ユーザーインターフェースを構築するための JavaScr
 
 このアプリケーションでは、**React 19.2.3** を使用して、Next.js App Router と統合し、Server Components と Client Components を適切に使い分けながら、インタラクティブな UI を実装しています。
 
-**関連ドキュメント**: JSX の構文について詳しく知りたい場合は、[JSX ガイド](./jsx-guide.md)を参照してください。このガイドでは、React の概念と実装パターンに焦点を当てています。
+**関連ドキュメント**: JSX の構文について詳しく知りたい場合は、[JSX ガイド](../basics/jsx-guide.md)を参照してください。このガイドでは、React の概念と実装パターンに焦点を当てています。
 
 ## React とは
 
@@ -1248,7 +1248,7 @@ try {
 
 React では、イベントハンドラーを props として渡すことで、コンポーネント間でイベントを処理できます。
 
-**関連**: JSX でのイベントハンドラーの書き方については、[JSX ガイド - イベントハンドラー](./jsx-guide.md#イベントハンドラー)を参照してください。
+**関連**: JSX でのイベントハンドラーの書き方については、[JSX ガイド - イベントハンドラー](../basics/jsx-guide.md#イベントハンドラー)を参照してください。
 
 ### イベントハンドリングの例
 
@@ -1388,9 +1388,9 @@ const fullName = `${firstName} ${lastName}`;
 
 ## 参考リンク
 
-- **[JavaScript 基本構文ガイド](./javascript-basics-guide.md)**: JavaScript の基本構文（分割代入、配列メソッド、コードスタイル）
-- **[JSX ガイド](./jsx-guide.md)**: JSX の構文と使用方法
+- **[JavaScript 基本構文ガイド](../basics/javascript-basics-guide.md)**: JavaScript の基本構文（分割代入、配列メソッド、コードスタイル）
+- **[JSX ガイド](../basics/jsx-guide.md)**: JSX の構文と使用方法
 - **[Next.js ガイド](./nextjs-guide.md)**: Next.js での React の使用方法
-- **[TypeScript ガイド](./typescript-guide.md)**: TypeScript での React の使用方法
+- **[TypeScript ガイド](../basics/typescript-guide.md)**: TypeScript での React の使用方法
 - **[App Router ガイド](./app-router-guide.md)**: Server Components と Client Components の使い分け
 - **[React 公式ドキュメント](https://react.dev/)**: React の包括的なドキュメント

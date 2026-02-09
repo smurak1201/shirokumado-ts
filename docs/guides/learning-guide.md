@@ -8,9 +8,9 @@
 
 **関連ドキュメント**:
 
-- [TypeScript ガイド](./typescript-guide.md): 型システムの基礎
-- [React ガイド](./react-guide.md): コンポーネントと状態管理
-- [Next.js ガイド](./nextjs-guide.md): フレームワークの全体像
+- [TypeScript ガイド](./basics/typescript-guide.md): 型システムの基礎
+- [React ガイド](./frontend/react-guide.md): コンポーネントと状態管理
+- [Next.js ガイド](./frontend/nextjs-guide.md): フレームワークの全体像
 
 ## 目次
 
@@ -68,9 +68,9 @@ Java、PHP、Laravel の経験がある方は、以下の知識を活用でき�
 
 **読むべきドキュメント**:
 
-1. [TypeScript ガイド](./typescript-guide.md) - 型システムの基礎
-2. [React ガイド](./react-guide.md) - コンポーネント、Hooks、状態管理
-3. [Async/Await ガイド](./async-await-guide.md) - 非同期処理の基礎
+1. [TypeScript ガイド](./basics/typescript-guide.md) - 型システムの基礎
+2. [React ガイド](./frontend/react-guide.md) - コンポーネント、Hooks、状態管理
+3. [Async/Await ガイド](./basics/async-await-guide.md) - 非同期処理の基礎
 
 **確認すべきファイル**:
 
@@ -83,9 +83,9 @@ Next.js の概念と使い方を理解します。
 
 **読むべきドキュメント**:
 
-1. [Next.js ガイド](./nextjs-guide.md) - Next.js の基礎
-2. [App Router ガイド](./app-router-guide.md) - App Router の詳細
-3. [Prisma ガイド](./prisma-guide.md) - Prisma の基礎
+1. [Next.js ガイド](./frontend/nextjs-guide.md) - Next.js の基礎
+2. [App Router ガイド](./frontend/app-router-guide.md) - App Router の詳細
+3. [Prisma ガイド](./backend/prisma-guide.md) - Prisma の基礎
 
 **確認すべきファイル**:
 
@@ -99,7 +99,7 @@ Next.js の概念と使い方を理解します。
 
 **読むべきドキュメント**:
 
-1. [Auth.js ガイド](./authjs-guide.md) - 認証システムの実装
+1. [Auth.js ガイド](./backend/authjs-guide.md) - 認証システムの実装
 2. [認証ドキュメント](../authentication.md) - プロジェクトの認証詳細
 
 **確認すべきファイル**:
@@ -114,8 +114,8 @@ Next.js の概念と使い方を理解します。
 
 **読むべきドキュメント**:
 
-1. [フロントエンドガイド](./frontend-guide.md) - フロントエンド実装の詳細
-2. [ダッシュボードガイド](./dashboard-guide.md) - ダッシュボード機能の詳細
+1. [フロントエンドガイド](./frontend/frontend-guide.md) - フロントエンド実装の詳細
+2. [ダッシュボードガイド](./frontend/dashboard-guide.md) - ダッシュボード機能の詳細
 3. [開発ガイドライン](../development-guide.md) - コーディング規約
 
 **確認すべきファイル**:
@@ -139,38 +139,38 @@ Next.js の概念と使い方を理解します。
 
 | 順番 | ドキュメント | 内容 |
 |------|-------------|------|
-| 4 | [TypeScript ガイド](./typescript-guide.md) | 型定義、インターフェース、ジェネリクス |
-| 5 | [React ガイド](./react-guide.md) | コンポーネント、Hooks、状態管理 |
-| 6 | [Async/Await ガイド](./async-await-guide.md) | 非同期処理、Promise、エラーハンドリング |
-| 6.5 | [Node.js ガイド](./nodejs-guide.md) | ランタイム、npm、環境変数管理 |
+| 4 | [TypeScript ガイド](./basics/typescript-guide.md) | 型定義、インターフェース、ジェネリクス |
+| 5 | [React ガイド](./frontend/react-guide.md) | コンポーネント、Hooks、状態管理 |
+| 6 | [Async/Await ガイド](./basics/async-await-guide.md) | 非同期処理、Promise、エラーハンドリング |
+| 6.5 | [Node.js ガイド](./backend/nodejs-guide.md) | ランタイム、npm、環境変数管理 |
 
 ### フレームワーク（重要）
 
 | 順番 | ドキュメント | 内容 |
 |------|-------------|------|
-| 7 | [Next.js ガイド](./nextjs-guide.md) | 画像最適化、フォント最適化、メタデータ |
-| 8 | [App Router ガイド](./app-router-guide.md) | Server/Client Components、API Routes |
-| 9 | [Prisma ガイド](./prisma-guide.md) | スキーマ定義、クエリ、マイグレーション |
-| 10 | [Auth.js ガイド](./authjs-guide.md) | 認証システム、OAuth、セッション管理 |
+| 7 | [Next.js ガイド](./frontend/nextjs-guide.md) | 画像最適化、フォント最適化、メタデータ |
+| 8 | [App Router ガイド](./frontend/app-router-guide.md) | Server/Client Components、API Routes |
+| 9 | [Prisma ガイド](./backend/prisma-guide.md) | スキーマ定義、クエリ、マイグレーション |
+| 10 | [Auth.js ガイド](./backend/authjs-guide.md) | 認証システム、OAuth、セッション管理 |
 
 ### 実装詳細（応用）
 
 | 順番 | ドキュメント | 内容 |
 |------|-------------|------|
-| 11 | [フロントエンドガイド](./frontend-guide.md) | ページ構成、コンポーネント、データフロー |
-| 12 | [ダッシュボードガイド](./dashboard-guide.md) | フォーム、状態管理、API 連携 |
+| 11 | [フロントエンドガイド](./frontend/frontend-guide.md) | ページ構成、コンポーネント、データフロー |
+| 12 | [ダッシュボードガイド](./frontend/dashboard-guide.md) | フォーム、状態管理、API 連携 |
 | 13 | [開発ガイドライン](../development-guide.md) | コーディング規約、ベストプラクティス |
 
 ### その他（参考）
 
 | ドキュメント | 内容 |
 |-------------|------|
-| [Node.js ガイド](./nodejs-guide.md) | ランタイム、npm、環境変数管理 |
-| [JSX ガイド](./jsx-guide.md) | JSX 構文、HTML との違い |
-| [ユーティリティガイド](./utilities-guide.md) | 画像圧縮、Blob Storage、設定管理 |
-| [shadcn/ui ガイド](./shadcn-ui-guide.md) | UI コンポーネントライブラリの使用方法 |
-| [スタイリングベストプラクティス](./styling-best-practices.md) | Tailwind CSS の使い方 |
-| [Git/GitHub ガイド](./git-github-guide.md) | Git 操作、GitHub の使い方 |
+| [Node.js ガイド](./backend/nodejs-guide.md) | ランタイム、npm、環境変数管理 |
+| [JSX ガイド](./basics/jsx-guide.md) | JSX 構文、HTML との違い |
+| [ユーティリティガイド](./backend/utilities-guide.md) | 画像圧縮、Blob Storage、設定管理 |
+| [shadcn/ui ガイド](./frontend/shadcn-ui-guide.md) | UI コンポーネントライブラリの使用方法 |
+| [スタイリングベストプラクティス](./frontend/styling-best-practices.md) | Tailwind CSS の使い方 |
+| [Git/GitHub ガイド](./tools/git-github-guide.md) | Git 操作、GitHub の使い方 |
 | [アーキテクチャ](../architecture.md) | 設計思想と理由 |
 | [認証ドキュメント](../authentication.md) | 認証の詳細実装 |
 
@@ -412,7 +412,7 @@ Tailwind CSS v4 では CSS-based 設定を使用しています。
 - Server Component: [`app/(public)/page.tsx`](../../app/(public)/page.tsx)
 - Client Component: [`app/components/ProductGrid.tsx`](../../app/components/ProductGrid.tsx)
 
-詳細: [App Router ガイド](./app-router-guide.md)
+詳細: [App Router ガイド](./frontend/app-router-guide.md)
 
 ### Q2: 型定義が複雑で理解できない
 
@@ -422,7 +422,7 @@ Tailwind CSS v4 では CSS-based 設定を使用しています。
 2. [`app/types.ts`](../../app/types.ts) の `Product` 型（中程度）
 3. [`lib/api-types.ts`](../../lib/api-types.ts) の `GetProductsResponse` 型（複雑）
 
-詳細: [TypeScript ガイド](./typescript-guide.md)
+詳細: [TypeScript ガイド](./basics/typescript-guide.md)
 
 ### Q3: React Hooks の使い方がわからない
 
@@ -431,7 +431,7 @@ Tailwind CSS v4 では CSS-based 設定を使用しています。
 1. [`app/hooks/useProductModal.ts`](../../app/hooks/useProductModal.ts) - useState の例
 2. [`app/components/ProductGrid.tsx`](../../app/components/ProductGrid.tsx) - カスタムフックの使用例
 
-詳細: [React ガイド](./react-guide.md)
+詳細: [React ガイド](./frontend/react-guide.md)
 
 ### Q4: Prisma のクエリが理解できない
 
@@ -441,7 +441,7 @@ Tailwind CSS v4 では CSS-based 設定を使用しています。
 2. `create` の例: 同ファイルの POST 関数
 3. 複雑なクエリ: [`lib/products.ts`](../../lib/products.ts)
 
-詳細: [Prisma ガイド](./prisma-guide.md)
+詳細: [Prisma ガイド](./backend/prisma-guide.md)
 
 ### Q5: エラーハンドリングの方法がわからない
 
@@ -461,7 +461,7 @@ Tailwind CSS v4 では CSS-based 設定を使用しています。
 2. [`lib/auth-config.ts`](../../lib/auth-config.ts) - 設定
 3. [`app/dashboard/layout.tsx`](../../app/dashboard/layout.tsx) - 保護されたルート
 
-詳細: [Auth.js ガイド](./authjs-guide.md)、[認証ドキュメント](../authentication.md)
+詳細: [Auth.js ガイド](./backend/authjs-guide.md)、[認証ドキュメント](../authentication.md)
 
 ## まとめ
 

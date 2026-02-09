@@ -5,8 +5,8 @@
 このドキュメントは「**非同期処理の書き方**」を説明します。Promise、async/await、並列処理など、非同期処理の基礎を理解したいときに参照してください。
 
 **関連ドキュメント**:
-- [開発ガイドライン](../development-guide.md#prisma): Prisma での非同期データベース操作
-- [App Router ガイド](./app-router-guide.md): Server Components でのデータフェッチ
+- [開発ガイドライン](../../development-guide.md#prisma): Prisma での非同期データベース操作
+- [App Router ガイド](../frontend/app-router-guide.md): Server Components でのデータフェッチ
 
 ## 目次
 
@@ -527,7 +527,7 @@ async function getPublishedProductsByCategory(): Promise<
 }
 ```
 
-**詳細は [App Router ガイド - Server Components でのデータフェッチング](./app-router-guide.md#server-components-でのデータフェッチング) を参照してください。**
+**詳細は [App Router ガイド - Server Components でのデータフェッチング](../frontend/app-router-guide.md#server-components-でのデータフェッチング) を参照してください。**
 
 ### API Routes での非同期処理
 
@@ -560,7 +560,7 @@ export const POST = withErrorHandling(async (request: NextRequest) => {
 });
 ```
 
-**詳細は [App Router ガイド - API Routes](./app-router-guide.md#api-routes) を参照してください。**
+**詳細は [App Router ガイド - API Routes](../frontend/app-router-guide.md#api-routes) を参照してください。**
 
 ### Prisma でのデータベース操作
 
@@ -588,7 +588,7 @@ const product = await prisma.product.create({
 });
 ```
 
-3. **トランザクション** ([`doc/development-guide.md`](../development-guide.md))
+3. **トランザクション** ([`doc/development-guide.md`](../../development-guide.md))
 
 ```typescript
 await prisma.$transaction(async (tx) => {
@@ -597,7 +597,7 @@ await prisma.$transaction(async (tx) => {
 });
 ```
 
-**詳細は [Prisma ガイド](./prisma-guide.md) を参照してください。**
+**詳細は [Prisma ガイド](../backend/prisma-guide.md) を参照してください。**
 
 ### 並列データフェッチング
 
@@ -767,9 +767,9 @@ export const POST = withErrorHandling(async (request: NextRequest) => {
 ## 参考リンク
 
 - **[TypeScript ガイド](./typescript-guide.md)**: TypeScript での async/await の型定義
-- **[App Router ガイド](./app-router-guide.md)**: Server Components でのデータフェッチング
-- **[Prisma ガイド](./prisma-guide.md)**: Prisma での非同期処理
-- **[開発ガイド](../development-guide.md)**: コーディング規約とベストプラクティス
+- **[App Router ガイド](../frontend/app-router-guide.md)**: Server Components でのデータフェッチング
+- **[Prisma ガイド](../backend/prisma-guide.md)**: Prisma での非同期処理
+- **[開発ガイド](../../development-guide.md)**: コーディング規約とベストプラクティス
 - **[MDN - async function](https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Statements/async_function)**: async 関数の詳細な説明
 - **[MDN - await](https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Operators/await)**: await 演算子の詳細な説明
 - **[MDN - Promise](https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Global_Objects/Promise)**: Promise の詳細な説明

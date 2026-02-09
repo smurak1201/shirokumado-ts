@@ -8,7 +8,7 @@
 
 **関連ドキュメント**:
 - [スタイリングのベストプラクティス](./styling-best-practices.md): Tailwind CSS の使い方
-- [開発ガイドライン](../development-guide.md#コンポーネント設計): コンポーネント設計
+- [開発ガイドライン](../../development-guide.md#コンポーネント設計): コンポーネント設計
 
 ## 目次
 
@@ -226,9 +226,9 @@ export function ProductCard({ className, ...props }: ProductCardProps) {
 
 **詳細な構文の説明**:
 
-- TypeScript の型システムについては、[TypeScript ガイド - 型定義](./typescript-guide.md#型定義) を参照してください。
+- TypeScript の型システムについては、[TypeScript ガイド - 型定義](../basics/typescript-guide.md#型定義) を参照してください。
 - React の props については、[React ガイド - コンポーネント設計](./react-guide.md#コンポーネント設計) を参照してください。
-- JSX の構文については、[JSX ガイド - 属性（Props）](./jsx-guide.md#属性props) を参照してください。
+- JSX の構文については、[JSX ガイド - 属性（Props）](../basics/jsx-guide.md#属性props) を参照してください。
 
 **ポイント**:
 

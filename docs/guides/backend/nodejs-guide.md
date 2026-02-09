@@ -6,8 +6,8 @@
 
 **関連ドキュメント**:
 - [技術スタック](../tech-stack.md#ランタイム): Node.js の概要と選定理由
-- [Async/Await ガイド](./async-await-guide.md): Node.js の非同期処理の詳細
-- [TypeScript ガイド](./typescript-guide.md): TypeScript との連携
+- [Async/Await ガイド](../basics/async-await-guide.md): Node.js の非同期処理の詳細
+- [TypeScript ガイド](../basics/typescript-guide.md): TypeScript との連携
 
 ## 目次
 
@@ -796,10 +796,10 @@ main()
 
 ## 参考リンク
 
-- **[TypeScript ガイド](./typescript-guide.md)**: Node.js との型統合
-- **[Async/Await ガイド](./async-await-guide.md)**: Node.js の非同期処理パターン
+- **[TypeScript ガイド](../basics/typescript-guide.md)**: Node.js との型統合
+- **[Async/Await ガイド](../basics/async-await-guide.md)**: Node.js の非同期処理パターン
 - **[Prisma ガイド](./prisma-guide.md)**: データベース操作と Node.js ランタイム
-- **[App Router ガイド](./app-router-guide.md)**: Server Components と API Routes
+- **[App Router ガイド](../frontend/app-router-guide.md)**: Server Components と API Routes
 - **[開発ガイド](../development-guide.md)**: 開発環境のセットアップ
 - **[Node.js 公式ドキュメント](https://nodejs.org/docs/latest/api/)**: API リファレンス
 - **[npm 公式ドキュメント](https://docs.npmjs.com/)**: パッケージ管理の詳細

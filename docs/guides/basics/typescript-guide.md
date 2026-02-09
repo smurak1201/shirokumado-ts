@@ -6,8 +6,8 @@
 
 **関連ドキュメント**:
 - [JavaScript 基本構文ガイド](./javascript-basics-guide.md): JavaScript の基本構文とコードスタイル
-- [開発ガイドライン](../development-guide.md#typescript): コーディング規約としての TypeScript
-- [Prisma ガイド](./prisma-guide.md#型安全性): Prisma との型統合
+- [開発ガイドライン](../../development-guide.md#typescript): コーディング規約としての TypeScript
+- [Prisma ガイド](../backend/prisma-guide.md#型安全性): Prisma との型統合
 
 ## 目次
 
@@ -857,7 +857,7 @@ console.log(product.invalidField); // コンパイルエラー
 - **自動補完**: IDE で自動補完が利用可能
 - **リファクタリング**: スキーマ変更時に型エラーで影響範囲を把握
 
-**詳細は [Prisma ガイド - 型生成](./prisma-guide.md#型生成) を参照してください。async/await の使用方法については [Async/Await ガイド](./async-await-guide.md) を参照してください。**
+**詳細は [Prisma ガイド - 型生成](../backend/prisma-guide.md#型生成) を参照してください。async/await の使用方法については [Async/Await ガイド](./async-await-guide.md) を参照してください。**
 
 ## API Routes での型安全性
 
@@ -1562,10 +1562,10 @@ const imageFile = file as ImageFile; // 実行時に型チェックされない
 ## 参考リンク
 
 - **[JavaScript 基本構文ガイド](./javascript-basics-guide.md)**: React でよく使う JavaScript の基本構文とコードスタイル
-- **[Prisma ガイド](./prisma-guide.md)**: Prisma との型統合の詳細
-- **[React ガイド](./react-guide.md)**: React での TypeScript の使用方法
+- **[Prisma ガイド](../backend/prisma-guide.md)**: Prisma との型統合の詳細
+- **[React ガイド](../frontend/react-guide.md)**: React での TypeScript の使用方法
 - **[JSX ガイド](./jsx-guide.md)**: TypeScript での JSX の使用方法
-- **[Next.js ガイド](./nextjs-guide.md)**: Next.js での TypeScript の使用方法
+- **[Next.js ガイド](../frontend/nextjs-guide.md)**: Next.js での TypeScript の使用方法
 - **[Async/Await ガイド](./async-await-guide.md)**: async/await と Promise の使用方法
-- **[ユーティリティ関数ガイド](./utilities-guide.md)**: 環境変数の型安全な管理（`lib/env.ts`）の詳細
+- **[ユーティリティ関数ガイド](../backend/utilities-guide.md)**: 環境変数の型安全な管理（`lib/env.ts`）の詳細
 - **[TypeScript 公式ドキュメント](https://www.typescriptlang.org/docs/)**: TypeScript の包括的なドキュメント
