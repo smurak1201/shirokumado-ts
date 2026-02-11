@@ -69,7 +69,8 @@ app/
 ├── dashboard/            # ダッシュボード
 ├── hooks/                # カスタムフック
 │
-├── favicon.ico           # ファビコン
+├── apple-icon.png        # iOSホーム画面用アイコン（180x180）
+├── icon.png              # ファビコン（32x32 PNG）
 ├── globals.css           # グローバルスタイル
 ├── layout.tsx            # ルートレイアウト
 ├── not-found.tsx         # 404ページ
@@ -430,8 +431,11 @@ model User {
 ```
 public/
 ├── hero.webp             # ヒーロー画像
+├── icon-192x192.png      # PWA用アイコン（192x192）
+├── icon-512x512.png      # PWA用アイコン（512x512）
 ├── logo-instagram.svg    # Instagramアイコン
-└── logo.webp             # ロゴ画像
+├── logo.webp             # ロゴ画像
+└── manifest.webmanifest  # Web App Manifest
 ```
 
 ### `types/` - グローバル型定義
