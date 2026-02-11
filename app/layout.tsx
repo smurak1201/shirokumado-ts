@@ -19,9 +19,7 @@ export const metadata: Metadata = {
   title: "白熊堂 | 本格かき氷のお店",
   description:
     "白熊堂は本格かき氷のお店です。ふわふわの氷とこだわりのシロップでお待ちしています。",
-  icons: {
-    icon: "/favicon.ico",
-  },
+  manifest: "/manifest.webmanifest",
   openGraph: {
     title: "白熊堂 | 本格かき氷のお店",
     description:
