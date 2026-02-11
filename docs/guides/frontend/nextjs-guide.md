@@ -25,6 +25,7 @@
   - [このアプリでの使用箇所](#このアプリでの使用箇所-1)
 - [メタデータと SEO](#メタデータと-seo)
   - [メタデータの設定](#メタデータの設定)
+  - [アイコンとファビコン](#アイコンとファビコン)
 - [ビルドとデプロイ](#ビルドとデプロイ)
   - [ビルドプロセス](#ビルドプロセス)
   - [デプロイメント](#デプロイメント)
@@ -434,6 +435,7 @@ Next.js は、`metadata` オブジェクトを使用して、ページのメタ�
   title: "白熊堂 | 本格かき氷のお店",
   description:
     "白熊堂は本格かき氷のお店です。ふわふわの氷とこだわりのシロップでお待ちしています。",
+  manifest: "/manifest.webmanifest",
   openGraph: {
     title: "白熊堂 | 本格かき氷のお店",
     description:
@@ -447,13 +449,74 @@ Next.js は、`metadata` オブジェクトを使用して、ページのメタ�
 
 - **title**: ページのタイトル（ブラウザのタブに表示）
 - **description**: ページの説明（検索エンジンの検索結果に表示）
+- **manifest**: Web App Manifest のパス（アイコンやアプリ情報を定義）
 - **openGraph**: OGP の設定（SNS でのシェア時に表示される情報）
+
+**アイコン**: `app/icon.png` と `app/apple-icon.png` を配置すると、Next.js が自動検出するため `metadata.icons` での指定は不要です。詳細は[アイコンとファビコン](#アイコンとファビコン)を参照してください。
 
 **SEO のメリット**:
 
 - **検索エンジン最適化**: 適切なメタデータにより、検索エンジンでの表示を最適化
 - **SNS シェア**: OGP により、SNS でのシェア時に適切な情報を表示
 - **アクセシビリティ**: 適切なタイトルと説明により、アクセシビリティを向上
+
+### アイコンとファビコン
+
+ブラウザのタブやブックマーク、スマートフォンのホーム画面に表示されるアイコンです。デバイスやブラウザによって参照するファイルが異なるため、複数の形式・サイズを用意する必要があります。
+
+#### ブラウザがアイコンを探す仕組み
+
+ブラウザはページを読み込む際、以下の順序でアイコンを探します：
+
+1. **HTMLの`<link>`タグ** — `<link rel="icon">` や `<link rel="apple-touch-icon">` を参照
+2. **Web App Manifest** — `manifest.webmanifest` の `icons` 配列を参照
+3. **`/favicon.ico`** — 上記がない場合、ルートの `favicon.ico` にフォールバック
+
+デスクトップブラウザは主に `<link rel="icon">` を使いますが、**iOSのブラウザ（Safari、Edge、Chrome）は `<link rel="apple-touch-icon">` を優先的に探します**。このタグがない場合、ホスティングサービス（Vercelなど）のデフォルトアイコンが表示されることがあります。
+
+#### Next.js での設定方法
+
+Next.js の App Router では、`app/` ディレクトリに特定のファイル名で画像を配置すると、自動的に対応する `<link>` タグが生成されます。`metadata` での手動指定は不要です。
+
+| ファイル | 生成されるタグ | 用途 |
+|---|---|---|
+| `app/icon.png` | `<link rel="icon">` | ブラウザタブのファビコン |
+| `app/apple-icon.png` | `<link rel="apple-touch-icon">` | iOSホーム画面用アイコン |
+
+#### このアプリでの構成
+
+```
+app/
+├── icon.png              # ファビコン（32x32 PNG）
+└── apple-icon.png        # iOSホーム画面用アイコン（180x180 PNG）
+
+public/
+├── icon-192x192.png      # PWA用アイコン（192x192）
+├── icon-512x512.png      # PWA用アイコン（512x512）
+└── manifest.webmanifest  # Web App Manifest
+```
+
+**各ファイルの役割**:
+
+- **`app/icon.png`（32x32）**: PCブラウザのタブに表示されるファビコン。Next.js が自動検出して `<link rel="icon">` を生成
+- **`app/apple-icon.png`（180x180）**: iOSでホーム画面に追加した際やブックマークに表示されるアイコン。Next.js が自動検出して `<link rel="apple-touch-icon">` を生成
+- **`public/icon-192x192.png`、`icon-512x512.png`**: Web App Manifest から参照されるPWA用アイコン
+- **`public/manifest.webmanifest`**: アプリ名やアイコン情報を定義するマニフェストファイル。`layout.tsx` の `metadata.manifest` で参照
+
+#### アイコンのサイズと形式
+
+| サイズ | 形式 | 用途 |
+|---|---|---|
+| 32x32 | PNG | ブラウザタブのファビコン |
+| 180x180 | PNG | iOS（apple-touch-icon） |
+| 192x192 | PNG | Android / PWA |
+| 512x512 | PNG | PWA（スプラッシュ画面など） |
+
+**注意点**:
+
+- **ICO形式は不要**: Next.js の `app/icon.png` による自動検出を使用するため、`favicon.ico` は不要
+- **PNG形式を使用**: すべてのモダンブラウザがPNGをサポートしており、ICOより軽量で管理しやすい
+- **画像の生成元を統一**: すべてのサイズのアイコンは同じ元画像から生成し、一貫性を保つ
 
 ## ビルドとデプロイ
 
