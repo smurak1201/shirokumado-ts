@@ -38,10 +38,10 @@ export default async function AuthErrorPage({ searchParams }: Props) {
   const { title, description } = errorMessages[errorType] || errorMessages.Default;
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-red-50 via-orange-50 to-yellow-50">
+    <div className="flex min-h-screen items-center justify-center bg-linear-to-br from-red-50 via-orange-50 to-yellow-50">
       <div className="w-full max-w-md space-y-8 rounded-2xl bg-white/80 p-10 shadow-2xl backdrop-blur-sm sm:p-12">
         <div className="text-center">
-          <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-red-500 to-orange-600 shadow-lg">
+          <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-linear-to-br from-red-500 to-orange-600 shadow-lg">
             <svg
               className="h-8 w-8 text-white"
               fill="none"
@@ -56,7 +56,7 @@ export default async function AuthErrorPage({ searchParams }: Props) {
               />
             </svg>
           </div>
-          <h1 className="mb-3 bg-gradient-to-r from-red-700 to-orange-600 bg-clip-text text-3xl font-bold text-transparent">
+          <h1 className="mb-3 bg-linear-to-r from-red-700 to-orange-600 bg-clip-text text-3xl font-bold text-transparent">
             {title}
           </h1>
           <p className="text-sm text-gray-600">{description}</p>
@@ -67,7 +67,7 @@ export default async function AuthErrorPage({ searchParams }: Props) {
             href="/auth/signin"
             className="group relative flex w-full items-center justify-center gap-3 overflow-hidden rounded-xl border-2 border-gray-200 bg-white px-6 py-4 font-medium text-gray-700 shadow-md transition-all duration-300 hover:border-blue-300 hover:shadow-xl hover:scale-105 active:scale-95"
           >
-            <div className="absolute inset-0 bg-gradient-to-r from-blue-50 to-purple-50 opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+            <div className="absolute inset-0 bg-linear-to-r from-blue-50 to-purple-50 opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
             <svg
               className="relative h-5 w-5"
               fill="none"
