@@ -27,47 +27,70 @@ const childFadeUp: Variants = {
   },
 };
 
-/** 画像セクション */
-function ImageSection({ image }: { image: AboutIceSection["images"][number] }) {
-  return (
-    <div className="relative mx-auto aspect-4/3 w-full overflow-hidden md:max-w-5xl">
-      <Image
-        src={image.src}
-        alt={image.alt}
-        fill
-        className="object-cover"
-        sizes="(min-width: 768px) 1024px, 100vw"
-      />
-    </div>
-  );
-}
+/**
+ * コンテンツセクション
+ * モバイル: テキスト → 画像の縦積み
+ * md以上: テキストと画像を横並び（奇数/偶数で左右を入れ替え）
+ */
+function ContentSection({
+  section,
+  index,
+}: {
+  section: AboutIceSection;
+  index: number;
+}) {
+  const isReversed = index % 2 !== 0;
 
-/** テキストセクション */
-function TextSection({ section }: { section: AboutIceSection }) {
   return (
     <motion.section
       variants={stagger}
       initial="hidden"
       whileInView="visible"
       viewport={{ once: true, margin: "0px 0px -80px 0px" }}
-      className="mx-auto max-w-2xl px-6 py-12 md:py-16 lg:py-20"
+      className="mx-auto max-w-6xl px-4 py-12 md:px-8 md:py-16 lg:py-20"
     >
-      <motion.h2
-        variants={childFadeUp}
-        className="mb-6 text-center text-xl font-medium tracking-wide text-foreground md:mb-8 md:text-2xl lg:text-3xl"
-      >
-        {section.title}
-      </motion.h2>
-      <div className="space-y-4 md:space-y-5">
-        {section.paragraphs.map((paragraph, i) => (
-          <motion.p
-            key={i}
+      <div className="grid gap-8 md:grid-cols-2 md:items-center md:gap-12 lg:gap-16">
+        {/* テキスト */}
+        <div className={isReversed ? "md:order-2" : ""}>
+          <motion.h2
             variants={childFadeUp}
-            className="text-sm leading-loose text-muted-foreground md:text-base lg:text-lg"
+            className="mb-6 text-lg font-medium tracking-wide text-foreground md:text-xl lg:text-2xl"
           >
-            {paragraph}
-          </motion.p>
-        ))}
+            {section.title}
+          </motion.h2>
+          <div className="space-y-4">
+            {section.paragraphs.map((paragraph, i) => (
+              <motion.p
+                key={i}
+                variants={childFadeUp}
+                className="text-sm leading-loose text-muted-foreground md:text-base"
+              >
+                {paragraph}
+              </motion.p>
+            ))}
+          </div>
+        </div>
+
+        {/* 画像 */}
+        <motion.div
+          variants={childFadeUp}
+          className={isReversed ? "md:order-1" : ""}
+        >
+          {section.images.map((image) => (
+            <div
+              key={image.src}
+              className="relative aspect-4/3 overflow-hidden rounded-lg"
+            >
+              <Image
+                src={image.src}
+                alt={image.alt}
+                fill
+                className="object-cover"
+                sizes="(min-width: 768px) 50vw, 100vw"
+              />
+            </div>
+          ))}
+        </motion.div>
       </div>
     </motion.section>
   );
@@ -89,14 +112,8 @@ export default function AboutIceContent() {
         <div className="h-px w-16 bg-border md:w-24" />
       </motion.div>
 
-      {/* セクション: テキスト → 画像 の繰り返し */}
-      {aboutIceSections.map((section) => (
-        <div key={section.id}>
-          <TextSection section={section} />
-          {section.images.map((image) => (
-            <ImageSection key={image.src} image={image} />
-          ))}
-        </div>
+      {aboutIceSections.map((section, index) => (
+        <ContentSection key={section.id} section={section} index={index} />
       ))}
     </main>
   );
