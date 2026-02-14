@@ -62,14 +62,14 @@ export default async function HomeContent() {
 
       <section className="mx-auto max-w-4xl px-4 py-10 md:py-16">
         <div className="grid items-center gap-6 md:grid-cols-2 md:gap-10">
-          <div className="overflow-hidden rounded-lg">
+          <div className="order-last mx-auto w-3/5 overflow-hidden rounded-lg md:order-first md:w-full">
             <Image
               src="/S__3301389.jpg"
               alt="透き通った天然氷のブロック"
               width={600}
               height={600}
               className="aspect-square w-full object-cover"
-              sizes="(max-width: 768px) 100vw, 50vw"
+              sizes="(max-width: 768px) 60vw, 50vw"
             />
           </div>
           <div className="text-center md:text-left">
