@@ -14,15 +14,6 @@ export interface AboutIceSection {
 
 export const aboutIceSections: AboutIceSection[] = [
   {
-    id: "intro",
-    title: "冬の山奥で生まれる、特別な氷",
-    paragraphs: [
-      "白熊堂のかき氷には、天然氷を使用しています。",
-      "天然氷とは、冬の厳しい寒さのなかで、山の湧水をじっくりと時間をかけて凍らせた氷のこと。機械で急速に作られる氷とはまったく異なる、自然の力だけが生み出す特別な氷です。",
-    ],
-    images: [],
-  },
-  {
     id: "shogetsu",
     title: "日光・松月氷室の天然氷",
     paragraphs: [
