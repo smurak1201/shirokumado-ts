@@ -27,22 +27,18 @@ const childFadeUp: Variants = {
   },
 };
 
-/** フルブリード画像セクション（パララックス効果） */
-function FullbleedImage({ image }: { image: AboutIceSection["images"][number] }) {
+/** 画像セクション */
+function ImageSection({ image }: { image: AboutIceSection["images"][number] }) {
   return (
-    <section className="about-ice-fullbleed relative w-full">
-      <div className="section-inner absolute inset-0 h-full w-full">
-        <div className="about-ice-fullbleed-image z-[-1]">
-          <Image
-            src={image.src}
-            alt={image.alt}
-            fill
-            className="object-cover"
-            sizes="100vw"
-          />
-        </div>
-      </div>
-    </section>
+    <div className="relative aspect-4/3 w-full overflow-hidden">
+      <Image
+        src={image.src}
+        alt={image.alt}
+        fill
+        className="object-cover"
+        sizes="100vw"
+      />
+    </div>
   );
 }
 
@@ -80,47 +76,35 @@ function TextSection({ section }: { section: AboutIceSection }) {
 export default function AboutIceContent() {
   return (
     <main>
-      {/* フルスクリーンヒーロー（パララックス） */}
-      <section className="about-ice-hero relative w-full">
-        <div className="section-inner absolute inset-0 h-full w-full">
-          <motion.div
-            className="about-ice-hero-image z-[-1]"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 1.2, ease: "easeOut" }}
-          >
-            <Image
-              src="/S__3301387.jpg"
-              alt="日光の杉林に囲まれた天然氷の池"
-              fill
-              priority
-              className="object-cover"
-              sizes="100vw"
-            />
-            {/* ダークオーバーレイ: テキストの視認性を確保 */}
-            <div className="absolute inset-0 bg-black/30" />
-          </motion.div>
-
-          {/* タイトル: 画面中央に配置 */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1, delay: 0.5, ease: "easeOut" }}
-            className="absolute inset-0 flex items-center justify-center"
-          >
-            <h1 className="text-2xl font-light tracking-widest text-white md:text-4xl lg:text-5xl">
-              天然氷について
-            </h1>
-          </motion.div>
-        </div>
+      {/* ヒーロー画像 + タイトルオーバーレイ */}
+      <section className="relative aspect-video w-full md:aspect-auto md:h-[60vh] lg:h-[70vh]">
+        <Image
+          src="/S__3301387.jpg"
+          alt="日光の杉林に囲まれた天然氷の池"
+          fill
+          priority
+          className="object-cover"
+          sizes="100vw"
+        />
+        <div className="absolute inset-0 bg-black/30" />
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1, delay: 0.3, ease: "easeOut" }}
+          className="absolute inset-0 flex items-center justify-center"
+        >
+          <h1 className="text-2xl font-light tracking-widest text-white md:text-4xl lg:text-5xl">
+            天然氷について
+          </h1>
+        </motion.div>
       </section>
 
-      {/* セクション: テキスト → フルブリード画像 の繰り返し */}
+      {/* セクション: テキスト → 画像 の繰り返し */}
       {aboutIceSections.map((section) => (
         <div key={section.id}>
           <TextSection section={section} />
           {section.images.map((image) => (
-            <FullbleedImage key={image.src} image={image} />
+            <ImageSection key={image.src} image={image} />
           ))}
         </div>
       ))}
