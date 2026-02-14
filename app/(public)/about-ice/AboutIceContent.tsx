@@ -2,12 +2,10 @@
 
 import Image from "next/image";
 import { motion, type Variants } from "framer-motion";
-import { Separator } from "@/app/components/ui/separator";
 import { config } from "@/lib/config";
-import { cn } from "@/lib/utils";
 import { aboutIceSections, type AboutIceSection } from "./data";
 
-const containerVariants: Variants = {
+const stagger: Variants = {
   hidden: { opacity: 0 },
   visible: {
     opacity: 1,
@@ -17,7 +15,7 @@ const containerVariants: Variants = {
   },
 };
 
-const itemVariants: Variants = {
+const childFadeUp: Variants = {
   hidden: { opacity: 0, y: 20 },
   visible: {
     opacity: 1,
@@ -29,133 +27,103 @@ const itemVariants: Variants = {
   },
 };
 
-const titleVariants: Variants = {
-  hidden: { opacity: 0, y: -10 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: {
-      duration: config.animationConfig.SCROLL_ANIMATION_DURATION_SECONDS,
-      ease: "easeOut",
-    },
-  },
-};
-
-function SectionImages({
-  images,
-  priority,
-}: {
-  images: AboutIceSection["images"];
-  priority: boolean;
-}) {
-  if (images.length === 1 && images[0]) {
-    const image = images[0];
-    return (
-      <div className="overflow-hidden rounded-lg">
-        <Image
-          src={image.src}
-          alt={image.alt}
-          width={600}
-          height={600}
-          priority={priority}
-          className="aspect-square w-full object-cover"
-          sizes="(max-width: 768px) 100vw, 50vw"
-        />
-      </div>
-    );
-  }
-
+/** フルブリード画像セクション（パララックス効果） */
+function FullbleedImage({ image }: { image: AboutIceSection["images"][number] }) {
   return (
-    <div className="grid grid-cols-2 gap-2">
-      {images.map((image) => (
-        <div key={image.src} className="overflow-hidden rounded-lg">
+    <section className="about-ice-fullbleed relative w-full">
+      <div className="section-inner absolute inset-0 h-full w-full">
+        <div className="about-ice-fullbleed-image z-[-1]">
           <Image
             src={image.src}
             alt={image.alt}
-            width={300}
-            height={300}
-            className="aspect-square w-full object-cover"
-            sizes="(max-width: 768px) 50vw, 25vw"
+            fill
+            className="object-cover"
+            sizes="100vw"
           />
         </div>
-      ))}
-    </div>
+      </div>
+    </section>
   );
 }
 
-function Section({
-  section,
-  index,
-}: {
-  section: AboutIceSection;
-  index: number;
-}) {
-  const hasImages = section.images.length > 0;
-  const isEven = index % 2 === 0;
-
+/** テキストセクション */
+function TextSection({ section }: { section: AboutIceSection }) {
   return (
-    <motion.article
-      variants={itemVariants}
+    <motion.section
+      variants={stagger}
       initial="hidden"
       whileInView="visible"
-      viewport={{ once: true, margin: "0px 0px -100px 0px" }}
-      className={cn(
-        "grid gap-6",
-        hasImages && "md:grid-cols-2 md:gap-10 md:items-center"
-      )}
+      viewport={{ once: true, margin: "0px 0px -80px 0px" }}
+      className="mx-auto max-w-2xl px-6 py-16 md:py-24 lg:py-32"
     >
-      <div className={cn("space-y-4", hasImages && !isEven && "md:order-2")}>
-        <h2 className="text-xl font-medium tracking-wide text-foreground md:text-2xl">
-          {section.title}
-        </h2>
-        <div className="space-y-3">
-          {section.paragraphs.map((paragraph, i) => (
-            <p
-              key={i}
-              className="text-sm leading-relaxed text-muted-foreground md:text-base"
-            >
-              {paragraph}
-            </p>
-          ))}
-        </div>
+      <motion.h2
+        variants={childFadeUp}
+        className="mb-6 text-center text-xl font-medium tracking-wide text-foreground md:mb-8 md:text-2xl lg:text-3xl"
+      >
+        {section.title}
+      </motion.h2>
+      <div className="space-y-4 md:space-y-5">
+        {section.paragraphs.map((paragraph, i) => (
+          <motion.p
+            key={i}
+            variants={childFadeUp}
+            className="text-sm leading-loose text-muted-foreground md:text-base lg:text-lg"
+          >
+            {paragraph}
+          </motion.p>
+        ))}
       </div>
-
-      {hasImages && (
-        <div className={cn(!isEven && "md:order-1")}>
-          <SectionImages images={section.images} priority={index === 0} />
-        </div>
-      )}
-    </motion.article>
+    </motion.section>
   );
 }
 
 export default function AboutIceContent() {
   return (
-    <>
-      <motion.div
-        variants={titleVariants}
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true }}
-        className="mb-10 flex flex-col items-center gap-4 md:mb-12"
-      >
-        <h1 className="text-center text-2xl font-normal tracking-wide text-muted-foreground md:text-3xl lg:text-4xl">
-          天然氷について
-        </h1>
-        <Separator className="w-20 md:w-32" />
-      </motion.div>
+    <main>
+      {/* フルスクリーンヒーロー（パララックス） */}
+      <section className="about-ice-hero relative w-full">
+        <div className="section-inner absolute inset-0 h-full w-full">
+          <motion.div
+            className="about-ice-hero-image z-[-1]"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 1.2, ease: "easeOut" }}
+          >
+            <Image
+              src="/S__3301387.jpg"
+              alt="日光の杉林に囲まれた天然氷の池"
+              fill
+              priority
+              className="object-cover"
+              sizes="100vw"
+            />
+            {/* ダークオーバーレイ: テキストの視認性を確保 */}
+            <div className="absolute inset-0 bg-black/30" />
+          </motion.div>
 
-      <motion.div
-        variants={containerVariants}
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true, margin: "0px 0px -100px 0px" }}
-        className="space-y-16 md:space-y-24"
-      >
-        {aboutIceSections.map((section, index) => (
-          <Section key={section.id} section={section} index={index} />
-        ))}
-      </motion.div>
-    </>
+          {/* タイトル: 画面中央に配置 */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1, delay: 0.5, ease: "easeOut" }}
+            className="absolute inset-0 flex items-center justify-center"
+          >
+            <h1 className="text-2xl font-light tracking-widest text-white md:text-4xl lg:text-5xl">
+              天然氷について
+            </h1>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* セクション: テキスト → フルブリード画像 の繰り返し */}
+      {aboutIceSections.map((section) => (
+        <div key={section.id}>
+          <TextSection section={section} />
+          {section.images.map((image) => (
+            <FullbleedImage key={image.src} image={image} />
+          ))}
+        </div>
+      ))}
+    </main>
   );
 }
