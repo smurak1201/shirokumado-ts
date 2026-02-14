@@ -87,6 +87,18 @@ export default function FixedHeader() {
           className="flex items-center gap-4 md:gap-6"
         >
           <Link
+            href="/about-ice"
+            className={cn(
+              "relative text-sm font-medium transition-all md:text-base",
+              "text-foreground/70 hover:text-foreground active:scale-95",
+              "after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-0 after:bg-foreground after:transition-all after:duration-300",
+              "hover:after:w-full",
+              "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded-sm"
+            )}
+          >
+            天然氷について
+          </Link>
+          <Link
             href="/faq"
             className={cn(
               "relative text-sm font-medium transition-all md:text-base",
