@@ -15,7 +15,6 @@ import ProductCategoryTabs from "@/app/components/ProductCategoryTabs";
 import FixedHeader from "@/app/components/FixedHeader";
 import Footer from "@/app/components/Footer";
 import HeroSection from "@/app/components/HeroSection";
-import { Separator } from "@/app/components/ui/separator";
 import { log } from "@/lib/logger";
 
 // ローディング画面の最低表示時間（ms）
@@ -56,45 +55,28 @@ export default async function HomeContent() {
 
       <HeroSection />
 
-      <div className="mx-auto max-w-7xl px-2 md:px-6 lg:px-8">
-        <Separator className="bg-border/60" />
-      </div>
-
-      <section className="mx-auto max-w-4xl px-4 py-10 md:py-16">
-        <div className="grid items-center gap-6 md:grid-cols-2 md:gap-10">
-          <div className="order-last mx-auto w-3/5 overflow-hidden rounded-lg md:order-first md:w-full">
-            <Image
-              src="/S__3301389.jpg"
-              alt="透き通った天然氷のブロック"
-              width={600}
-              height={600}
-              className="aspect-square w-full object-cover"
-              sizes="(max-width: 768px) 60vw, 50vw"
-            />
-          </div>
-          <div className="text-center md:text-left">
-            <h2 className="mb-4 text-lg font-medium tracking-wide text-foreground md:text-xl">
-              冬の山奥で生まれる、特別な氷
-            </h2>
-            <p className="mb-2 text-sm leading-relaxed text-muted-foreground md:text-base">
-              白熊堂のかき氷には、天然氷を使用しています。
-            </p>
-            <p className="mb-6 text-sm leading-relaxed text-muted-foreground md:text-base">
-              天然氷とは、冬の厳しい寒さのなかで、山の湧水をじっくりと時間をかけて凍らせた氷のこと。機械で急速に作られる氷とはまったく異なる、自然の力だけが生み出す特別な氷です。
-            </p>
-            <Link
-              href="/about-ice"
-              className="text-sm font-medium text-foreground/70 transition-colors hover:text-foreground md:text-base"
-            >
-              天然氷について →
-            </Link>
-          </div>
+      {/* 天然氷紹介: 背景画像 + テキストオーバーレイ */}
+      <Link href="/about-ice" className="group relative block h-[50svh] w-full md:h-[60vh]">
+        <Image
+          src="/S__3301389.jpg"
+          alt="透き通った天然氷のブロック"
+          fill
+          className="object-cover transition-transform duration-700 group-hover:scale-105"
+          sizes="100vw"
+        />
+        <div className="absolute inset-0 bg-black/40 transition-colors duration-500 group-hover:bg-black/30" />
+        <div className="absolute inset-0 flex flex-col items-center justify-center px-6 text-center">
+          <h2 className="mb-3 text-lg font-light tracking-widest text-white md:mb-4 md:text-2xl lg:text-3xl">
+            冬の山奥で生まれる、特別な氷
+          </h2>
+          <p className="mb-6 max-w-lg text-xs leading-relaxed text-white/80 md:mb-8 md:text-sm lg:text-base">
+            天然氷とは、冬の厳しい寒さのなかで、山の湧水をじっくりと時間をかけて凍らせた氷のこと。機械で急速に作られる氷とはまったく異なる、自然の力だけが生み出す特別な氷です。
+          </p>
+          <span className="border-b border-white/60 pb-0.5 text-xs font-medium tracking-wider text-white/90 transition-colors group-hover:border-white group-hover:text-white md:text-sm">
+            天然氷について →
+          </span>
         </div>
-      </section>
-
-      <div className="mx-auto max-w-7xl px-2 md:px-6 lg:px-8">
-        <Separator className="bg-border/60" />
-      </div>
+      </Link>
 
       <main className="mx-auto max-w-7xl px-2 py-8 md:px-6 md:py-20 lg:px-8 lg:py-24 overflow-x-hidden">
         <ProductCategoryTabs categoriesWithProducts={categoriesWithProducts} />
