@@ -24,7 +24,7 @@ export default function Footer() {
               alt="白熊堂"
               width={120}
               height={45}
-              style={{ width: "120px", height: "auto" }}
+              className="h-auto w-20 md:w-25"
             />
           </Link>
           <a

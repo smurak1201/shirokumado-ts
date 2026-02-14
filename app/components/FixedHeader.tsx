@@ -58,7 +58,7 @@ export default function FixedHeader() {
               width={120}
               height={45}
               priority
-              style={{ width: "120px", height: "auto" }}
+              className="h-auto w-20 md:w-25"
             />
           </Link>
           <a
