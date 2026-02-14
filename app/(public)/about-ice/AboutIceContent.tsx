@@ -76,28 +76,14 @@ function TextSection({ section }: { section: AboutIceSection }) {
 export default function AboutIceContent() {
   return (
     <main>
-      {/* ヒーロー画像 + タイトルオーバーレイ */}
-      <section className="relative aspect-video w-full md:aspect-auto md:h-[60vh] lg:h-[70vh]">
-        <Image
-          src="/S__3301387.jpg"
-          alt="日光の杉林に囲まれた天然氷の池"
-          fill
-          priority
-          className="object-cover"
-          sizes="100vw"
-        />
-        <div className="absolute inset-0 bg-black/30" />
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1, delay: 0.3, ease: "easeOut" }}
-          className="absolute inset-0 flex items-center justify-center"
-        >
-          <h1 className="text-2xl font-light tracking-widest text-white md:text-4xl lg:text-5xl">
-            天然氷について
-          </h1>
-        </motion.div>
-      </section>
+      <motion.h1
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8, ease: "easeOut" }}
+        className="py-12 text-center text-xl font-medium tracking-wide text-foreground md:py-16 md:text-2xl lg:text-3xl"
+      >
+        天然氷について
+      </motion.h1>
 
       {/* セクション: テキスト → 画像 の繰り返し */}
       {aboutIceSections.map((section) => (
