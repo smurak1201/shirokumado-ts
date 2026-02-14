@@ -56,7 +56,7 @@ export default async function HomeContent() {
       <HeroSection />
 
       {/* 天然氷紹介: 背景画像 + テキストオーバーレイ */}
-      <Link href="/about-ice" className="group relative block h-[50svh] w-full md:h-[60vh]">
+      <Link href="/about-ice" className="group relative block h-[35svh] w-full md:h-[45vh] lg:h-[50vh]">
         <Image
           src="/S__3301389.jpg"
           alt="透き通った天然氷のブロック"
@@ -78,7 +78,7 @@ export default async function HomeContent() {
         </div>
       </Link>
 
-      <main className="mx-auto max-w-7xl px-2 py-8 md:px-6 md:py-20 lg:px-8 lg:py-24 overflow-x-hidden">
+      <main className="mx-auto max-w-7xl px-2 py-10 md:px-6 md:py-16 lg:px-8 lg:py-20 overflow-x-hidden">
         <ProductCategoryTabs categoriesWithProducts={categoriesWithProducts} />
       </main>
 
