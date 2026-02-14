@@ -5,6 +5,7 @@
  * Promise.allでデータ取得と最低表示時間を並列で待機し、
  * 最低1秒のローディング表示を保証する。
  */
+import Link from "next/link";
 import {
   getPublishedProductsByCategory,
   type CategoryWithProducts,
@@ -53,6 +54,28 @@ export default async function HomeContent() {
       <div style={{ height: "var(--header-height)" }} />
 
       <HeroSection />
+
+      <div className="mx-auto max-w-7xl px-2 md:px-6 lg:px-8">
+        <Separator className="bg-border/60" />
+      </div>
+
+      <section className="mx-auto max-w-3xl px-4 py-10 text-center md:py-16">
+        <h2 className="mb-4 text-lg font-medium tracking-wide text-foreground md:text-xl">
+          冬の山奥で生まれる、特別な氷
+        </h2>
+        <p className="mb-2 text-sm leading-relaxed text-muted-foreground md:text-base">
+          白熊堂のかき氷には、天然氷を使用しています。
+        </p>
+        <p className="mb-6 text-sm leading-relaxed text-muted-foreground md:text-base">
+          天然氷とは、冬の厳しい寒さのなかで、山の湧水をじっくりと時間をかけて凍らせた氷のこと。機械で急速に作られる氷とはまったく異なる、自然の力だけが生み出す特別な氷です。
+        </p>
+        <Link
+          href="/about-ice"
+          className="text-sm font-medium text-foreground/70 transition-colors hover:text-foreground md:text-base"
+        >
+          天然氷について →
+        </Link>
+      </section>
 
       <div className="mx-auto max-w-7xl px-2 md:px-6 lg:px-8">
         <Separator className="bg-border/60" />
