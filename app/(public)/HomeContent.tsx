@@ -64,15 +64,15 @@ export default async function HomeContent() {
           className="object-cover transition-transform duration-700 group-hover:scale-105"
           sizes="100vw"
         />
-        <div className="absolute inset-0 bg-black/40 transition-colors duration-500 group-hover:bg-black/30" />
-        <div className="absolute inset-0 flex flex-col items-center justify-center px-6 text-center">
+        <div className="absolute inset-0 bg-black/50 transition-colors duration-500 group-hover:bg-black/40" />
+        <div className="absolute inset-0 flex flex-col items-center justify-center px-6 text-center drop-shadow-lg">
           <h2 className="mb-3 text-lg font-light tracking-widest text-white md:mb-4 md:text-2xl lg:text-3xl">
             冬の山奥で生まれる、特別な氷
           </h2>
-          <p className="mb-6 max-w-lg text-xs leading-relaxed text-white/80 md:mb-8 md:text-sm lg:text-base">
+          <p className="mb-6 max-w-lg text-xs leading-relaxed text-white/90 md:mb-8 md:text-sm lg:text-base">
             天然氷とは、冬の厳しい寒さのなかで、山の湧水をじっくりと時間をかけて凍らせた氷のこと。機械で急速に作られる氷とはまったく異なる、自然の力だけが生み出す特別な氷です。
           </p>
-          <span className="border-b border-white/60 pb-0.5 text-xs font-medium tracking-wider text-white/90 transition-colors group-hover:border-white group-hover:text-white md:text-sm">
+          <span className="border-b border-white/60 pb-0.5 text-xs font-medium tracking-wider text-white transition-colors group-hover:border-white md:text-sm">
             天然氷について →
           </span>
         </div>
