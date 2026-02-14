@@ -20,7 +20,7 @@ export default function Footer() {
             className="transition-all hover:opacity-80 hover:scale-105 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded-sm"
           >
             <Image
-              src="/logo.webp"
+              src="/logo.svg"
               alt="白熊堂"
               width={120}
               height={45}
