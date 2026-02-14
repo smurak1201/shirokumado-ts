@@ -110,6 +110,9 @@ export default function AboutIceContent() {
           天然氷について
         </h1>
         <div className="h-px w-16 bg-border md:w-24" />
+        <p className="mt-6 max-w-lg text-center text-sm leading-relaxed text-muted-foreground md:text-base">
+          天然氷とは、冬の厳しい寒さのなかで、山の湧水をじっくりと時間をかけて凍らせた氷のこと。機械で急速に作られる氷とはまったく異なる、自然の力だけが生み出す特別な氷です。
+        </p>
       </motion.div>
 
       {aboutIceSections.map((section, index) => (
