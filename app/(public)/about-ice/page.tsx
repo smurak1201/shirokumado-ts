@@ -2,7 +2,6 @@
  * 天然氷紹介ページ
  *
  * 白熊堂が使用する天然氷のこだわりやストーリーを伝えるページ。
- * フルスクリーンヒーローとフルブリード画像で没入感のある構成。
  */
 import type { Metadata } from "next";
 import FixedHeader from "@/app/components/FixedHeader";
@@ -25,6 +24,8 @@ export default function AboutIcePage() {
   return (
     <div className="min-h-screen bg-background">
       <FixedHeader />
+      {/* position:fixed のヘッダーに対応するスペーサー */}
+      <div style={{ height: "var(--header-height)" }} />
       <AboutIceContent />
       <Footer />
     </div>
