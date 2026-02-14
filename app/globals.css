@@ -216,3 +216,52 @@ body {
     min-height: 150px;
   }
 }
+
+/*
+ * 天然氷ページ: フルスクリーンヒーロー（パララックス）
+ * トップページのヒーローと同じ仕組み（fixed + clip-path）
+ * ヘッダーの裏に画像が広がるため、スペーサー不要
+ */
+.about-ice-hero {
+  width: 100%;
+  /* svh: アドレスバーを考慮した安全なビューポート高さ */
+  height: 100svh;
+}
+
+.about-ice-hero-image {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100svh;
+}
+
+/* 天然氷ページ: フルブリード画像セクション */
+.about-ice-fullbleed {
+  width: 100%;
+  height: 50svh;
+}
+
+.about-ice-fullbleed-image {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: calc(50svh + var(--header-height));
+}
+
+@media (min-width: 768px) {
+  .about-ice-fullbleed {
+    height: 60vh;
+  }
+
+  .about-ice-fullbleed-image {
+    height: 100vh;
+  }
+}
+
+@media (min-width: 1024px) {
+  .about-ice-fullbleed {
+    height: 70vh;
+  }
+}
