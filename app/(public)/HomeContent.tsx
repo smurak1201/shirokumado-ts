@@ -17,7 +17,9 @@ import Footer from "@/app/components/Footer";
 import HeroSection from "@/app/components/HeroSection";
 import { log } from "@/lib/logger";
 
-// ローディング画面の最低表示時間（ms）
+// 設計判断: ローディング画面の最低表示時間（ms）
+// 一瞬だけ表示されると逆に煩わしく、またDBのコールドスタートで
+// 表示時間が安定しないため、あえて最低表示時間を設けている。
 const MIN_LOADING_TIME_MS = 1500;
 
 const BASE_URL = process.env.SITE_URL!;
