@@ -38,7 +38,7 @@ export default async function AuthErrorPage({ searchParams }: Props) {
   const { title, description } = errorMessages[errorType] || errorMessages.Default;
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-linear-to-br from-red-50 via-orange-50 to-yellow-50">
+    <main className="flex min-h-screen items-center justify-center bg-linear-to-br from-red-50 via-orange-50 to-yellow-50">
       <div className="w-full max-w-md space-y-8 rounded-2xl bg-white/80 p-10 shadow-2xl backdrop-blur-sm sm:p-12">
         <div className="text-center">
           <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-linear-to-br from-red-500 to-orange-600 shadow-lg">
@@ -85,6 +85,6 @@ export default async function AuthErrorPage({ searchParams }: Props) {
           </Link>
         </div>
       </div>
-    </div>
+    </main>
   );
 }
