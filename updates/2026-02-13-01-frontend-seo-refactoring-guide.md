@@ -742,7 +742,7 @@ return (
 ```tsx
 // 変更案
 <p className="text-xs text-muted-foreground">
-  (C) 2024-{new Date().getFullYear()} 白熊堂
+  (C) 2021-{new Date().getFullYear()} 白熊堂
 </p>
 ```
 
