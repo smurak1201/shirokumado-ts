@@ -43,7 +43,7 @@ export default function HeroSection() {
         >
           <Image
             src={heroImage}
-            alt="ヒーロー画像"
+            alt="白熊堂の店舗外観"
             fill
             priority
             className="object-cover object-center"
