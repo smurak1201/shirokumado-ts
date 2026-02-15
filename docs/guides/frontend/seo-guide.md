@@ -89,9 +89,75 @@ SEO 対策は、この 3 段階のそれぞれで検索エンジンに正しい�
 
 ## Metadata API
 
-### メタデータの自動生成
+### メタデータとは
 
-Next.js App Router では、`layout.tsx` や `page.tsx` に `metadata` オブジェクトを export するだけで、HTML の `<head>` 内にメタタグが自動生成される。`<meta>` タグを直接書く必要がない。
+メタデータとは「データについてのデータ」、つまりページ本体のコンテンツではなく、ページに関する補足情報のこと。
+
+```
+ページのコンテンツ（ユーザーが目にする部分）:
+  白熊堂のかき氷メニュー、天然氷の紹介文、FAQ の回答 ...
+
+メタデータ（ユーザーの目には直接見えないが、裏側で働く情報）:
+  ページのタイトル、説明文、OGP 画像、文字コード、ビューポート設定 ...
+```
+
+メタデータは主に以下の 3 者が利用する。
+
+| 利用者 | 参照するメタデータ | 用途 |
+|---|---|---|
+| **ブラウザ** | title、viewport、charset、favicon | タブのタイトル表示、画面サイズの制御、文字化け防止 |
+| **検索エンジン** | title、description、robots | 検索結果に表示するタイトルと説明文、クロールの制御 |
+| **SNS クローラー** | og:title、og:description、og:image | シェア時のプレビューカード生成 |
+
+### HTML の head 要素
+
+メタデータは HTML の `<head>` 要素内に記述する。`<head>` はブラウザの画面には表示されないが、ページの動作や外部からの認識に影響する重要な領域。
+
+```html
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <!-- ここがメタデータの領域（画面には表示されない） -->
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>白熊堂 | 本格かき氷のお店</title>
+    <meta name="description" content="白熊堂は川崎ラチッタデッラにある..." />
+    <meta property="og:title" content="白熊堂 | 本格かき氷のお店" />
+    <meta property="og:image" content="https://example.com/og-image.png" />
+    <link rel="icon" href="/icon.png" />
+  </head>
+  <body>
+    <!-- ここがコンテンツの領域（画面に表示される） -->
+    ...
+  </body>
+</html>
+```
+
+### 主要なメタデータの種類
+
+| メタデータ | HTML タグ | 役割 | 表示される場所 |
+|---|---|---|---|
+| **タイトル** | `<title>` | ページの名前 | ブラウザのタブ、検索結果の見出し |
+| **説明文** | `<meta name="description">` | ページの概要 | 検索結果のタイトルの下 |
+| **文字コード** | `<meta charset="utf-8">` | 文字化け防止 | -- |
+| **ビューポート** | `<meta name="viewport">` | モバイル表示の制御 | -- |
+| **OGP** | `<meta property="og:...">` | SNS シェア時の情報 | SNS のプレビューカード |
+| **ファビコン** | `<link rel="icon">` | サイトのアイコン | ブラウザのタブ、ブックマーク |
+
+検索結果での表示例:
+
+```
+Google 検索結果:
+  白熊堂 | 本格かき氷のお店              ← <title> の内容
+  https://example.com                    ← URL
+  白熊堂は川崎ラチッタデッラにある...      ← <meta name="description"> の内容
+```
+
+**注意:** Google は description をそのまま表示するとは限らない。検索クエリに応じて、ページ本文から適切な文章を自動的に抜粋して表示することがある。それでも description を設定しておくことで、デフォルトの説明文を制御できる。
+
+### Next.js の Metadata API による自動生成
+
+Next.js App Router では、上記の `<meta>` タグを直接 HTML に書く必要がない。`layout.tsx` や `page.tsx` に `metadata` オブジェクトを export するだけで、`<head>` 内のメタタグが自動生成される。
 
 ```
 metadata オブジェクト（TypeScript）
@@ -114,6 +180,8 @@ Next.js が以下の HTML を自動生成する:
 <title>白熊堂 | 本格かき氷のお店</title>
 <meta name="description" content="白熊堂は川崎ラチッタデッラにある..." />
 ```
+
+`charset` や `viewport` など基本的なメタタグは Next.js がデフォルトで設定するため、手動で指定する必要がない。
 
 ### metadataBase
 
