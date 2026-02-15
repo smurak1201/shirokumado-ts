@@ -19,7 +19,7 @@ export const metadata: Metadata = {
 
 export default function ShopPage() {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gray-50">
+    <main className="flex min-h-screen items-center justify-center bg-gray-50">
       <div className="text-center">
         <div className="mb-6 text-6xl">🏪</div>
         <h1 className="mb-4 text-2xl font-bold text-gray-900">
@@ -37,6 +37,6 @@ export default function ShopPage() {
           トップページに戻る
         </Link>
       </div>
-    </div>
+    </main>
   );
 }
