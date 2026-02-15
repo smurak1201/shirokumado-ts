@@ -3,7 +3,19 @@
  *
  * ECサイト機能の準備中メッセージを表示するプレースホルダーページ。
  */
-import Link from 'next/link';
+import type { Metadata } from "next";
+import Link from "next/link";
+
+export const metadata: Metadata = {
+  title: "オンラインショップ",
+  description:
+    "白熊堂のオンラインショップは現在準備中です。もうしばらくお待ちください。",
+  openGraph: {
+    title: "オンラインショップ | 白熊堂",
+    description:
+      "白熊堂のオンラインショップは現在準備中です。もうしばらくお待ちください。",
+  },
+};
 
 export default function ShopPage() {
   return (
