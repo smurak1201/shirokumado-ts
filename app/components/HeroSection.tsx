@@ -60,6 +60,7 @@ export default function HeroSection() {
           <div className="absolute inset-0 bg-linear-to-b from-sky-100/20 via-transparent to-white/40" />
         </motion.div>
 
+        {/* ロゴも背景画像と同じくfixedで固定し、パララックス効果を適用 */}
         <motion.h1
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
