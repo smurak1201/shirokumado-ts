@@ -24,7 +24,6 @@
   - [フォント最適化の特徴](#フォント最適化の特徴)
   - [このアプリでの使用箇所](#このアプリでの使用箇所-1)
 - [メタデータと SEO](#メタデータと-seo)
-  - [メタデータの設定](#メタデータの設定)
   - [アイコンとファビコン](#アイコンとファビコン)
 - [ビルドとデプロイ](#ビルドとデプロイ)
   - [ビルドプロセス](#ビルドプロセス)
@@ -421,44 +420,26 @@ Next.js は、`next/font/google` を使用して、Google Fonts を最適化し�
 
 ## メタデータと SEO
 
-Next.js は、`metadata` オブジェクトを使用して、ページのメタデータを設定できます。
+Next.js は、`layout.tsx` や `page.tsx` に `metadata` オブジェクトを export するだけで、HTML の `<head>` 内にメタタグを自動生成できます。
 
-### メタデータの設定
-
-**このアプリでの使用箇所**:
-
-**[`app/layout.tsx`](../../app/layout.tsx)** - ルートレイアウトのメタデータ
-
-[`app/layout.tsx`](../../app/layout.tsx) (`metadata`エクスポート)
+**このアプリでの使用箇所**: [`app/layout.tsx`](../../app/layout.tsx)
 
 ```typescript
-  title: "白熊堂 | 本格かき氷のお店",
-  description:
-    "白熊堂は本格かき氷のお店です。ふわふわの氷とこだわりのシロップでお待ちしています。",
-  manifest: "/manifest.webmanifest",
-  openGraph: {
-    title: "白熊堂 | 本格かき氷のお店",
-    description:
-      "白熊堂は本格かき氷のお店です。ふわふわの氷とこだわりのシロップでお待ちしています。",
-    type: "website",
+export const metadata: Metadata = {
+  metadataBase: new URL(process.env.SITE_URL!),
+  title: {
+    default: "白熊堂 | 本格かき氷のお店",
+    template: "%s | 白熊堂",
   },
+  description: "...",
+  openGraph: { ... },
+  twitter: { ... },
 };
 ```
 
-**メタデータの種類**:
-
-- **title**: ページのタイトル（ブラウザのタブに表示）
-- **description**: ページの説明（検索エンジンの検索結果に表示）
-- **manifest**: Web App Manifest のパス（アイコンやアプリ情報を定義）
-- **openGraph**: OGP の設定（SNS でのシェア時に表示される情報）
+各フィールドの詳細（metadataBase、title.template、OGP、Twitter Card 等）や、JSON-LD、sitemap、robots については [SEO ガイド](./seo-guide.md) を参照してください。
 
 **アイコン**: `app/icon.png` と `app/apple-icon.png` を配置すると、Next.js が自動検出するため `metadata.icons` での指定は不要です。詳細は[アイコンとファビコン](#アイコンとファビコン)を参照してください。
-
-**SEO のメリット**:
-
-- **検索エンジン最適化**: 適切なメタデータにより、検索エンジンでの表示を最適化
-- **SNS シェア**: OGP により、SNS でのシェア時に適切な情報を表示
-- **アクセシビリティ**: 適切なタイトルと説明により、アクセシビリティを向上
 
 ### アイコンとファビコン
 
