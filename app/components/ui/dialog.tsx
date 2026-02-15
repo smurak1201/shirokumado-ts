@@ -2,7 +2,7 @@
  * shadcn/ui ベースのダイアログコンポーネント
  *
  * カスタマイズ: 閉じるボタンに円形デザイン、backdrop-blur、
- * hover:scale-110、常時表示のフォーカスリングを追加
+ * hover:scale-110を追加
  */
 "use client"
 
@@ -51,7 +51,7 @@ const DialogContent = React.forwardRef<
     >
       {children}
       <DialogPrimitive.Close
-        className="absolute right-4 top-4 flex h-8 w-8 items-center justify-center rounded-full bg-background/80 backdrop-blur-sm border border-border/50 opacity-70 ring-offset-background transition-all hover:opacity-100 hover:bg-accent hover:scale-110 focus:outline-none ring-2 ring-ring ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground cursor-pointer"
+        className="absolute right-4 top-4 flex h-8 w-8 items-center justify-center rounded-full bg-background/80 backdrop-blur-sm border border-border/50 opacity-70 ring-offset-background transition-all hover:opacity-100 hover:bg-accent hover:scale-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground cursor-pointer"
         aria-label="閉じる"
       >
         <X className="h-5 w-5" aria-hidden="true" />
