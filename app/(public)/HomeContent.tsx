@@ -3,7 +3,7 @@
  *
  * データ取得と表示を担当するServer Component。
  * Promise.allでデータ取得と最低表示時間を並列で待機し、
- * 最低1秒のローディング表示を保証する。
+ * 最低1.5秒のローディング表示を保証する。
  */
 import Link from "next/link";
 import Image from "next/image";
