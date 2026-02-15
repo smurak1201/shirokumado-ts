@@ -11,6 +11,12 @@ import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { motion, type Variants } from "framer-motion";
 import { cn } from "@/lib/utils";
+import MobileMenu from "./MobileMenu";
+
+const NAV_LINKS = [
+  { href: "/about-ice", label: "天然氷について" },
+  { href: "/faq", label: "よくある質問" },
+] as const;
 
 const containerVariants: Variants = {
   hidden: { opacity: 0 },
@@ -31,6 +37,14 @@ const itemVariants: Variants = {
     transition: { duration: 0.4, ease: "easeOut" },
   },
 };
+
+const navLinkClassName = cn(
+  "relative text-sm font-medium transition-all md:text-base",
+  "text-foreground/70 hover:text-foreground active:scale-95",
+  "after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-0 after:bg-foreground after:transition-all after:duration-300",
+  "hover:after:w-full",
+  "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded-sm"
+);
 
 export default function FixedHeader() {
   const pathname = usePathname();
@@ -82,35 +96,22 @@ export default function FixedHeader() {
           </a>
         </motion.div>
 
+        {/* デスクトップ: 横並びナビ */}
         <motion.nav
           variants={itemVariants}
-          className="flex items-center gap-4 md:gap-6"
+          className="hidden items-center gap-6 md:flex"
         >
-          <Link
-            href="/about-ice"
-            className={cn(
-              "relative text-sm font-medium transition-all md:text-base",
-              "text-foreground/70 hover:text-foreground active:scale-95",
-              "after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-0 after:bg-foreground after:transition-all after:duration-300",
-              "hover:after:w-full",
-              "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded-sm"
-            )}
-          >
-            天然氷について
-          </Link>
-          <Link
-            href="/faq"
-            className={cn(
-              "relative text-sm font-medium transition-all md:text-base",
-              "text-foreground/70 hover:text-foreground active:scale-95",
-              "after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-0 after:bg-foreground after:transition-all after:duration-300",
-              "hover:after:w-full",
-              "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded-sm"
-            )}
-          >
-            よくある質問
-          </Link>
+          {NAV_LINKS.map((link) => (
+            <Link key={link.href} href={link.href} className={navLinkClassName}>
+              {link.label}
+            </Link>
+          ))}
         </motion.nav>
+
+        {/* モバイル: ハンバーガーメニュー */}
+        <motion.div variants={itemVariants} className="md:hidden">
+          <MobileMenu navLinks={NAV_LINKS} />
+        </motion.div>
       </div>
     </motion.header>
   );
