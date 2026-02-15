@@ -123,7 +123,9 @@ export default function Footer() {
 
         <Separator className="my-12" />
         <div className="text-center">
-          <p className="text-xs text-muted-foreground">© 2024 白熊堂</p>
+          <p className="text-xs text-muted-foreground">
+            © 2021-{new Date().getFullYear()} 白熊堂
+          </p>
         </div>
       </div>
     </footer>
