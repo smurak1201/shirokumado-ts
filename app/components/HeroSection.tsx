@@ -59,6 +59,22 @@ export default function HeroSection() {
         >
           <div className="absolute inset-0 bg-linear-to-b from-sky-100/20 via-transparent to-white/40" />
         </motion.div>
+
+        <motion.h1
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1, delay: 0.3, ease: "easeOut" }}
+          className="absolute inset-0 flex items-center justify-center"
+        >
+          <Image
+            src="/logo-new.svg"
+            alt="日光天然氷 白熊堂"
+            width={1075}
+            height={515}
+            className="w-[60%] max-w-md drop-shadow-lg invert md:max-w-lg lg:max-w-xl"
+            priority
+          />
+        </motion.h1>
       </div>
     </section>
   );
