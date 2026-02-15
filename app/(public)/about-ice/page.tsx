@@ -9,7 +9,7 @@ import Footer from "@/app/components/Footer";
 import AboutIceContent from "./AboutIceContent";
 
 export const metadata: Metadata = {
-  title: "天然氷について | 白熊堂",
+  title: "天然氷について",
   description:
     "白熊堂が使用する日光・松月氷室の天然氷。冬の山奥で自然の力だけで生まれる特別な氷の物語。",
   openGraph: {
