@@ -66,7 +66,7 @@ export default function FAQSection({
   showTitle = false,
 }: FAQSectionProps) {
   return (
-    <>
+    <section aria-labelledby={showTitle ? "faq-title" : undefined}>
       {showTitle && (
         <motion.div
           variants={titleVariants}
@@ -75,7 +75,10 @@ export default function FAQSection({
           viewport={{ once: true }}
           className="mb-10 flex flex-col items-center gap-4 md:mb-12"
         >
-          <h1 className="text-center text-2xl font-normal tracking-wide text-muted-foreground md:text-3xl lg:text-4xl">
+          <h1
+            id="faq-title"
+            className="text-center text-2xl font-normal tracking-wide text-muted-foreground md:text-3xl lg:text-4xl"
+          >
             よくある質問
           </h1>
           <Separator className="w-20 md:w-32" />
@@ -120,6 +123,6 @@ export default function FAQSection({
           ))}
         </Accordion>
       </motion.div>
-    </>
+    </section>
   );
 }
