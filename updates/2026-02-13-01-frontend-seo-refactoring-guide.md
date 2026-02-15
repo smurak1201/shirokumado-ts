@@ -113,6 +113,21 @@
 
 ## 3. 具体的な改善アドバイス
 
+### 前提: 環境変数 `SITE_URL` の設定（設定済み）
+
+サイトのベースURLは複数のファイル（`layout.tsx`、`sitemap.ts`、`robots.ts`、JSON-LD）で使用するため、環境変数 `SITE_URL` で一元管理する。
+
+ローカル（`.env`）とVercelダッシュボードの両方に `SITE_URL=https://shirokumado-ts.vercel.app` を設定済み。
+
+カスタムドメイン取得後は、以下の2箇所の値を新しいドメインに変更するだけでよい（コードの修正は不要）。
+
+- ローカル: `.env` の `SITE_URL`
+- 本番: Vercelダッシュボードの **Settings > Environment Variables** の `SITE_URL`
+
+**注意**: `NEXT_PUBLIC_` プレフィックスは不要。`SITE_URL` はサーバーサイド（`layout.tsx`、`sitemap.ts`、`robots.ts`、Server Components）でのみ使用するため、クライアントに公開する必要がない。
+
+---
+
 ### タスク1: metadataBaseとOGP画像の設定【優先度: 最高】
 
 **対象ファイル**: `app/layout.tsx`
@@ -122,7 +137,7 @@
 ```typescript
 // app/layout.tsx
 export const metadata: Metadata = {
-  metadataBase: new URL("https://shirokumado.com"), // 本番URLに変更すること
+  metadataBase: new URL(process.env.SITE_URL!),
   title: {
     default: "白熊堂 | 本格かき氷のお店",
     template: "%s | 白熊堂",
@@ -257,9 +272,11 @@ export const metadata: Metadata = {
 
 ---
 
-### タスク5: sitemap.xml の実装【優先度: 高】
+### タスク5: sitemap.xml の実装【優先度: 高 / カスタムドメイン取得後に実施】
 
 **対象ファイル**: `app/sitemap.ts`（新規作成）
+
+**前提条件**: カスタムドメインを取得・設定済みであること。VercelのURLでサイトマップを公開すると、そのURLが検索エンジンに正規URLとして登録されてしまい、ドメイン移行時に再インデックスが必要になる。
 
 **変更内容**: Next.jsの`sitemap()`関数を使って動的にサイトマップを生成する。about-iceページを追加。
 
@@ -267,7 +284,7 @@ export const metadata: Metadata = {
 // app/sitemap.ts
 import type { MetadataRoute } from "next";
 
-const BASE_URL = "https://shirokumado.com"; // 本番URLに変更すること
+const BASE_URL = process.env.SITE_URL!;
 
 export default function sitemap(): MetadataRoute.Sitemap {
   return [
@@ -301,19 +318,42 @@ export default function sitemap(): MetadataRoute.Sitemap {
 
 **技術的根拠**: Next.js App Routerの`sitemap.ts`は、ビルド時に自動的に`/sitemap.xml`としてアクセス可能になる。検索エンジンがサイト構造を効率的に把握できるようになる。
 
+**実施タイミング**: タスク6のrobots.tsを本番用に切り替えるタイミングと同時に実施する。
+
 ---
 
 ### タスク6: robots.txt の実装【優先度: 高】
 
 **対象ファイル**: `app/robots.ts`（新規作成）
 
-**変更内容**: Next.jsの`robots()`関数を使ってrobots.txtを生成する。
+このタスクは2段階で実施する。
+
+#### Step 1: 現時点（カスタムドメイン取得前）
+
+VercelのURLで公開中の間は、検索エンジンにインデックスされないようすべてのクロールを拒否する。
 
 ```typescript
 // app/robots.ts
 import type { MetadataRoute } from "next";
 
-const BASE_URL = "https://shirokumado.com"; // 本番URLに変更すること
+export default function robots(): MetadataRoute.Robots {
+  return {
+    rules: [{ userAgent: "*", disallow: "/" }],
+  };
+}
+```
+
+**技術的根拠**: `disallow: "/"` はサイト全体のクロールを拒否する。VercelのURLが検索結果に登録されると、カスタムドメイン移行後に重複コンテンツの問題が発生するため、この段階ではインデックスを防ぐのが適切。sitemapの指定もクロール拒否中は不要。
+
+#### Step 2: カスタムドメイン取得後（本番用に切り替え）
+
+カスタムドメインを取得・設定したら、以下の本番用コードに差し替える。タスク5（sitemap.ts）も同時に実施すること。
+
+```typescript
+// app/robots.ts
+import type { MetadataRoute } from "next";
+
+const BASE_URL = process.env.SITE_URL!;
 
 export default function robots(): MetadataRoute.Robots {
   return {
@@ -341,12 +381,14 @@ export default function robots(): MetadataRoute.Robots {
 
 ```tsx
 // app/(public)/HomeContent.tsx の return 部分に追加
+const baseUrl = process.env.SITE_URL!;
+
 const localBusinessJsonLd = {
   "@context": "https://schema.org",
   "@type": "Restaurant",
   name: "白熊堂",
   description: "川崎ラチッタデッラにある本格かき氷のお店",
-  url: "https://shirokumado.com",
+  url: baseUrl,
   telephone: "070-9157-3772",
   address: {
     "@type": "PostalAddress",
@@ -367,7 +409,7 @@ const localBusinessJsonLd = {
   },
   servesCuisine: "かき氷",
   priceRange: "¥",
-  image: "https://shirokumado.com/og-image.jpg",
+  image: `${baseUrl}/og-image.jpg`,
 };
 
 // JSX内に追加
@@ -407,6 +449,7 @@ const faqJsonLd = {
 
 ```tsx
 // app/(public)/about-ice/page.tsx に追加
+const baseUrl = process.env.SITE_URL!;
 
 const articleJsonLd = {
   "@context": "https://schema.org",
@@ -421,11 +464,11 @@ const articleJsonLd = {
   publisher: {
     "@type": "Organization",
     name: "白熊堂",
-    url: "https://shirokumado.com",
+    url: baseUrl,
   },
   mainEntityOfPage: {
     "@type": "WebPage",
-    "@id": "https://shirokumado.com/about-ice",
+    "@id": `${baseUrl}/about-ice`,
   },
 };
 
@@ -603,11 +646,17 @@ return (
 
 ## 4. 優先順位付きタスクリスト
 
+### Phase 0: 環境変数の設定
+
+| # | タスク | 対象 | インパクト | 備考 |
+|---|---|---|---|---|
+| 0 | `SITE_URL` 環境変数の設定 | `.env` / Vercelダッシュボード | **前提** | **設定済み**。カスタムドメイン取得後に値を変更するだけでよい |
+
 ### Phase 1: 基盤整備（SEOの土台）
 
 | # | タスク | 対象ファイル | インパクト | 前回からの変化 |
 |---|---|---|---|---|
-| 1 | metadataBaseとOGP画像の設定 | `app/layout.tsx` | **最大** | 変更なし |
+| 1 | metadataBaseとOGP画像の設定 | `app/layout.tsx` | **最大** | `process.env.SITE_URL`を使用 |
 | 2 | about-iceのtitle修正 | `app/(public)/about-ice/page.tsx` | **最大** | **新規** — タスク1と同時実施 |
 | 3 | トップページにh1を追加 | `app/(public)/HomeContent.tsx` | **最大** | 変更なし |
 | 4 | ページ別メタデータの設定 | `faq/page.tsx`、`shop/page.tsx` | **大** | about-ice分は実装済み |
@@ -616,8 +665,9 @@ return (
 
 | # | タスク | 対象ファイル | インパクト | 前回からの変化 |
 |---|---|---|---|---|
-| 5 | sitemap.xml の実装 | `app/sitemap.ts`（新規） | **大** | about-iceを追加 |
-| 6 | robots.txt の実装 | `app/robots.ts`（新規） | **大** | 変更なし |
+| 5 | sitemap.xml の実装 | `app/sitemap.ts`（新規） | **大** | カスタムドメイン取得後に実施 |
+| 6 | robots.txt の実装（Step 1: クロール拒否） | `app/robots.ts`（新規） | **大** | **今すぐ実施可能** |
+| 6' | robots.txt の本番切り替え（Step 2） | `app/robots.ts` | **大** | カスタムドメイン取得後にタスク5と同時実施 |
 
 ### Phase 3: リッチリザルト対応
 
