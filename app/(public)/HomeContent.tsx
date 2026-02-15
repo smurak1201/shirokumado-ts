@@ -20,6 +20,42 @@ import { log } from "@/lib/logger";
 // ローディング画面の最低表示時間（ms）
 const MIN_LOADING_TIME_MS = 1500;
 
+const BASE_URL = process.env.SITE_URL!;
+
+const localBusinessJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "Restaurant",
+  name: "白熊堂",
+  description: "川崎ラチッタデッラにある本格かき氷のお店",
+  url: BASE_URL,
+  telephone: "070-9157-3772",
+  address: {
+    "@type": "PostalAddress",
+    streetAddress: "小川町4-1 ラチッタデッラ マッジョーレ1F",
+    addressLocality: "川崎市川崎区",
+    addressRegion: "神奈川県",
+    postalCode: "210-0023",
+    addressCountry: "JP",
+  },
+  openingHoursSpecification: {
+    "@type": "OpeningHoursSpecification",
+    dayOfWeek: [
+      "Monday",
+      "Tuesday",
+      "Wednesday",
+      "Thursday",
+      "Friday",
+      "Saturday",
+      "Sunday",
+    ],
+    opens: "11:00",
+    closes: "21:00",
+  },
+  servesCuisine: "かき氷",
+  priceRange: "¥",
+  image: `${BASE_URL}/og-image.png`,
+};
+
 export default async function HomeContent() {
   let categoriesWithProducts: CategoryWithProducts[] = [];
 
@@ -44,6 +80,10 @@ export default async function HomeContent() {
 
   return (
     <div className="min-h-screen bg-background overflow-x-hidden">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(localBusinessJsonLd) }}
+      />
       <FixedHeader />
 
       {/*
