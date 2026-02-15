@@ -104,7 +104,7 @@ export default function AboutIceContent() {
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, ease: "easeOut" }}
-        className="flex flex-col items-center gap-4 pt-8 md:pt-12"
+        className="mx-auto flex max-w-6xl flex-col items-center gap-4 px-4 pt-8 md:px-8 md:pt-12"
       >
         <h1 className="text-center text-2xl font-normal tracking-wide text-muted-foreground md:text-3xl lg:text-4xl">
           天然氷について
