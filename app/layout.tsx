@@ -16,15 +16,36 @@ const notoSansJP = Noto_Sans_JP({
 });
 
 export const metadata: Metadata = {
-  title: "白熊堂 | 本格かき氷のお店",
+  metadataBase: new URL(process.env.SITE_URL!),
+  title: {
+    default: "白熊堂 | 本格かき氷のお店",
+    template: "%s | 白熊堂",
+  },
   description:
-    "白熊堂は本格かき氷のお店です。ふわふわの氷とこだわりのシロップでお待ちしています。",
+    "白熊堂は川崎ラチッタデッラにある本格かき氷のお店です。ふわふわの氷とこだわりのシロップでお待ちしています。",
   manifest: "/manifest.webmanifest",
   openGraph: {
     title: "白熊堂 | 本格かき氷のお店",
     description:
-      "白熊堂は本格かき氷のお店です。ふわふわの氷とこだわりのシロップでお待ちしています。",
+      "白熊堂は川崎ラチッタデッラにある本格かき氷のお店です。ふわふわの氷とこだわりのシロップでお待ちしています。",
     type: "website",
+    locale: "ja_JP",
+    siteName: "白熊堂",
+    images: [
+      {
+        url: "/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: "白熊堂 - 本格かき氷のお店",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "白熊堂 | 本格かき氷のお店",
+    description:
+      "白熊堂は川崎ラチッタデッラにある本格かき氷のお店です。ふわふわの氷とこだわりのシロップでお待ちしています。",
+    images: ["/og-image.png"],
   },
 };
 
