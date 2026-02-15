@@ -1150,22 +1150,23 @@ Next.js の `Image` コンポーネントを使用すると、画像の自動最
 
 ### メタデータ
 
-**説明**: `metadata` オブジェクトをエクスポートすることで、ページのメタデータ（タイトル、説明、OGP など）を設定できます。
+**説明**: `metadata` オブジェクトをエクスポートすることで、ページのメタデータ（タイトル、説明、OGP など）を設定できます。メタデータや SEO の詳細については [SEO ガイド](./seo-guide.md) を参照してください。
 
 **このアプリでの使用箇所**:
 
 [`app/layout.tsx`](../../app/layout.tsx) (`metadata`エクスポート)
 
 ```typescript
-  title: "白熊堂 | 本格かき氷のお店",
-  description:
-    "白熊堂は本格かき氷のお店です。ふわふわの氷とこだわりのシロップでお待ちしています。",
-  openGraph: {
-    title: "白熊堂 | 本格かき氷のお店",
-    description:
-      "白熊堂は本格かき氷のお店です。ふわふわの氷とこだわりのシロップでお待ちしています。",
-    type: "website",
+export const metadata: Metadata = {
+  metadataBase: new URL(process.env.SITE_URL!),
+  title: {
+    default: "白熊堂 | 本格かき氷のお店",
+    template: "%s | 白熊堂",
   },
+  description:
+    "白熊堂は川崎ラチッタデッラにある本格かき氷のお店です。ふわふわの氷とこだわりのシロップでお待ちしています。",
+  openGraph: { ... },
+  twitter: { ... },
 };
 ```
 
