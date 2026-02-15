@@ -81,11 +81,12 @@ html {
 
 /*
  * react-remove-scroll（Radix UIのDialogが内部使用）が
- * bodyにpadding-rightをスクロールバー幅分追加するが、
+ * bodyにmargin-rightをスクロールバー幅分追加するが、
  * scrollbar-gutterでスペースが維持されるため補正は不要
+ * htmlを付けて詳細度を上げ、動的CSSの!importantに勝つ
  */
-body[data-scroll-locked] {
-  padding-right: 0 !important;
+html body[data-scroll-locked] {
+  margin-right: 0 !important;
 }
 
 body {
