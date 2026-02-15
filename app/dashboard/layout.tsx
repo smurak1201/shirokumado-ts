@@ -4,8 +4,17 @@
  * 共通ヘッダーを提供。認証チェックはMiddlewareで行う。
  */
 import type { ReactNode } from 'react';
+import type { Metadata } from 'next';
 import { auth, signOut } from '@/auth';
 import DashboardHeader from './components/DashboardHeader';
+
+export const metadata: Metadata = {
+  title: {
+    default: "ダッシュボード | 白熊堂",
+    template: "%s | 白熊堂 管理画面",
+  },
+  description: "白熊堂の管理画面",
+};
 
 interface DashboardLayoutProps {
   children: ReactNode;
