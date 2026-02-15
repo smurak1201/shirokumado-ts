@@ -2,35 +2,23 @@
 
 ## 1. 現状の総合評価
 
-**スコア: 68 / 100点**（前回: 65点）
+**スコア: 68 / 100点**
 
-前回からの改善点として、`about-ice`ページが適切な構造（メタデータ・h1・`<main>`・セマンティックなsection）で実装され、FixedHeaderにナビゲーションリンクが追加された。FAQページにも`<main>`タグが追加されている。一方で、**構造化データ（JSON-LD）の未実装**、**sitemap/robotsの未実装**、**ルートレイアウトのmetadataBase未設定**、**トップページのh1欠如**は依然として大きな課題。
+主な課題は**構造化データ（JSON-LD）の未実装**、**sitemap/robotsの未実装**、**ルートレイアウトのmetadataBase未設定**、**トップページのh1欠如**。
 
 ### 項目別スコア
 
-| 項目 | スコア | 前回 | 概評 |
-|---|---|---|---|
-| Metadata API | 6/10 | 5 | about-iceにページ別メタデータ追加。FAQ・shopは未設定 |
-| 見出し構造 | 6/10 | 5 | about-iceにh1あり。トップページは依然h1なし |
-| セマンティックHTML | 8/10 | 7 | about-ice・FAQで適切。nav要素追加。shop/authでmain欠如 |
-| 画像最適化 | 8/10 | 8 | about-iceの画像も適切。ヒーロー画像のaltが非説明的 |
-| 構造化データ（JSON-LD） | 0/10 | 0 | 未実装 |
-| sitemap / robots | 0/10 | 0 | 未実装 |
-| Core Web Vitals | 8/10 | 8 | LCP/CLS対策済み。動的インポート活用 |
-| next/link / next/font | 9/10 | 9 | 適切に実装。ナビゲーションリンク追加 |
-| アクセシビリティ | 7/10 | 7 | aria-label、キーボード対応あり |
-
-### 前回からの改善サマリー
-
-| 項目 | 状態 |
-|---|---|
-| about-iceページのメタデータ | 済 — 新規追加で適切に実装 |
-| about-iceのh1・見出し構造 | 済 — h1→h2の正しい階層 |
-| about-iceの`<main>`タグ | 済 — AboutIceContent内で使用 |
-| about-iceのセマンティックHTML | 済 — `<section>`要素を適切に使用 |
-| about-iceの画像alt属性 | 済 — 画像内容を説明するalt |
-| FixedHeaderにナビゲーション追加 | 済 — `<nav>`要素でSEO・アクセシビリティ向上 |
-| FAQページの`<main>`タグ | 済 — 追加済み |
+| 項目 | スコア | 概評 |
+|---|---|---|
+| Metadata API | 6/10 | about-iceにページ別メタデータあり。FAQ・shopは未設定 |
+| 見出し構造 | 6/10 | about-iceにh1あり。トップページはh1なし |
+| セマンティックHTML | 8/10 | about-ice・FAQで適切。shop/authでmain欠如 |
+| 画像最適化 | 8/10 | about-iceの画像も適切。ヒーロー画像のaltが非説明的 |
+| 構造化データ（JSON-LD） | 0/10 | 未実装 |
+| sitemap / robots | 0/10 | 未実装 |
+| Core Web Vitals | 8/10 | LCP/CLS対策済み。動的インポート活用 |
+| next/link / next/font | 9/10 | 適切に実装 |
+| アクセシビリティ | 7/10 | aria-label、キーボード対応あり |
 
 ---
 
