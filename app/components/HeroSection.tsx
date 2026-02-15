@@ -60,7 +60,6 @@ export default function HeroSection() {
           <div className="absolute inset-0 bg-linear-to-b from-sky-100/20 via-transparent to-white/40" />
         </motion.div>
 
-        {/* ロゴも背景画像と同じくfixedで固定し、パララックス効果を適用 */}
         <motion.h1
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
@@ -72,7 +71,7 @@ export default function HeroSection() {
             alt="日光天然氷 白熊堂"
             width={1075}
             height={515}
-            className="w-[60%] max-w-md drop-shadow-lg invert md:max-w-lg lg:max-w-xl"
+            className="w-[60%] max-w-md md:max-w-lg lg:max-w-xl filter-[invert(1)_drop-shadow(0_2px_6px_rgba(0,0,0,0.6))_drop-shadow(0_0_24px_rgba(0,0,0,0.4))]"
             priority
           />
         </motion.h1>
