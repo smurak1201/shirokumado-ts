@@ -68,26 +68,12 @@
   --color-chart-5: hsl(var(--chart-5));
 }
 
-html {
-  /*
-   * ダイアログ表示時のレイアウトシフト防止
-   * overflow-yを明示的に設定しないと、bodyのoverflow:hidden
-   * （Radix UIが内部で設定）がviewportに伝播し、
-   * scrollbar-gutterの効果が失われてスクロールバーが消える
-   */
-  overflow-y: auto;
-  scrollbar-gutter: stable;
-}
-
 /*
- * react-remove-scroll（Radix UIのDialogが内部使用）が
- * bodyにmargin-rightをスクロールバー幅分追加するが、
- * scrollbar-gutterでスペースが維持されるため補正は不要
- * htmlを付けて詳細度を上げ、動的CSSの!importantに勝つ
+ * ダイアログ表示時のスクロールバー補正:
+ * Radix UIのDialogはreact-remove-scrollを内部使用し、
+ * bodyにoverflow:hidden + margin-rightを設定してスクロールバー消失分を補正する
+ * この仕組みと干渉するため、htmlにoverflow-yやscrollbar-gutterは設定しない
  */
-html body[data-scroll-locked] {
-  margin-right: 0 !important;
-}
 
 body {
   background: var(--background);
