@@ -2,39 +2,25 @@
 
 ## 1. 現状の総合評価
 
-**スコア: 68 / 100点**
+主な課題は**構造化データ（JSON-LD）の未実装**、**sitemap/robotsの未実装**、**ルートレイアウトのmetadataBase未設定**。
 
-主な課題は**構造化データ（JSON-LD）の未実装**、**sitemap/robotsの未実装**、**ルートレイアウトのmetadataBase未設定**、**トップページのh1欠如**。
+### 現状
 
-### 項目別スコア
-
-| 項目 | スコア | 概評 |
-|---|---|---|
-| Metadata API | 6/10 | about-iceにページ別メタデータあり。FAQ・shopは未設定 |
-| 見出し構造 | 6/10 | about-iceにh1あり。トップページはh1なし |
-| セマンティックHTML | 8/10 | about-ice・FAQで適切。shop/authでmain欠如 |
-| 画像最適化 | 8/10 | about-iceの画像も適切。ヒーロー画像のaltが非説明的 |
-| 構造化データ（JSON-LD） | 0/10 | 未実装 |
-| sitemap / robots | 0/10 | 未実装 |
-| Core Web Vitals | 8/10 | LCP/CLS対策済み。動的インポート活用 |
-| next/link / next/font | 9/10 | 適切に実装 |
-| アクセシビリティ | 7/10 | aria-label、キーボード対応あり |
+- **Metadata API**: FAQ・shopにページ別メタデータが未設定
+- **見出し構造**: 各ページにh1あり
+- **セマンティックHTML**: shop・authページで`<main>`タグが未設定。トップページの`<main>`配置が不適切
+- **画像最適化**: ヒーロー画像のalt属性が非説明的（「ヒーロー画像」）
+- **構造化データ（JSON-LD）**: 未実装
+- **sitemap / robots**: 未実装
+- **Core Web Vitals**: LCP/CLS対策済み。動的インポート活用
+- **next/link / next/font**: 適切に実装
+- **アクセシビリティ**: aria-label、キーボード対応あり。フッターの見出し階層にスキップあり
 
 ---
 
 ## 2. 重大な問題点（Critical Issues）
 
-### Issue 1: トップページにh1タグがない
-
-**対象ファイル**: `app/(public)/HomeContent.tsx`
-
-**現状**: トップページの見出し構造がh2（「冬の山奥で生まれる、特別な氷」）から始まっている。h1が存在しないため、検索エンジンがページの主題を正確に把握できない。
-
-**影響**: 検索エンジンがページの主題を判定できず、検索順位に直接的な悪影響がある。
-
----
-
-### Issue 2: FAQ・Shopページにページ別メタデータが未設定
+### Issue 1: FAQ・Shopページにページ別メタデータが未設定
 
 **対象ファイル**: `app/(public)/faq/page.tsx`、`app/(public)/shop/page.tsx`
 
@@ -44,7 +30,7 @@
 
 ---
 
-### Issue 3: JSON-LD（構造化データ）が未実装
+### Issue 2: JSON-LD（構造化データ）が未実装
 
 **対象ファイル**: なし（新規実装が必要）
 
@@ -54,7 +40,7 @@
 
 ---
 
-### Issue 4: sitemap.xml / robots.txt が未実装
+### Issue 3: sitemap.xml / robots.txt が未実装
 
 **対象ファイル**: なし（新規実装が必要）
 
@@ -64,7 +50,7 @@
 
 ---
 
-### Issue 5: metadataBase / canonical URL が未設定
+### Issue 4: metadataBase / canonical URL が未設定
 
 **対象ファイル**: `app/layout.tsx`
 
@@ -74,7 +60,7 @@
 
 ---
 
-### Issue 6: about-iceページのtitleがtitle templateと重複する
+### Issue 5: about-iceページのtitleがtitle templateと重複する
 
 **対象ファイル**: `app/(public)/about-ice/page.tsx`
 
@@ -84,7 +70,7 @@
 
 ---
 
-### Issue 7: トップページの`<main>`タグの配置が不適切
+### Issue 6: トップページの`<main>`タグの配置が不適切
 
 **対象ファイル**: `app/(public)/HomeContent.tsx`
 
@@ -190,30 +176,7 @@ export const metadata: Metadata = {
 
 ---
 
-### タスク3: トップページにh1を追加【優先度: 最高】
-
-**対象ファイル**: `app/(public)/HomeContent.tsx`
-
-**変更内容**: ヒーローセクションの下にh1を追加する。視覚的なデザインを壊さないよう`sr-only`（スクリーンリーダー専用）にするか、デザインに組み込む。
-
-```tsx
-// app/(public)/HomeContent.tsx の return 部分
-<HeroSection />
-
-{/* ページの主題を示すh1 - SEOとスクリーンリーダーのため */}
-<h1 className="sr-only">白熊堂 - 川崎ラチッタデッラの本格かき氷</h1>
-
-{/* 天然氷紹介セクション */}
-<section className="mx-auto max-w-6xl px-4 py-10 ...">
-```
-
-**技術的根拠**: h1はページの最も重要な見出しであり、検索エンジンがページの主題を判定する最重要要素。`sr-only`を使えばビジュアルデザインに影響を与えずにSEO効果を得られる。
-
-**注意点**: `sr-only`によるh1の隠蔽はGoogleが推奨する手法ではないが、ビジュアルデザイン上の制約がある場合は許容される。理想的にはヒーローセクション内にテキストとして表示するのが最善。
-
----
-
-### タスク4: ページ別メタデータの設定【優先度: 最高】
+### タスク3: ページ別メタデータの設定【優先度: 最高】
 
 **対象ファイル**: `app/(public)/faq/page.tsx`、`app/(public)/shop/page.tsx`
 
@@ -255,7 +218,7 @@ export const metadata: Metadata = {
 
 ---
 
-### タスク5: sitemap.xml の実装【優先度: 高 / カスタムドメイン取得後に実施】
+### タスク4: sitemap.xml の実装【優先度: 高 / カスタムドメイン取得後に実施】
 
 **対象ファイル**: `app/sitemap.ts`（新規作成）
 
@@ -301,11 +264,11 @@ export default function sitemap(): MetadataRoute.Sitemap {
 
 **技術的根拠**: Next.js App Routerの`sitemap.ts`は、ビルド時に自動的に`/sitemap.xml`としてアクセス可能になる。検索エンジンがサイト構造を効率的に把握できるようになる。
 
-**実施タイミング**: タスク6のrobots.tsを本番用に切り替えるタイミングと同時に実施する。
+**実施タイミング**: タスク5のrobots.tsを本番用に切り替えるタイミングと同時に実施する。
 
 ---
 
-### タスク6: robots.txt の実装【優先度: 高】
+### タスク5: robots.txt の実装【優先度: 高】
 
 **対象ファイル**: `app/robots.ts`（新規作成）
 
@@ -330,7 +293,7 @@ export default function robots(): MetadataRoute.Robots {
 
 #### Step 2: カスタムドメイン取得後（本番用に切り替え）
 
-カスタムドメインを取得・設定したら、以下の本番用コードに差し替える。タスク5（sitemap.ts）も同時に実施すること。
+カスタムドメインを取得・設定したら、以下の本番用コードに差し替える。タスク4（sitemap.ts）も同時に実施すること。
 
 ```typescript
 // app/robots.ts
@@ -356,11 +319,11 @@ export default function robots(): MetadataRoute.Robots {
 
 ---
 
-### タスク7: JSON-LD 構造化データの実装【優先度: 高】
+### タスク6: JSON-LD 構造化データの実装【優先度: 高】
 
 **対象ファイル**: `app/(public)/HomeContent.tsx`、`app/(public)/faq/page.tsx`、`app/(public)/about-ice/page.tsx`
 
-#### 7-1. トップページにLocalBusinessスキーマを追加
+#### 6-1. トップページにLocalBusinessスキーマを追加
 
 ```tsx
 // app/(public)/HomeContent.tsx の return 部分に追加
@@ -402,7 +365,7 @@ const localBusinessJsonLd = {
 />
 ```
 
-#### 7-2. FAQページにFAQPageスキーマを追加
+#### 6-2. FAQページにFAQPageスキーマを追加
 
 ```tsx
 // app/(public)/faq/page.tsx に追加
@@ -428,7 +391,7 @@ const faqJsonLd = {
 />
 ```
 
-#### 7-3. 天然氷ページにArticleスキーマを追加
+#### 6-3. 天然氷ページにArticleスキーマを追加
 
 ```tsx
 // app/(public)/about-ice/page.tsx に追加
@@ -471,7 +434,7 @@ const articleJsonLd = {
 
 ---
 
-### タスク8: トップページの`<main>`タグ配置修正【優先度: 中】
+### タスク7: トップページの`<main>`タグ配置修正【優先度: 中】
 
 **対象ファイル**: `app/(public)/HomeContent.tsx`
 
@@ -509,7 +472,7 @@ const articleJsonLd = {
 
 ---
 
-### タスク9: ヒーロー画像のalt属性改善【優先度: 中】
+### タスク8: ヒーロー画像のalt属性改善【優先度: 中】
 
 **対象ファイル**: `app/components/HeroSection.tsx`（46行目）
 
@@ -529,7 +492,7 @@ alt="白熊堂のふわふわかき氷"
 
 ---
 
-### タスク10: FAQページのセマンティックHTML改善【優先度: 中】
+### タスク9: FAQページのセマンティックHTML改善【優先度: 中】
 
 **対象ファイル**: `app/components/FAQSection.tsx`
 
@@ -561,7 +524,7 @@ return (
 
 ---
 
-### タスク11: 一部ページで`<main>`タグを追加【優先度: 中】
+### タスク10: 一部ページで`<main>`タグを追加【優先度: 中】
 
 **対象ファイル**:
 - `app/auth/signin/page.tsx` — `<main>`なし
@@ -584,7 +547,7 @@ return (
 
 ---
 
-### タスク12: フッターの見出し階層修正【優先度: 中】
+### タスク11: フッターの見出し階層修正【優先度: 中】
 
 **対象ファイル**: `app/components/Footer.tsx`（53行目、63行目、79行目）
 
@@ -608,7 +571,7 @@ return (
 
 ---
 
-### タスク13: copyright年の更新【優先度: 低】
+### タスク12: copyright年の更新【優先度: 低】
 
 **対象ファイル**: `app/components/Footer.tsx`（126行目）
 
@@ -641,32 +604,31 @@ return (
 |---|---|---|---|---|
 | 1 | metadataBaseとOGP画像の設定 | `app/layout.tsx` | **最大** | `process.env.SITE_URL`を使用 |
 | 2 | about-iceのtitle修正 | `app/(public)/about-ice/page.tsx` | **最大** | **新規** — タスク1と同時実施 |
-| 3 | トップページにh1を追加 | `app/(public)/HomeContent.tsx` | **最大** | 変更なし |
-| 4 | ページ別メタデータの設定 | `faq/page.tsx`、`shop/page.tsx` | **大** | about-ice分は実装済み |
+| 3 | ページ別メタデータの設定 | `faq/page.tsx`、`shop/page.tsx` | **大** | about-ice分は実装済み |
 
 ### Phase 2: クロール最適化
 
 | # | タスク | 対象ファイル | インパクト |
 |---|---|---|---|
-| 5 | sitemap.xml の実装 | `app/sitemap.ts`（新規） | **大** |
-| 6 | robots.txt の実装（クロール拒否） | `app/robots.ts`（新規） | **大** |
+| 4 | sitemap.xml の実装 | `app/sitemap.ts`（新規） | **大** |
+| 5 | robots.txt の実装（クロール拒否） | `app/robots.ts`（新規） | **大** |
 
 ### Phase 3: リッチリザルト対応
 
 | # | タスク | 対象ファイル | インパクト | 前回からの変化 |
 |---|---|---|---|---|
-| 7 | JSON-LD 構造化データの実装 | `HomeContent.tsx`、`faq/page.tsx`、`about-ice/page.tsx` | **大** | about-ice用Articleスキーマ追加 |
+| 6 | JSON-LD 構造化データの実装 | `HomeContent.tsx`、`faq/page.tsx`、`about-ice/page.tsx` | **大** | about-ice用Articleスキーマ追加 |
 
 ### Phase 4: セマンティクスとアクセシビリティ改善
 
 | # | タスク | 対象ファイル | インパクト | 前回からの変化 |
 |---|---|---|---|---|
-| 8 | トップページの`<main>`配置修正 | `HomeContent.tsx` | **中** | **新規** |
-| 9 | ヒーロー画像のalt属性改善 | `HeroSection.tsx` | **中** | 変更なし |
-| 10 | FAQセクションのセマンティクス改善 | `FAQSection.tsx` | **中** | 変更なし |
-| 11 | 一部ページに`<main>`タグ追加 | `shop/page.tsx`、`signin/page.tsx`等 | **中** | FAQ分は実装済み |
-| 12 | フッターの見出し階層修正 | `Footer.tsx` | **中** | 変更なし |
-| 13 | copyright年の更新 | `Footer.tsx` | **低** | 変更なし |
+| 7 | トップページの`<main>`配置修正 | `HomeContent.tsx` | **中** | **新規** |
+| 8 | ヒーロー画像のalt属性改善 | `HeroSection.tsx` | **中** | 変更なし |
+| 9 | FAQセクションのセマンティクス改善 | `FAQSection.tsx` | **中** | 変更なし |
+| 10 | 一部ページに`<main>`タグ追加 | `shop/page.tsx`、`signin/page.tsx`等 | **中** | FAQ分は実装済み |
+| 11 | フッターの見出し階層修正 | `Footer.tsx` | **中** | 変更なし |
+| 12 | copyright年の更新 | `Footer.tsx` | **低** | 変更なし |
 
 ### カスタムドメイン取得後の作業
 
