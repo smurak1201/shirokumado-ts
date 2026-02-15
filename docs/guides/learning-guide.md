@@ -170,6 +170,7 @@ Next.js の概念と使い方を理解します。
 | [ユーティリティガイド](./backend/utilities-guide.md) | 画像圧縮、Blob Storage、設定管理 |
 | [shadcn/ui ガイド](./frontend/shadcn-ui-guide.md) | UI コンポーネントライブラリの使用方法 |
 | [スタイリングベストプラクティス](./frontend/styling-best-practices.md) | Tailwind CSS の使い方 |
+| [SEO ガイド](./frontend/seo-guide.md) | メタデータ、JSON-LD、クロール制御、Core Web Vitals |
 | [Git/GitHub ガイド](./tools/git-github-guide.md) | Git 操作、GitHub の使い方 |
 | [アーキテクチャ](../architecture.md) | 設計思想と理由 |
 | [認証ドキュメント](../authentication.md) | 認証の詳細実装 |
