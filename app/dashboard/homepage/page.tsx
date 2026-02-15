@@ -4,10 +4,15 @@
  * 商品一覧の表示、検索、編集、削除、並び替えを行う管理画面。
  * サーバー側でデータを取得し、Client Component へ渡す。
  */
+import type { Metadata } from "next";
 import { prisma, safePrismaOperation } from "@/lib/prisma";
 import { log } from "@/lib/logger";
 import DashboardContent from "./components/DashboardContent";
 import type { Category, Product } from "./types";
+
+export const metadata: Metadata = {
+  title: "商品管理",
+};
 
 // 商品データは頻繁に更新されるため、リクエストごとに最新データを取得
 export const dynamic = "force-dynamic";
