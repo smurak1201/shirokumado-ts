@@ -57,7 +57,7 @@ export default function FixedHeader() {
       variants={containerVariants}
       className="fixed top-0 left-0 right-0 z-50 h-20 border-b border-border bg-background"
     >
-      <div className="mx-auto flex h-full max-w-6xl items-center justify-between px-2 md:px-6 overflow-x-hidden">
+      <div className="mx-auto flex h-full max-w-6xl items-center justify-between px-4 md:px-8 overflow-x-hidden">
         <motion.div
           variants={itemVariants}
           className="relative flex items-center gap-4 overflow-visible"
