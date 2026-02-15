@@ -137,7 +137,7 @@ export const metadata: Metadata = {
     siteName: "白熊堂",
     images: [
       {
-        url: "/og-image.jpg", // OGP用の画像を用意して配置すること
+        url: "/og-image.png",
         width: 1200,
         height: 630,
         alt: "白熊堂 - 本格かき氷のお店",
@@ -149,14 +149,14 @@ export const metadata: Metadata = {
     title: "白熊堂 | 本格かき氷のお店",
     description:
       "白熊堂は川崎ラチッタデッラにある本格かき氷のお店です。ふわふわの氷とこだわりのシロップでお待ちしています。",
-    images: ["/og-image.jpg"],
+    images: ["/og-image.png"],
   },
 };
 ```
 
 **技術的根拠**: `metadataBase`を設定することで、`openGraph.images`や`alternates.canonical`のURLが自動的に絶対URLに解決される。`title.template`を使用すると、子ページで設定したtitleが「ページ名 | 白熊堂」の形式になる。
 
-**補足**: OGP用画像（1200x630px推奨）を`public/og-image.jpg`として用意する必要がある。
+**補足**: OGP用画像（1200x630px）は`public/og-image.png`として配置済み。
 
 ---
 
@@ -392,7 +392,7 @@ const localBusinessJsonLd = {
   },
   servesCuisine: "かき氷",
   priceRange: "¥",
-  image: `${baseUrl}/og-image.jpg`,
+  image: `${baseUrl}/og-image.png`,
 };
 
 // JSX内に追加
