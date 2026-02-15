@@ -97,33 +97,35 @@ export default async function HomeContent() {
 
       <HeroSection />
 
-      {/* 天然氷紹介: カード形式で白基調に馴染ませる */}
-      <section className="mx-auto max-w-6xl px-4 py-10 md:px-6 md:py-16 lg:px-8">
-        <Link
-          href="/about-ice"
-          className="group relative block h-[28svh] overflow-hidden rounded-xl shadow-md ring-1 ring-border/50 transition-shadow duration-500 hover:shadow-xl md:h-[35vh] lg:h-[40vh]"
-        >
-          <Image
-            src="/S__3301389.jpg"
-            alt="透き通った天然氷のブロック"
-            fill
-            className="object-cover transition-transform duration-700 group-hover:scale-105"
-            sizes="(min-width: 1024px) 1152px, (min-width: 768px) calc(100vw - 48px), calc(100vw - 32px)"
-          />
-          <div className="absolute inset-0 bg-linear-to-t from-black/60 via-black/40 to-black/20" />
-          <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 px-6 text-center drop-shadow-lg md:gap-6">
-            <h2 className="text-lg font-light tracking-widest text-white md:text-2xl lg:text-3xl">
-              冬の山奥で生まれる、特別な氷
-            </h2>
-            <span className="border-b border-white/60 pb-0.5 text-xs font-medium tracking-wider text-white transition-colors group-hover:border-white md:text-sm">
-              天然氷について →
-            </span>
-          </div>
-        </Link>
-      </section>
+      <main>
+        {/* 天然氷紹介: カード形式で白基調に馴染ませる */}
+        <section className="mx-auto max-w-6xl px-4 py-10 md:px-6 md:py-16 lg:px-8">
+          <Link
+            href="/about-ice"
+            className="group relative block h-[28svh] overflow-hidden rounded-xl shadow-md ring-1 ring-border/50 transition-shadow duration-500 hover:shadow-xl md:h-[35vh] lg:h-[40vh]"
+          >
+            <Image
+              src="/S__3301389.jpg"
+              alt="透き通った天然氷のブロック"
+              fill
+              className="object-cover transition-transform duration-700 group-hover:scale-105"
+              sizes="(min-width: 1024px) 1152px, (min-width: 768px) calc(100vw - 48px), calc(100vw - 32px)"
+            />
+            <div className="absolute inset-0 bg-linear-to-t from-black/60 via-black/40 to-black/20" />
+            <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 px-6 text-center drop-shadow-lg md:gap-6">
+              <h2 className="text-lg font-light tracking-widest text-white md:text-2xl lg:text-3xl">
+                冬の山奥で生まれる、特別な氷
+              </h2>
+              <span className="border-b border-white/60 pb-0.5 text-xs font-medium tracking-wider text-white transition-colors group-hover:border-white md:text-sm">
+                天然氷について →
+              </span>
+            </div>
+          </Link>
+        </section>
 
-      <main className="mx-auto max-w-7xl px-2 py-10 md:px-6 md:py-16 lg:px-8 lg:py-20 overflow-x-hidden">
-        <ProductCategoryTabs categoriesWithProducts={categoriesWithProducts} />
+        <div className="mx-auto max-w-7xl px-2 py-10 md:px-6 md:py-16 lg:px-8 lg:py-20 overflow-x-hidden">
+          <ProductCategoryTabs categoriesWithProducts={categoriesWithProducts} />
+        </div>
       </main>
 
       <Footer />
