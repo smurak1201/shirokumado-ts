@@ -2,25 +2,152 @@
 
 ## 1. 現状の総合評価
 
-主な課題は**構造化データ（JSON-LD）の未実装**、**sitemap/robotsの未実装**、**ルートレイアウトのmetadataBase未設定**。
+**総合スコア: 60 / 100 点**
 
-### 現状
+基本的なNext.jsの機能（`next/image`、`next/link`、`next/font`、Server Components）は適切に活用されており、パフォーマンス最適化も施されている。一方で、SEOの根幹となる**Metadata APIの基盤設定**、**構造化データ（JSON-LD）**、**クロール制御（sitemap/robots）**が未整備であり、検索エンジンからの評価を十分に得られていない状態。
 
-- **Metadata API**: FAQ・shopにページ別メタデータが未設定
-- **見出し構造**: 各ページにh1あり
-- **セマンティックHTML**: shop・authページで`<main>`タグが未設定。トップページの`<main>`配置が不適切
-- **画像最適化**: ヒーロー画像のalt属性が非説明的（「ヒーロー画像」）
-- **構造化データ（JSON-LD）**: 未実装
-- **sitemap / robots**: 未実装
-- **Core Web Vitals**: LCP/CLS対策済み。動的インポート活用
-- **next/link / next/font**: 適切に実装
-- **アクセシビリティ**: aria-label、キーボード対応あり。フッターの見出し階層にスキップあり
+---
+
+### 評価基準別スコア
+
+#### A. デザイナーが施すべき基本SEO（技術的土台）
+
+| # | 評価基準 | スコア | 評価 |
+|---|---|---|---|
+| 1 | 論理的な見出し構造 | **75 / 100** | 概ね良好だが改善余地あり |
+| 2 | セマンティックHTML | **70 / 100** | 概ね良好だが改善余地あり |
+| 3 | アクセシビリティ | **80 / 100** | 良好 |
+
+#### B. Next.js特有のSEO・パフォーマンス最適化
+
+| # | 評価基準 | スコア | 評価 |
+|---|---|---|---|
+| 4 | Metadata API | **40 / 100** | 基盤設定が不足 |
+| 5 | Image Optimization | **80 / 100** | 良好 |
+| 6 | Core Web Vitals | **75 / 100** | 概ね良好 |
+| 7 | JSON-LD（構造化データ） | **0 / 100** | 未実装 |
+| 8 | Next.js標準機能の活用 | **70 / 100** | 概ね良好だがクロール制御が未実装 |
+
+---
+
+### 各項目の詳細評価
+
+#### 1. 論理的な見出し構造（75点）
+
+**良い点:**
+- トップページ: HeroSection内にロゴ画像を`<h1>`として配置（alt属性「日光天然氷 白熊堂」がSEO上の見出しテキストとして機能）
+- about-ice: `h1`（ページタイトル）→ `h2`（各セクション）の正しい階層
+- FAQ/shop/signin/error: 各ページに`h1`あり
+- ProductGrid: カテゴリー名に`h2`を使用
+
+**問題点:**
+- フッターで`<h3>`を使用しているが、先行する`<h2>`がない（見出し階層のスキップ）
+
+#### 2. セマンティックHTML（70点）
+
+**良い点:**
+- `<header>`、`<nav>`、`<footer>`、`<section>`が適切に使用されている
+- FixedHeaderに`<nav>`要素でナビゲーションリンクが設置されている
+- about-iceページで`<main>`と`<motion.section>`が正しく構造化されている
+- ProductGridが`<section>`で各カテゴリーを構造化
+
+**問題点:**
+- shop/signin/errorページに`<main>`タグがない
+- トップページの`<main>`が商品タブのみを囲んでおり、天然氷紹介セクションがmainの外にある
+- FAQSectionが`<>`（Fragment）をルート要素として使用
+
+#### 3. アクセシビリティ（80点）
+
+**良い点:**
+- ProductTileに`role="button"`、`tabIndex={0}`、`onKeyDown`、`aria-label`を設定
+- 外部リンク（Instagram）に`aria-label`を設定
+- `focus-visible`によるキーボード操作時のフォーカス表示が複数箇所で実装
+- Radix UIベースのAccordionでキーボードアクセス対応済み
+- 電話番号リンクに`tel:`スキームを使用
+- 画像のalt属性が概ね適切（商品名、「透き通った天然氷のブロック」など）
+
+**問題点:**
+- ヒーロー画像のalt属性が「ヒーロー画像」で非説明的
+- フッター内の見出し階層スキップがスクリーンリーダーに影響
+
+#### 4. Metadata API（40点）
+
+**良い点:**
+- ルートレイアウトにtitle/description/openGraphを設定
+- about-iceページにページ固有のメタデータを設定
+- `manifest`の設定あり
+
+**問題点:**
+- `metadataBase`が未設定（OGP URLが相対URLのまま）
+- `title.template`が未設定（各ページで「ページ名 | 白熊堂」の自動展開ができない）
+- OGP画像が未指定（SNS共有時にサムネイルが表示されない）
+- Twitter Card設定なし
+- FAQ/shopページにページ固有のメタデータがない
+- about-iceのtitleがフルタイトル指定（template導入時に重複する）
+
+#### 5. Image Optimization（80点）
+
+**良い点:**
+- 全画像で`next/image`を使用
+- ヒーロー画像に`priority`と`sizes="100vw"`を設定（LCP最適化）
+- ProductTileに`sizes`（レイアウト別）と`loading="lazy"`を設定
+- `AspectRatio`コンポーネントでアスペクト比を固定（CLS防止）
+- 商品名をalt属性に使用
+
+**問題点:**
+- ヒーロー画像のaltが非説明的
+- `next.config.ts`で`images.unoptimized: true`（サーバーサイド最適化が無効）
+  - 理由: クライアント側で圧縮済みのため意図的な設定
+
+#### 6. Core Web Vitals（75点）
+
+**LCP対策（良好）:**
+- ヒーロー画像に`priority`フラグ
+- `next/dynamic`で商品グリッドをコード分割
+- `Suspense`でローディング状態を表示
+
+**CLS対策（良好）:**
+- `scrollbar-gutter: stable`でスクロールバー領域を確保
+- ヘッダーに固定高さ（5rem）+ スペーサー配置
+- ヒーローセクションに`aspect-ratio`設定
+- 商品タイルに`AspectRatio ratio={1}`
+
+**INP対策（良好）:**
+- `React.memo`で商品タイルの不要な再レンダリングを防止
+- `useCallback`でイベントハンドラーをメモ化
+- イベントハンドラー内で重い処理なし
+
+**問題点:**
+- ヒーローセクションの`motion.div`アニメーション（opacity: 0 → 1、1秒間）がLCPを視覚的に遅延させる
+- 最低ローディング表示時間（1.5秒）がLCP計測に影響
+- framer-motionの複数アニメーションが連鎖して初期表示が遅延
+
+#### 7. JSON-LD 構造化データ（0点）
+
+**現状: 完全に未実装**
+
+LocalBusiness（店舗情報）、FAQPage（FAQ）、Article（天然氷記事）のいずれも実装されていない。検索結果にリッチリザルト（営業時間、FAQ表示、地図情報）が表示される機会を逃している。
+
+#### 8. Next.js標準機能の活用（70点）
+
+**良い点:**
+- `next/link`: すべての内部リンクで使用（プリフェッチはデフォルト有効）
+- `next/font`: Noto Sans JPを`next/font/google`で最適化（CSS変数として割り当て、必要なweightのみ指定）
+- Server Components: デフォルトで使用、Client Componentsは必要な箇所のみ
+- `next/dynamic`: ProductGridの動的インポート
+- Error Boundary + `error.tsx`の二重保護
+- セキュリティヘッダー（X-Frame-Options、X-Content-Type-Options等）
+- `manifest.webmanifest`の設定
+
+**問題点:**
+- `sitemap.ts`が未実装
+- `robots.ts`が未実装
 
 ---
 
 ## 2. 重大な問題点（Critical Issues）
 
-### Issue 1: FAQ・Shopページにページ別メタデータが未設定
+### Issue 1: FAQ/Shopページにページ別メタデータが未設定
 
 **対象ファイル**: `app/(public)/faq/page.tsx`、`app/(public)/shop/page.tsx`
 
@@ -100,6 +227,7 @@
 ### タスク1: metadataBaseとOGP画像の設定【優先度: 最高】
 
 **対象ファイル**: `app/layout.tsx`
+**影響する評価項目**: 4. Metadata API
 
 **変更内容**: `metadataBase`を追加し、`title.template`とOGP画像を設定する。これがすべてのメタデータの基盤となる。
 
@@ -149,6 +277,7 @@ export const metadata: Metadata = {
 ### タスク2: about-iceページのtitle修正【優先度: 最高】
 
 **対象ファイル**: `app/(public)/about-ice/page.tsx`
+**影響する評価項目**: 4. Metadata API
 
 **変更内容**: タスク1で`title.template`を導入するため、titleをシンプルな文字列に変更する。
 
@@ -179,6 +308,7 @@ export const metadata: Metadata = {
 ### タスク3: ページ別メタデータの設定【優先度: 最高】
 
 **対象ファイル**: `app/(public)/faq/page.tsx`、`app/(public)/shop/page.tsx`
+**影響する評価項目**: 4. Metadata API
 
 **変更内容**: 各ページに固有のメタデータを設定する。
 
@@ -221,6 +351,7 @@ export const metadata: Metadata = {
 ### タスク4: sitemap.xml の実装【優先度: 高 / カスタムドメイン取得後に実施】
 
 **対象ファイル**: `app/sitemap.ts`（新規作成）
+**影響する評価項目**: 8. Next.js標準機能の活用
 
 **前提条件**: カスタムドメインを取得・設定済みであること。VercelのURLでサイトマップを公開すると、そのURLが検索エンジンに正規URLとして登録されてしまい、ドメイン移行時に再インデックスが必要になる。
 
@@ -271,6 +402,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
 ### タスク5: robots.txt の実装【優先度: 高】
 
 **対象ファイル**: `app/robots.ts`（新規作成）
+**影響する評価項目**: 8. Next.js標準機能の活用
 
 このタスクは2段階で実施する。
 
@@ -322,6 +454,7 @@ export default function robots(): MetadataRoute.Robots {
 ### タスク6: JSON-LD 構造化データの実装【優先度: 高】
 
 **対象ファイル**: `app/(public)/HomeContent.tsx`、`app/(public)/faq/page.tsx`、`app/(public)/about-ice/page.tsx`
+**影響する評価項目**: 7. JSON-LD（構造化データ）
 
 #### 6-1. トップページにLocalBusinessスキーマを追加
 
@@ -437,6 +570,7 @@ const articleJsonLd = {
 ### タスク7: トップページの`<main>`タグ配置修正【優先度: 中】
 
 **対象ファイル**: `app/(public)/HomeContent.tsx`
+**影響する評価項目**: 2. セマンティックHTML
 
 **現状**: `<main>`タグが商品タブセクション（83行目）だけを囲んでおり、天然氷紹介セクション（59〜81行目）がmainの外にある。
 
@@ -475,8 +609,9 @@ const articleJsonLd = {
 ### タスク8: ヒーロー画像のalt属性改善【優先度: 中】
 
 **対象ファイル**: `app/components/HeroSection.tsx`（46行目）
+**影響する評価項目**: 3. アクセシビリティ、5. Image Optimization
 
-**現状**: `alt="ヒーロー画像"` — 画像の内容を説明していない。
+**現状**: `alt="ヒーロー画像"` -- 画像の内容を説明していない。
 
 **変更内容**:
 
@@ -495,6 +630,7 @@ alt="白熊堂のふわふわかき氷"
 ### タスク9: FAQページのセマンティックHTML改善【優先度: 中】
 
 **対象ファイル**: `app/components/FAQSection.tsx`
+**影響する評価項目**: 2. セマンティックHTML、3. アクセシビリティ
 
 **現状**: FAQSection は `<>（Fragment）` をルート要素として使っている。FAQ一覧を`<section>`で囲むとセマンティクス的に改善される。
 
@@ -527,9 +663,11 @@ return (
 ### タスク10: 一部ページで`<main>`タグを追加【優先度: 中】
 
 **対象ファイル**:
-- `app/auth/signin/page.tsx` — `<main>`なし
-- `app/auth/error/page.tsx` — `<main>`なし
-- `app/(public)/shop/page.tsx` — `<main>`なし
+- `app/auth/signin/page.tsx` -- `<main>`なし
+- `app/auth/error/page.tsx` -- `<main>`なし
+- `app/(public)/shop/page.tsx` -- `<main>`なし
+
+**影響する評価項目**: 2. セマンティックHTML、3. アクセシビリティ
 
 **変更内容**: 各ページの最外殻の`<div>`を`<main>`に変更する。
 
@@ -550,6 +688,7 @@ return (
 ### タスク11: フッターの見出し階層修正【優先度: 中】
 
 **対象ファイル**: `app/components/Footer.tsx`（53行目、63行目、79行目）
+**影響する評価項目**: 1. 論理的な見出し構造
 
 **現状**: フッター内で`<h3>`が使われているが、先行する`<h2>`がない。これは見出し階層のスキップにあたる。
 
@@ -574,15 +713,16 @@ return (
 ### タスク12: copyright年の更新【優先度: 低】
 
 **対象ファイル**: `app/components/Footer.tsx`（126行目）
+**影響する評価項目**: なし（コード品質）
 
-**現状**: `© 2024 白熊堂` とハードコードされている。
+**現状**: `(C) 2024 白熊堂` とハードコードされている。
 
 **変更内容**: 年を更新する、または開業年から現在年の範囲表記にする。
 
 ```tsx
 // 変更案
 <p className="text-xs text-muted-foreground">
-  © 2024-{new Date().getFullYear()} 白熊堂
+  (C) 2024-{new Date().getFullYear()} 白熊堂
 </p>
 ```
 
@@ -600,35 +740,49 @@ return (
 
 ### Phase 1: 基盤整備（SEOの土台）
 
-| # | タスク | 対象ファイル | インパクト | 前回からの変化 |
+| # | タスク | 対象ファイル | インパクト | 影響する評価項目 |
 |---|---|---|---|---|
-| 1 | metadataBaseとOGP画像の設定 | `app/layout.tsx` | **最大** | `process.env.SITE_URL`を使用 |
-| 2 | about-iceのtitle修正 | `app/(public)/about-ice/page.tsx` | **最大** | **新規** — タスク1と同時実施 |
-| 3 | ページ別メタデータの設定 | `faq/page.tsx`、`shop/page.tsx` | **大** | about-ice分は実装済み |
+| 1 | metadataBaseとOGP画像の設定 | `app/layout.tsx` | **最大** | 4. Metadata API |
+| 2 | about-iceのtitle修正 | `app/(public)/about-ice/page.tsx` | **最大** | 4. Metadata API |
+| 3 | ページ別メタデータの設定 | `faq/page.tsx`、`shop/page.tsx` | **大** | 4. Metadata API |
 
 ### Phase 2: クロール最適化
 
-| # | タスク | 対象ファイル | インパクト |
-|---|---|---|---|
-| 4 | sitemap.xml の実装 | `app/sitemap.ts`（新規） | **大** |
-| 5 | robots.txt の実装（クロール拒否） | `app/robots.ts`（新規） | **大** |
+| # | タスク | 対象ファイル | インパクト | 影響する評価項目 |
+|---|---|---|---|---|
+| 4 | sitemap.xml の実装 | `app/sitemap.ts`（新規） | **大** | 8. Next.js標準機能 |
+| 5 | robots.txt の実装（クロール拒否） | `app/robots.ts`（新規） | **大** | 8. Next.js標準機能 |
 
 ### Phase 3: リッチリザルト対応
 
-| # | タスク | 対象ファイル | インパクト | 前回からの変化 |
+| # | タスク | 対象ファイル | インパクト | 影響する評価項目 |
 |---|---|---|---|---|
-| 6 | JSON-LD 構造化データの実装 | `HomeContent.tsx`、`faq/page.tsx`、`about-ice/page.tsx` | **大** | about-ice用Articleスキーマ追加 |
+| 6 | JSON-LD 構造化データの実装 | `HomeContent.tsx`、`faq/page.tsx`、`about-ice/page.tsx` | **大** | 7. JSON-LD |
 
 ### Phase 4: セマンティクスとアクセシビリティ改善
 
-| # | タスク | 対象ファイル | インパクト | 前回からの変化 |
+| # | タスク | 対象ファイル | インパクト | 影響する評価項目 |
 |---|---|---|---|---|
-| 7 | トップページの`<main>`配置修正 | `HomeContent.tsx` | **中** | **新規** |
-| 8 | ヒーロー画像のalt属性改善 | `HeroSection.tsx` | **中** | 変更なし |
-| 9 | FAQセクションのセマンティクス改善 | `FAQSection.tsx` | **中** | 変更なし |
-| 10 | 一部ページに`<main>`タグ追加 | `shop/page.tsx`、`signin/page.tsx`等 | **中** | FAQ分は実装済み |
-| 11 | フッターの見出し階層修正 | `Footer.tsx` | **中** | 変更なし |
-| 12 | copyright年の更新 | `Footer.tsx` | **低** | 変更なし |
+| 7 | トップページの`<main>`配置修正 | `HomeContent.tsx` | **中** | 2. セマンティックHTML |
+| 8 | ヒーロー画像のalt属性改善 | `HeroSection.tsx` | **中** | 3. アクセシビリティ / 5. Image |
+| 9 | FAQセクションのセマンティクス改善 | `FAQSection.tsx` | **中** | 2. セマンティックHTML |
+| 10 | 一部ページに`<main>`タグ追加 | `shop/page.tsx`、`signin/page.tsx`等 | **中** | 2. セマンティックHTML |
+| 11 | フッターの見出し階層修正 | `Footer.tsx` | **中** | 1. 見出し構造 |
+| 12 | copyright年の更新 | `Footer.tsx` | **低** | -- |
+
+### 全タスク完了後の予想スコア
+
+| # | 評価基準 | 現在 | 完了後 | 改善幅 |
+|---|---|---|---|---|
+| 1 | 論理的な見出し構造 | 75 | 85 | +10 |
+| 2 | セマンティックHTML | 70 | 90 | +20 |
+| 3 | アクセシビリティ | 80 | 90 | +10 |
+| 4 | Metadata API | 40 | 90 | +50 |
+| 5 | Image Optimization | 80 | 85 | +5 |
+| 6 | Core Web Vitals | 75 | 75 | -- |
+| 7 | JSON-LD（構造化データ） | 0 | 90 | +90 |
+| 8 | Next.js標準機能の活用 | 70 | 90 | +20 |
+| **総合** | | **60** | **87** | **+27** |
 
 ### カスタムドメイン取得後の作業
 
@@ -644,10 +798,11 @@ return (
 以下の項目は現状で適切に実装されているため、変更は不要。
 
 - **`next/image`の使用**: alt属性、priority、sizes、lazy loadingが適切に設定されている
-- **`next/link`の使用**: 内部遷移にすべて使用されている
-- **`next/font`の使用**: Noto Sans JP が適切に設定されている
+- **`next/link`の使用**: 内部遷移にすべて使用されている（プリフェッチはデフォルト有効）
+- **`next/font`の使用**: Noto Sans JPが`next/font/google`で最適化されている（CSS変数割り当て、必要なweightのみ指定）
 - **Server Components**: デフォルトでServer Componentsが使われ、Client Componentsは必要な箇所のみ
-- **パフォーマンス最適化**: `next/dynamic`、`Promise.all`、`React.memo`、Suspenseが活用されている
+- **パフォーマンス最適化**: `next/dynamic`、`Promise.all`、`React.memo`、`useCallback`、Suspenseが活用されている
+- **CLS対策**: `scrollbar-gutter: stable`、固定ヘッダーのスペーサー、画像のアスペクト比固定
 - **セキュリティヘッダー**: X-Frame-Options、X-Content-Type-Options等が設定済み
 - **アクセシビリティ**: aria-label、キーボードナビゲーション、focus-visible対応が実装されている
 - **エラーハンドリング**: Error Boundary + error.tsx の二重保護
@@ -667,5 +822,5 @@ return (
 | `<main>`タグ | AboutIceContent内で`<main>`を使用 |
 | セマンティクス | 各コンテンツブロックを`<motion.section>`で構造化 |
 | 画像alt属性 | 「杉林に囲まれた天然氷の池」など内容を説明するalt |
-| 画像sizes | `(min-width: 768px) 50vw, 100vw` — レイアウトに合ったsizes指定 |
+| 画像sizes | `(min-width: 768px) 50vw, 100vw` -- レイアウトに合ったsizes指定 |
 | レスポンシブ | モバイルファーストで、奇数/偶数セクションの左右入れ替え |
