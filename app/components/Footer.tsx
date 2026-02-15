@@ -50,9 +50,9 @@ export default function Footer() {
 
         <div className="grid grid-cols-4 gap-1 md:gap-6">
           <div className="space-y-1 md:space-y-3">
-            <h3 className="text-[8px] font-normal uppercase tracking-wider text-foreground md:text-sm">
+            <p className="text-[8px] font-normal uppercase tracking-wider text-foreground md:text-sm">
               住所
-            </h3>
+            </p>
             <div className="space-y-0.5 text-[8px] leading-relaxed text-muted-foreground md:text-sm">
               <p>神奈川県川崎市川崎区小川町4-1</p>
               <p>ラチッタデッラ マッジョーレ1F</p>
@@ -60,9 +60,9 @@ export default function Footer() {
           </div>
 
           <div className="space-y-1 md:space-y-3">
-            <h3 className="text-[8px] font-normal uppercase tracking-wider text-foreground md:text-sm">
+            <p className="text-[8px] font-normal uppercase tracking-wider text-foreground md:text-sm">
               営業情報
-            </h3>
+            </p>
             <div className="space-y-1 text-[8px] leading-relaxed text-muted-foreground md:text-sm">
               <div>
                 <p className="font-medium text-foreground/90">営業時間</p>
@@ -76,9 +76,9 @@ export default function Footer() {
           </div>
 
           <div className="space-y-1 md:space-y-3">
-            <h3 className="text-[8px] font-normal uppercase tracking-wider text-foreground md:text-sm">
+            <p className="text-[8px] font-normal uppercase tracking-wider text-foreground md:text-sm">
               お問い合わせ
-            </h3>
+            </p>
             <div className="space-y-0.5 text-[8px] leading-relaxed text-muted-foreground md:text-sm">
               <a
                 href="tel:070-9157-3772"
