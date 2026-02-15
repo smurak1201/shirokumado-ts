@@ -8,6 +8,9 @@ import Link from 'next/link';
 
 export const metadata: Metadata = {
   title: "ECサイト管理",
+  openGraph: {
+    title: "ECサイト管理 | 白熊堂 管理画面",
+  },
 };
 
 export default function ShopDashboardPage() {

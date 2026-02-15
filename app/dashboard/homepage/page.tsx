@@ -12,6 +12,9 @@ import type { Category, Product } from "./types";
 
 export const metadata: Metadata = {
   title: "商品管理",
+  openGraph: {
+    title: "商品管理 | 白熊堂 管理画面",
+  },
 };
 
 // 商品データは頻繁に更新されるため、リクエストごとに最新データを取得
