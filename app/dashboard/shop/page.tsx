@@ -3,7 +3,12 @@
  *
  * ECサイト管理機能の準備中メッセージを表示するプレースホルダーページ。
  */
+import type { Metadata } from 'next';
 import Link from 'next/link';
+
+export const metadata: Metadata = {
+  title: "ECサイト管理",
+};
 
 export default function ShopDashboardPage() {
   return (
