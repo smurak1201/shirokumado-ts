@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
+import { motion, type Variants } from "framer-motion";
 import { Menu } from "lucide-react";
 import {
   Sheet,
@@ -13,6 +14,38 @@ import {
 } from "@/app/components/ui/sheet";
 import { Separator } from "@/app/components/ui/separator";
 import { cn } from "@/lib/utils";
+import { config } from "@/lib/config";
+
+const containerVariants: Variants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: config.animationConfig.STAGGER_CHILDREN_SECONDS,
+      delayChildren: 0.15,
+    },
+  },
+};
+
+const itemVariants: Variants = {
+  hidden: { opacity: 0, x: 20 },
+  visible: {
+    opacity: 1,
+    x: 0,
+    transition: {
+      duration: config.animationConfig.FADE_IN_DURATION_SECONDS,
+      ease: "easeOut",
+    },
+  },
+};
+
+const bottomVariants: Variants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: { duration: 0.5, delay: 0.4, ease: "easeOut" },
+  },
+};
 
 type NavLink = {
   href: string;
@@ -51,9 +84,14 @@ export default function MobileMenu({ navLinks }: MobileMenuProps) {
       >
         <SheetTitle className="sr-only">ナビゲーションメニュー</SheetTitle>
 
-        <nav className="mt-8 flex flex-col">
+        <motion.nav
+          className="mt-8 flex flex-col"
+          initial="hidden"
+          animate={isOpen ? "visible" : "hidden"}
+          variants={containerVariants}
+        >
           {navLinks.map((link, index) => (
-            <div key={link.href}>
+            <motion.div key={link.href} variants={itemVariants}>
               {index > 0 && <Separator />}
               <Link
                 href={link.href}
@@ -67,11 +105,16 @@ export default function MobileMenu({ navLinks }: MobileMenuProps) {
               >
                 {link.label}
               </Link>
-            </div>
+            </motion.div>
           ))}
-        </nav>
+        </motion.nav>
 
-        <div className="absolute bottom-8 left-6">
+        <motion.div
+          className="absolute bottom-8 left-6"
+          initial="hidden"
+          animate={isOpen ? "visible" : "hidden"}
+          variants={bottomVariants}
+        >
           <a
             href="https://www.instagram.com/shirokumado2021/"
             target="_blank"
@@ -91,7 +134,7 @@ export default function MobileMenu({ navLinks }: MobileMenuProps) {
               className="h-6 w-6"
             />
           </a>
-        </div>
+        </motion.div>
       </SheetContent>
     </Sheet>
   );
