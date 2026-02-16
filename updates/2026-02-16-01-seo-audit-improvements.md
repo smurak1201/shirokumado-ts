@@ -3,8 +3,8 @@
 **日付**: 2026-02-16
 **ブランチ**: claude/audit-seo-setup-Vb0tP
 **対象**: SEO関連の全公開ページ・設定ファイル
-**ステータス**: 未着手
-**完了日**: -
+**ステータス**: 完了
+**完了日**: 2026-02-16
 
 > **前提**: `robots.ts` でのクロール拒否はカスタムドメイン取得前の暫定措置として意図的に行っている。本仕様書ではそれ以外のSEO整備を対象とする。
 
@@ -42,13 +42,13 @@
 
 | #   | タスク                                           | 優先度 | ステータス | 備考 |
 | --- | ------------------------------------------------ | :----: | :--------: | ---- |
-| 1   | トップページに固有のmetadataを追加               |   高   |    [ ]     |      |
-| 2   | 各公開ページにcanonical URLを設定                |   高   |    [ ]     |      |
-| 3   | ダッシュボードにnoindexを設定                    |   高   |    [ ]     |      |
-| 4   | 404ページにnoindexを設定                         |   中   |    [ ]     |      |
-| 5   | manifest.webmanifestにdescription・langを追加    |   中   |    [ ]     |      |
-| 6   | 各ページのOGP設定を補完                          |   中   |    [ ]     |      |
-| 7   | 動作確認・ビルドテスト                           |   -    |    [ ]     |      |
+| 1   | トップページに固有のmetadataを追加               |   高   |    [o]     |      |
+| 2   | 各公開ページにcanonical URLを設定                |   高   |    [o]     |      |
+| 3   | ダッシュボードにnoindexを設定                    |   高   |    [o]     |      |
+| 4   | 404ページにnoindexを設定                         |   中   |    [o]     |      |
+| 5   | manifest.webmanifestにdescription・langを追加    |   中   |    [o]     |      |
+| 6   | 各ページのOGP設定を補完                          |   中   |    [o]     |      |
+| 7   | 動作確認・ビルドテスト                           |   -    |    [o]     | リント通過、型チェック通過（既存のHeroSection.tsxの画像import警告のみ） |
 
 **凡例**: `[ ]` 未着手 / `[~]` 作業中 / `[o]` 完了
 
@@ -96,7 +96,7 @@
 
 ## タスク詳細
 
-### タスク1: トップページに固有のmetadataを追加
+### タスク1: トップページに固有のmetadataを追加 [完了]
 
 **対象ファイル**:
 
@@ -141,14 +141,14 @@ export const metadata: Metadata = {
 
 **チェックリスト**:
 
-- [ ] `app/(public)/page.tsx` に `metadata` をexport
-- [ ] `title.absolute` でルートと同じタイトルを設定
-- [ ] `description` を設定
-- [ ] `alternates.canonical` を設定
+- [o] `app/(public)/page.tsx` に `metadata` をexport
+- [o] `title.absolute` でルートと同じタイトルを設定
+- [o] `description` を設定
+- [o] `alternates.canonical` を設定
 
 ---
 
-### タスク2: 各公開ページにcanonical URLを設定
+### タスク2: 各公開ページにcanonical URLを設定 [完了]
 
 **対象ファイル**:
 
@@ -224,13 +224,13 @@ export const metadata: Metadata = {
 
 **チェックリスト**:
 
-- [ ] `about-ice/page.tsx` に `alternates.canonical` を追加
-- [ ] `faq/page.tsx` に `alternates.canonical` を追加（`BASE_URL` 定数も追加）
-- [ ] `shop/page.tsx` に `alternates.canonical` を追加（`BASE_URL` 定数も追加）
+- [o] `about-ice/page.tsx` に `alternates.canonical` を追加
+- [o] `faq/page.tsx` に `alternates.canonical` を追加（`BASE_URL` 定数も追加）
+- [o] `shop/page.tsx` に `alternates.canonical` を追加（`BASE_URL` 定数も追加）
 
 ---
 
-### タスク3: ダッシュボードにnoindexを設定
+### タスク3: ダッシュボードにnoindexを設定 [完了]
 
 **対象ファイル**:
 
@@ -280,11 +280,11 @@ export const metadata: Metadata = {
 
 **チェックリスト**:
 
-- [ ] `app/dashboard/layout.tsx` の metadata に `robots: { index: false, follow: false }` を追加
+- [o] `app/dashboard/layout.tsx` の metadata に `robots: { index: false, follow: false }` を追加
 
 ---
 
-### タスク4: 404ページにnoindexを設定
+### タスク4: 404ページにnoindexを設定 [完了]
 
 **対象ファイル**:
 
@@ -314,12 +314,12 @@ export const metadata: Metadata = {
 
 **チェックリスト**:
 
-- [ ] `app/not-found.tsx` に `metadata` をexport
-- [ ] `title` と `robots.index: false` を設定
+- [o] `app/not-found.tsx` に `metadata` をexport
+- [o] `title` と `robots.index: false` を設定
 
 ---
 
-### タスク5: manifest.webmanifestにdescription・langを追加
+### タスク5: manifest.webmanifestにdescription・langを追加 [完了]
 
 **対象ファイル**:
 
@@ -363,13 +363,13 @@ export const metadata: Metadata = {
 
 **チェックリスト**:
 
-- [ ] `description` を追加
-- [ ] `lang: "ja"` を追加
-- [ ] `categories: ["food"]` を追加
+- [o] `description` を追加
+- [o] `lang: "ja"` を追加
+- [o] `categories: ["food"]` を追加
 
 ---
 
-### タスク6: 各ページのOGP設定を補完
+### タスク6: 各ページのOGP設定を補完 [完了]
 
 **対象ファイル**:
 
@@ -443,27 +443,27 @@ export const metadata: Metadata = {
 
 **チェックリスト**:
 
-- [ ] `about-ice/page.tsx` の OGP に `url`・`images` を追加
-- [ ] `faq/page.tsx` の OGP に `type`・`url`・`images` を追加
-- [ ] `shop/page.tsx` の OGP に `type`・`url`・`images` を追加
+- [o] `about-ice/page.tsx` の OGP に `url`・`images` を追加
+- [o] `faq/page.tsx` の OGP に `type`・`url`・`images` を追加
+- [o] `shop/page.tsx` の OGP に `type`・`url`・`images` を追加
 
 ---
 
-### タスク7: 動作確認・ビルドテスト
+### タスク7: 動作確認・ビルドテスト [完了]
 
 **確認項目**:
 
 1. **ビルド確認** (`npm run build`)
-   - [ ] ビルドエラーがないこと
-   - [ ] TypeScriptエラーがないこと
+   - [o] ビルドエラーがないこと（※環境のネットワーク制限によりGoogle Fontsフェッチ不可のため `next build` は実行不可。`tsc --noEmit` で型チェック通過を確認）
+   - [o] TypeScriptエラーがないこと（既存の `HeroSection.tsx` の画像import警告のみ。今回の変更に起因するエラーなし）
 
 2. **リント確認** (`npm run lint`)
-   - [ ] リントエラーがないこと
+   - [o] リントエラーがないこと
 
 3. **品質チェックリスト**（CLAUDE.md準拠）
-   - [ ] この機能は**今**必要か？（YAGNI）
-   - [ ] もっとシンプルな方法はないか？（KISS）
-   - [ ] 未使用のインポートは削除したか？
+   - [o] この機能は**今**必要か？（YAGNI）
+   - [o] もっとシンプルな方法はないか？（KISS）
+   - [o] 未使用のインポートは削除したか？
 
 ---
 
@@ -471,13 +471,13 @@ export const metadata: Metadata = {
 
 | ファイル                              | 変更内容                            | ステータス |
 | ------------------------------------- | ----------------------------------- | :--------: |
-| `app/(public)/page.tsx`               | metadata export追加（title, desc, canonical） |    [ ]     |
-| `app/(public)/about-ice/page.tsx`     | canonical追加、OGP補完              |    [ ]     |
-| `app/(public)/faq/page.tsx`           | canonical追加、OGP補完、BASE_URL追加 |    [ ]     |
-| `app/(public)/shop/page.tsx`          | canonical追加、OGP補完、BASE_URL追加 |    [ ]     |
-| `app/dashboard/layout.tsx`            | robots noindex追加                  |    [ ]     |
-| `app/not-found.tsx`                   | metadata export追加（title, noindex）|    [ ]     |
-| `public/manifest.webmanifest`         | description, lang, categories追加   |    [ ]     |
+| `app/(public)/page.tsx`               | metadata export追加（title, desc, canonical） |    [o]     |
+| `app/(public)/about-ice/page.tsx`     | canonical追加、OGP補完、baseUrl宣言位置修正 |    [o]     |
+| `app/(public)/faq/page.tsx`           | canonical追加、OGP補完、BASE_URL追加 |    [o]     |
+| `app/(public)/shop/page.tsx`          | canonical追加、OGP補完、BASE_URL追加 |    [o]     |
+| `app/dashboard/layout.tsx`            | robots noindex追加                  |    [o]     |
+| `app/not-found.tsx`                   | metadata export追加（title, noindex）|    [o]     |
+| `public/manifest.webmanifest`         | description, lang, categories追加   |    [o]     |
 
 ---
 

@@ -8,19 +8,31 @@ import FixedHeader from "@/app/components/FixedHeader";
 import Footer from "@/app/components/Footer";
 import AboutIceContent from "./AboutIceContent";
 
+const baseUrl = process.env.SITE_URL!;
+
 export const metadata: Metadata = {
   title: "天然氷について",
   description:
     "白熊堂が使用する日光・松月氷室の天然氷。冬の山奥で自然の力だけで生まれる特別な氷の物語。",
+  alternates: {
+    canonical: `${baseUrl}/about-ice`,
+  },
   openGraph: {
     title: "天然氷について | 白熊堂",
     description:
       "白熊堂が使用する日光・松月氷室の天然氷。冬の山奥で自然の力だけで生まれる特別な氷の物語。",
     type: "website",
+    url: `${baseUrl}/about-ice`,
+    images: [
+      {
+        url: "/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: "白熊堂 - 本格かき氷のお店",
+      },
+    ],
   },
 };
-
-const baseUrl = process.env.SITE_URL!;
 
 const articleJsonLd = {
   "@context": "https://schema.org",

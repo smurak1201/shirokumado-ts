@@ -10,14 +10,29 @@ import Footer from "@/app/components/Footer";
 import FAQSection from "@/app/components/FAQSection";
 import { faqs } from "./data";
 
+const BASE_URL = process.env.SITE_URL!;
+
 export const metadata: Metadata = {
   title: "よくある質問（FAQ）",
   description:
     "白熊堂への営業時間、予約、お支払い方法などのよくある質問と回答をまとめています。",
+  alternates: {
+    canonical: `${BASE_URL}/faq`,
+  },
   openGraph: {
     title: "よくある質問（FAQ） | 白熊堂",
     description:
       "白熊堂への営業時間、予約、お支払い方法などのよくある質問と回答をまとめています。",
+    type: "website",
+    url: `${BASE_URL}/faq`,
+    images: [
+      {
+        url: "/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: "白熊堂 - 本格かき氷のお店",
+      },
+    ],
   },
 };
 

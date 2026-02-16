@@ -6,14 +6,29 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 
+const BASE_URL = process.env.SITE_URL!;
+
 export const metadata: Metadata = {
   title: "オンラインショップ",
   description:
     "白熊堂のオンラインショップは現在準備中です。もうしばらくお待ちください。",
+  alternates: {
+    canonical: `${BASE_URL}/shop`,
+  },
   openGraph: {
     title: "オンラインショップ | 白熊堂",
     description:
       "白熊堂のオンラインショップは現在準備中です。もうしばらくお待ちください。",
+    type: "website",
+    url: `${BASE_URL}/shop`,
+    images: [
+      {
+        url: "/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: "白熊堂 - 本格かき氷のお店",
+      },
+    ],
   },
 };
 

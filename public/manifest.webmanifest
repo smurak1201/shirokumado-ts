@@ -1,6 +1,9 @@
 {
   "name": "白熊堂 | 本格かき氷のお店",
   "short_name": "白熊堂",
+  "description": "川崎ラチッタデッラにある本格かき氷のお店。ふわふわの日光天然氷とこだわりのシロップでお待ちしています。",
+  "lang": "ja",
+  "categories": ["food"],
   "icons": [
     {
       "src": "/icon-192x192.png",
