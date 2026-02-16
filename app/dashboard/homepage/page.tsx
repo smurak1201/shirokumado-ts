@@ -12,15 +12,15 @@ import type { Category, Product } from "./types";
 
 export const metadata: Metadata = {
   title: "商品管理",
-  description: "商品の一覧表示・編集・並び替えを行う管理画面",
+  description: "ホームページに表示する商品の編集・並び替えを行う管理画面",
   openGraph: {
     title: "商品管理 | 白熊堂 管理画面",
-    description: "商品の一覧表示・編集・並び替えを行う管理画面",
+    description: "ホームページに表示する商品の編集・並び替えを行う管理画面",
   },
   twitter: {
     card: "summary_large_image",
     title: "商品管理 | 白熊堂 管理画面",
-    description: "商品の一覧表示・編集・並び替えを行う管理画面",
+    description: "ホームページに表示する商品の編集・並び替えを行う管理画面",
   },
 };
 
