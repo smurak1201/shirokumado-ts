@@ -3,9 +3,17 @@
  *
  * 存在しないURLにアクセスした場合に表示されるページ。
  */
+import type { Metadata } from "next";
 import Link from 'next/link';
 import FixedHeader from './components/FixedHeader';
 import Footer from './components/Footer';
+
+export const metadata: Metadata = {
+  title: "ページが見つかりません",
+  robots: {
+    index: false,
+  },
+};
 
 export default function NotFound() {
   return (

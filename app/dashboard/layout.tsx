@@ -14,6 +14,10 @@ export const metadata: Metadata = {
     template: "%s | 白熊堂 管理画面",
   },
   description: "白熊堂の管理画面",
+  robots: {
+    index: false,
+    follow: false,
+  },
   openGraph: {
     title: "ダッシュボード | 白熊堂",
     description: "白熊堂の管理画面",
