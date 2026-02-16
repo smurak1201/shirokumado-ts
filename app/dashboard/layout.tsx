@@ -21,6 +21,23 @@ export const metadata: Metadata = {
   openGraph: {
     title: "ダッシュボード | 白熊堂",
     description: "白熊堂の管理画面",
+    type: "website",
+    locale: "ja_JP",
+    siteName: "白熊堂",
+    images: [
+      {
+        url: "/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: "白熊堂 - 管理画面",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "ダッシュボード | 白熊堂",
+    description: "白熊堂の管理画面",
+    images: ["/og-image.png"],
   },
 };
 
