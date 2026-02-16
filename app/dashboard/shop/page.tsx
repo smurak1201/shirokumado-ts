@@ -8,8 +8,15 @@ import Link from 'next/link';
 
 export const metadata: Metadata = {
   title: "ECサイト管理",
+  description: "ECサイトの管理を行う管理画面",
   openGraph: {
     title: "ECサイト管理 | 白熊堂 管理画面",
+    description: "ECサイトの管理を行う管理画面",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "ECサイト管理 | 白熊堂 管理画面",
+    description: "ECサイトの管理を行う管理画面",
   },
 };
 
