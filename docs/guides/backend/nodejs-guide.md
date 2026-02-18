@@ -5,7 +5,7 @@
 このドキュメントは「**Node.js ランタイムの基礎と役割**」を説明します。Node.js がこのアプリケーションでどのように使われているか、環境変数の管理、npm スクリプト、バージョン管理など、Node.js に関する知識を理解したいときに参照してください。
 
 **関連ドキュメント**:
-- [技術スタック](../tech-stack.md#ランタイム): Node.js の概要と選定理由
+- [技術スタック](../../tech-stack.md#ランタイム): Node.js の概要と選定理由
 - [Async/Await ガイド](../basics/async-await-guide.md): Node.js の非同期処理の詳細
 - [TypeScript ガイド](../basics/typescript-guide.md): TypeScript との連携
 
@@ -20,14 +20,14 @@
   - [.nvmrc](#nvmrc)
   - [engines フィールド](#engines-フィールド)
   - [nvm の使い方](#nvm-の使い方)
-- [npm（パッケージマネージャー）](#npmパッケージマネージャー)
+- [npm（パッケージマネージャー）](#npm（パッケージマネージャー）)
   - [npm とは](#npm-とは)
   - [package.json](#packagejson)
   - [dependencies と devDependencies](#dependencies-と-devdependencies)
   - [npm スクリプト](#npm-スクリプト)
 - [環境変数](#環境変数)
   - [process.env](#processenv)
-  - [NODE_ENV](#node_env)
+  - [NODE_ENV](#nodeenv)
   - [このアプリでの環境変数管理](#このアプリでの環境変数管理)
   - [Next.js の環境変数の仕組み](#nextjs-の環境変数の仕組み)
 - [グローバルオブジェクト](#グローバルオブジェクト)

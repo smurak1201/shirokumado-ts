@@ -18,7 +18,7 @@
 - [コンポーネント構成](#コンポーネント構成)
 - [データフロー](#データフロー)
 - [状態管理](#状態管理)
-- [API 連携](#api連携)
+- [API 連携](#api-連携)
 - [開発ガイド](#開発ガイド)
 - [パフォーマンス最適化](#パフォーマンス最適化)
 - [セキュリティ](#セキュリティ)
@@ -923,7 +923,7 @@ file: [画像ファイル]
   - [`app/dashboard/homepage/utils/productFormSubmit.ts`](../../app/dashboard/homepage/utils/productFormSubmit.ts): `fetchJson` で `/api/products` に POST/PUT リクエスト
   - [`app/dashboard/homepage/hooks/useProductDelete.ts`](../../app/dashboard/homepage/hooks/useProductDelete.ts): `fetchJson` で `/api/products/[id]` に DELETE リクエスト
   - [`app/dashboard/homepage/hooks/useProductReorder.ts`](../../app/dashboard/homepage/hooks/useProductReorder.ts): `fetchJson` で `/api/products/reorder` に POST リクエスト
-- **並列データ取得（`Promise.all`を使用）** - **このアプリで使用中**（詳細は [Async/Await ガイド - Promise.all](../basics/async-await-guide.md#promiseall---このアプリで使用中) を参照）
+- **並列データ取得（`Promise.all`を使用）** - **このアプリで使用中**（詳細は [Async/Await ガイド - Promise.all](../basics/async-await-guide.md#promiseall-このアプリで使用中) を参照）
 
 **Prisma の`select`について**:
 
@@ -957,7 +957,7 @@ const products = await prisma.product.findMany({
 - `include`を使用してカテゴリー情報も一緒に取得する方が、コードがシンプルで保守しやすい
 - 商品データの構造が比較的シンプルで、不要なフィールドが少ない
 
-詳細は [Prisma ガイド - select（このアプリでは未使用）](../backend/prisma-guide.md#selectこのアプリでは未使用) を参照してください。
+詳細は [Prisma ガイド - select（このアプリでは未使用）](../backend/prisma-guide.md#select（このアプリでは未使用）) を参照してください。
 
 ### 画像最適化
 
@@ -980,7 +980,7 @@ const products = await prisma.product.findMany({
 4. 圧縮後のサイズが 4MB を超える場合はエラーを表示
 5. アップロード
 
-詳細は [画像圧縮ユーティリティ](../backend/utilities-guide.md#画像圧縮ユーティリティ-libimage-compressionts) を参照してください。
+詳細は [画像圧縮ユーティリティ](../backend/utilities-guide.md#画像圧縮ユーティリティ-libimage-compression) を参照してください。
 
 ## セキュリティ
 

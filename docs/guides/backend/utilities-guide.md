@@ -6,7 +6,7 @@
 
 **関連ドキュメント**:
 - [セットアップガイド](../setup-prisma-blob.md): Prisma と Blob の環境構築
-- [開発ガイドライン](../development-guide.md#エラーハンドリング): エラーハンドリング規約
+- [開発ガイドライン](../../development-guide.md#エラーハンドリング): エラーハンドリング規約
 
 ## 目次
 
@@ -1044,9 +1044,9 @@ const projectId = env.NEXT_PUBLIC_STACK_PROJECT_ID; // 型安全
 
 **関連ドキュメント**:
 
-- **エラーハンドリングの詳細**: [開発ガイドライン - エラーハンドリング](../development-guide.md#エラーハンドリング)
+- **エラーハンドリングの詳細**: [開発ガイドライン - エラーハンドリング](../../development-guide.md#エラーハンドリング)
 - **API の使用方法**: [App Router ガイド - API Routes](../frontend/app-router-guide.md#api-routes)
-- **セキュリティの詳細**: [開発ガイドライン - セキュリティ](../development-guide.md#セキュリティ)
+- **セキュリティの詳細**: [開発ガイドライン - セキュリティ](../../development-guide.md#セキュリティ)
 
 ## 参考リンク
 

@@ -6,7 +6,7 @@
 
 **関連ドキュメント**:
 - [セットアップガイド](../setup-prisma-blob.md): 環境構築とマイグレーションコマンド
-- [開発ガイドライン](../development-guide.md#prisma): コーディング規約
+- [開発ガイドライン](../../development-guide.md#prisma): コーディング規約
 
 ## 目次
 
@@ -15,11 +15,11 @@
   - [prisma.config.ts](#prismaconfigts)
 - [データベースへの接続](#データベースへの接続)
   - [Prisma 7 でのデータベース接続の概要](#prisma-7-でのデータベース接続の概要)
-  - [このアプリでの PostgreSQL（Neon）への接続](#このアプリでの-postgresqlneonへの接続)
+  - [このアプリでの PostgreSQL（Neon）への接続](#このアプリでの-postgresql（neon）への接続)
   - [Runtime の選択](#runtime-の選択)
 - [ORM としての機能](#orm-としての機能)
   - [データベーススキーマ定義](#データベーススキーマ定義)
-  - [リレーション（関連）](#リレーション関連)
+  - [リレーション（関連）](#リレーション（関連）)
   - [マイグレーション](#マイグレーション)
   - [型生成](#型生成)
   - [Prisma Studio](#prisma-studio)
@@ -36,8 +36,8 @@
   - [orderBy](#orderby)
   - [include](#include)
   - [N+1 問題の詳細解説](#n1-問題の詳細解説)
-  - [select（このアプリでは未使用）](#selectこのアプリでは未使用)
-  - [take と skip（このアプリでは未使用）](#take-と-skipこのアプリでは未使用)
+  - [select（このアプリでは未使用）](#select（このアプリでは未使用）)
+  - [take と skip（このアプリでは未使用）](#take-と-skip（このアプリでは未使用）)
 - [エラーハンドリング](#エラーハンドリング)
 - [型安全性](#型安全性)
 - [Prisma 7 のベストプラクティス](#prisma-7-のベストプラクティス)
@@ -523,17 +523,17 @@ export type Product = {
 };
 ```
 
+```typescript
 import { Product, Category } from "@prisma/client";
 
 const product: Product = await prisma.product.findUnique({
-where: { id: 1 },
+  where: { id: 1 },
 });
 
 // 型エラーを検出
 console.log(product.name); // OK
 console.log(product.invalidField); // コンパイルエラー
-
-````
+```
 
 - スキーマファイル（`schema.prisma`）を変更した後
 - 依存関係をインストールした後
@@ -561,7 +561,7 @@ npm run db:studio
 
 # ブラウザで http://localhost:5555 を開く
 # カテゴリーや商品のデータを確認・編集できる
-````
+```
 
 ### シードデータ
 
@@ -1486,7 +1486,7 @@ async function getProducts(page: number = 1, pageSize: number = 20) {
 }
 ```
 
-**Promise.all の詳細な使用方法は [Async/Await ガイド - Promise.all](../basics/async-await-guide.md#promiseall---このアプリで使用中) を参照してください。**
+**Promise.all の詳細な使用方法は [Async/Await ガイド - Promise.all](../basics/async-await-guide.md#promiseall-このアプリで使用中) を参照してください。**
 
 - 商品数が比較的少ないため、ページネーションが不要
 - すべての商品を一度に取得してもパフォーマンスへの影響が小さい
@@ -1530,6 +1530,8 @@ console.log(product.invalidField); // コンパイルエラー
 ```
 
 データベーススキーマの変更は、Prisma のマイグレーション機能で管理します。詳細については、[マイグレーション](#マイグレーション)セクションを参照してください。
+
+## Prisma 7 のベストプラクティス
 
 ### 設定ファイルの管理
 
