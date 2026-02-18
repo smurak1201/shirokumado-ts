@@ -681,6 +681,7 @@ const ratelimit = new Ratelimit({
 | Credentials でセッションが保存されない | `session: { strategy: "jwt" }` を明示的に指定        |
 | OAuth コールバックエラー               | リダイレクト URI が正確か確認、本番では HTTPS を使用 |
 | TypeScript の型エラー                  | `types/next-auth.d.ts` で型を拡張                    |
+| `403: disallowed_useragent` エラー     | LINE等のアプリ内ブラウザ（WebView）からのGoogle OAuthはGoogleがブロックしている。外部ブラウザへ誘導する `WebViewGuard` コンポーネントで対応済み（[詳細](../../authentication.md#アプリ内ブラウザで403-disallowed_useragentエラー)） |
 
 **型の拡張例**:
 

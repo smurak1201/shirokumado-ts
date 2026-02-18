@@ -5,6 +5,7 @@
  * 許可リスト（ALLOWED_EMAILS）による厳格なアクセス制御。
  */
 import { signIn } from '@/auth';
+import { WebViewGuard } from './WebViewGuard';
 
 export default function SignInPage() {
   return (
@@ -34,22 +35,24 @@ export default function SignInPage() {
           </p>
         </div>
 
-        <form
-          action={async () => {
-            'use server';
-            await signIn('google', { redirectTo: '/dashboard' });
-          }}
-          className="mt-8"
-        >
-          <button
-            type="submit"
-            className="group relative flex w-full items-center justify-center gap-3 overflow-hidden rounded-xl border-2 border-gray-200 bg-white px-6 py-4 font-medium text-gray-700 shadow-md transition-all duration-300 hover:border-blue-300 hover:shadow-xl hover:scale-105 active:scale-95 cursor-pointer"
+        <WebViewGuard>
+          <form
+            action={async () => {
+              'use server';
+              await signIn('google', { redirectTo: '/dashboard' });
+            }}
+            className="mt-8"
           >
-            <div className="absolute inset-0 bg-linear-to-r from-blue-50 to-purple-50 opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
-            <GoogleIcon />
-            <span className="relative">Googleでログイン</span>
-          </button>
-        </form>
+            <button
+              type="submit"
+              className="group relative flex w-full items-center justify-center gap-3 overflow-hidden rounded-xl border-2 border-gray-200 bg-white px-6 py-4 font-medium text-gray-700 shadow-md transition-all duration-300 hover:border-blue-300 hover:shadow-xl hover:scale-105 active:scale-95 cursor-pointer"
+            >
+              <div className="absolute inset-0 bg-linear-to-r from-blue-50 to-purple-50 opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+              <GoogleIcon />
+              <span className="relative">Googleでログイン</span>
+            </button>
+          </form>
+        </WebViewGuard>
 
         <div className="mt-8 text-center">
           <p className="text-xs text-gray-500">
