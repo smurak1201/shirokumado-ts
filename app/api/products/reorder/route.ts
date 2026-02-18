@@ -9,6 +9,7 @@ import { withErrorHandling, apiSuccess } from '@/lib/api-helpers';
 import { prisma, safePrismaOperation } from '@/lib/prisma';
 import { ValidationError } from '@/lib/errors';
 import { NextRequest } from 'next/server';
+import { revalidatePath } from 'next/cache';
 
 export const dynamic = 'force-dynamic';
 
@@ -34,6 +35,9 @@ export const POST = withErrorHandling(async (request: NextRequest) => {
     },
     'POST /api/products/reorder'
   );
+
+  // トップページのISRキャッシュを無効化
+  revalidatePath('/');
 
   return apiSuccess({ message: '商品の順序を更新しました' });
 });

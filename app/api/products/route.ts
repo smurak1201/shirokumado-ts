@@ -11,6 +11,7 @@ import { ValidationError } from '@/lib/errors';
 import { config } from '@/lib/config';
 import { NextRequest, NextResponse } from 'next/server';
 import { determinePublishedStatus } from '@/lib/product-utils';
+import { revalidatePath } from 'next/cache';
 
 export const dynamic = 'force-dynamic';
 
@@ -100,6 +101,9 @@ export const POST = withErrorHandling(async (request: NextRequest) => {
   if (!product) {
     throw new ValidationError('商品の作成に失敗しました');
   }
+
+  // トップページのISRキャッシュを無効化
+  revalidatePath('/');
 
   return apiSuccess({ product }, 201);
 });
