@@ -14,6 +14,7 @@ import { NextRequest } from 'next/server';
 import { determinePublishedStatus, resolveDateValue } from '@/lib/product-utils';
 import { deleteFile } from '@/lib/blob';
 import { validateProductUpdate } from './put-validation';
+import { revalidatePath } from 'next/cache';
 
 export interface ProductUpdateRequestBody {
   name?: string;
@@ -111,6 +112,9 @@ export async function putProduct(
   if (!product) {
     throw new NotFoundError('商品');
   }
+
+  // トップページのISRキャッシュを無効化
+  revalidatePath('/');
 
   return apiSuccess({ product });
 }

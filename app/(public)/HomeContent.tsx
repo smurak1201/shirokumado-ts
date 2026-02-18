@@ -2,8 +2,8 @@
  * トップページのメインコンテンツ
  *
  * データ取得と表示を担当するServer Component。
- * Promise.allでデータ取得と最低表示時間を並列で待機し、
- * 最低1.5秒のローディング表示を保証する。
+ * ISR + オンデマンド再検証でキャッシュを管理。
+ * キャッシュミス時のみSuspense fallback（ローディング画面）が表示される。
  */
 import Link from "next/link";
 import Image from "next/image";
@@ -16,11 +16,6 @@ import FixedHeader from "@/app/components/FixedHeader";
 import Footer from "@/app/components/Footer";
 import HeroSection from "@/app/components/HeroSection";
 import { log } from "@/lib/logger";
-
-// 設計判断: ローディング画面の最低表示時間（ms）
-// 一瞬だけ表示されると逆に煩わしく、またDBのコールドスタートで
-// 表示時間が安定しないため、あえて最低表示時間を設けている。
-const MIN_LOADING_TIME_MS = 1500;
 
 const BASE_URL = process.env.SITE_URL!;
 
@@ -62,14 +57,7 @@ export default async function HomeContent() {
   let categoriesWithProducts: CategoryWithProducts[] = [];
 
   try {
-    // データ取得と最低表示時間を並列で待機
-    // - データ取得が0.3秒で完了 → 1.5秒後にコンテンツ表示
-    // - データ取得が2.5秒かかる → 2.5秒後にコンテンツ表示
-    const [data] = await Promise.all([
-      getPublishedProductsByCategory(),
-      new Promise((resolve) => setTimeout(resolve, MIN_LOADING_TIME_MS)),
-    ]);
-    categoriesWithProducts = data;
+    categoriesWithProducts = await getPublishedProductsByCategory();
   } catch (error) {
     // 設計判断: データ取得エラー時もページは表示する（部分的なダウンタイムを許容）
     // ユーザーには通知せず、運用者のみログで確認

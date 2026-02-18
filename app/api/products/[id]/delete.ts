@@ -11,6 +11,7 @@ import { NotFoundError } from '@/lib/errors';
 import { log } from '@/lib/logger';
 import { NextRequest } from 'next/server';
 import { deleteFile } from '@/lib/blob';
+import { revalidatePath } from 'next/cache';
 
 export async function deleteProduct(
   _request: NextRequest,
@@ -42,6 +43,9 @@ export async function deleteProduct(
     () => prisma.product.delete({ where: { id: productId } }),
     `DELETE /api/products/${id}`
   );
+
+  // トップページのISRキャッシュを無効化
+  revalidatePath('/');
 
   return apiSuccess({ message: '商品を削除しました' });
 }
