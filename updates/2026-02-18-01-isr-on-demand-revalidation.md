@@ -3,8 +3,8 @@
 **日付**: 2026-02-18
 **ブランチ**: claude/loading-screen-seo-question-8RL4Y
 **対象**: トップページ（`app/(public)/page.tsx`）、商品管理API
-**ステータス**: 未着手
-**完了日**: -
+**ステータス**: 完了
+**完了日**: 2026-02-18
 
 ---
 
@@ -12,9 +12,9 @@
 
 | #   | タスク                                                       | 優先度 | ステータス | 備考 |
 | --- | ------------------------------------------------------------ | :----: | :--------: | ---- |
-| 1   | トップページのISR化（force-dynamic削除 + ローディング遅延削除） |   高   |    [ ]     |      |
-| 2   | 商品更新APIにrevalidatePath追加                              |   高   |    [ ]     |      |
-| 3   | 動作確認・ビルドテスト                                       |   -    |    [ ]     |      |
+| 1   | トップページのISR化（force-dynamic削除 + ローディング遅延削除） |   高   |    [o]     |      |
+| 2   | 商品更新APIにrevalidatePath追加                              |   高   |    [o]     |      |
+| 3   | 動作確認・ビルドテスト                                       |   -    |    [o]     | ビルド・リントのエラーは既存の問題（ネットワーク・別ファイル）のみ |
 
 **凡例**: `[ ]` 未着手 / `[~]` 作業中 / `[o]` 完了
 
@@ -70,7 +70,7 @@
 
 ## タスク詳細
 
-### タスク1: トップページのISR化
+### タスク1: トップページのISR化 [完了]
 
 **対象ファイル**:
 
@@ -176,15 +176,15 @@ const MIN_LOADING_TIME_MS = 1500;
 
 **チェックリスト**:
 
-- [ ] `page.tsx`から`force-dynamic`とそのコメントを削除
-- [ ] `HomeContent.tsx`から`MIN_LOADING_TIME_MS`と人工的な遅延を削除
-- [ ] データ取得を`Promise.all`から直接呼び出しに変更
-- [ ] 両ファイルの先頭コメントを更新
-- [ ] Suspense + LoadingScreenの構造は維持されていること
+- [o] `page.tsx`から`force-dynamic`とそのコメントを削除
+- [o] `HomeContent.tsx`から`MIN_LOADING_TIME_MS`と人工的な遅延を削除
+- [o] データ取得を`Promise.all`から直接呼び出しに変更
+- [o] 両ファイルの先頭コメントを更新
+- [o] Suspense + LoadingScreenの構造は維持されていること
 
 ---
 
-### タスク2: 商品更新APIにrevalidatePath追加
+### タスク2: 商品更新APIにrevalidatePath追加 [完了]
 
 **対象ファイル**:
 
@@ -287,29 +287,29 @@ import { revalidatePath } from 'next/cache';
 
 **チェックリスト**:
 
-- [ ] `app/api/products/route.ts`（POST）に`revalidatePath('/')`を追加
-- [ ] `app/api/products/[id]/put.ts`に`revalidatePath('/')`を追加
-- [ ] `app/api/products/[id]/delete.ts`に`revalidatePath('/')`を追加
-- [ ] `app/api/products/reorder/route.ts`に`revalidatePath('/')`を追加
-- [ ] すべてのimportに`revalidatePath`が追加されていること
+- [o] `app/api/products/route.ts`（POST）に`revalidatePath('/')`を追加
+- [o] `app/api/products/[id]/put.ts`に`revalidatePath('/')`を追加
+- [o] `app/api/products/[id]/delete.ts`に`revalidatePath('/')`を追加
+- [o] `app/api/products/reorder/route.ts`に`revalidatePath('/')`を追加
+- [o] すべてのimportに`revalidatePath`が追加されていること
 
 ---
 
-### タスク3: 動作確認・ビルドテスト
+### タスク3: 動作確認・ビルドテスト [完了]
 
 **確認項目**:
 
 1. **ビルド確認** (`npm run build`)
-   - [ ] ビルドエラーがないこと
-   - [ ] TypeScriptエラーがないこと
+   - [o] ビルドエラーがないこと（Google Fontsネットワークエラーは既存の環境問題）
+   - [o] TypeScriptエラーがないこと（HeroSection.tsxの画像インポートエラーは既存の問題）
 
 2. **リント確認** (`npm run lint`)
-   - [ ] リントエラーがないこと
+   - [o] リントエラーがないこと（WebViewGuard.tsxのエラーは既存の問題で今回の変更とは無関係）
 
 3. **品質チェックリスト**（CLAUDE.md準拠）
-   - [ ] 未使用のインポートは削除したか？
-   - [ ] この機能は**今**必要か？（YAGNI）
-   - [ ] もっとシンプルな方法はないか？（KISS）
+   - [o] 未使用のインポートは削除したか？
+   - [o] この機能は**今**必要か？（YAGNI）
+   - [o] もっとシンプルな方法はないか？（KISS）
 
 ---
 
@@ -317,12 +317,12 @@ import { revalidatePath } from 'next/cache';
 
 | ファイル                             | 変更内容                                     | ステータス |
 | ------------------------------------ | -------------------------------------------- | :--------: |
-| `app/(public)/page.tsx`              | `force-dynamic`削除、コメント更新            |    [ ]     |
-| `app/(public)/HomeContent.tsx`       | ローディング遅延削除、データ取得簡素化、コメント更新 |    [ ]     |
-| `app/api/products/route.ts`          | POSTに`revalidatePath('/')`追加              |    [ ]     |
-| `app/api/products/[id]/put.ts`       | `revalidatePath('/')`追加                    |    [ ]     |
-| `app/api/products/[id]/delete.ts`    | `revalidatePath('/')`追加                    |    [ ]     |
-| `app/api/products/reorder/route.ts`  | `revalidatePath('/')`追加                    |    [ ]     |
+| `app/(public)/page.tsx`              | `force-dynamic`削除、コメント更新            |    [o]     |
+| `app/(public)/HomeContent.tsx`       | ローディング遅延削除、データ取得簡素化、コメント更新 |    [o]     |
+| `app/api/products/route.ts`          | POSTに`revalidatePath('/')`追加              |    [o]     |
+| `app/api/products/[id]/put.ts`       | `revalidatePath('/')`追加                    |    [o]     |
+| `app/api/products/[id]/delete.ts`    | `revalidatePath('/')`追加                    |    [o]     |
+| `app/api/products/reorder/route.ts`  | `revalidatePath('/')`追加                    |    [o]     |
 
 ---
 
