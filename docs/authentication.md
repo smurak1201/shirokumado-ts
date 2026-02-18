@@ -38,6 +38,7 @@
 - [トラブルシューティング](#トラブルシューティング)
   - [ログインできない](#ログインできない)
   - [セッションが保存されない](#セッションが保存されない)
+  - [アプリ内ブラウザで「403: disallowed_useragent」エラー](#アプリ内ブラウザで403-disallowed_useragentエラー)
   - [許可リストの更新が反映されない](#許可リストの更新が反映されない)
 - [関連ファイル](#関連ファイル)
 - [参考資料](#参考資料)
@@ -877,6 +878,16 @@ npx prisma studio
 # sessionsテーブルを確認
 ```
 
+### アプリ内ブラウザで「403: disallowed_useragent」エラー
+
+**症状**: LINE、Instagram、Facebook等のアプリ内ブラウザでGoogleログインしようとすると、`403: disallowed_useragent`エラーが表示される。
+
+**原因**: GoogleはセキュリティポリシーとしてWebView（アプリ内ブラウザ）からのOAuth認証リクエストをブロックしています。これはGoogle側の制限であり、アプリ側で回避することはできません。
+
+**対応**: ログインページにWebView検出機能を実装済みです（[WebViewGuard.tsx](../app/auth/signin/WebViewGuard.tsx)）。アプリ内ブラウザを検出した場合、Googleログインボタンの代わりに「外部ブラウザで開いてください」という案内とURLコピーボタンを表示します。
+
+**検出対象のアプリ内ブラウザ**: LINE、Facebook、Instagram、Twitter（X）、WeChat
+
 ### 許可リストの更新が反映されない
 
 **症状**: `prisma/seeds/allowed-admins.ts`を編集したが、新しい管理者がログインできない。
@@ -932,6 +943,7 @@ VALUES (gen_random_uuid(), 'newadmin@example.com', 'admin', NOW());
 | [lib/auth-config.ts](../lib/auth-config.ts) | 認可チェック（許可リスト） |
 | [app/api/auth/[...nextauth]/route.ts](../app/api/auth/[...nextauth]/route.ts) | Auth.js APIエンドポイント |
 | [app/auth/signin/page.tsx](../app/auth/signin/page.tsx) | ログインページ（Googleボタン） |
+| [app/auth/signin/WebViewGuard.tsx](../app/auth/signin/WebViewGuard.tsx) | アプリ内ブラウザ検出・外部ブラウザ誘導 |
 | [app/auth/error/page.tsx](../app/auth/error/page.tsx) | 認証エラーページ |
 | [app/dashboard/layout.tsx](../app/dashboard/layout.tsx) | ダッシュボード共通レイアウト・ヘッダー |
 | [app/dashboard/components/DashboardHeader.tsx](../app/dashboard/components/DashboardHeader.tsx) | ユーザー情報・ログアウトボタン |
