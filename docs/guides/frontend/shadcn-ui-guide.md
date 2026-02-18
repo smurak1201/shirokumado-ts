@@ -228,7 +228,7 @@ export function ProductCard({ className, ...props }: ProductCardProps) {
 
 - TypeScript の型システムについては、[TypeScript ガイド - 型定義](../basics/typescript-guide.md#型定義) を参照してください。
 - React の props については、[React ガイド - コンポーネント設計](./react-guide.md#コンポーネント設計) を参照してください。
-- JSX の構文については、[JSX ガイド - 属性（Props）](../basics/jsx-guide.md#属性props) を参照してください。
+- JSX の構文については、[JSX ガイド](../basics/jsx-guide.md) を参照してください。
 
 **ポイント**:
 

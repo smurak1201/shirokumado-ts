@@ -214,7 +214,7 @@ for (const product of products) {
 
 **`select`について**:
 
-`select`は必要なフィールドのみを取得できる便利な機能ですが、このアプリでは使用していません。詳細は [Prisma ガイド - select（このアプリでは未使用）](./guides/backend/prisma-guide.md#selectこのアプリでは未使用) を参照してください。
+`select`は必要なフィールドのみを取得できる便利な機能ですが、このアプリでは使用していません。詳細は [Prisma ガイド - select（このアプリでは未使用）](./guides/backend/prisma-guide.md#select（このアプリでは未使用）) を参照してください。
 
 #### エラーハンドリング
 

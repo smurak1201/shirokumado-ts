@@ -18,7 +18,7 @@
   - [Server Components と Client Components](#server-components-と-client-components)
 - [React Hooks](#react-hooks)
   - [useState](#usestate)
-  - [副作用（Side Effects）とは](#副作用side-effectsとは)
+  - [副作用（Side Effects）とは](#副作用（side-effects）とは)
   - [useEffect](#useeffect)
   - [useMemo](#usememo)
   - [useRef](#useref)
@@ -663,7 +663,7 @@ export default function ProductGrid({ category, products }: ProductGridProps) {
 - [`app/dashboard/homepage/components/form/ProductForm.tsx`](../../app/dashboard/homepage/components/form/ProductForm.tsx): 新規商品登録フォームで使用
 - [`app/dashboard/homepage/components/form/ProductForm.tsx`](../../app/dashboard/homepage/components/form/ProductForm.tsx): 商品編集フォームで使用
 
-**詳細**: このフックの詳細な説明については、[ダッシュボードガイド - useProductForm](./dashboard-guide.md#useproductform)を参照してください。
+**詳細**: このフックの詳細な説明については、[ダッシュボードガイド - useProductForm](./dashboard-guide.md#useproductform-hooksuseproductformtsappdashboardhomepagehooksuseproductformts)を参照してください。
 
 **実装コード**:
 
@@ -1248,7 +1248,7 @@ try {
 
 React では、イベントハンドラーを props として渡すことで、コンポーネント間でイベントを処理できます。
 
-**関連**: JSX でのイベントハンドラーの書き方については、[JSX ガイド - イベントハンドラー](../basics/jsx-guide.md#イベントハンドラー)を参照してください。
+**関連**: JSX でのイベントハンドラーの書き方については、[JSX ガイド](../basics/jsx-guide.md)を参照してください。
 
 ### イベントハンドリングの例
 

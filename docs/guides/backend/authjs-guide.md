@@ -9,7 +9,7 @@ Auth.js（旧 NextAuth.js）を使用した認証システムの実装ガイド�
 **関連ドキュメント**:
 
 - [Prisma ガイド](./prisma-guide.md): データベースアダプター
-- [開発ガイドライン](../development-guide.md#セキュリティ): セキュリティのベストプラクティス
+- [開発ガイドライン](../../development-guide.md#セキュリティ): セキュリティのベストプラクティス
 
 ## 目次
 
@@ -19,7 +19,7 @@ Auth.js（旧 NextAuth.js）を使用した認証システムの実装ガイド�
   - [JWT とは](#jwt-とは)
 - [インストールと初期設定](#インストールと初期設定)
 - [認証プロバイダー](#認証プロバイダー)
-  - [OAuth プロバイダー（Google / Apple）](#oauth-プロバイダーgoogle--apple)
+  - [OAuth プロバイダー（Google / Apple）](#oauth-プロバイダー（google-apple）)
   - [Credentials プロバイダー](#credentials-プロバイダー)
 - [セッション管理](#セッション管理)
   - [JWT セッション vs データベースセッション](#jwt-セッション-vs-データベースセッション)
@@ -681,7 +681,7 @@ const ratelimit = new Ratelimit({
 | Credentials でセッションが保存されない | `session: { strategy: "jwt" }` を明示的に指定        |
 | OAuth コールバックエラー               | リダイレクト URI が正確か確認、本番では HTTPS を使用 |
 | TypeScript の型エラー                  | `types/next-auth.d.ts` で型を拡張                    |
-| `403: disallowed_useragent` エラー     | LINE等のアプリ内ブラウザ（WebView）からのGoogle OAuthはGoogleがブロックしている。外部ブラウザへ誘導する `WebViewGuard` コンポーネントで対応済み（[詳細](../../authentication.md#アプリ内ブラウザで403-disallowed_useragentエラー)） |
+| `403: disallowed_useragent` エラー     | LINE等のアプリ内ブラウザ（WebView）からのGoogle OAuthはGoogleがブロックしている。外部ブラウザへ誘導する `WebViewGuard` コンポーネントで対応済み（[詳細](../../authentication.md#アプリ内ブラウザで「403-disalloweduseragent」エラー)） |
 
 **型の拡張例**:
 

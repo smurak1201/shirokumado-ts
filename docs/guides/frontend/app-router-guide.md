@@ -19,11 +19,11 @@
   - [Client Components](#client-components)
 - [データフェッチング](#データフェッチング)
   - [Server Components でのデータフェッチング](#server-components-でのデータフェッチング)
-  - [Client Components でのデータフェッチング（fetch API）](#client-components-でのデータフェッチングfetch-api)
-  - [動的レンダリングの設定](#動的レンダリングの設定)
+  - [Client Components でのデータフェッチング（fetch API）](#client-components-でのデータフェッチング（fetch-api）)
+  - [動的レンダリングの設定](#動的レンダリングとisrの設定)
 - [動的ルーティング](#動的ルーティング)
 - [API Routes](#api-routes)
-  - [Server Actions（このアプリでは未使用）](#server-actionsこのアプリでは未使用)
+  - [Server Actions（このアプリでは未使用）](#server-actions（このアプリでは未使用）)
 - [画像最適化](#画像最適化)
 - [レイアウトとテンプレート](#レイアウトとテンプレート)
   - [ルートレイアウト](#ルートレイアウト)
@@ -33,7 +33,6 @@
   - [ページ構成](#ページ構成)
   - [API Routes 構成](#api-routes-構成)
   - [ベストプラクティス](#ベストプラクティス)
-- [まとめ](#まとめ)
 - [参考リンク](#参考リンク)
 
 ## 概要
@@ -119,7 +118,7 @@ App Router では、`app/` ディレクトリ内のファイル構造がその�
 
 このアプリでは [`app/(public)/error.tsx`](../../app/(public)/error.tsx) でエラーハンドリングを実装しています。Server Componentsでエラーが発生した場合に表示されるエラーページです。`(public)` ルートグループ内に配置しているため、公開ページでのみ適用されます。
 
-**注意**: `error.tsx`はNext.js App Routerのエラーハンドリング用ファイルです。Reactのエラーバウンダリーコンポーネント（[`app/components/ErrorBoundary.tsx`](../../app/components/ErrorBoundary.tsx)）とは異なります。詳細は [React ガイド - エラーバウンダリー](./react-guide.md#9-エラーバウンダリー) を参照してください。
+**注意**: `error.tsx`はNext.js App Routerのエラーハンドリング用ファイルです。Reactのエラーバウンダリーコンポーネント（[`app/components/ErrorBoundary.tsx`](../../app/components/ErrorBoundary.tsx)）とは異なります。詳細は [React ガイド - エラーバウンダリー](./react-guide.md#エラーバウンダリー) を参照してください。
 
 **`loading.tsx`** - ローディング UI
 
