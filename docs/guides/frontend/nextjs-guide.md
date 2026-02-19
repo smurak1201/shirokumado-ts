@@ -42,7 +42,7 @@
 
 Next.js は、React ベースの本番環境対応フレームワークです。サーバーサイドレンダリング（SSR）、静的サイト生成（SSG）、API Routes などの機能を統合的に提供し、モダンな Web アプリケーション開発を効率的に行えます。
 
-このアプリケーションでは、**Next.js 16.1.1** を使用して、ホームページ、FAQ ページ、ダッシュボード、API Routes を実装しています。
+このアプリケーションでは、**Next.js 16.1.1** を使用して、公開ページ（ホームページ、FAQ、天然氷紹介、ショップ）、認証ページ、ダッシュボード、API Routes を実装しています。
 
 **Next.js の主な特徴**:
 
@@ -60,7 +60,7 @@ Next.js は、Vercel が開発した、React ベースの本番環境対応フ�
 **Next.js の主な機能**:
 
 - **サーバーサイドレンダリング（SSR）**: サーバー側で HTML を生成し、初期表示を高速化 - **このアプリで使用中**
-- **静的サイト生成（SSG）**: ビルド時に HTML を生成し、パフォーマンスを最適化 - **このアプリでは未使用**
+- **静的サイト生成（SSG）**: ビルド時に HTML を生成し、パフォーマンスを最適化 - **このアプリで使用中**（FAQ、天然氷紹介、ショップ、ログインページ）
 - **インクリメンタル静的再生成（ISR）**: 静的ページを段階的に再生成 - **このアプリで使用中**（トップページ）
 - **App Router**: ファイルベースのルーティングシステム（Next.js 13 以降） - **このアプリで使用中**
 - **API Routes**: サーバーレス関数として API エンドポイントを実装 - **このアプリで使用中**
@@ -68,11 +68,18 @@ Next.js は、Vercel が開発した、React ベースの本番環境対応フ�
 - **コード分割**: ページごとに自動的にコードを分割し、バンドルサイズを削減 - **このアプリで使用中**
 - **フォント最適化**: Google Fonts などのフォントを最適化して読み込み - **このアプリで使用中**
 
-**未使用機能の説明**:
+**レンダリング方式の使い分け**:
 
 **静的サイト生成（SSG）**
 
-このアプリでは SSG は使用されていません。商品データはDBから取得する必要があるため、ビルド時の静的生成は適していません。
+App Routerでは、動的データ取得（`cookies()`, `headers()`, `searchParams`等）がないServer Componentはビルド時に自動的にSSGされます。このアプリでは以下のページがSSGとして静的生成されています：
+
+- **FAQページ** (`app/(public)/faq/page.tsx`): データは `./data.ts` からの静的インポートのみ
+- **天然氷紹介ページ** (`app/(public)/about-ice/page.tsx`): 動的データ取得なし
+- **ショップページ** (`app/(public)/shop/page.tsx`): プレースホルダーページ、動的データ取得なし
+- **ログインページ** (`app/auth/signin/page.tsx`): Server Actionはあるがページ自体は静的
+
+一方、トップページは商品データをDBから取得するためISRを使用し、管理画面やAPI Routesは常に最新データが必要なため`force-dynamic`を使用しています。
 
 **インクリメンタル静的再生成（ISR）**
 
@@ -95,19 +102,25 @@ revalidatePath('/');  // トップページのキャッシュを無効化
 **具体例**:
 
 ```typescript
-// calculatePublishedStatus() は現在時刻を使用
+// calculatePublishedStatus() は現在時刻を使用するため、動的レンダリングが必要
 export function calculatePublishedStatus(
   publishedAt: Date | null,
   endedAt: Date | null
 ): boolean {
-  const now = getJapanTime(); // 現在時刻を使用
-  // 公開日が未来の場合は非公開
-  if (publishedAt && new Date(publishedAt) > now) {
-    return false;
+  const now = getJapanTime();
+
+  if (publishedAt) {
+    const publishedDate = new Date(publishedAt);
+    if (publishedDate > now) {
+      return false;
+    }
   }
-  // 終了日が過去の場合は非公開
-  if (endedAt && new Date(endedAt) < now) {
-    return false;
+
+  if (endedAt) {
+    const endedDate = new Date(endedAt);
+    if (endedDate < now) {
+      return false;
+    }
   }
   return true;
 }
@@ -143,8 +156,10 @@ Next.js 13 以降で導入された新しいルーティングシステムです
 
 このアプリでは、App Router を使用して以下のページと API を実装しています：
 
-- **ページ**: [`app/page.tsx`](../../app/(public)/page.tsx)（ホームページ）、[`app/faq/page.tsx`](../../app/(public)/faq/page.tsx)（FAQ ページ）、[`app/dashboard/page.tsx`](../../app/dashboard/page.tsx)（ダッシュボード）
-- **API Routes**: `app/api/products/`
+- **公開ページ**: [`app/(public)/page.tsx`](../../app/(public)/page.tsx)（ホームページ / ISR）、[`app/(public)/faq/page.tsx`](../../app/(public)/faq/page.tsx)（FAQ / SSG）、[`app/(public)/about-ice/page.tsx`](../../app/(public)/about-ice/page.tsx)（天然氷紹介 / SSG）、[`app/(public)/shop/page.tsx`](../../app/(public)/shop/page.tsx)（ショップ / SSG）
+- **認証ページ**: [`app/auth/signin/page.tsx`](../../app/auth/signin/page.tsx)（ログイン / SSG）、[`app/auth/error/page.tsx`](../../app/auth/error/page.tsx)（認証エラー / SSR）
+- **ダッシュボード**: [`app/dashboard/page.tsx`](../../app/dashboard/page.tsx)（リダイレクト）、[`app/dashboard/homepage/page.tsx`](../../app/dashboard/homepage/page.tsx)（ホームページ管理 / SSR）、[`app/dashboard/shop/page.tsx`](../../app/dashboard/shop/page.tsx)（ショップ管理 / SSR）
+- **API Routes**: `app/api/products/`（CRUD）、`app/api/products/reorder/`（並び替え）、`app/api/products/upload/`（画像アップロード）、`app/api/cron/cleanup-sessions/`（セッションクリーンアップ）
 
 ## Proxy（Next.js 16）
 
@@ -169,14 +184,20 @@ export const proxy = auth((req) => {
   const isLoggedIn = !!req.auth;
   const { pathname } = req.nextUrl;
 
-  // 未認証ユーザーがダッシュボードへアクセス → ログインページへ
-  if (pathname.startsWith('/dashboard') && !isLoggedIn) {
-    return Response.redirect(new URL('/auth/signin', req.url));
+  // 認証ページへのアクセス（認証済みならダッシュボードへ）
+  if (pathname.startsWith('/auth')) {
+    if (isLoggedIn) {
+      return Response.redirect(new URL('/dashboard/homepage', req.url));
+    }
+    return;
   }
 
-  // 認証済みユーザーが認証ページへアクセス → ダッシュボードへ
-  if (pathname.startsWith('/auth') && isLoggedIn) {
-    return Response.redirect(new URL('/dashboard/homepage', req.url));
+  // ダッシュボードへのアクセス（未認証ならログインページへ）
+  if (pathname.startsWith('/dashboard')) {
+    if (!isLoggedIn) {
+      return Response.redirect(new URL('/auth/signin', req.url));
+    }
+    return;
   }
 });
 
@@ -215,20 +236,36 @@ const nextConfig: NextConfig = {
     // 理由: 画像は既にクライアントサイドで圧縮・WebP形式に変換されているため、
     // Next.jsのサーバーサイド最適化は不要。遅延読み込みなどの機能は引き続き機能する。
     unoptimized: true,
-    formats: ["image/avif", "image/webp"],
+    formats: ['image/avif', 'image/webp'],
     remotePatterns: [
       {
-        protocol: "https",
-        hostname: "*.public.blob.vercel-storage.com",
+        protocol: 'https',
+        hostname: '*.public.blob.vercel-storage.com',
       },
     ],
+  },
+
+  // セキュリティヘッダーの設定
+  async headers() {
+    return [
+      {
+        source: '/:path*',
+        headers: [
+          { key: 'X-Frame-Options', value: 'DENY' },
+          { key: 'X-Content-Type-Options', value: 'nosniff' },
+          { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
+          { key: 'X-XSS-Protection', value: '1; mode=block' },
+          { key: 'Permissions-Policy', value: 'camera=(), microphone=(), geolocation=()' },
+        ],
+      },
+    ];
   },
 
   // 実験的な機能（必要に応じて）
   experimental: {
     // サーバーアクションの最適化
     serverActions: {
-      bodySizeLimit: "2mb",
+      bodySizeLimit: '2mb',
     },
   },
 
@@ -256,13 +293,21 @@ export default nextConfig;
      - `hostname: '*.public.blob.vercel-storage.com'`: Vercel Blob Storage からの画像読み込みを許可
      - ワイルドカード（`*`）を使用して、すべてのサブドメインを許可
 
-2. **実験的な機能** (`experimental`):
+2. **セキュリティヘッダー** (`headers`):
+
+   - `X-Frame-Options: DENY`: クリックジャッキング攻撃を防止（iframe埋め込みを拒否）
+   - `X-Content-Type-Options: nosniff`: MIMEタイプスニッフィングを防止
+   - `Referrer-Policy: strict-origin-when-cross-origin`: リファラー情報の送信を制限
+   - `X-XSS-Protection: 1; mode=block`: ブラウザのXSSフィルターを有効化
+   - `Permissions-Policy: camera=(), microphone=(), geolocation=()`: 不要なブラウザAPIへのアクセスを制限
+
+3. **実験的な機能** (`experimental`):
 
    - `serverActions.bodySizeLimit: '2mb'`: サーバーアクションのボディサイズ制限を 2MB に設定
      - ファイルアップロードなどの大きなペイロードを処理する際の制限
      - このアプリでは画像アップロードに使用（実際の画像は Blob Storage に直接アップロード）
 
-3. **TypeScript** (`typescript`):
+4. **TypeScript** (`typescript`):
 
    - `ignoreBuildErrors: false`: 本番ビルド時に型エラーがある場合、ビルドを失敗させる
      - 型安全性を確保し、実行時エラーを防止
@@ -276,7 +321,7 @@ export default nextConfig;
 
 - **Edge Request の削減**: `unoptimized: true`により、Vercel の Edge Request を大幅に削減できます。画像は既にクライアントサイドで最適化されているため、サーバーサイドでの再処理は不要です
 - **パフォーマンス**: 画像は既にクライアントサイドで圧縮・WebP 形式に変換されているため、追加の最適化は不要です。遅延読み込みなどの機能は引き続き機能します
-- **セキュリティ**: `remotePatterns` により、許可されたドメインからのみ画像を読み込む
+- **セキュリティ**: `remotePatterns` により許可されたドメインからのみ画像を読み込み、`headers()`でセキュリティヘッダーを付与
 - **型安全性**: TypeScript の設定により、型エラーを早期に検出
 
 ## 画像最適化
@@ -299,15 +344,18 @@ Next.js は、`next/image` コンポーネントを使用して、画像の自�
 
 ### このアプリでの使用箇所
 
-1. **[`app/page.tsx`](../../app/(public)/page.tsx) (ヒーロー画像セクション)** - ヒーロー画像の最適化
+1. **[`app/components/HeroSection.tsx`](../../app/components/HeroSection.tsx) (ヒーロー画像セクション)** - ヒーロー画像の最適化
 
 ```typescript
+import heroImage from "@/public/hero.webp";
+
+// static importにより、ビルド時に画像サイズが確定しレイアウトシフトを防止
 <Image
-  src="/hero.webp"
-  alt="白熊堂"
+  src={heroImage}
+  alt="白熊堂の店舗外観"
   fill
   priority
-  className="object-cover"
+  className="object-cover object-center"
   sizes="100vw"
 />
 ```
@@ -319,7 +367,7 @@ Next.js は、`next/image` コンポーネントを使用して、画像の自�
   src={product.imageUrl}
   alt={product.name}
   fill
-  className="object-cover transition-transform duration-500 group-hover:scale-110"
+  className="object-cover transition-transform duration-700 ease-out group-hover:scale-110"
   sizes="(max-width: 768px) 33vw, (max-width: 1024px) 33vw, 33vw"
   loading="lazy"
 />
@@ -332,8 +380,8 @@ Next.js は、`next/image` コンポーネントを使用して、画像の自�
   src={product.imageUrl}
   alt={product.name}
   fill
-  className="object-cover"
-  sizes="(max-width: 768px) 100vw, (max-width: 1024px) 90vw, 800px"
+  className="object-contain"
+  sizes="(max-width: 768px) 100vw, (max-width: 1024px) 90vw, 672px"
   priority
 />
 ```
@@ -536,9 +584,10 @@ Server Components により、クライアントサイドの JavaScript を最�
 
 **このアプリでの使用例**:
 
-- [`app/page.tsx`](../../app/(public)/page.tsx): ホームページ（Server Component）
-- [`app/faq/page.tsx`](../../app/(public)/faq/page.tsx): FAQ ページ（Server Component）
-- [`app/dashboard/page.tsx`](../../app/dashboard/page.tsx): ダッシュボードページ（Server Component）
+- [`app/(public)/page.tsx`](../../app/(public)/page.tsx): ホームページ（Server Component / ISR）
+- [`app/(public)/faq/page.tsx`](../../app/(public)/faq/page.tsx): FAQ ページ（Server Component / SSG）
+- [`app/(public)/about-ice/page.tsx`](../../app/(public)/about-ice/page.tsx): 天然氷紹介（Server Component / SSG）
+- [`app/dashboard/homepage/page.tsx`](../../app/dashboard/homepage/page.tsx): ホームページ管理（Server Component / SSR）
 
 ## このアプリでの Next.js の使用例まとめ
 
@@ -548,8 +597,10 @@ Server Components により、クライアントサイドの JavaScript を最�
 
 このアプリでは、以下のページと API を実装しています：
 
-- **ページ**: [`app/page.tsx`](../../app/(public)/page.tsx)（ホームページ）、[`app/faq/page.tsx`](../../app/(public)/faq/page.tsx)（FAQ ページ）、[`app/dashboard/page.tsx`](../../app/dashboard/page.tsx)（ダッシュボード）
-- **API Routes**: `app/api/products/`
+- **公開ページ**: [`app/(public)/page.tsx`](../../app/(public)/page.tsx)（ホームページ / ISR）、[`app/(public)/faq/page.tsx`](../../app/(public)/faq/page.tsx)（FAQ / SSG）、[`app/(public)/about-ice/page.tsx`](../../app/(public)/about-ice/page.tsx)（天然氷紹介 / SSG）、[`app/(public)/shop/page.tsx`](../../app/(public)/shop/page.tsx)（ショップ / SSG）
+- **認証ページ**: [`app/auth/signin/page.tsx`](../../app/auth/signin/page.tsx)（ログイン / SSG）、[`app/auth/error/page.tsx`](../../app/auth/error/page.tsx)（認証エラー / SSR）
+- **ダッシュボード**: [`app/dashboard/page.tsx`](../../app/dashboard/page.tsx)（リダイレクト）、[`app/dashboard/homepage/page.tsx`](../../app/dashboard/homepage/page.tsx)（ホームページ管理 / SSR）、[`app/dashboard/shop/page.tsx`](../../app/dashboard/shop/page.tsx)（ショップ管理 / SSR）
+- **API Routes**: `app/api/products/`（CRUD）、`app/api/products/reorder/`（並び替え）、`app/api/products/upload/`（画像アップロード）、`app/api/cron/cleanup-sessions/`（セッションクリーンアップ）
 
 ### 設定ファイル
 
