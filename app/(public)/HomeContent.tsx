@@ -48,7 +48,7 @@ const localBusinessJsonLd = {
     opens: "11:00",
     closes: "21:00",
   },
-  servesCuisine: "かき氷",
+  servesCuisine: ["かき氷", "スイーツ", "デザート"],
   priceRange: "¥",
   image: `${BASE_URL}/og-image.png`,
 };
