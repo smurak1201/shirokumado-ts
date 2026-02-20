@@ -68,7 +68,7 @@ app/
 ```
 app/dashboard/
 ├── page.tsx           # ダッシュボードルートページ
-├── layout.tsx         # 共通レイアウト（認証チェック）
+├── layout.tsx         # 共通レイアウト（認証チェック・未認証時ログイン案内）
 ├── components/        # 共通コンポーネント
 │   └── DashboardHeader.tsx
 └── homepage/          # 商品管理ページ
