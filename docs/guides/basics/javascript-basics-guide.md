@@ -118,7 +118,7 @@ console.log(age); // 25
 
 **このアプリでの使用例**:
 
-[`app/components/ProductGrid.tsx`](../../app/components/ProductGrid.tsx) (Props の受け取り)
+[`app/components/ProductGrid.tsx`](../../../app/components/ProductGrid.tsx) (Props の受け取り)
 
 ```tsx
 function ProductGrid({ category, products }: ProductGridProps) {
@@ -136,7 +136,7 @@ console.log(state); // '初期値'
 
 **このアプリでの使用例**:
 
-[`app/hooks/useProductModal.ts`](../../app/hooks/useProductModal.ts) (useState)
+[`app/hooks/useProductModal.ts`](../../../app/hooks/useProductModal.ts) (useState)
 
 ```typescript
 const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
@@ -614,8 +614,8 @@ const publishedAt = resolveDateValue(
 
 **このアプリでの使用例**:
 
-- [`lib/product-utils.ts`](../../lib/product-utils.ts) (`resolveDateValue`関数): ネストされた三項演算子を関数に分離した実装例
-- [`app/api/products/[id]/put.ts`](../../app/api/products/[id]/put.ts): `resolveDateValue`関数を使用
+- [`lib/product-utils.ts`](../../../lib/product-utils.ts) (`resolveDateValue`関数): ネストされた三項演算子を関数に分離した実装例
+- [`app/api/products/[id]/put.ts`](../../../app/api/products/[id]/put.ts): `resolveDateValue`関数を使用
 
 ### 関数呼び出しによるコードの整理
 
@@ -660,9 +660,9 @@ const published = determinePublishedStatus(
 
 **このアプリでの使用例**:
 
-- [`lib/product-utils.ts`](../../lib/product-utils.ts) (`determinePublishedStatus`関数): 複雑な条件分岐を関数に分離した実装例
-- [`app/api/products/route.ts`](../../app/api/products/route.ts): POST エンドポイントで使用
-- [`app/api/products/[id]/put.ts`](../../app/api/products/[id]/put.ts): PUT エンドポイントで使用
+- [`lib/product-utils.ts`](../../../lib/product-utils.ts) (`determinePublishedStatus`関数): 複雑な条件分岐を関数に分離した実装例
+- [`app/api/products/route.ts`](../../../app/api/products/route.ts): POST エンドポイントで使用
+- [`app/api/products/[id]/put.ts`](../../../app/api/products/[id]/put.ts): PUT エンドポイントで使用
 
 ### 早期リターンパターン
 
@@ -731,8 +731,8 @@ export function determinePublishedStatus(
 
 **このアプリでの使用例**:
 
-- [`lib/product-utils.ts`](../../lib/product-utils.ts) (`resolveDateValue`関数): 早期リターンパターンを使用した実装例
-- [`lib/product-utils.ts`](../../lib/product-utils.ts) (`determinePublishedStatus`関数): 早期リターンと関数呼び出しを組み合わせた実装例
+- [`lib/product-utils.ts`](../../../lib/product-utils.ts) (`resolveDateValue`関数): 早期リターンパターンを使用した実装例
+- [`lib/product-utils.ts`](../../../lib/product-utils.ts) (`determinePublishedStatus`関数): 早期リターンと関数呼び出しを組み合わせた実装例
 
 ## 参考リンク
 

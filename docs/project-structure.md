@@ -471,30 +471,38 @@ types/
 
 ```
 docs/
-├── guides/                    # ガイド系ドキュメント
-│   ├── app-router-guide.md    # App Router ガイド
-│   ├── async-await-guide.md   # Async/Await ガイド
-│   ├── authjs-guide.md        # Auth.js ガイド
-│   ├── claude-skills-guide.md # Claude スキルガイド
-│   ├── dashboard-guide.md     # ダッシュボードガイド
-│   ├── frontend-guide.md      # フロントエンドガイド
-│   ├── git-github-guide.md    # Git/GitHub ガイド
-│   ├── jsx-guide.md           # JSX ガイド
-│   ├── learning-guide.md      # 勉強用ガイド
-│   ├── nextjs-guide.md        # Next.js ガイド
-│   ├── prisma-guide.md        # Prisma ガイド
-│   ├── react-guide.md         # React ガイド
-│   ├── shadcn-ui-guide.md     # shadcn/ui ガイド
-│   ├── styling-best-practices.md # スタイリングベストプラクティス
-│   ├── typescript-guide.md    # TypeScript ガイド
-│   └── utilities-guide.md     # ユーティリティ関数ガイド
+├── guides/                          # ガイド系ドキュメント
+│   ├── learning-guide.md            # 勉強用ガイド（学習順序の案内）
+│   ├── basics/                      # 基礎技術ガイド
+│   │   ├── async-await-guide.md     # Async/Await ガイド
+│   │   ├── javascript-basics-guide.md # JavaScript 基礎ガイド
+│   │   ├── jsx-guide.md             # JSX ガイド
+│   │   └── typescript-guide.md      # TypeScript ガイド
+│   ├── frontend/                    # フロントエンドガイド
+│   │   ├── app-router-guide.md      # App Router ガイド
+│   │   ├── dashboard-guide.md       # ダッシュボードガイド
+│   │   ├── frontend-guide.md        # フロントエンドガイド
+│   │   ├── nextjs-guide.md          # Next.js ガイド
+│   │   ├── react-guide.md           # React ガイド
+│   │   ├── seo-guide.md             # SEO ガイド
+│   │   ├── shadcn-ui-guide.md       # shadcn/ui ガイド
+│   │   └── styling-best-practices.md # スタイリングベストプラクティス
+│   ├── backend/                     # バックエンドガイド
+│   │   ├── authjs-guide.md          # Auth.js ガイド
+│   │   ├── nodejs-guide.md          # Node.js ガイド
+│   │   ├── prisma-guide.md          # Prisma ガイド
+│   │   └── utilities-guide.md       # ユーティリティ関数ガイド
+│   └── tools/                       # ツール系ガイド
+│       ├── claude-agent-teams-guide.md # Claude エージェントチームガイド
+│       ├── claude-skills-guide.md   # Claude スキルガイド
+│       └── git-github-guide.md      # Git/GitHub ガイド
 │
-├── architecture.md            # アーキテクチャと設計思想
-├── authentication.md          # 認証の詳細
-├── development-guide.md       # 開発ガイドライン
-├── project-structure.md       # プロジェクト構造（このファイル）
-├── setup-prisma-blob.md       # Prisma & Blob セットアップ
-└── tech-stack.md              # 技術スタック
+├── architecture.md                  # アーキテクチャと設計思想
+├── authentication.md                # 認証の詳細
+├── development-guide.md             # 開発ガイドライン
+├── project-structure.md             # プロジェクト構造（このファイル）
+├── setup-prisma-blob.md             # Prisma & Blob セットアップ
+└── tech-stack.md                    # 技術スタック
 ```
 
 - **[`README.md`](../README.md)**: プロジェクトの概要とセットアップ手順

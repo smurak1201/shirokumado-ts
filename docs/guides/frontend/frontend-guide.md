@@ -36,7 +36,7 @@
 
 ## ページ構成
 
-### ホームページ ([`app/page.tsx`](../../app/(public)/page.tsx))
+### ホームページ ([`app/page.tsx`](../../../app/(public)/page.tsx))
 
 トップページでは、カテゴリーごとに公開されている商品を表示します。
 
@@ -48,9 +48,9 @@
 
 **データ取得**:
 
-[`lib/products.ts`](../../lib/products.ts) (`getPublishedProductsByCategory`関数)
+[`lib/products.ts`](../../../lib/products.ts) (`getPublishedProductsByCategory`関数)
 
-**注意**: このコード例は簡潔化したものです。実際の実装では、`safePrismaOperation`を使用してエラーハンドリングを行っています。詳細は [`lib/products.ts`](../../lib/products.ts) を参照してください。
+**注意**: このコード例は簡潔化したものです。実際の実装では、`safePrismaOperation`を使用してエラーハンドリングを行っています。詳細は [`lib/products.ts`](../../../lib/products.ts) を参照してください。
 
 ```typescript
   // カテゴリーと商品を並列で取得（Promise.all を使用）
@@ -79,7 +79,7 @@
 3. **メインコンテンツ**: カテゴリーごとの商品グリッド
 4. **フッター**: 店舗情報、地図、連絡先
 
-### FAQ ページ ([`app/faq/page.tsx`](../../app/(public)/faq/page.tsx))
+### FAQ ページ ([`app/faq/page.tsx`](../../../app/(public)/faq/page.tsx))
 
 よくある質問ページです。静的なコンテンツを表示します。
 
@@ -129,7 +129,7 @@
 
 ## コンポーネント構成
 
-### 共通型定義 ([`app/types.ts`](../../app/types.ts))
+### 共通型定義 ([`app/types.ts`](../../../app/types.ts))
 
 フロントエンドで使用する型定義を一元管理します。
 
@@ -160,7 +160,7 @@
 
 **使用例**:
 
-[`app/hooks/useProductModal.ts`](../../app/hooks/useProductModal.ts) (`useProductModal`フック)
+[`app/hooks/useProductModal.ts`](../../../app/hooks/useProductModal.ts) (`useProductModal`フック)
 
 ```typescript
 useProductModal();
@@ -170,7 +170,7 @@ useProductModal();
 
 価格をフォーマットして表示用の文字列を返す関数です。
 
-[`lib/product-utils.ts`](../../lib/product-utils.ts) (`formatPrice`関数)
+[`lib/product-utils.ts`](../../../lib/product-utils.ts) (`formatPrice`関数)
 
 **機能**:
 
@@ -200,7 +200,7 @@ useProductModal();
 
 **実装例**:
 
-[`app/components/FixedHeader.tsx`](../../app/components/FixedHeader.tsx) (`Header`コンポーネント)
+[`app/components/FixedHeader.tsx`](../../../app/components/FixedHeader.tsx) (`Header`コンポーネント)
 
 ```typescript
   <div className="mx-auto flex h-full max-w-6xl items-center justify-between">
@@ -263,7 +263,7 @@ useProductModal();
 
 **実装例**:
 
-[`app/components/ProductCategoryTabs.tsx`](../../app/components/ProductCategoryTabs.tsx) (`ProductCategoryTabs`コンポーネント)
+[`app/components/ProductCategoryTabs.tsx`](../../../app/components/ProductCategoryTabs.tsx) (`ProductCategoryTabs`コンポーネント)
 
 ```typescript
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
@@ -311,7 +311,7 @@ export default function ProductCategoryTabs({ categoriesWithProducts }) {
 
 **実装例**:
 
-[`app/components/ProductGrid.tsx`](../../app/components/ProductGrid.tsx) (`ProductGrid`コンポーネント)
+[`app/components/ProductGrid.tsx`](../../../app/components/ProductGrid.tsx) (`ProductGrid`コンポーネント)
 
 ```typescript
 import { useProductModal } from "../hooks/useProductModal";
@@ -464,7 +464,7 @@ className = "grid grid-cols-1 md:grid-cols-3";
   - `app/page.tsx`: Prisma を使用して商品データを取得
   - `app/dashboard/page.tsx`: Prisma を使用して商品データを取得
   - `app/api/products/route.ts`: Prisma を使用して商品の CRUD 操作を実行
-  - [`app/api/products/[id]/route.ts`](../../app/api/products/[id]/route.ts): Prisma を使用して個別商品の操作を実行
+  - [`app/api/products/[id]/route.ts`](../../../app/api/products/[id]/route.ts): Prisma を使用して個別商品の操作を実行
   - `app/api/products/reorder/route.ts`: Prisma の `$transaction` を使用して並び替えを実行
 - **`safePrismaOperation`**: Prisma 操作のエラーハンドリング
   - すべての API Routes で使用
