@@ -1,10 +1,12 @@
 /**
  * ダッシュボード共通レイアウト
  *
- * 共通ヘッダーを提供。認証チェックはMiddlewareで行う。
+ * 共通ヘッダーを提供し、未認証時はログイン案内を表示する。
+ * 未認証でもHTMLを返すことで、OGPメタタグがクローラーに正しく配信される。
  */
 import type { ReactNode } from 'react';
 import type { Metadata } from 'next';
+import Link from 'next/link';
 import { auth, signOut } from '@/auth';
 import DashboardHeader from './components/DashboardHeader';
 
@@ -48,9 +50,40 @@ interface DashboardLayoutProps {
 export default async function DashboardLayout({ children }: DashboardLayoutProps) {
   const session = await auth();
 
-  // Middlewareで認証済みユーザーのみがここに到達する
   if (!session) {
-    return null;
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-gray-50">
+        <div className="text-center">
+          <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-gray-200">
+            <svg
+              className="h-8 w-8 text-gray-500"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
+              />
+            </svg>
+          </div>
+          <h1 className="mb-2 text-xl font-bold text-gray-900">
+            ログインが必要です
+          </h1>
+          <p className="mb-6 text-sm text-gray-600">
+            セッションが切れました。再度ログインしてください。
+          </p>
+          <Link
+            href="/auth/signin"
+            className="inline-block rounded-lg bg-gray-900 px-6 py-3 text-white transition-all hover:bg-gray-800 active:scale-95"
+          >
+            ログインページへ
+          </Link>
+        </div>
+      </div>
+    );
   }
 
   return (
