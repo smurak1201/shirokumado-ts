@@ -79,7 +79,7 @@ DashboardContent (Client Component)
 ```
 app/dashboard/
 ├── page.tsx                    # ダッシュボードルートページ
-├── layout.tsx                  # ダッシュボードレイアウト（認証チェック）
+├── layout.tsx                  # ダッシュボードレイアウト（認証チェック・未認証時ログイン案内）
 ├── components/                 # 共通コンポーネント
 │   └── DashboardHeader.tsx     # ダッシュボードヘッダー
 ├── homepage/                   # 商品管理ページ
@@ -992,7 +992,7 @@ const products = await prisma.product.findMany({
 
 ### 認証・認可
 
-現在、認証・認可は実装されていません。本番環境では、適切な認証・認可を実装することを推奨します。
+Auth.js（NextAuth）による認証が実装済みです。`dashboard/layout.tsx` でセッションを検証し、未認証ユーザーにはログイン案内画面を表示します。詳細は [認証ガイド](../../authentication.md) を参照してください。
 
 ## 参考リンク
 

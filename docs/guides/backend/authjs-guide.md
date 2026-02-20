@@ -415,6 +415,8 @@ model VerificationToken {
 
 ### ミドルウェアによるルート保護
 
+> **注意**: 白熊堂プロジェクトでは Middleware を使用していません。`dashboard/layout.tsx` 内で `auth()` を呼び出してセッションを検証し、未認証時はログイン案内UIを表示する方式を採用しています。以下は Auth.js の一般的なミドルウェア実装例です。
+
 ```typescript
 // middleware.ts
 import { auth } from "@/auth";
