@@ -26,7 +26,7 @@ export default function Error({ error, reset }: ErrorProps) {
         {/* 本番環境では非表示（セキュリティとUX向上のため） */}
         {process.env.NODE_ENV === "development" && (
           <details className="mb-6 rounded bg-gray-100 p-4 text-left">
-            <summary className="cursor-pointer font-semibold text-gray-800">
+            <summary className="cursor-pointer font-bold text-gray-800">
               エラー詳細（開発環境のみ）
             </summary>
             <pre className="mt-2 overflow-auto text-sm text-gray-700">
