@@ -52,6 +52,14 @@ const nextConfig: NextConfig = {
     inlineCss: true,
   },
 
+  turbopack: {
+    resolveAlias: {
+      // Next.js内蔵のポリフィルを無効化
+      // ターゲットブラウザ（Chrome 111+, Safari 16.4+等）はすべてネイティブサポート済み
+      'next/dist/build/polyfills/polyfill-module': './lib/empty-polyfill.ts',
+    },
+  },
+
   // 型チェックの設定
   typescript: {
     // 本番ビルド時に型エラーがある場合、ビルドを失敗させる
