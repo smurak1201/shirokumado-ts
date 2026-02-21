@@ -98,9 +98,9 @@ export default async function HomeContent() {
               fill
               priority
               fetchPriority="high"
-              quality={60}
+              quality={50}
               className="object-cover transition-transform duration-700 group-hover:scale-105"
-              sizes="(min-width: 1024px) 1152px, (min-width: 768px) calc(100vw - 48px), calc(100vw - 32px)"
+              sizes="(min-width: 1280px) 1088px, (min-width: 1024px) calc(100vw - 64px), (min-width: 768px) calc(100vw - 48px), calc(100vw - 32px)"
             />
             <div className="absolute inset-0 bg-linear-to-t from-black/60 via-black/40 to-black/20" />
             <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 px-6 text-center drop-shadow-lg md:gap-6">
