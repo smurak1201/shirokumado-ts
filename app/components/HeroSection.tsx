@@ -46,6 +46,7 @@ export default function HeroSection() {
             alt="白熊堂の店舗外観"
             fill
             priority
+            fetchPriority="high"
             className="object-cover object-center"
             sizes="100vw"
           />
