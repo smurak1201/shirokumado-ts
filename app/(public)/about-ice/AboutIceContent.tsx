@@ -54,7 +54,7 @@ function ContentSection({
         <div className={isReversed ? "md:order-2" : ""}>
           <motion.h2
             variants={childFadeUp}
-            className="mb-6 text-lg font-medium tracking-wide text-foreground md:text-xl lg:text-2xl"
+            className="mb-6 text-lg font-normal tracking-wide text-foreground md:text-xl lg:text-2xl"
           >
             {section.title}
           </motion.h2>
