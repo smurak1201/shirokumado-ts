@@ -1,12 +1,7 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  // 画像最適化の設定
   images: {
-    // 画像最適化を無効化（Edge Requestを削減するため）
-    // 理由: 画像は既にクライアントサイドで圧縮・WebP形式に変換されているため、
-    // Next.jsのサーバーサイド最適化は不要。遅延読み込みなどの機能は引き続き機能する。
-    unoptimized: true,
     formats: ['image/avif', 'image/webp'],
     remotePatterns: [
       {
