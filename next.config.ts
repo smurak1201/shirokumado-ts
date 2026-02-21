@@ -53,6 +53,8 @@ const nextConfig: NextConfig = {
     serverActions: {
       bodySizeLimit: '2mb',
     },
+    // CSSをHTMLにインライン化し、<link>タグによるレンダリングブロッキングを解消
+    inlineCss: true,
   },
 
   // 型チェックの設定
