@@ -41,10 +41,4 @@ export const config = {
     TOUCH_ACTIVATION_DELAY: 200,
     TOUCH_TOLERANCE: 5,
   },
-
-  animationConfig: {
-    STAGGER_CHILDREN_SECONDS: 0.08,
-    FADE_IN_DURATION_SECONDS: 0.4,
-    SCROLL_ANIMATION_DURATION_SECONDS: 0.5,
-  },
 } as const;
