@@ -5,7 +5,6 @@
  */
 "use client";
 
-import { motion, type Variants } from "framer-motion";
 import {
   Accordion,
   AccordionContent,
@@ -14,47 +13,13 @@ import {
 } from "./ui/accordion";
 import { QuestionBadge } from "./ui/badge-question";
 import { Separator } from "./ui/separator";
-import { config } from "@/lib/config";
 import { cn } from "@/lib/utils";
+import { useInView } from "../hooks/useInView";
 
 export interface FAQ {
   question: string;
   answer: string;
 }
-
-const containerVariants: Variants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: {
-      staggerChildren: config.animationConfig.STAGGER_CHILDREN_SECONDS,
-    },
-  },
-};
-
-const itemVariants: Variants = {
-  hidden: { opacity: 0, y: 20 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: {
-      duration: config.animationConfig.FADE_IN_DURATION_SECONDS,
-      ease: "easeOut",
-    },
-  },
-};
-
-const titleVariants: Variants = {
-  hidden: { opacity: 0, y: -10 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: {
-      duration: config.animationConfig.SCROLL_ANIMATION_DURATION_SECONDS,
-      ease: "easeOut",
-    },
-  },
-};
 
 interface FAQSectionProps {
   faqs: FAQ[];
@@ -65,15 +30,15 @@ export default function FAQSection({
   faqs,
   showTitle = false,
 }: FAQSectionProps) {
+  const { ref: titleRef, isInView: titleInView } = useInView<HTMLDivElement>();
+  const { ref: listRef, isInView: listInView } = useInView<HTMLDivElement>({ margin: "0px 0px -100px 0px" });
+
   return (
     <section aria-labelledby={showTitle ? "faq-title" : undefined}>
       {showTitle && (
-        <motion.div
-          variants={titleVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true }}
-          className="mb-10 flex flex-col items-center gap-4 md:mb-12"
+        <div
+          ref={titleRef}
+          className={`animate-on-scroll mb-10 flex flex-col items-center gap-4 md:mb-12 ${titleInView ? "is-visible" : ""}`}
         >
           <h1
             id="faq-title"
@@ -82,18 +47,16 @@ export default function FAQSection({
             よくある質問
           </h1>
           <Separator className="w-20 md:w-32" />
-        </motion.div>
+        </div>
       )}
 
-      <motion.div
-        variants={containerVariants}
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true, margin: "0px 0px -100px 0px" }}
-      >
+      <div ref={listRef}>
         <Accordion type="single" collapsible className="space-y-3">
           {faqs.map((faq, index) => (
-            <motion.div key={faq.question} variants={itemVariants}>
+            <div
+              key={faq.question}
+              className={`animate-on-scroll stagger-delay-${Math.min(index + 1, 8)} ${listInView ? "is-visible" : ""}`}
+            >
               <AccordionItem
                 value={`faq-${index}`}
                 className={cn(
@@ -119,10 +82,10 @@ export default function FAQSection({
                   </div>
                 </AccordionContent>
               </AccordionItem>
-            </motion.div>
+            </div>
           ))}
         </Accordion>
-      </motion.div>
+      </div>
     </section>
   );
 }
