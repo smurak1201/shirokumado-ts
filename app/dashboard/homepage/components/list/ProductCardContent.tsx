@@ -46,7 +46,7 @@ export default function ProductCardContent({
       <div className="mt-1 flex flex-1 flex-col sm:mt-2 md:mt-4">
         <div className="mb-1 flex h-[3em] items-center justify-center sm:mb-2 sm:h-[3em] md:h-[3.5em]">
           <h3
-            className={`line-clamp-2 whitespace-pre-wrap text-center text-[10px] font-semibold leading-tight sm:text-xs md:text-lg ${
+            className={`line-clamp-2 whitespace-pre-wrap text-center text-[10px] font-bold leading-tight sm:text-xs md:text-lg ${
               isGrayscale ? "text-gray-500" : ""
             }`}
           >

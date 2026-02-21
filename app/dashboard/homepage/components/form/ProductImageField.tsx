@@ -36,7 +36,7 @@ export default function ProductImageField({
         accept="image/*"
         onChange={onImageChange}
         disabled={submitting || uploading || compressing}
-        className="h-auto py-2 file:mr-4 file:rounded-md file:border-0 file:bg-blue-50 file:px-4 file:py-1.5 file:text-sm file:font-semibold file:text-blue-700 hover:file:bg-blue-100 file:cursor-pointer"
+        className="h-auto py-2 file:mr-4 file:rounded-md file:border-0 file:bg-blue-50 file:px-4 file:py-1.5 file:text-sm file:font-bold file:text-blue-700 hover:file:bg-blue-100 file:cursor-pointer"
       />
 
       {compressing && (
