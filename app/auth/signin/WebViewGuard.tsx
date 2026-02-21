@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, type ReactNode } from 'react';
+import { useState, useSyncExternalStore, type ReactNode } from 'react';
 
 // LINE、Instagram、Facebook等のアプリ内ブラウザを検出する
 // これらのWebViewではGoogleがOAuth認証をブロックするため、外部ブラウザへの誘導が必要
@@ -8,17 +8,22 @@ function isInAppBrowser(ua: string): boolean {
   return /Line|FBAN|FBAV|Instagram|Twitter|MicroMessenger/i.test(ua);
 }
 
+// useSyncExternalStoreでSSR時はfalse、クライアントではnavigator.userAgentを参照する
+const subscribe = (): (() => void) => () => {};
+function getSnapshot(): boolean {
+  return isInAppBrowser(navigator.userAgent);
+}
+function getServerSnapshot(): boolean {
+  return false;
+}
+
 export function WebViewGuard({
   children,
 }: {
   children: ReactNode;
 }): ReactNode {
-  const [isWebView, setIsWebView] = useState(false);
+  const isWebView = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
   const [copied, setCopied] = useState(false);
-
-  useEffect(() => {
-    setIsWebView(isInAppBrowser(navigator.userAgent));
-  }, []);
 
   if (!isWebView) {
     return children;
