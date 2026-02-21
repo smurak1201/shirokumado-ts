@@ -50,7 +50,7 @@ export default function LoadingScreen() {
 
         {/* ロゴ・店名 */}
         <div className="text-center">
-          <h1 className="text-2xl font-light tracking-widest text-primary">
+          <h1 className="text-2xl font-normal tracking-widest text-primary">
             白熊堂
           </h1>
           <p className="mt-1 text-xs tracking-wider text-muted-foreground">
@@ -59,7 +59,7 @@ export default function LoadingScreen() {
         </div>
 
         {/* キャッチフレーズ */}
-        <p className="text-sm text-muted-foreground/80 font-light tracking-wide">
+        <p className="text-sm text-muted-foreground/80 font-normal tracking-wide">
           ふわふわ氷の贅沢なひととき
         </p>
 
