@@ -97,6 +97,7 @@ export default async function HomeContent() {
               alt="透き通った天然氷のブロック"
               fill
               priority
+              fetchPriority="high"
               quality={60}
               className="object-cover transition-transform duration-700 group-hover:scale-105"
               sizes="(min-width: 1024px) 1152px, (min-width: 768px) calc(100vw - 48px), calc(100vw - 32px)"
