@@ -20,15 +20,10 @@ export const proxy = auth((req) => {
     return;
   }
 
-  // ダッシュボードへのアクセス（未認証ならログインページへ）
-  if (pathname.startsWith('/dashboard')) {
-    if (!isLoggedIn) {
-      return Response.redirect(new URL('/auth/signin', req.url));
-    }
-    return;
-  }
+  // /dashboard配下の認証チェックはdashboard/layout.tsxで行う
+  // proxyでリダイレクトするとOGPクローラーがメタタグを取得できないため
 });
 
 export const config = {
-  matcher: ['/dashboard/:path*', '/auth/:path*'],
+  matcher: ['/auth/:path*'],
 };
