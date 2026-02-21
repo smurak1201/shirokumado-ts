@@ -66,11 +66,11 @@ export default function Footer() {
             </p>
             <div className="space-y-1 text-[8px] leading-relaxed text-muted-foreground md:text-sm">
               <div>
-                <p className="font-medium text-foreground/90">営業時間</p>
+                <p className="font-normal text-foreground/90">営業時間</p>
                 <p>11:00～21:00(L.O.20:00)</p>
               </div>
               <div>
-                <p className="font-medium text-foreground/90">定休日</p>
+                <p className="font-normal text-foreground/90">定休日</p>
                 <p>通年営業 月1回不定休</p>
               </div>
             </div>
@@ -84,7 +84,7 @@ export default function Footer() {
               <a
                 href="tel:070-9157-3772"
                 className={cn(
-                  "block font-medium transition-all active:scale-95",
+                  "block font-normal transition-all active:scale-95",
                   "hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded-sm"
                 )}
               >
