@@ -9,6 +9,7 @@ import { Separator } from "./ui/separator";
 import { Card, CardHeader } from "./ui/card";
 import { AspectRatio } from "./ui/aspect-ratio";
 import { cn } from "@/lib/utils";
+import LazyGoogleMap from "./LazyGoogleMap";
 
 export default function Footer() {
   return (
@@ -96,25 +97,7 @@ export default function Footer() {
             <Card className="overflow-hidden border-border/60 transition-all duration-500">
               <CardHeader className="p-0">
                 <AspectRatio ratio={4 / 3} className="overflow-hidden">
-                  {/*
-                   * sandbox属性: セキュリティ対策(XSS攻撃などを防止)
-                   * - allow-scripts: Google Mapsの機能に必要なJavaScriptを許可
-                   * - allow-same-origin: 同一オリジンでの動作を許可
-                   * - allow-popups: ポップアップを許可
-                   * - allow-popups-to-escape-sandbox: ポップアップがsandbox制約を受けないように
-                   */}
-                  <iframe
-                    src="https://www.google.com/maps?q=かき氷 白熊堂&output=embed"
-                    width="100%"
-                    height="100%"
-                    style={{ border: 0 }}
-                    allowFullScreen
-                    loading="lazy"
-                    referrerPolicy="no-referrer-when-downgrade"
-                    title="白熊堂の場所"
-                    className="h-full w-full"
-                    sandbox="allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox"
-                  />
+                  <LazyGoogleMap />
                 </AspectRatio>
               </CardHeader>
             </Card>
