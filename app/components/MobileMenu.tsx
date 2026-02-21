@@ -97,7 +97,7 @@ export default function MobileMenu({ navLinks }: MobileMenuProps) {
                 href={link.href}
                 onClick={handleLinkClick}
                 className={cn(
-                  "block py-4 text-base font-medium tracking-wide transition-colors",
+                  "block py-4 text-base font-normal tracking-wide transition-colors",
                   pathname === link.href
                     ? "text-primary"
                     : "text-foreground/70 hover:text-foreground"
