@@ -74,6 +74,7 @@ export default function HeroSection() {
             height={515}
             className="w-[60%] max-w-md md:max-w-lg lg:max-w-xl filter-[invert(1)_drop-shadow(0_2px_6px_rgba(0,0,0,0.6))_drop-shadow(0_0_24px_rgba(0,0,0,0.4))]"
             priority
+            fetchPriority="high"
           />
         </motion.h1>
       </div>
