@@ -10,9 +10,6 @@
  *
  * 参考: https://daian-kichijitsu.com/parallax/
  */
-"use client";
-
-import { motion } from "framer-motion";
 import Image from "next/image";
 import heroImage from "@/public/hero.webp";
 
@@ -35,12 +32,7 @@ export default function HeroSection() {
          * - position: fixed で画面に固定
          * - 高さは「セクション高さ + ヘッダー高さ」で計算
          */}
-        <motion.div
-          className="hero-image-container z-[-1]"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 1, ease: "easeOut" }}
-        >
+        <div className="hero-image-container z-[-1] animate-hero-bg">
           <Image
             src={heroImage}
             alt="白熊堂の店舗外観"
@@ -50,23 +42,13 @@ export default function HeroSection() {
             className="object-cover object-center"
             sizes="100vw"
           />
-        </motion.div>
+        </div>
 
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.8, ease: "easeOut" }}
-          className="absolute inset-0"
-        >
+        <div className="absolute inset-0 animate-hero-overlay">
           <div className="absolute inset-0 bg-linear-to-b from-sky-100/20 via-transparent to-white/40" />
-        </motion.div>
+        </div>
 
-        <motion.h1
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1, delay: 0.3, ease: "easeOut" }}
-          className="absolute inset-0 flex items-center justify-center"
-        >
+        <h1 className="absolute inset-0 flex items-center justify-center animate-hero-title">
           <Image
             src="/logo-new.svg"
             alt="日光天然氷 白熊堂"
@@ -76,7 +58,7 @@ export default function HeroSection() {
             priority
             fetchPriority="high"
           />
-        </motion.h1>
+        </h1>
       </div>
     </section>
   );
