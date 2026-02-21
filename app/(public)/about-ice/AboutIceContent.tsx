@@ -1,35 +1,12 @@
 "use client";
 
 import Image from "next/image";
-import { motion, type Variants } from "framer-motion";
-import { config } from "@/lib/config";
 import { aboutIceSections, type AboutIceSection } from "./data";
-
-const stagger: Variants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: {
-      staggerChildren: config.animationConfig.STAGGER_CHILDREN_SECONDS,
-    },
-  },
-};
-
-const childFadeUp: Variants = {
-  hidden: { opacity: 0, y: 20 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: {
-      duration: config.animationConfig.FADE_IN_DURATION_SECONDS,
-      ease: "easeOut",
-    },
-  },
-};
+import { useInView } from "@/app/hooks/useInView";
 
 /**
  * コンテンツセクション
- * モバイル: テキスト → 画像の縦積み
+ * モバイル: テキスト -> 画像の縦積み
  * md以上: テキストと画像を横並び（奇数/偶数で左右を入れ替え）
  */
 function ContentSection({
@@ -40,41 +17,36 @@ function ContentSection({
   index: number;
 }) {
   const isReversed = index % 2 !== 0;
+  const { ref, isInView } = useInView({ margin: "0px 0px -80px 0px" });
 
   return (
-    <motion.section
-      variants={stagger}
-      initial="hidden"
-      whileInView="visible"
-      viewport={{ once: true, margin: "0px 0px -80px 0px" }}
+    <section
+      ref={ref}
       className="mx-auto max-w-6xl px-4 py-12 md:px-8 md:py-16 lg:py-20"
     >
       <div className="grid gap-8 md:grid-cols-2 md:items-center md:gap-12 lg:gap-16">
         {/* テキスト */}
         <div className={isReversed ? "md:order-2" : ""}>
-          <motion.h2
-            variants={childFadeUp}
-            className="mb-6 text-lg font-normal tracking-wide text-foreground md:text-xl lg:text-2xl"
+          <h2
+            className={`animate-on-scroll mb-6 text-lg font-normal tracking-wide text-foreground md:text-xl lg:text-2xl ${isInView ? "is-visible" : ""}`}
           >
             {section.title}
-          </motion.h2>
+          </h2>
           <div className="space-y-4">
             {section.paragraphs.map((paragraph, i) => (
-              <motion.p
+              <p
                 key={i}
-                variants={childFadeUp}
-                className="text-sm leading-loose text-muted-foreground md:text-base"
+                className={`animate-on-scroll stagger-delay-${Math.min(i + 1, 8)} text-sm leading-loose text-muted-foreground md:text-base ${isInView ? "is-visible" : ""}`}
               >
                 {paragraph}
-              </motion.p>
+              </p>
             ))}
           </div>
         </div>
 
         {/* 画像 */}
-        <motion.div
-          variants={childFadeUp}
-          className={isReversed ? "md:order-1" : ""}
+        <div
+          className={`animate-on-scroll stagger-delay-${Math.min(section.paragraphs.length + 1, 8)} ${isReversed ? "md:order-1" : ""} ${isInView ? "is-visible" : ""}`}
         >
           {section.images.map((image) => (
             <div
@@ -90,9 +62,9 @@ function ContentSection({
               />
             </div>
           ))}
-        </motion.div>
+        </div>
       </div>
-    </motion.section>
+    </section>
   );
 }
 
@@ -100,12 +72,7 @@ export default function AboutIceContent() {
   return (
     <main className="pb-12 md:pb-16">
       {/* ページタイトル: FAQページと統一したスタイル */}
-      <motion.div
-        initial={{ opacity: 0, y: -10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, ease: "easeOut" }}
-        className="mx-auto flex max-w-6xl flex-col items-center gap-4 px-4 pt-8 md:px-8 md:pt-12"
-      >
+      <div className="animate-page-title mx-auto flex max-w-6xl flex-col items-center gap-4 px-4 pt-8 md:px-8 md:pt-12">
         <h1 className="text-center text-2xl font-normal tracking-wide text-muted-foreground md:text-3xl lg:text-4xl">
           天然氷について
         </h1>
@@ -113,7 +80,7 @@ export default function AboutIceContent() {
         <p className="mt-6 max-w-lg text-center text-sm leading-relaxed text-muted-foreground md:text-base">
           天然氷とは、冬の厳しい寒さのなかで、山の湧水をじっくりと時間をかけて凍らせた氷のこと。機械で急速に作られる氷とはまったく異なる、自然の力だけが生み出す特別な氷です。
         </p>
-      </motion.div>
+      </div>
 
       {aboutIceSections.map((section, index) => (
         <ContentSection key={section.id} section={section} index={index} />
