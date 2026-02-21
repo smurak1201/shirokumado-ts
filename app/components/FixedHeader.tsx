@@ -39,7 +39,7 @@ const itemVariants: Variants = {
 };
 
 const navLinkClassName = cn(
-  "relative text-sm font-medium transition-all md:text-base",
+  "relative text-sm font-normal transition-all md:text-base",
   "text-foreground/70 hover:text-foreground active:scale-95",
   "after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-0 after:bg-foreground after:transition-all after:duration-300",
   "hover:after:w-full",
