@@ -135,7 +135,7 @@ export default function ProductModal({
                           whileHover={{ scale: 1.05 }}
                           transition={{ duration: 0.2 }}
                         >
-                          <span className="text-xs font-medium text-muted-foreground uppercase tracking-widest">
+                          <span className="text-xs font-normal text-muted-foreground uppercase tracking-widest">
                             Small
                           </span>
                           <PriceBadge className="text-lg md:text-xl">
@@ -157,7 +157,7 @@ export default function ProductModal({
                           whileHover={{ scale: 1.05 }}
                           transition={{ duration: 0.2 }}
                         >
-                          <span className="text-xs font-medium text-muted-foreground uppercase tracking-widest">
+                          <span className="text-xs font-normal text-muted-foreground uppercase tracking-widest">
                             Large
                           </span>
                           <PriceBadge className="text-lg md:text-xl">
