@@ -31,7 +31,7 @@ export default function NotFound() {
         </p>
         <Link
           href="/"
-          className="mt-8 inline-flex items-center gap-2 rounded-lg bg-primary px-6 py-3 font-medium text-primary-foreground transition-colors hover:bg-primary/90"
+          className="mt-8 inline-flex items-center gap-2 rounded-lg bg-primary px-6 py-3 font-normal text-primary-foreground transition-colors hover:bg-primary/90"
         >
           <svg
             className="h-5 w-5"
