@@ -12,11 +12,20 @@ export const metadata: Metadata = {
   openGraph: {
     title: "ECサイト管理 | 白熊堂 管理画面",
     description: "ECサイトの管理を行う管理画面",
+    images: [
+      {
+        url: "/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: "白熊堂 - 管理画面",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
     title: "ECサイト管理 | 白熊堂 管理画面",
     description: "ECサイトの管理を行う管理画面",
+    images: ["/og-image.png"],
   },
 };
 
