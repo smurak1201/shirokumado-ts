@@ -147,6 +147,160 @@ body {
   transform: scale(0.95);
 }
 
+/* ヒーロー用アニメーション */
+@keyframes hero-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes hero-title-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-hero-bg {
+  animation: hero-fade-in 1s ease-out both;
+}
+
+.animate-hero-overlay {
+  animation: hero-fade-in 0.8s ease-out both;
+}
+
+.animate-hero-title {
+  animation: hero-title-in 1s ease-out 0.3s both;
+}
+
+/* ヘッダー用: staggerフェードイン */
+@keyframes header-item-in {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-header-stagger > * {
+  opacity: 0;
+  animation: header-item-in 0.4s ease-out both;
+}
+
+.animate-header-stagger > *:nth-child(1) { animation-delay: 0.2s; }
+.animate-header-stagger > *:nth-child(2) { animation-delay: 0.3s; }
+.animate-header-stagger > *:nth-child(3) { animation-delay: 0.4s; }
+
+/* スクロール連動フェードインアニメーション */
+.animate-on-scroll {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.4s ease-out, transform 0.4s ease-out;
+}
+
+.animate-on-scroll.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* stagger用の遅延クラス */
+.stagger-delay-1 { transition-delay: 0.08s; }
+.stagger-delay-2 { transition-delay: 0.16s; }
+.stagger-delay-3 { transition-delay: 0.24s; }
+.stagger-delay-4 { transition-delay: 0.32s; }
+.stagger-delay-5 { transition-delay: 0.40s; }
+.stagger-delay-6 { transition-delay: 0.48s; }
+.stagger-delay-7 { transition-delay: 0.56s; }
+.stagger-delay-8 { transition-delay: 0.64s; }
+
+/* ページタイトル用フェードイン */
+@keyframes page-title-in {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-page-title {
+  animation: page-title-in 0.5s ease-out both;
+}
+
+/* モバイルメニュー内ナビゲーション用アニメーション */
+.mobile-nav-item {
+  opacity: 0;
+  transform: translateX(20px);
+  transition: opacity 0.4s ease-out, transform 0.4s ease-out;
+}
+
+.mobile-nav-visible .mobile-nav-item {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.mobile-nav-visible .mobile-nav-item:nth-child(1) { transition-delay: 0.15s; }
+.mobile-nav-visible .mobile-nav-item:nth-child(2) { transition-delay: 0.23s; }
+.mobile-nav-visible .mobile-nav-item:nth-child(3) { transition-delay: 0.31s; }
+.mobile-nav-visible .mobile-nav-item:nth-child(4) { transition-delay: 0.39s; }
+
+.mobile-nav-bottom {
+  opacity: 0;
+  transition: opacity 0.5s ease-out 0.4s;
+}
+
+.mobile-nav-visible .mobile-nav-bottom {
+  opacity: 1;
+}
+
+/* モーダル内staggerアニメーション */
+@keyframes modal-item-in {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-modal-stagger > * {
+  opacity: 0;
+  animation: modal-item-in 0.4s ease-out both;
+}
+
+.animate-modal-stagger > *:nth-child(1) { animation-delay: 0.1s; }
+.animate-modal-stagger > *:nth-child(2) { animation-delay: 0.18s; }
+.animate-modal-stagger > *:nth-child(3) { animation-delay: 0.26s; }
+
+/* prefers-reduced-motion: アニメーション無効化 */
+@media (prefers-reduced-motion: reduce) {
+  .animate-hero-bg,
+  .animate-hero-overlay,
+  .animate-hero-title,
+  .animate-header-stagger > *,
+  .animate-on-scroll,
+  .animate-page-title,
+  .mobile-nav-item,
+  .mobile-nav-bottom,
+  .animate-modal-stagger > *,
+  .animate-fade-in {
+    animation: none !important;
+    transition: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
+
 /*
  * パララックス効果（スマホ対応）
  * 参考: https://daian-kichijitsu.com/parallax/
