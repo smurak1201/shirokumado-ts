@@ -65,7 +65,7 @@ export function WebViewGuard({
       <button
         type="button"
         onClick={handleCopy}
-        className="flex w-full items-center justify-center gap-2 rounded-xl border-2 border-gray-200 bg-white px-6 py-4 font-medium text-gray-700 shadow-md transition-all hover:border-blue-300 hover:shadow-lg active:scale-95 cursor-pointer"
+        className="flex w-full items-center justify-center gap-2 rounded-xl border-2 border-gray-200 bg-white px-6 py-4 font-normal text-gray-700 shadow-md transition-all hover:border-blue-300 hover:shadow-lg active:scale-95 cursor-pointer"
       >
         <svg
           className="h-5 w-5"
