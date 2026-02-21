@@ -101,10 +101,10 @@ export default async function HomeContent() {
             />
             <div className="absolute inset-0 bg-linear-to-t from-black/60 via-black/40 to-black/20" />
             <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 px-6 text-center drop-shadow-lg md:gap-6">
-              <h2 className="text-lg font-light tracking-widest text-white md:text-2xl lg:text-3xl">
+              <h2 className="text-lg font-normal tracking-widest text-white md:text-2xl lg:text-3xl">
                 冬の山奥で生まれる、特別な氷
               </h2>
-              <span className="border-b border-white/60 pb-0.5 text-xs font-medium tracking-wider text-white transition-colors group-hover:border-white md:text-sm">
+              <span className="border-b border-white/60 pb-0.5 text-xs font-normal tracking-wider text-white transition-colors group-hover:border-white md:text-sm">
                 天然氷について →
               </span>
             </div>
