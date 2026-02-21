@@ -230,12 +230,7 @@ Next.js の設定を管理するファイルです。画像最適化、実験的
 
 ```typescript
 const nextConfig: NextConfig = {
-  // 画像最適化の設定
   images: {
-    // 画像最適化を無効化（Edge Requestを削減するため）
-    // 理由: 画像は既にクライアントサイドで圧縮・WebP形式に変換されているため、
-    // Next.jsのサーバーサイド最適化は不要。遅延読み込みなどの機能は引き続き機能する。
-    unoptimized: true,
     formats: ['image/avif', 'image/webp'],
     remotePatterns: [
       {
@@ -283,11 +278,7 @@ export default nextConfig;
 
 1. **画像最適化** (`images`):
 
-   - `unoptimized: true`: 画像最適化を無効化
-     - **理由**: 画像は既にクライアントサイドで圧縮・WebP 形式に変換されているため、Next.js のサーバーサイド最適化は不要です
-     - **効果**: Vercel の Edge Request を大幅に削減できます（各画像の最適化リクエストが Edge Request としてカウントされるため）
-     - **注意**: `unoptimized: true`を設定しても、遅延読み込み（`loading="lazy"`）や`priority`属性などの機能は引き続き機能します
-   - `formats: ['image/avif', 'image/webp']`: AVIF と WebP 形式を優先的に使用（設定は残していますが、`unoptimized: true`により実際には使用されません）
+   - `formats: ['image/avif', 'image/webp']`: AVIF と WebP 形式を優先的に使用。ブラウザの対応状況に応じて自動的に最適な形式で配信される
    - `remotePatterns`: 外部ドメインからの画像読み込みを許可
      - `protocol: 'https'`: HTTPS プロトコルのみ許可（セキュリティ）
      - `hostname: '*.public.blob.vercel-storage.com'`: Vercel Blob Storage からの画像読み込みを許可
@@ -319,8 +310,7 @@ export default nextConfig;
 
 **理由**:
 
-- **Edge Request の削減**: `unoptimized: true`により、Vercel の Edge Request を大幅に削減できます。画像は既にクライアントサイドで最適化されているため、サーバーサイドでの再処理は不要です
-- **パフォーマンス**: 画像は既にクライアントサイドで圧縮・WebP 形式に変換されているため、追加の最適化は不要です。遅延読み込みなどの機能は引き続き機能します
+- **画像最適化**: Next.jsのImage Optimization APIにより、画像を自動的にリサイズ・WebP/AVIF変換して配信する。`sizes`属性に基づいてレスポンシブ画像（srcset）も自動生成される
 - **セキュリティ**: `remotePatterns` により許可されたドメインからのみ画像を読み込み、`headers()`でセキュリティヘッダーを付与
 - **型安全性**: TypeScript の設定により、型エラーを早期に検出
 
@@ -328,19 +318,18 @@ export default nextConfig;
 
 Next.js は、`next/image` コンポーネントを使用して、画像の自動最適化を提供します。
 
-**注意**: このアプリでは、`unoptimized: true`を設定しているため、Next.js のサーバーサイド画像最適化は無効化されています。画像は既にクライアントサイドで圧縮・WebP 形式に変換されているため、追加の最適化は不要です。
-
 ### Image コンポーネントの特徴
 
-- **遅延読み込み**: `loading="lazy"` により、必要な時だけ画像を読み込む（`unoptimized: true`でも機能します）
-- **優先読み込み**: `priority` 属性により、重要な画像を優先的に読み込む（`unoptimized: true`でも機能します）
-- **レスポンシブ画像**: `sizes` 属性を使用して、デバイスに応じた画像サイズを提供（ブラウザのネイティブ機能として機能します）
+- **自動フォーマット変換**: AVIF/WebP形式に自動変換し、画像サイズを削減
+- **レスポンシブ画像**: `sizes`属性に基づいて適切なサイズの画像を自動生成（srcset）
+- **遅延読み込み**: `loading="lazy"` により、必要な時だけ画像を読み込む
+- **優先読み込み**: `priority` 属性により、LCP画像に`fetchpriority="high"`を自動付与
 - **レイアウトシフトの防止**: `width`、`height`、`fill`属性により、画像読み込み時のレイアウトシフトを防止
 
 **このアプリでの画像処理フロー**:
 
 1. **アップロード時（クライアントサイド）**: 画像を最大 1920x1920px にリサイズし、WebP 形式に圧縮（品質 0.85）
-2. **表示時**: `next/image`コンポーネントで表示（サーバーサイド最適化は無効化されているため、Edge Request は発生しません）
+2. **配信時（サーバーサイド）**: Next.jsのImage Optimization APIが`sizes`属性に基づいて適切なサイズにリサイズし、AVIF/WebP形式で配信。初回リクエスト時に変換処理が走り、以降はCDNキャッシュから配信される
 
 ### このアプリでの使用箇所
 
@@ -394,8 +383,6 @@ import heroImage from "@/public/hero.webp";
 
 ```typescript
   images: {
-    // 画像最適化を無効化（Edge Requestを削減するため）
-    unoptimized: true,
     formats: ['image/avif', 'image/webp'],
     remotePatterns: [
       {
@@ -406,11 +393,7 @@ import heroImage from "@/public/hero.webp";
   },
 ```
 
-- `unoptimized: true`: 画像最適化を無効化
-  - **理由**: 画像は既にクライアントサイドで圧縮・WebP 形式に変換されているため、Next.js のサーバーサイド最適化は不要です
-  - **効果**: Vercel の Edge Request を大幅に削減できます
-  - **注意**: 遅延読み込み（`loading="lazy"`）や`priority`属性などの機能は引き続き機能します
-- `formats`: AVIF と WebP 形式を優先的に使用（設定は残していますが、`unoptimized: true`により実際には使用されません）
+- `formats`: AVIF と WebP 形式を優先的に使用。ブラウザの対応状況に応じて最適な形式で配信
 - `remotePatterns`: Vercel Blob Storage からの画像読み込みを許可
 
 ## フォント最適化
