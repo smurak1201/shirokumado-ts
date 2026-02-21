@@ -7,7 +7,6 @@
 
 import { useState } from "react";
 import dynamic from "next/dynamic";
-import { motion, AnimatePresence } from "framer-motion";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
 import type { CategoryWithProducts } from "@/lib/products";
 
@@ -89,37 +88,19 @@ export default function ProductCategoryTabs({
         </div>
       </TabsList>
 
-      <AnimatePresence mode="wait">
-        {categoriesWithProducts.map(({ category, products }) => (
-          <TabsContent
-            key={category.id}
-            value={category.id.toString()}
-            className="mt-0"
-            forceMount
-          >
-            {/*
-             * forceMount の理由:
-             * - TabsContent はデフォルトでアクティブなタブのみDOMにマウントする
-             * - AnimatePresence のアニメーションを機能させるには、
-             *   非アクティブなタブもDOMに存在する必要がある
-             */}
-            {activeTab === category.id.toString() && (
-              <motion.div
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
-                transition={{ duration: 0.3 }}
-              >
-                <ProductGrid
-                  category={category}
-                  products={products}
-                  showCategoryTitle={false}
-                />
-              </motion.div>
-            )}
-          </TabsContent>
-        ))}
-      </AnimatePresence>
+      {categoriesWithProducts.map(({ category, products }) => (
+        <TabsContent
+          key={category.id}
+          value={category.id.toString()}
+          className="mt-0"
+        >
+          <ProductGrid
+            category={category}
+            products={products}
+            showCategoryTitle={false}
+          />
+        </TabsContent>
+      ))}
     </Tabs>
   );
 }
