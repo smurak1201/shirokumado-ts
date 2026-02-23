@@ -43,14 +43,17 @@ shirokumado-ts/
 ├── prisma/                 # Prisma設定・スキーマ
 ├── public/                 # 静的ファイル（画像など）
 ├── types/                  # グローバル型定義
+├── updates/                # 更新・変更ログ
 │
 ├── auth.ts                 # Auth.js エントリーポイント
+├── proxy.ts                # Next.js 16 Proxy設定（ルートガード）
 ├── eslint.config.mjs       # ESLint設定
 ├── next.config.ts          # Next.js設定
 ├── package.json            # 依存関係
 ├── postcss.config.mjs      # PostCSS設定
 ├── prisma.config.ts        # Prisma設定（Prisma 7）
 ├── tsconfig.json           # TypeScript設定
+├── vercel.json             # Vercel設定（Cron job）
 └── README.md               # プロジェクト概要
 ```
 
@@ -74,6 +77,8 @@ app/
 ├── globals.css           # グローバルスタイル
 ├── layout.tsx            # ルートレイアウト
 ├── not-found.tsx         # 404ページ
+├── robots.ts             # robots.txt生成
+├── sitemap.ts            # sitemap.xml生成
 └── types.ts              # フロントエンド共通型定義
 ```
 
@@ -83,6 +88,10 @@ Route Group を使用して公開ページをグループ化しています。
 
 ```
 app/(public)/
+├── about-ice/            # アイスについてページ
+│   ├── AboutIceContent.tsx # コンテンツ（Client Component）
+│   ├── data.ts           # データ
+│   └── page.tsx          # ページ（Server Component）
 ├── faq/                  # FAQページ
 │   ├── data.ts           # FAQデータ
 │   └── page.tsx          # FAQページ（Server Component）
@@ -139,21 +148,36 @@ app/auth/
 ```
 app/components/
 ├── ui/                       # shadcn/ui コンポーネントとラッパー
+│   ├── accordion.tsx         # shadcn/ui の Accordion
+│   ├── aspect-ratio.tsx      # shadcn/ui の AspectRatio
 │   ├── badge.tsx             # shadcn/ui の Badge
 │   ├── badge-price.tsx       # 価格表示用ラッパー
+│   ├── badge-question.tsx    # FAQ質問用ラッパー
+│   ├── button.tsx            # shadcn/ui の Button
 │   ├── card.tsx              # shadcn/ui の Card
 │   ├── card-modal.tsx        # モーダル用ラッパー
 │   ├── card-product.tsx      # 商品タイル用ラッパー
 │   ├── dialog.tsx            # shadcn/ui の Dialog
+│   ├── input.tsx             # shadcn/ui の Input
+│   ├── label.tsx             # shadcn/ui の Label
+│   ├── radio-group.tsx       # shadcn/ui の RadioGroup
+│   ├── scroll-area.tsx       # shadcn/ui の ScrollArea
+│   ├── select.tsx            # shadcn/ui の Select
+│   ├── separator.tsx         # shadcn/ui の Separator
+│   ├── sheet.tsx             # shadcn/ui の Sheet
 │   ├── sonner.tsx            # Toast通知（sonner ラッパー）
-│   └── ...                   # その他のコンポーネント
+│   ├── tabs.tsx              # shadcn/ui の Tabs
+│   ├── textarea.tsx          # shadcn/ui の Textarea
+│   └── tooltip.tsx           # shadcn/ui の Tooltip
 │
 ├── ErrorBoundary.tsx         # エラーバウンダリー
 ├── FAQSection.tsx            # FAQセクション
 ├── FixedHeader.tsx           # 固定ヘッダー（ロゴ、ナビゲーション）
 ├── Footer.tsx                # フッター（店舗情報、地図、連絡先）
 ├── HeroSection.tsx           # ヒーローセクション
+├── LazyGoogleMap.tsx         # Google Map遅延読み込み
 ├── LoadingScreen.tsx         # ローディング画面
+├── MobileMenu.tsx            # モバイルメニュー（Client Component）
 ├── ProductCategoryTabs.tsx   # カテゴリータブ切り替え（Client Component）
 ├── ProductGrid.tsx           # 商品グリッド表示（Client Component）
 ├── ProductModal.tsx          # 商品詳細モーダル
@@ -191,6 +215,7 @@ app/dashboard/
 │   └── page.tsx
 │
 ├── layout.tsx            # ダッシュボードレイアウト（認証チェック・未認証時ログイン案内）
+├── loading.tsx           # ダッシュボードローディング画面
 └── page.tsx              # ダッシュボードルートページ
 ```
 
@@ -256,6 +281,7 @@ app/dashboard/homepage/
 
 ```
 app/hooks/
+├── useInView.ts          # 要素の表示状態を監視（Intersection Observer）
 └── useProductModal.ts    # 商品モーダル管理フック（状態管理）
 ```
 
@@ -282,18 +308,18 @@ lib/
 │   ├── heic.ts           # HEIC変換処理
 │   ├── index.ts          # エントリーポイント
 │   ├── load.ts           # 画像読み込み処理
-│   └── utils.ts          # 圧縮用ユーティリティ
+│   └── utils.ts          # 圧縮ユーティリティ
 │
-├── api-helpers.ts        # API Routes用ヘルパー
+├── api-helpers.ts        # API Routes用ヘルパー（withErrorHandling, apiSuccess, apiError）
 ├── api-types.ts          # APIレスポンスの型定義
-├── auth-config.ts        # 認証設定（許可リストチェック）
-├── blob.ts               # Blobストレージユーティリティ
-├── client-fetch.ts       # クライアントサイドAPI呼び出しユーティリティ
-├── config.ts             # アプリケーション設定
-├── env.ts                # 環境変数管理
-├── errors.ts             # 統一されたエラーハンドリング
-├── logger.ts             # 構造化ログユーティリティ
-├── prisma.ts             # Prisma Clientインスタンス
+├── auth-config.ts        # 認証設定（許可リストチェック、ロール取得）
+├── blob.ts               # Blobストレージユーティリティ（画像アップロード・削除）
+├── client-fetch.ts       # クライアントサイドAPI呼び出しユーティリティ（fetchJson）
+├── config.ts             # アプリケーション設定（画像、API、表示、DnD等）
+├── env.ts                # 環境変数の型安全な管理（getServerEnv, getClientEnv）
+├── errors.ts             # 統一されたエラーハンドリング（AppError, ErrorCodes）
+├── logger.ts             # 構造化ログユーティリティ（本番はJSON、開発はカラー出力）
+├── prisma.ts             # Prisma Clientインスタンス（safePrismaOperation）
 ├── product-utils.ts      # 商品関連ユーティリティ
 ├── products.ts           # 商品データ取得関数
 └── utils.ts              # 汎用ユーティリティ（clsx/tailwind-merge）
@@ -431,10 +457,13 @@ model User {
 ```
 public/
 ├── hero.webp             # ヒーロー画像
+├── og-image.png          # OGP画像
 ├── icon-192x192.png      # PWA用アイコン（192x192）
 ├── icon-512x512.png      # PWA用アイコン（512x512）
+├── logo.svg              # ロゴ画像
+├── logo-new.svg          # 新ロゴ画像
+├── logo-nikko.svg        # 日光ロゴ画像
 ├── logo-instagram.svg    # Instagramアイコン
-├── logo.webp             # ロゴ画像
 └── manifest.webmanifest  # Web App Manifest
 ```
 
@@ -461,40 +490,50 @@ types/
 ### 設定ファイル
 
 - **[`auth.ts`](../auth.ts)**: Auth.js エントリーポイント
+- **[`proxy.ts`](../proxy.ts)**: Next.js 16 Proxy設定（認証ルートガード）
 - **[`eslint.config.mjs`](../eslint.config.mjs)**: ESLint の設定
 - **[`next.config.ts`](../next.config.ts)**: Next.js の設定（画像最適化、セキュリティヘッダーなど）
 - **[`postcss.config.mjs`](../postcss.config.mjs)**: PostCSS の設定
 - **[`prisma.config.ts`](../prisma.config.ts)**: Prisma 7 の設定（接続情報など）
 - **[`tsconfig.json`](../tsconfig.json)**: TypeScript の設定
+- **[`vercel.json`](../vercel.json)**: Vercel の設定（Cron job）
 
 ### ドキュメント
 
 ```
 docs/
-├── guides/                    # ガイド系ドキュメント
-│   ├── app-router-guide.md    # App Router ガイド
-│   ├── async-await-guide.md   # Async/Await ガイド
-│   ├── authjs-guide.md        # Auth.js ガイド
-│   ├── claude-skills-guide.md # Claude スキルガイド
-│   ├── dashboard-guide.md     # ダッシュボードガイド
-│   ├── frontend-guide.md      # フロントエンドガイド
-│   ├── git-github-guide.md    # Git/GitHub ガイド
-│   ├── jsx-guide.md           # JSX ガイド
-│   ├── learning-guide.md      # 勉強用ガイド
-│   ├── nextjs-guide.md        # Next.js ガイド
-│   ├── prisma-guide.md        # Prisma ガイド
-│   ├── react-guide.md         # React ガイド
-│   ├── shadcn-ui-guide.md     # shadcn/ui ガイド
-│   ├── styling-best-practices.md # スタイリングベストプラクティス
-│   ├── typescript-guide.md    # TypeScript ガイド
-│   └── utilities-guide.md     # ユーティリティ関数ガイド
+├── guides/                        # ガイド系ドキュメント
+│   ├── learning-guide.md          # 勉強用ガイド（学習順序）
+│   ├── basics/                    # 基礎ガイド
+│   │   ├── async-await-guide.md   # Async/Await ガイド
+│   │   ├── javascript-basics-guide.md # JavaScript 基礎ガイド
+│   │   ├── jsx-guide.md           # JSX ガイド
+│   │   └── typescript-guide.md    # TypeScript ガイド
+│   ├── backend/                   # バックエンドガイド
+│   │   ├── authjs-guide.md        # Auth.js ガイド
+│   │   ├── nodejs-guide.md        # Node.js ガイド
+│   │   ├── prisma-guide.md        # Prisma ガイド
+│   │   └── utilities-guide.md     # ユーティリティ関数ガイド
+│   ├── frontend/                  # フロントエンドガイド
+│   │   ├── app-router-guide.md    # App Router ガイド
+│   │   ├── dashboard-guide.md     # ダッシュボードガイド
+│   │   ├── frontend-guide.md      # フロントエンドガイド
+│   │   ├── nextjs-guide.md        # Next.js ガイド
+│   │   ├── react-guide.md         # React ガイド
+│   │   ├── seo-guide.md           # SEO ガイド
+│   │   ├── shadcn-ui-guide.md     # shadcn/ui ガイド
+│   │   └── styling-best-practices.md # スタイリングベストプラクティス
+│   └── tools/                     # ツールガイド
+│       ├── claude-agent-teams-guide.md # Claude Agent Teams ガイド
+│       ├── claude-skills-guide.md # Claude スキルガイド
+│       └── git-github-guide.md    # Git/GitHub ガイド
 │
-├── architecture.md            # アーキテクチャと設計思想
-├── authentication.md          # 認証の詳細
-├── development-guide.md       # 開発ガイドライン
-├── project-structure.md       # プロジェクト構造（このファイル）
-├── setup-prisma-blob.md       # Prisma & Blob セットアップ
-└── tech-stack.md              # 技術スタック
+├── architecture.md                # アーキテクチャと設計思想
+├── authentication.md              # 認証の詳細
+├── development-guide.md           # 開発ガイドライン
+├── project-structure.md           # プロジェクト構造（このファイル）
+├── setup-prisma-blob.md           # Prisma & Blob セットアップ
+└── tech-stack.md                  # 技術スタック
 ```
 
 - **[`README.md`](../README.md)**: プロジェクトの概要とセットアップ手順

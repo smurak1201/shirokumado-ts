@@ -121,16 +121,23 @@ export default function ProductPage({ params }: { params: { id: string } }) {
 
 ```
 app/
-├── page.tsx              # / (ホーム)
-├── faq/
-│   └── page.tsx          # /faq
+├── (public)/              # 公開ページ（Route Group）
+│   ├── page.tsx           # / (ホーム)
+│   ├── faq/
+│   │   └── page.tsx       # /faq
+│   ├── about-ice/
+│   │   └── page.tsx       # /about-ice
+│   └── shop/
+│       └── page.tsx       # /shop
 ├── dashboard/
-│   └── page.tsx          # /dashboard
+│   ├── page.tsx           # /dashboard
+│   └── homepage/
+│       └── page.tsx       # /dashboard/homepage
 └── api/                   # API Routes
     ├── products/
     │   ├── route.ts       # GET, POST /api/products
     │   ├── [id]/
-    │   │   └── route.ts   # GET, PUT, DELETE /api/products/[id]（GETは未使用）
+    │   │   └── route.ts   # GET, PUT, DELETE /api/products/[id]
     │   ├── upload/
     │   │   └── route.ts   # POST /api/products/upload
     │   └── reorder/
@@ -916,6 +923,7 @@ export function ProductPage({ product }: { product: Product }) {
 app/
 ├── components/             # フロントエンド共通コンポーネント
 │   ├── FixedHeader.tsx     # 固定ヘッダー
+│   ├── MobileMenu.tsx      # モバイルメニュー
 │   ├── Footer.tsx          # フッター
 │   ├── HeroSection.tsx     # ヒーローセクション
 │   ├── FAQSection.tsx      # FAQセクション
@@ -923,14 +931,20 @@ app/
 │   ├── ProductTile.tsx     # 商品タイル
 │   ├── ProductModal.tsx    # 商品モーダル
 │   ├── ProductCategoryTabs.tsx  # 商品カテゴリータブ
+│   ├── LazyGoogleMap.tsx   # Google Map遅延読み込み
+│   ├── LoadingScreen.tsx   # ローディング画面
 │   └── ErrorBoundary.tsx   # エラーバウンダリー
 ├── dashboard/              # ダッシュボード機能
 │   ├── components/         # ダッシュボード専用コンポーネント
-│   ├── hooks/              # カスタムフック
-│   ├── utils/              # ユーティリティ関数
-│   └── types.ts            # 共通型定義
-├── faq/                    # FAQページ
-│   └── page.tsx
+│   ├── homepage/           # 商品管理ページ
+│   │   ├── hooks/          # カスタムフック
+│   │   ├── utils/          # ユーティリティ関数
+│   │   └── types.ts        # 共通型定義
+│   └── shop/               # ショップ管理ページ
+├── (public)/               # 公開ページ（Route Group）
+│   ├── faq/                # FAQページ
+│   ├── about-ice/          # アイスについてページ
+│   └── shop/               # ショップページ
 └── api/                    # API Routes
     └── [resource]/
         └── route.ts
@@ -949,7 +963,9 @@ app/
 lib/                       # kebab-case で統一
 ├── api-helpers.ts         # API Routesヘルパー
 ├── api-types.ts           # API型定義
+├── auth-config.ts         # 認証設定（許可リストチェック）
 ├── blob.ts                # Blob Storage
+├── client-fetch.ts        # クライアントサイドAPI呼び出し
 ├── config.ts              # アプリケーション設定
 ├── env.ts                 # 環境変数管理
 ├── errors.ts              # エラーハンドリング
@@ -960,7 +976,7 @@ lib/                       # kebab-case で統一
 ├── products.ts            # 商品データ取得
 └── utils.ts               # 汎用ユーティリティ
 
-app/dashboard/utils/       # camelCase で統一
+app/dashboard/homepage/utils/  # camelCase で統一
 ├── productUtils.ts        # ダッシュボード専用の商品操作関数
 ├── productFormData.ts     # フォームデータ処理
 └── productFormSubmit.ts   # フォーム送信処理
@@ -971,7 +987,7 @@ app/dashboard/utils/       # camelCase で統一
 **機能別ディレクトリのユーティリティ**:
 
 ```
-app/dashboard/utils/
+app/dashboard/homepage/utils/
 └── productUtils.ts    # ダッシュボード専用の商品操作関数
 ```
 
