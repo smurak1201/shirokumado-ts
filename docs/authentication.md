@@ -15,12 +15,13 @@
   - [Userモデル](#userモデル)
   - [Accountモデル（OAuth連携情報）](#accountモデル（oauth連携情報）)
   - [Sessionモデル](#sessionモデル)
+  - [VerificationTokenモデル（Auth.js標準）](#verificationtokenモデル（auth.js標準）)
   - [AllowedAdminモデル（独自実装）](#allowedadminモデル（独自実装）)
   - [タイムスタンプについて](#タイムスタンプについて)
 - [環境変数設定](#環境変数設定)
   - [環境変数の取得方法](#環境変数の取得方法)
 - [アクセス制御](#アクセス制御)
-  - [Protected Routes（Proxy）](#protected-routes（proxy）)
+  - [Protected Routes（Proxy + Layout）](#protected-routes（proxy--layout）)
   - [許可リストによる認可](#許可リストによる認可)
   - [許可メールアドレスの管理](#許可メールアドレスの管理)
 - [セキュリティ](#セキュリティ)
@@ -52,7 +53,8 @@
 - **Google OAuth認証**: Googleアカウントでのログイン
 - **許可リスト方式**: `AllowedAdmin`テーブルで管理された許可メールアドレスのみアクセス可能
 - **データベースセッション**: Prismaアダプターによる7日間有効なセッション管理
-- **Proxyによるルートガード**: Next.js 16のProxy機能でリダイレクト制御を一元管理
+- **Proxyによるルートガード**: Next.js 16のProxy機能で認証ページのリダイレクト制御を管理
+- **Layout認証チェック**: ダッシュボードの認証チェックは`layout.tsx`で実施（OGPクローラー対応）
 
 ## 使用技術
 
@@ -232,6 +234,21 @@ model Session {
 }
 ```
 
+### VerificationTokenモデル（Auth.js標準）
+
+```prisma
+model VerificationToken {
+  identifier String
+  token      String
+  expires    DateTime
+
+  @@unique([identifier, token])
+  @@map("verification_tokens")
+}
+```
+
+Auth.jsが内部的に使用する検証トークンテーブルです。メール認証フローで使用されます。
+
 ### AllowedAdminモデル（独自実装）
 
 ```prisma
@@ -314,11 +331,15 @@ openssl rand -base64 32
 
 ## アクセス制御
 
-### Protected Routes（Proxy）
+### Protected Routes（Proxy + Layout）
+
+認証状態に基づくルートガードは、Proxy と Layout の2層で実装しています。
+
+#### Proxy（認証ページのリダイレクト）
 
 **実装場所**: [proxy.ts](../proxy.ts)
 
-Next.js 16のProxy機能を使用して、認証状態に基づくルートガードを一元管理しています。
+Next.js 16のProxy機能を使用して、認証ページへのアクセスを制御しています。
 
 ```typescript
 import { auth } from '@/auth';
@@ -335,26 +356,27 @@ export const proxy = auth((req) => {
     return;
   }
 
-  // ダッシュボードへのアクセス（未認証ならログインページへ）
-  if (pathname.startsWith('/dashboard')) {
-    if (!isLoggedIn) {
-      return Response.redirect(new URL('/auth/signin', req.url));
-    }
-    return;
-  }
+  // /dashboard配下の認証チェックはdashboard/layout.tsxで行う
+  // proxyでリダイレクトするとOGPクローラーがメタタグを取得できないため
 });
 
 export const config = {
-  matcher: ['/dashboard/:path*', '/auth/:path*'],
+  matcher: ['/auth/:path*'],
 };
 ```
+
+#### Layout（ダッシュボードの認証チェック）
+
+**実装場所**: [app/dashboard/layout.tsx](../app/dashboard/layout.tsx)
+
+ダッシュボードの認証チェックはProxy（ミドルウェア）ではなく、`layout.tsx`で実施しています。Proxyでリダイレクトすると、OGPクローラーがメタタグを取得できないためです。未認証時はリダイレクトではなくログイン案内を表示します。
 
 **ポイント**:
 - NextAuth v5の`auth()`関数を使用してセッションの有効性を確認
 - クッキーの存在だけでなく、実際のセッションの有効性をチェック
-- `/dashboard`以下への未認証アクセスは`/auth/signin`へリダイレクト
-- `/auth`以下への認証済みアクセスは`/dashboard/homepage`へリダイレクト
-- リダイレクトロジックをproxyに一元化することで、リダイレクトループを防止
+- `/auth`以下への認証済みアクセスは`/dashboard/homepage`へリダイレクト（Proxy）
+- `/dashboard`以下への未認証アクセスはログイン案内を表示（Layout）
+- OGPクローラーがダッシュボードページのメタタグを取得可能
 
 ### 許可リストによる認可
 
@@ -939,13 +961,13 @@ VALUES (gen_random_uuid(), 'newadmin@example.com', 'admin', NOW());
 | ファイル | 説明 |
 |---------|------|
 | [auth.ts](../auth.ts) | Auth.js設定（プロバイダー、セッション、コールバック） |
-| [proxy.ts](../proxy.ts) | 認証ルートガード（リダイレクト制御を一元管理） |
+| [proxy.ts](../proxy.ts) | 認証ページのルートガード（認証済みユーザーのリダイレクト） |
 | [lib/auth-config.ts](../lib/auth-config.ts) | 認可チェック（許可リスト） |
 | [app/api/auth/[...nextauth]/route.ts](../app/api/auth/[...nextauth]/route.ts) | Auth.js APIエンドポイント |
 | [app/auth/signin/page.tsx](../app/auth/signin/page.tsx) | ログインページ（Googleボタン） |
 | [app/auth/signin/WebViewGuard.tsx](../app/auth/signin/WebViewGuard.tsx) | アプリ内ブラウザ検出・外部ブラウザ誘導 |
 | [app/auth/error/page.tsx](../app/auth/error/page.tsx) | 認証エラーページ |
-| [app/dashboard/layout.tsx](../app/dashboard/layout.tsx) | ダッシュボード共通レイアウト・ヘッダー |
+| [app/dashboard/layout.tsx](../app/dashboard/layout.tsx) | ダッシュボード共通レイアウト（認証チェック・未認証時ログイン案内） |
 | [app/dashboard/components/DashboardHeader.tsx](../app/dashboard/components/DashboardHeader.tsx) | ユーザー情報・ログアウトボタン |
 | [prisma/schema.prisma](../prisma/schema.prisma) | データベーススキーマ（User, Account, Session等） |
 | [prisma/seed.ts](../prisma/seed.ts) | シーダーエントリーポイント（個別テーブル指定可能） |

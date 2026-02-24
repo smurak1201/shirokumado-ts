@@ -51,7 +51,9 @@ app/
 ├── hooks/            # カスタムフック
 ├── components/       # UIコンポーネント
 │   └── ui/          # shadcn/ui コンポーネント
-└── (public)/         # 公開ページ（Route Group）
+├── (public)/         # 公開ページ（Route Group）
+├── robots.ts         # robots.txt生成
+└── sitemap.ts        # sitemap.xml生成
 ```
 
 **設計思想**:
@@ -101,7 +103,11 @@ lib/
 ├── errors.ts         # エラーハンドリング
 ├── api-helpers.ts    # API共通処理
 ├── client-fetch.ts   # クライアントサイドAPI呼び出しユーティリティ
-└── auth-config.ts    # 認証設定（許可リストチェック）
+├── auth-config.ts    # 認証設定（許可リストチェック）
+├── env.ts            # 環境変数の型安全な管理
+├── logger.ts         # 構造化ログユーティリティ
+├── product-utils.ts  # 商品関連ユーティリティ
+└── products.ts       # 商品データ取得関数
 ```
 
 ## コンポーネント設計
@@ -113,6 +119,7 @@ lib/
 ```
 HomePage (Server Component)
   ├── FixedHeader (Server Component)
+  │   └── MobileMenu (Client Component)
   ├── HeroSection (Server Component)
   └── ProductCategoryTabs (Client Component)
       └── ProductGrid (Client Component)
@@ -124,6 +131,10 @@ HomePage (Server Component)
 FAQPage (Server Component)
   ├── FixedHeader (Server Component)
   └── FAQSection (Server Component)
+
+AboutIcePage (Server Component)
+  ├── FixedHeader (Server Component)
+  └── AboutIceContent (Client Component)
 ```
 
 #### ダッシュボード
@@ -288,6 +299,15 @@ const { selectedProduct, isModalOpen, handleProductClick, handleCloseModal } =
   useProductModal();
 ```
 
+##### `useInView`
+
+[`app/hooks/useInView.ts`](../app/hooks/useInView.ts) (`useInView`フック)
+
+```typescript
+// 要素の表示状態を監視（Intersection Observer）
+const { ref, isInView } = useInView();
+```
+
 ## データフロー
 
 **注意**: 技術的な詳細（使用している API、具体的な実装方法）については、[フロントエンドガイド](./guides/frontend/frontend-guide.md#データフロー)を参照してください。
@@ -365,22 +385,33 @@ Client Component (状態更新)
 export const config = {
   imageConfig: {
     MAX_FILE_SIZE_MB: 4,
-    COMPRESSION_TARGET_SIZE_MB: 3.5,
     MAX_FILE_SIZE_BYTES: 4 * 1024 * 1024,
+    COMPRESSION_TARGET_SIZE_MB: 3.5,
     MAX_IMAGE_WIDTH: 1920,
     MAX_IMAGE_HEIGHT: 1920,
     COMPRESSION_QUALITY: 0.85,
+    MAX_INPUT_SIZE_MB: 50, // ユーザーが選択できるファイルの上限
+    RECOMMENDED_FILE_SIZE_MB: 10, // この値を超えると警告を表示
+    IMAGE_LOAD_TIMEOUT_MS: 60000,
+    CREATE_IMAGE_BITMAP_THRESHOLD_MB: 5,
   },
   blobConfig: {
     PRODUCT_IMAGE_FOLDER: "products",
     CACHE_CONTROL_MAX_AGE: 31536000, // 1年
   },
   apiConfig: {
-    PRODUCT_LIST_CACHE_SECONDS: 60,
-    PRODUCT_LIST_STALE_WHILE_REVALIDATE_SECONDS: 120, // 2分
+    // 商品データは管理画面での更新時にrevalidatePathで即座に無効化されるため、長めに設定
+    PRODUCT_LIST_CACHE_SECONDS: 2592000, // 30日
+    PRODUCT_LIST_STALE_WHILE_REVALIDATE_SECONDS: 2592000, // 30日
   },
   displayConfig: {
     GRID_COLUMNS: 3,
+    MODAL_CLOSE_DELAY_MS: 300,
+  },
+  dndConfig: {
+    POINTER_ACTIVATION_DISTANCE: 5,
+    TOUCH_ACTIVATION_DELAY: 200,
+    TOUCH_TOLERANCE: 5,
   },
 };
 ```
