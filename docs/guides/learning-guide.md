@@ -8,6 +8,7 @@
 
 **関連ドキュメント**:
 
+- [JavaScript 基礎ガイド](./basics/javascript-basics-guide.md): JavaScript の基礎知識
 - [TypeScript ガイド](./basics/typescript-guide.md): 型システムの基礎
 - [React ガイド](./frontend/react-guide.md): コンポーネントと状態管理
 - [Next.js ガイド](./frontend/nextjs-guide.md): フレームワークの全体像
@@ -68,9 +69,10 @@ Java、PHP、Laravel の経験がある方は、以下の知識を活用でき�
 
 **読むべきドキュメント**:
 
-1. [TypeScript ガイド](./basics/typescript-guide.md) - 型システムの基礎
-2. [React ガイド](./frontend/react-guide.md) - コンポーネント、Hooks、状態管理
-3. [Async/Await ガイド](./basics/async-await-guide.md) - 非同期処理の基礎
+1. [JavaScript 基礎ガイド](./basics/javascript-basics-guide.md) - JavaScript の基礎知識
+2. [TypeScript ガイド](./basics/typescript-guide.md) - 型システムの基礎
+3. [React ガイド](./frontend/react-guide.md) - コンポーネント、Hooks、状態管理
+4. [Async/Await ガイド](./basics/async-await-guide.md) - 非同期処理の基礎
 
 **確認すべきファイル**:
 
@@ -92,6 +94,8 @@ Next.js の概念と使い方を理解します。
 - [`app/(public)/page.tsx`](../../app/(public)/page.tsx) - Server Component の例
 - [`app/api/products/route.ts`](../../app/api/products/route.ts) - API Route の例
 - [`lib/prisma.ts`](../../lib/prisma.ts) - Prisma Client の設定
+- [`prisma.config.ts`](../../prisma.config.ts) - Prisma 7 の接続設定
+- [`proxy.ts`](../../proxy.ts) - Next.js 16 Proxy 設定（認証ルートガード）
 
 ### ステップ 4: 認証とセキュリティの理解
 
@@ -121,9 +125,11 @@ Next.js の概念と使い方を理解します。
 **確認すべきファイル**:
 
 - [`app/dashboard/page.tsx`](../../app/dashboard/page.tsx) - ダッシュボードページ
+- [`app/dashboard/homepage/components/DashboardContent.tsx`](../../app/dashboard/homepage/components/DashboardContent.tsx) - ダッシュボードコンテンツ
 - [`app/dashboard/homepage/components/form/ProductForm.tsx`](../../app/dashboard/homepage/components/form/ProductForm.tsx) - 商品フォーム
 - [`app/dashboard/homepage/hooks/useProductForm.ts`](../../app/dashboard/homepage/hooks/useProductForm.ts) - フォーム状態管理フック
 - [`app/components/ProductGrid.tsx`](../../app/components/ProductGrid.tsx) - コンポーネント実装
+- [`app/(public)/HomeContent.tsx`](../../app/(public)/HomeContent.tsx) - ホームページコンテンツ
 
 ## ドキュメントの読み順序
 
@@ -139,41 +145,44 @@ Next.js の概念と使い方を理解します。
 
 | 順番 | ドキュメント | 内容 |
 |------|-------------|------|
-| 4 | [TypeScript ガイド](./basics/typescript-guide.md) | 型定義、インターフェース、ジェネリクス |
-| 5 | [React ガイド](./frontend/react-guide.md) | コンポーネント、Hooks、状態管理 |
-| 6 | [Async/Await ガイド](./basics/async-await-guide.md) | 非同期処理、Promise、エラーハンドリング |
-| 6.5 | [Node.js ガイド](./backend/nodejs-guide.md) | ランタイム、npm、環境変数管理 |
+| 4 | [JavaScript 基礎ガイド](./basics/javascript-basics-guide.md) | JavaScript の基礎知識 |
+| 5 | [TypeScript ガイド](./basics/typescript-guide.md) | 型定義、インターフェース、ジェネリクス |
+| 6 | [React ガイド](./frontend/react-guide.md) | コンポーネント、Hooks、状態管理 |
+| 7 | [Async/Await ガイド](./basics/async-await-guide.md) | 非同期処理、Promise、エラーハンドリング |
+| 8 | [Node.js ガイド](./backend/nodejs-guide.md) | ランタイム、npm、環境変数管理 |
 
 ### フレームワーク（重要）
 
 | 順番 | ドキュメント | 内容 |
 |------|-------------|------|
-| 7 | [Next.js ガイド](./frontend/nextjs-guide.md) | 画像最適化、フォント最適化、メタデータ |
-| 8 | [App Router ガイド](./frontend/app-router-guide.md) | Server/Client Components、API Routes |
-| 9 | [Prisma ガイド](./backend/prisma-guide.md) | スキーマ定義、クエリ、マイグレーション |
-| 10 | [Auth.js ガイド](./backend/authjs-guide.md) | 認証システム、OAuth、セッション管理 |
+| 9 | [Next.js ガイド](./frontend/nextjs-guide.md) | 画像最適化、フォント最適化、メタデータ |
+| 10 | [App Router ガイド](./frontend/app-router-guide.md) | Server/Client Components、API Routes |
+| 11 | [Prisma ガイド](./backend/prisma-guide.md) | スキーマ定義、クエリ、マイグレーション |
+| 12 | [Auth.js ガイド](./backend/authjs-guide.md) | 認証システム、OAuth、セッション管理 |
 
 ### 実装詳細（応用）
 
 | 順番 | ドキュメント | 内容 |
 |------|-------------|------|
-| 11 | [フロントエンドガイド](./frontend/frontend-guide.md) | ページ構成、コンポーネント、データフロー |
-| 12 | [ダッシュボードガイド](./frontend/dashboard-guide.md) | フォーム、状態管理、API 連携 |
-| 13 | [開発ガイドライン](../development-guide.md) | コーディング規約、ベストプラクティス |
+| 13 | [フロントエンドガイド](./frontend/frontend-guide.md) | ページ構成、コンポーネント、データフロー |
+| 14 | [ダッシュボードガイド](./frontend/dashboard-guide.md) | フォーム、状態管理、API 連携 |
+| 15 | [開発ガイドライン](../development-guide.md) | コーディング規約、ベストプラクティス |
 
 ### その他（参考）
 
 | ドキュメント | 内容 |
 |-------------|------|
-| [Node.js ガイド](./backend/nodejs-guide.md) | ランタイム、npm、環境変数管理 |
 | [JSX ガイド](./basics/jsx-guide.md) | JSX 構文、HTML との違い |
 | [ユーティリティガイド](./backend/utilities-guide.md) | 画像圧縮、Blob Storage、設定管理 |
 | [shadcn/ui ガイド](./frontend/shadcn-ui-guide.md) | UI コンポーネントライブラリの使用方法 |
 | [スタイリングベストプラクティス](./frontend/styling-best-practices.md) | Tailwind CSS の使い方 |
 | [SEO ガイド](./frontend/seo-guide.md) | メタデータ、JSON-LD、クロール制御、Core Web Vitals |
 | [Git/GitHub ガイド](./tools/git-github-guide.md) | Git 操作、GitHub の使い方 |
+| [Claude Agent Teams ガイド](./tools/claude-agent-teams-guide.md) | Claude Agent Teams の使い方 |
+| [Claude スキルガイド](./tools/claude-skills-guide.md) | Claude スキルの作成・管理 |
 | [アーキテクチャ](../architecture.md) | 設計思想と理由 |
 | [認証ドキュメント](../authentication.md) | 認証の詳細実装 |
+| [Prisma & Blob セットアップ](../setup-prisma-blob.md) | Prisma と Blob Storage のセットアップ手順 |
 
 ## ファイルの読み順序
 
@@ -185,6 +194,9 @@ Next.js の概念と使い方を理解します。
 | [`tsconfig.json`](../../tsconfig.json) | TypeScript 設定、パスエイリアス |
 | [`next.config.ts`](../../next.config.ts) | Next.js 設定、画像最適化 |
 | [`prisma/schema.prisma`](../../prisma/schema.prisma) | データベーススキーマ |
+| [`prisma.config.ts`](../../prisma.config.ts) | Prisma 7 設定（接続情報） |
+| [`proxy.ts`](../../proxy.ts) | Next.js 16 Proxy 設定（認証ルートガード） |
+| [`vercel.json`](../../vercel.json) | Vercel 設定（Cron job） |
 
 ### 2. 共通ライブラリ
 
@@ -194,6 +206,9 @@ Next.js の概念と使い方を理解します。
 | [`lib/prisma.ts`](../../lib/prisma.ts) | Prisma Client、`safePrismaOperation` |
 | [`lib/errors.ts`](../../lib/errors.ts) | エラークラス、エラーコード定数 |
 | [`lib/api-helpers.ts`](../../lib/api-helpers.ts) | API Routes 用ヘルパー関数 |
+| [`lib/env.ts`](../../lib/env.ts) | 環境変数の型安全な管理 |
+| [`lib/logger.ts`](../../lib/logger.ts) | 構造化ログユーティリティ |
+| [`lib/client-fetch.ts`](../../lib/client-fetch.ts) | クライアントサイド API 呼び出し（`fetchJson`） |
 
 ### 3. 型定義
 
@@ -209,6 +224,9 @@ Next.js の概念と使い方を理解します。
 |---------|-----------|
 | [`app/components/ProductTile.tsx`](../../app/components/ProductTile.tsx) | props、JSX、スタイリング、`React.memo` |
 | [`app/components/FixedHeader.tsx`](../../app/components/FixedHeader.tsx) | ナビゲーション、レイアウト |
+| [`app/components/HeroSection.tsx`](../../app/components/HeroSection.tsx) | ヒーローセクション、画像表示 |
+| [`app/components/Footer.tsx`](../../app/components/Footer.tsx) | フッター、店舗情報、Google Map |
+| [`app/components/FAQSection.tsx`](../../app/components/FAQSection.tsx) | アコーディオン、shadcn/ui |
 
 ### 5. Server Component
 
@@ -216,6 +234,8 @@ Next.js の概念と使い方を理解します。
 |---------|-----------|
 | [`app/(public)/page.tsx`](../../app/(public)/page.tsx) | データベースからのデータ取得、動的レンダリング |
 | [`app/(public)/faq/page.tsx`](../../app/(public)/faq/page.tsx) | 静的コンテンツの表示 |
+| [`app/(public)/about-ice/page.tsx`](../../app/(public)/about-ice/page.tsx) | ページ構成、データ分離 |
+| [`app/(public)/shop/page.tsx`](../../app/(public)/shop/page.tsx) | ショップページ |
 
 ### 6. Client Component
 
@@ -223,7 +243,10 @@ Next.js の概念と使い方を理解します。
 |---------|-----------|
 | [`app/components/ProductGrid.tsx`](../../app/components/ProductGrid.tsx) | `useCallback`、カスタムフックの使用 |
 | [`app/hooks/useProductModal.ts`](../../app/hooks/useProductModal.ts) | `useState`、状態管理パターン |
+| [`app/hooks/useInView.ts`](../../app/hooks/useInView.ts) | Intersection Observer、要素の表示監視 |
 | [`app/components/ProductCategoryTabs.tsx`](../../app/components/ProductCategoryTabs.tsx) | タブ切り替え、shadcn/ui の使用 |
+| [`app/components/MobileMenu.tsx`](../../app/components/MobileMenu.tsx) | モバイルメニュー、レスポンシブ対応 |
+| [`app/components/ProductModal.tsx`](../../app/components/ProductModal.tsx) | モーダル表示、商品詳細 |
 
 ### 7. API Routes
 
@@ -232,15 +255,20 @@ Next.js の概念と使い方を理解します。
 | [`app/api/products/route.ts`](../../app/api/products/route.ts) | GET/POST、バリデーション、Prisma |
 | [`app/api/products/[id]/route.ts`](../../app/api/products/[id]/route.ts) | 動的ルート、PUT/DELETE |
 | [`app/api/products/upload/route.ts`](../../app/api/products/upload/route.ts) | ファイルアップロード |
+| [`app/api/products/reorder/route.ts`](../../app/api/products/reorder/route.ts) | 商品の並び替え、トランザクション |
 
 ### 8. 複雑な機能
 
 | ファイル | 学べること |
 |---------|-----------|
 | [`app/dashboard/page.tsx`](../../app/dashboard/page.tsx) | Server/Client Component の連携 |
+| [`app/dashboard/homepage/components/DashboardContent.tsx`](../../app/dashboard/homepage/components/DashboardContent.tsx) | ダッシュボード全体の構成 |
 | [`app/dashboard/homepage/components/form/ProductForm.tsx`](../../app/dashboard/homepage/components/form/ProductForm.tsx) | フォーム実装、カスタムフック使用 |
 | [`app/dashboard/homepage/hooks/useProductForm.ts`](../../app/dashboard/homepage/hooks/useProductForm.ts) | 複雑な状態管理、画像アップロード |
+| [`app/dashboard/homepage/hooks/useProductSearch.ts`](../../app/dashboard/homepage/hooks/useProductSearch.ts) | 検索・フィルタリングのフック |
+| [`app/dashboard/homepage/hooks/useProductReorder.ts`](../../app/dashboard/homepage/hooks/useProductReorder.ts) | ドラッグ&ドロップの並び替え |
 | [`app/dashboard/homepage/components/list/ProductList.tsx`](../../app/dashboard/homepage/components/list/ProductList.tsx) | 検索、フィルタリング、ドラッグ&ドロップ |
+| [`app/(public)/HomeContent.tsx`](../../app/(public)/HomeContent.tsx) | ホームページの Client Component 実装 |
 
 ## ソースコードを読むときのコツ
 
@@ -250,10 +278,12 @@ Next.js の概念と使い方を理解します。
 
 | 目的 | 読むファイル |
 |------|-------------|
-| 商品一覧表示 | `app/(public)/page.tsx` → `ProductCategoryTabs.tsx` → `ProductGrid.tsx` |
+| 商品一覧表示 | `app/(public)/page.tsx` → `HomeContent.tsx` → `ProductCategoryTabs.tsx` → `ProductGrid.tsx` |
 | 商品追加 | `ProductForm.tsx` → `useProductForm.ts` → `ProductFormFields.tsx` |
-| 検索機能 | `ProductList.tsx` → `ProductSearchFilters.tsx` → `productUtils.ts` |
+| 検索機能 | `ProductList.tsx` → `ProductSearchFilters.tsx` → `useProductSearch.ts` |
+| 商品並び替え | `ProductLayoutTab.tsx` → `SortableProductItem.tsx` → `useProductReorder.ts` |
 | データベース取得 | `app/api/products/route.ts` → `lib/prisma.ts` |
+| 認証フロー | `auth.ts` → `lib/auth-config.ts` → `proxy.ts` → `app/dashboard/layout.tsx` |
 
 ### 2. 型定義を先に確認する
 
@@ -274,7 +304,9 @@ import { ValidationError } from "@/lib/errors";
 
 - **エラーハンドリング**: `withErrorHandling` ラッパーの使用
 - **データベース操作**: `safePrismaOperation` の使用
+- **クライアント API 呼び出し**: `fetchJson` の使用
 - **コンポーネント**: Server Component と Client Component の使い分け
+- **環境変数**: `getServerEnv` / `getClientEnv` による型安全な管理
 
 ### 5. 実際に動かしながら読む
 
@@ -327,11 +359,13 @@ Laravel のルーティングと MVC パターンと比較しながら学習す�
 | [`app/(public)/page.tsx`](../../app/(public)/page.tsx) | Server Component、動的レンダリング |
 | [`app/layout.tsx`](../../app/layout.tsx) | ルートレイアウト、メタデータ |
 | [`app/api/products/route.ts`](../../app/api/products/route.ts) | API Route、GET/POST |
+| [`proxy.ts`](../../proxy.ts) | Next.js 16 Proxy 設定、認証ルートガード |
 
 **Laravel との比較**:
 
 - `app/page.tsx` ≈ `routes/web.php` + `resources/views`
 - `app/api/` ≈ `routes/api.php`
+- `proxy.ts` ≈ ミドルウェアの認証チェック
 - Server Component ≈ コントローラー
 
 ### Prisma
@@ -369,6 +403,7 @@ Tailwind CSS v4 では CSS-based 設定を使用しています。
 |---------|-----------|
 | [`auth.ts`](../../auth.ts) | Auth.js エントリーポイント |
 | [`lib/auth-config.ts`](../../lib/auth-config.ts) | 認証設定、プロバイダー |
+| [`proxy.ts`](../../proxy.ts) | Proxy による認証ルートガード |
 | [`app/dashboard/layout.tsx`](../../app/dashboard/layout.tsx) | 認証チェック、保護されたルート |
 
 ## Java/PHP/Laravel 経験者向けの補足
@@ -402,7 +437,7 @@ Tailwind CSS v4 では CSS-based 設定を使用しています。
 ### ミドルウェアの対応
 
 - Laravel: ミドルウェアクラス
-- Next.js: API Routes で `withErrorHandling` ラッパー + 認証は Auth.js で管理
+- Next.js: API Routes で `withErrorHandling` ラッパー + 認証は Auth.js + `proxy.ts`（Next.js 16 Proxy）で管理
 
 ## よくある質問
 
@@ -451,6 +486,7 @@ Tailwind CSS v4 では CSS-based 設定を使用しています。
 1. [`lib/errors.ts`](../../lib/errors.ts) - エラークラスの定義
 2. [`lib/api-helpers.ts`](../../lib/api-helpers.ts) - `withErrorHandling` の実装
 3. [`lib/prisma.ts`](../../lib/prisma.ts) - `safePrismaOperation` の実装
+4. [`lib/client-fetch.ts`](../../lib/client-fetch.ts) - クライアントサイドの `fetchJson` の実装
 
 詳細: [開発ガイドライン](../development-guide.md)
 
