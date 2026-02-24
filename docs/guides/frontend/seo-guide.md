@@ -392,7 +392,7 @@ const localBusinessJsonLd = {
     addressCountry: "JP",
   },
   openingHoursSpecification: { ... },
-  servesCuisine: "かき氷",
+  servesCuisine: ["かき氷", "スイーツ", "デザート"],
   priceRange: "¥",
   image: `${BASE_URL}/og-image.png`,
 };

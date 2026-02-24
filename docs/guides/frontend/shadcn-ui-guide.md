@@ -241,7 +241,6 @@ export function ProductCard({ className, ...props }: ProductCardProps) {
 
 - [`app/components/ui/card-product.tsx`](../../app/components/ui/card-product.tsx): 商品タイル用の Card ラッパー
 - [`app/components/ui/card-modal.tsx`](../../app/components/ui/card-modal.tsx): モーダル内で使用する Card ラッパー
-- [`app/components/ui/card-faq.tsx`](../../app/components/ui/card-faq.tsx): FAQ 用の Card ラッパー
 - [`app/components/ui/badge-price.tsx`](../../app/components/ui/badge-price.tsx): 価格表示用の Badge ラッパー
 - [`app/components/ui/badge-question.tsx`](../../app/components/ui/badge-question.tsx): 質問番号用の Badge ラッパー
 
@@ -267,13 +266,27 @@ export function ProductCard({ className, ...props }: ProductCardProps) {
 **ファイル一覧の例**:
 
 ```
+accordion.tsx      (shadcn/ui)
+aspect-ratio.tsx   (shadcn/ui)
 badge.tsx          (shadcn/ui)
 badge-price.tsx    (ラッパー)
 badge-question.tsx (ラッパー)
+button.tsx         (shadcn/ui)
 card.tsx           (shadcn/ui)
-card-faq.tsx       (ラッパー)
 card-modal.tsx     (ラッパー)
 card-product.tsx   (ラッパー)
+dialog.tsx         (shadcn/ui)
+input.tsx          (shadcn/ui)
+label.tsx          (shadcn/ui)
+radio-group.tsx    (shadcn/ui)
+scroll-area.tsx    (shadcn/ui)
+select.tsx         (shadcn/ui)
+separator.tsx      (shadcn/ui)
+sheet.tsx          (shadcn/ui)
+sonner.tsx         (shadcn/ui)
+tabs.tsx           (shadcn/ui)
+textarea.tsx       (shadcn/ui)
+tooltip.tsx        (shadcn/ui)
 ```
 
 **推奨事項**:

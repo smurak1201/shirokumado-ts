@@ -128,18 +128,14 @@ const [isFormOpen, setIsFormOpen] = useState(false);
 
 3. **[`app/dashboard/homepage/hooks/useTabState.ts`](../../app/dashboard/homepage/hooks/useTabState.ts) (`useTabState`フック)** - タブ状態の管理（localStorage と同期）
 
+内部で `useLocalStorageState` を使用してhydrationエラーを防止しています。
+
 ```typescript
-const [activeTab, setActiveTab] = useState<TabType>(() => {
-  if (typeof window !== "undefined") {
-    const saved = localStorage.getItem(STORAGE_KEYS.ACTIVE_TAB);
-    // 保存された値が有効なタブタイプか確認
-    if (saved === "list" || saved === "layout") {
-      return saved;
-    }
-  }
-  // デフォルトは "list" タブ
-  return "list";
-});
+const [activeTab, setActiveTab] = useLocalStorageState<TabType>(
+  STORAGE_KEYS.ACTIVE_TAB,
+  "list",
+  { validate: (v) => TAB_VALUES.includes(v as TabType) }
+);
 ```
 
 **useState の特徴**:
@@ -291,15 +287,11 @@ const handleEdit = useCallback((product: Product) => {
 }, []);
 ```
 
-[`app/dashboard/homepage/components/list/ProductList.tsx`](../../app/dashboard/homepage/components/list/ProductList.tsx) (`handleDelete`関数)
+商品削除処理は `useProductDelete` カスタムフックに分離されています。
 
 ```typescript
-const handleDelete = useCallback(
-  async (productId: number) => {
-    // ...
-  },
-  [refreshProducts]
-);
+// app/dashboard/homepage/hooks/useProductDelete.ts
+const { handleDelete } = useProductDelete(refreshProducts);
 ```
 
 **useCallback の特徴**:
@@ -609,34 +601,20 @@ export default function ProductGrid({ category, products }: ProductGridProps) {
 [`app/dashboard/homepage/hooks/useTabState.ts`](../../app/dashboard/homepage/hooks/useTabState.ts) (`useTabState`フック)
 
 ```typescript
-  // 初期値を localStorage から読み込む
-  // サーバーサイドレンダリング時は window が存在しないため、typeof window チェックが必要
-  const [activeTab, setActiveTab] = useState<TabType>(() => {
-    if (typeof window !== "undefined") {
-      const saved = localStorage.getItem(STORAGE_KEYS.ACTIVE_TAB);
-      // 保存された値が有効なタブタイプか確認
-      if (saved === "list" || saved === "layout") {
-        return saved;
-      }
-    }
-    // デフォルトは "list" タブ
-    return "list";
-  });
-
-  // タブが変更されたら localStorage に保存
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      localStorage.setItem(STORAGE_KEYS.ACTIVE_TAB, activeTab);
-    }
-  }, [activeTab]);
+export function useTabState() {
+  const [activeTab, setActiveTab] = useLocalStorageState<TabType>(
+    STORAGE_KEYS.ACTIVE_TAB,
+    "list",
+    { validate: (v) => TAB_VALUES.includes(v as TabType) }
+  );
 
   return { activeTab, setActiveTab };
 }
 ```
 
+- 内部で `useLocalStorageState` を使用してhydrationエラーを防止
 - タブの状態を localStorage に保存・復元
-- ページリロード後も選択していたタブを保持
-- サーバーサイドレンダリング時の `window` チェック
+- `validate` 関数で保存値の検証を行い、無効な値はデフォルト値にフォールバック
 
 ### useCategoryTabState
 
@@ -674,61 +652,39 @@ export function useCategoryTabState(
   products: Product[],
   categories: Category[]
 ) {
-  /**
-   * 初期カテゴリータブを決定
-   * 優先順位:
-   * 1. localStorage に保存されたカテゴリー（存在する場合）
-   * 2. 公開商品がある最初のカテゴリー
-   * 3. 最初のカテゴリー（ID順）
-   */
-  const initialCategoryTab = useMemo(() => {
-    // localStorage から保存されたカテゴリータブを読み込む
-    if (typeof window !== "undefined") {
-      const saved = localStorage.getItem(STORAGE_KEYS.ACTIVE_CATEGORY_TAB);
-      if (saved) {
-        // 保存されたカテゴリーが現在も存在するか確認
-        const categoryExists = categories.some((c) => c.name === saved);
-        if (categoryExists) {
-          return saved;
-        }
-      }
-    }
-
-    // 公開商品があるカテゴリーを探す
+  // 公開商品があるカテゴリーを優先的に選択
+  const defaultCategoryTab = useMemo(() => {
     const published = products.filter((p) => p.published);
-    // カテゴリーをID順でソート（小さい順）
     const sortedCategories = [...categories].sort((a, b) => a.id - b.id);
+
     if (published.length > 0) {
-      // 公開商品がある最初のカテゴリーを探す
       const firstCategory = sortedCategories.find((c) =>
         published.some((p) => p.category.id === c.id)
       );
       return firstCategory?.name || sortedCategories[0]?.name || "";
     }
-    // 公開商品がない場合は最初のカテゴリーを返す
     return sortedCategories[0]?.name || "";
   }, [products, categories]);
 
-  // カテゴリータブの状態を管理
-  const [activeCategoryTab, setActiveCategoryTab] = useState<string>(
-    initialCategoryTab
-  );
+  const [activeCategoryTab, setActiveCategoryTab] =
+    useLocalStorageState<string>(
+      STORAGE_KEYS.ACTIVE_CATEGORY_TAB,
+      defaultCategoryTab,
+      { validate: (v) => categories.some((c) => c.name === v) }
+    );
 
-  // カテゴリータブが変更されたら localStorage に保存
-  useEffect(() => {
-    if (typeof window !== "undefined" && activeCategoryTab) {
-      localStorage.setItem(STORAGE_KEYS.ACTIVE_CATEGORY_TAB, activeCategoryTab);
-    }
-  }, [activeCategoryTab]);
-
-  return { activeCategoryTab, setActiveCategoryTab, initialCategoryTab };
+  return {
+    activeCategoryTab,
+    setActiveCategoryTab,
+    initialCategoryTab: defaultCategoryTab,
+  };
 }
 ```
 
-- カテゴリータブの状態を localStorage に保存・復元
+- 内部で `useLocalStorageState` を使用してhydrationエラーを防止
 - 公開商品がある最初のカテゴリーを自動選択
-- ページリロード後も選択していたカテゴリーを保持
-- `useMemo` を使用して初期値の計算を最適化
+- `validate` 関数で保存されたカテゴリーが現在も存在するか確認
+- `useMemo` を使用してデフォルト値の計算を最適化
 
 ### useProductReorder
 
@@ -1309,7 +1265,7 @@ function ProductTile({ product, onClick }: ProductTileProps) {
    - [`ProductGrid.tsx`](../../app/components/ProductGrid.tsx): 商品グリッド（モーダル表示などのインタラクティブ機能）
    - [`ProductTile.tsx`](../../app/components/ProductTile.tsx): 商品タイル（クリックイベント処理）
    - [`ProductModal.tsx`](../../app/components/ProductModal.tsx): 商品詳細モーダル（ESC キー処理、背景スクロール無効化）
-   - [`FixedHeader.tsx`](../../app/components/FixedHeader.tsx): ヘッダー（Server Component）
+   - [`FixedHeader.tsx`](../../app/components/FixedHeader.tsx): ヘッダー（Server Component、モバイルメニュー含む）
    - [`Footer.tsx`](../../app/components/Footer.tsx): フッター（Server Component）
 
 2. **ダッシュボードコンポーネント** (`app/dashboard/homepage/components/`)
@@ -1324,10 +1280,14 @@ function ProductTile({ product, onClick }: ProductTileProps) {
 1. **フロントエンド用フック** (`app/hooks/`)
 
    - [`useProductModal.ts`](../../app/hooks/useProductModal.ts): 商品モーダルの状態管理
+   - [`useInView.ts`](../../app/hooks/useInView.ts): ビューポート交差検知（Intersection Observer）
 
 2. **ダッシュボード用フック** (`app/dashboard/homepage/hooks/`)
 
-   - [`useTabState.ts`](../../app/dashboard/homepage/hooks/useTabState.ts): タブ状態管理（localStorage との連携）
+   - [`useLocalStorageState.ts`](../../app/dashboard/homepage/hooks/useLocalStorageState.ts): localStorage永続化の汎用フック（hydration対応）
+   - [`useTabState.ts`](../../app/dashboard/homepage/hooks/useTabState.ts): タブ状態管理（`useLocalStorageState`を使用）
+   - [`useProductDelete.ts`](../../app/dashboard/homepage/hooks/useProductDelete.ts): 商品削除ロジック（`fetchJson`・toast通知）
+   - [`useProductSearch.ts`](../../app/dashboard/homepage/hooks/useProductSearch.ts): 商品検索ロジック
    - [`useProductReorder.ts`](../../app/dashboard/homepage/hooks/useProductReorder.ts): 商品順序変更ロジック（楽観的 UI 更新）
 
 ### 状態管理のパターン
