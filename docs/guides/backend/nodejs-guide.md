@@ -602,52 +602,58 @@ if (process.env.NODE_ENV !== 'production') {
 
 ### シーダースクリプト
 
-[`prisma/seed.ts`](../../prisma/seed.ts) は、Node.js で直接実行されるスクリプトです。`tsx`（TypeScript 実行ツール）を使用して実行します。
+[`prisma/seed.ts`](../../prisma/seed.ts) は、Node.js で直接実行されるスクリプトです。`tsx`（TypeScript 実行ツール）を使用して実行します。コマンドライン引数や対話モードでシード対象テーブルを指定可能です。
 
 ```typescript
 import { PrismaClient } from '@prisma/client';
 import { PrismaNeon } from '@prisma/adapter-neon';
+import * as readline from 'readline';
 import 'dotenv/config'; // .env ファイルから環境変数を読み込み
+import { seedRoles } from './seeds/roles';
+import { seedCategories } from './seeds/categories';
+// ...
 
-const databaseUrl = process.env.DATABASE_URL;
+async function main(): Promise<void> {
+  const targets = await parseArgs(); // 引数解析 or 対話モード
 
-if (!databaseUrl) {
-  throw new Error('DATABASE_URL environment variable is not set.');
-}
-
-const adapter = new PrismaNeon({ connectionString: databaseUrl });
-const prisma = new PrismaClient({ adapter });
-
-async function main() {
-  console.log('シードデータの投入を開始します...');
-
-  // カテゴリー、商品などの初期データを投入
-  for (const category of CATEGORIES) {
-    await prisma.category.upsert({
-      where: { name: category.name },
-      update: {},
-      create: { name: category.name },
-    });
+  const databaseUrl = process.env.DATABASE_URL;
+  if (!databaseUrl) {
+    throw new Error('DATABASE_URL environment variable is not set.');
   }
 
-  console.log('シードデータの投入が完了しました！');
+  const adapter = new PrismaNeon({ connectionString: databaseUrl });
+  const prisma = new PrismaClient({ adapter });
+
+  try {
+    for (const target of targets) {
+      await SEEDERS[target].fn(prisma);
+    }
+    console.log('シードデータの投入が完了しました！');
+  } finally {
+    await prisma.$disconnect();
+  }
 }
 
-main()
-  .catch((e) => {
-    console.error('シードデータの投入中にエラーが発生しました:', e);
-    process.exit(1);
-  })
-  .finally(async () => {
-    await prisma.$disconnect();
-  });
+main().catch((e) => {
+  console.error('シードデータの投入中にエラーが発生しました:', e);
+  process.exit(1);
+});
+```
+
+**実行方法**:
+
+```bash
+npm run db:seed                          # 対話モード（番号で選択）
+npm run db:seed -- all                   # 全テーブル
+npm run db:seed -- roles categories      # 複数指定
 ```
 
 **ポイント**:
 
 - `dotenv/config` で `.env` ファイルから環境変数を読み込む（Next.js 外で実行するため、明示的なインポートが必要）
 - `process.exit(1)` でエラー時にプロセスを異常終了させる
-- `prisma.$disconnect()` で確実にデータベース接続を切断する
+- `prisma.$disconnect()` で `finally` ブロック内で確実にデータベース接続を切断する
+- テーブルごとにシードファイルを `prisma/seeds/` に分割し、個別にシード可能
 
 ### 環境別のログ出力
 

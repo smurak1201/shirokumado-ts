@@ -16,8 +16,11 @@
   - [calculatePublishedStatus](#calculatepublishedstatus)
   - [hasDateRange](#hasdaterange)
   - [formatPrice](#formatprice)
+  - [formatPriceForInput](#formatpriceforinput)
   - [parsePrice](#parseprice)
   - [isNumericKey](#isnumerickey)
+  - [resolveDateValue](#resolvedatevalue)
+  - [determinePublishedStatus](#determinepublishedstatus)
 - [画像圧縮ユーティリティ (`lib/image-compression/`)](#画像圧縮ユーティリティ-libimage-compression)
   - [compressImage](#compressimage)
   - [画像圧縮の仕組み](#画像圧縮の仕組み)
@@ -32,6 +35,8 @@
 - [エラーハンドリング (`lib/errors.ts`)](#エラーハンドリング-liberrorsts)
   - [エラーコードの定数定義](#エラーコードの定数定義)
   - [エラークラス](#エラークラス)
+  - [エラーメッセージ関数](#エラーメッセージ関数)
+  - [API ヘルパー関数 (`lib/api-helpers.ts`)](#api-ヘルパー関数-libapi-helpersts)
 - [API レスポンスの型定義 (`lib/api-types.ts`)](#api-レスポンスの型定義-libapi-typests)
   - [型定義の一覧](#型定義の一覧)
   - [使用例](#使用例)
@@ -199,7 +204,7 @@ if (hasDateRange(product.publishedAt, product.endedAt)) {
 
 ### formatPrice
 
-数値をカンマ区切りの文字列に変換します。
+数値を「¥」付きカンマ区切りの文字列に変換します（表示用）。
 
 [`lib/product-utils.ts`](../../lib/product-utils.ts) (`formatPrice`関数)
 
@@ -213,7 +218,7 @@ export function formatPrice(value: string | number | null | undefined): string {
   if (isNaN(numValue)) {
     return "";
   }
-  return numValue.toLocaleString("ja-JP");
+  return `¥${numValue.toLocaleString("ja-JP")}`;
 }
 ```
 
@@ -222,15 +227,43 @@ export function formatPrice(value: string | number | null | undefined): string {
 ```typescript
 import { formatPrice } from "@/lib/product-utils";
 
-formatPrice(1000); // "1,000"
-formatPrice("2000"); // "2,000"
+formatPrice(1000); // "¥1,000"
+formatPrice("2000"); // "¥2,000"
 formatPrice(null); // ""
 ```
 
 **理由**:
 
-- **表示形式の統一**: 価格を常にカンマ区切りで表示し、ユーザー体験を向上
+- **表示形式の統一**: 価格を常に「¥」付きカンマ区切りで表示し、ユーザー体験を向上
 - **null 安全**: null や undefined を安全に処理
+
+### formatPriceForInput
+
+数値をカンマ区切りの文字列に変換します（入力フィールド用、「¥」なし）。
+
+[`lib/product-utils.ts`](../../lib/product-utils.ts) (`formatPriceForInput`関数)
+
+```typescript
+export function formatPriceForInput(value: string | number | null | undefined): string {
+  if (value === null || value === undefined || value === "") {
+    return "";
+  }
+  const numValue = typeof value === "string" ? parseFloat(value.replace(/,/g, "")) : value;
+  if (isNaN(numValue)) {
+    return "";
+  }
+  return numValue.toLocaleString("ja-JP");
+}
+```
+
+**使用例**:
+
+```typescript
+import { formatPriceForInput } from "@/lib/product-utils";
+
+formatPriceForInput(1000); // "1,000"
+formatPriceForInput("2000"); // "2,000"
+```
 
 ### parsePrice
 
@@ -319,6 +352,52 @@ import { isNumericKey } from "@/lib/product-utils";
 
 - **入力検証**: 価格入力フィールドで数字以外の入力を防止
 - **ユーザー体験**: コピー&ペーストなどの操作は許可し、使いやすさを維持
+
+### resolveDateValue
+
+日付の値を解決します（商品更新API用）。`undefined` は既存値を維持、`null` は削除、`string` は更新。
+
+[`lib/product-utils.ts`](../../lib/product-utils.ts) (`resolveDateValue`関数)
+
+```typescript
+export function resolveDateValue(
+  requestValue: string | null | undefined,
+  existingValue: Date | null
+): Date | null {
+  if (requestValue === undefined) {
+    return existingValue;
+  }
+  if (requestValue === null) {
+    return null;
+  }
+  return new Date(requestValue);
+}
+```
+
+### determinePublishedStatus
+
+商品の公開状態を決定します。日付範囲が設定されている場合は自動判定を優先し、それ以外は手動設定フラグを使用します。
+
+[`lib/product-utils.ts`](../../lib/product-utils.ts) (`determinePublishedStatus`関数)
+
+```typescript
+export function determinePublishedStatus(
+  publishedAt: Date | null,
+  endedAt: Date | null,
+  manualPublished?: boolean,
+  defaultPublished: boolean = true
+): boolean {
+  if (publishedAt || endedAt) {
+    return calculatePublishedStatus(publishedAt, endedAt);
+  }
+  return manualPublished !== undefined ? manualPublished : defaultPublished;
+}
+```
+
+**このアプリでの使用箇所**:
+
+- [`app/api/products/route.ts`](../../app/api/products/route.ts): 商品作成時の公開状態判定
+- [`app/api/products/[id]/put.ts`](../../app/api/products/[id]/put.ts): 商品更新時の公開状態判定
 
 ## 画像圧縮ユーティリティ (`lib/image-compression/`)
 
@@ -694,6 +773,45 @@ if (!product) {
 - **適切な HTTP ステータスコード**: エラーの種類に応じた適切なステータスコードが設定される
 - **エラーコードの自動設定**: エラークラスを使用すると、適切なエラーコードが自動的に設定される
 
+### エラーメッセージ関数
+
+[`lib/errors.ts`](../../lib/errors.ts) では、エラーメッセージをユーザーフレンドリーな形式に変換する関数を提供しています。
+
+- `getUserFriendlyMessage(error)`: 英語のエラーメッセージを返す。本番環境では予期しないエラーの詳細を隠す
+- `getUserFriendlyMessageJa(error)`: 日本語のエラーメッセージを返す。クライアントサイドの toast 表示用
+
+```typescript
+import { getUserFriendlyMessageJa } from "@/lib/errors";
+
+toast.error(getUserFriendlyMessageJa(error));
+```
+
+### API ヘルパー関数 (`lib/api-helpers.ts`)
+
+API Routes 用のエラーハンドリングとレスポンス生成を提供するヘルパー関数です。
+
+[`lib/api-helpers.ts`](../../lib/api-helpers.ts)
+
+- `withErrorHandling(handler)`: API Route ハンドラーをラップし、エラーハンドリングを自動化
+- `handleApiError(error)`: エラーを適切な HTTP レスポンスに変換
+- `apiSuccess(data, status)`: 成功レスポンスを生成
+- `apiError(message, status, code)`: エラーレスポンスを生成
+- `parseProductId(id)`: 商品IDの文字列をパースしてバリデーション
+
+**使用例**:
+
+```typescript
+import { withErrorHandling, apiSuccess } from '@/lib/api-helpers';
+
+export const GET = withErrorHandling(async () => {
+  const products = await safePrismaOperation(
+    () => prisma.product.findMany({ include: { category: true } }),
+    'GET /api/products'
+  );
+  return apiSuccess({ products });
+});
+```
+
 ## API レスポンスの型定義 (`lib/api-types.ts`)
 
 API レスポンスの型定義を提供します。クライアント側での型安全性を確保します。
@@ -849,19 +967,32 @@ export const config = {
     MAX_IMAGE_WIDTH: 1920,
     MAX_IMAGE_HEIGHT: 1920,
     COMPRESSION_QUALITY: 0.85,
+    MAX_INPUT_SIZE_MB: 50,                    // ユーザーが選択できるファイルの上限
+    MAX_INPUT_SIZE_BYTES: 50 * 1024 * 1024,
+    RECOMMENDED_FILE_SIZE_MB: 10,             // この値を超えると警告を表示
+    IMAGE_LOAD_TIMEOUT_MS: 60000,
+    CREATE_IMAGE_BITMAP_THRESHOLD_MB: 5,      // この値以上でcreateBitmapAPIを使用
+    CREATE_IMAGE_BITMAP_THRESHOLD_BYTES: 5 * 1024 * 1024,
   },
   blobConfig: {
     PRODUCT_IMAGE_FOLDER: "products",
     CACHE_CONTROL_MAX_AGE: 31536000, // 1年
   },
   apiConfig: {
-    PRODUCT_LIST_CACHE_SECONDS: 60,
-    PRODUCT_LIST_STALE_WHILE_REVALIDATE_SECONDS: 120,
+    // 商品データは管理画面での更新時にrevalidatePathで即座に無効化されるため、長めに設定
+    PRODUCT_LIST_CACHE_SECONDS: 2592000,                  // 30日
+    PRODUCT_LIST_STALE_WHILE_REVALIDATE_SECONDS: 2592000, // 30日
   },
   displayConfig: {
     GRID_COLUMNS: 3,
+    MODAL_CLOSE_DELAY_MS: 300,   // モーダルの閉じるアニメーション時間
   },
-};
+  dndConfig: {
+    POINTER_ACTIVATION_DISTANCE: 5,  // クリックとドラッグを区別する最小移動距離
+    TOUCH_ACTIVATION_DELAY: 200,     // 長押しでドラッグ開始するまでの待機時間
+    TOUCH_TOLERANCE: 5,
+  },
+} as const;
 ```
 
 **理由**:
@@ -996,9 +1127,12 @@ const projectId = env.NEXT_PUBLIC_STACK_PROJECT_ID; // 型安全
 
 ### 商品関連ユーティリティ
 
-1. **公開状態の自動判定**: [`lib/products.ts`](../../lib/products.ts) の `getPublishedProductsByCategory()` 関数内で `calculatePublishedStatus()` を使用（[`app/page.tsx`](../../app/(public)/page.tsx) から呼び出される）
-2. **価格フォーマット**: [`app/dashboard/homepage/components/form/ProductFormFields.tsx`](../../app/dashboard/homepage/components/form/ProductFormFields.tsx) で `formatPrice()` を使用（`ProductForm`で使用）
-3. **数値入力の検証**: [`app/dashboard/homepage/components/form/ProductFormFields.tsx`](../../app/dashboard/homepage/components/form/ProductFormFields.tsx) で `isNumericKey()` を使用（`ProductForm`で使用）
+1. **公開状態の自動判定**: [`lib/products.ts`](../../lib/products.ts) の `getPublishedProductsByCategory()` 関数内で `calculatePublishedStatus()` を使用（[`app/(public)/page.tsx`](../../app/(public)/page.tsx) から呼び出される）
+2. **公開状態の決定**: [`app/api/products/route.ts`](../../app/api/products/route.ts) で `determinePublishedStatus()` を使用（商品作成・更新時）
+3. **価格フォーマット（表示用）**: `formatPrice()` で「¥」付きカンマ区切りに変換
+4. **価格フォーマット（入力用）**: `formatPriceForInput()` でカンマ区切りに変換（入力フィールド用）
+5. **数値入力の検証**: `isNumericKey()` で価格入力フィールドのキー入力をフィルタリング
+6. **日付値の解決**: `resolveDateValue()` で商品更新時の日付フィールドの変更を処理
 
 ### 画像圧縮
 
@@ -1013,6 +1147,8 @@ const projectId = env.NEXT_PUBLIC_STACK_PROJECT_ID; // 型安全
 
 1. **エラークラスの使用**: すべての API Routes で `ValidationError`、`NotFoundError`、`DatabaseError` を使用
 2. **エラーコードの参照**: [`lib/api-helpers.ts`](../../lib/api-helpers.ts) で `ErrorCodes` を使用
+3. **API ハンドラーラッパー**: `withErrorHandling` で API Route のエラーハンドリングを自動化
+4. **日本語エラーメッセージ**: `getUserFriendlyMessageJa` でクライアント表示用の日本語エラーメッセージに変換
 
 ### API レスポンスの型定義
 
@@ -1031,10 +1167,10 @@ const projectId = env.NEXT_PUBLIC_STACK_PROJECT_ID; // 型安全
 
 このアプリケーションでは、`lib/` ディレクトリに以下のユーティリティ関数を配置し、プロジェクト全体で再利用可能な機能を提供しています：
 
-1. **商品関連ユーティリティ**: 公開状態の判定、価格フォーマット、数値入力の検証
+1. **商品関連ユーティリティ**: 公開状態の判定、価格フォーマット（表示用・入力用）、数値入力の検証、日付値の解決
 2. **画像圧縮**: クライアントサイドでの画像圧縮・リサイズ
 3. **Blob Storage**: 画像のアップロード・削除・管理
-4. **エラーハンドリング**: 統一されたエラークラスとエラーコードの定数定義
+4. **エラーハンドリング**: 統一されたエラークラス、エラーコード、API ヘルパー関数
 5. **API レスポンスの型定義**: クライアント側での型安全性を確保
 6. **構造化ログ**: JSON 形式の構造化ログ出力（本番環境）
 7. **設定管理**: アプリケーション全体の設定値を一元管理
