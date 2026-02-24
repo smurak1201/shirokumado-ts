@@ -97,7 +97,7 @@ import { revalidatePath } from 'next/cache';
 revalidatePath('/');  // トップページのキャッシュを無効化
 ```
 
-**注意**: 管理画面（`dashboard/page.tsx`）やAPI Routesでは、常に最新データが必要なため`force-dynamic`を維持しています。
+**注意**: 管理画面（`dashboard/homepage/page.tsx`）やAPI Routesでは、常に最新データが必要なため`force-dynamic`を維持しています。
 
 **具体例**:
 
@@ -192,24 +192,20 @@ export const proxy = auth((req) => {
     return;
   }
 
-  // ダッシュボードへのアクセス（未認証ならログインページへ）
-  if (pathname.startsWith('/dashboard')) {
-    if (!isLoggedIn) {
-      return Response.redirect(new URL('/auth/signin', req.url));
-    }
-    return;
-  }
+  // /dashboard配下の認証チェックはdashboard/layout.tsxで行う
+  // proxyでリダイレクトするとOGPクローラーがメタタグを取得できないため
 });
 
 export const config = {
-  matcher: ['/dashboard/:path*', '/auth/:path*'],
+  matcher: ['/auth/:path*'],
 };
 ```
 
 **ポイント**:
 
 - NextAuth v5の`auth()`関数をラップして使用することで、セッションの有効性を確認
-- リダイレクトロジックを一元管理し、リダイレクトループを防止
+- `matcher`は認証ページ（`/auth/*`）のみを対象とする
+- ダッシュボードの認証チェックは `dashboard/layout.tsx` で行う（OGPクローラーがメタタグを取得できるようにするため）
 - `matcher`で対象パスを限定することで、不要なパス（静的ファイルなど）での実行を回避
 
 **詳細な認証フローについては、[認証システム](../../authentication.md#protected-routes（proxy）) を参照してください。**
@@ -262,6 +258,8 @@ const nextConfig: NextConfig = {
     serverActions: {
       bodySizeLimit: '2mb',
     },
+    // CSSをHTMLにインライン化し、<link>タグによるレンダリングブロッキングを解消
+    inlineCss: true,
   },
 
   // 型チェックの設定
@@ -297,6 +295,9 @@ export default nextConfig;
    - `serverActions.bodySizeLimit: '2mb'`: サーバーアクションのボディサイズ制限を 2MB に設定
      - ファイルアップロードなどの大きなペイロードを処理する際の制限
      - このアプリでは画像アップロードに使用（実際の画像は Blob Storage に直接アップロード）
+   - `inlineCss: true`: CSSをHTMLにインライン化し、`<link>`タグによるレンダリングブロッキングを解消
+     - 初回ページ読み込み時のCSSフラッシュ（FOUC）を防止
+     - Core Web Vitals（特にLCP）の改善に寄与
 
 4. **TypeScript** (`typescript`):
 
@@ -415,11 +416,15 @@ Next.js は、`next/font/google` を使用して、Google Fonts を最適化し�
 ```typescript
   variable: "--font-noto-sans-jp",
   subsets: ["latin"],
-  weight: ["300", "400", "500", "700"],
+  display: "swap",
+  preload: false,
 });
 ```
 
-[`app/layout.tsx`](../../app/layout.tsx) (`Analytics`コンポーネント)
+- `display: "swap"`: フォント読み込み中はフォールバックフォントを表示し、読み込み完了後に切り替え
+- `preload: false`: フォントのプリロードを無効化（CSS変数経由での使用に適した設定）
+
+[`app/layout.tsx`](../../app/layout.tsx) (`Analytics`コンポーネントと`Toaster`コンポーネント)
 
 **フォント最適化のメリット**:
 

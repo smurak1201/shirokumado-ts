@@ -254,39 +254,6 @@ export function ProductCard({ className, ...props }: ProductCardProps) {
 
 ---
 
-### 例3: FAQカード
-
-**推奨**: ラッパーコンポーネント
-
-```tsx
-// app/components/ui/card-faq.tsx
-import { Card } from "./card";
-import type { ComponentPropsWithoutRef } from "react";
-import { cn } from "@/lib/utils";
-
-export type FAQCardProps = ComponentPropsWithoutRef<typeof Card>;
-
-export function FAQCard({ className, ...props }: FAQCardProps) {
-  return (
-    <Card
-      className={cn(
-        "group relative overflow-hidden border-border/60 transition-all duration-300",
-        "hover:shadow-lg hover:shadow-primary/5 hover:-translate-y-1 hover:border-primary/30",
-        className
-      )}
-      {...props}
-    />
-  );
-}
-```
-
-**理由**:
-- 複数のプロパティを組み合わせている
-- FAQページで複数箇所で使用
-- コンポーネントとして独立させる価値がある
-
----
-
 ## まとめ
 
 ### このプロジェクトでの推奨事項（Tailwind CSS v4）

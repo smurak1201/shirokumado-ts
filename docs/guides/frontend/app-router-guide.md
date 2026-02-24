@@ -65,16 +65,31 @@ App Router では、`app/` ディレクトリ内のファイル構造がその�
 ```
 ├── (public)/          # 公開ページ用ルートグループ
 │   ├── error.tsx      # エラーUI
+│   ├── about-ice/     # 天然氷紹介ページ（/about-ice）
+│   │   ├── AboutIceContent.tsx # Client Component（スクロールアニメーション）
+│   │   ├── data.ts    # コンテンツデータ
+│   │   └── page.tsx   # ページ
 │   ├── faq/
+│   │   ├── data.ts    # FAQデータ
 │   │   └── page.tsx   # FAQページ（/faq）
 │   ├── HomeContent.tsx # ホームページのメインコンテンツ（Server Component）
 │   ├── page.tsx       # ホームページ（/）
 │   └── shop/
 │       └── page.tsx   # ショップページ（/shop）
 ├── api/               # API Routes
+│   ├── auth/
+│   │   └── [...nextauth]/
+│   │       └── route.ts # NextAuth認証エンドポイント
+│   ├── cron/
+│   │   └── cleanup-sessions/
+│   │       └── route.ts # セッションクリーンアップ
 │   └── products/
 │       ├── [id]/
-│       │   └── route.ts # GET, PUT, DELETE /api/products/[id]
+│       │   ├── route.ts # GET, PUT, DELETE /api/products/[id]
+│       │   ├── get.ts   # GET処理の実装
+│       │   ├── put.ts   # PUT処理の実装
+│       │   ├── put-validation.ts # PUT用バリデーション
+│       │   └── delete.ts # DELETE処理の実装
 │       ├── reorder/
 │       │   └── route.ts # POST /api/products/reorder
 │       ├── route.ts   # GET, POST /api/products
@@ -87,10 +102,24 @@ App Router では、`app/` ディレクトリ内のファイル構造がその�
 │       └── page.tsx   # サインインページ
 ├── components/        # 共通コンポーネント
 │   ├── LoadingScreen.tsx # 共通ローディング画面
+│   ├── MobileMenu.tsx # モバイルメニュー（Sheet使用）
+│   ├── LazyGoogleMap.tsx # 遅延読み込みGoogle Map
+│   ├── FAQSection.tsx # FAQセクション（ホームページ・FAQページ共用）
+│   └── ui/            # shadcn/uiコンポーネント
 ├── dashboard/         # 管理用ページ（ルートグループ外）
-│   └── page.tsx       # ダッシュボード（/dashboard）
+│   ├── page.tsx       # /dashboard → /dashboard/homepage へリダイレクト
+│   ├── layout.tsx     # 共通レイアウト（認証チェック・ヘッダー）
+│   ├── loading.tsx    # ローディングUI
+│   ├── components/    # 共通コンポーネント
+│   │   └── DashboardHeader.tsx
+│   ├── homepage/      # 商品管理ページ
+│   │   └── page.tsx   # ダッシュボード本体（/dashboard/homepage）
+│   └── shop/          # ショップ管理ページ
+│       └── page.tsx
 ├── globals.css        # グローバルスタイル
 ├── hooks/             # カスタムフック
+│   ├── useInView.ts   # ビューポート交差検知フック
+│   └── useProductModal.ts # 商品モーダル管理フック
 ├── layout.tsx         # ルートレイアウト（全ページ共通）
 ├── not-found.tsx      # 404ページ
 └── types.ts           # 型定義
@@ -108,7 +137,7 @@ App Router では、`app/` ディレクトリ内のファイル構造がその�
 - `layout.tsx`: レイアウトコンポーネント（ネストされたレイアウト） - **このアプリで使用中**
 - `route.ts`: API エンドポイント（API Routes） - **このアプリで使用中**
 - `error.tsx`: エラー UI - **このアプリで使用中**（[`app/(public)/error.tsx`](../../app/(public)/error.tsx)）
-- `loading.tsx`: ローディング UI - **このアプリでは未使用**（代わりにSuspenseを使用）
+- `loading.tsx`: ローディング UI - **このアプリで使用中**（`dashboard/loading.tsx`）。公開ページではSuspenseを使用
 - `not-found.tsx`: 404 ページ - **このアプリで使用中**（[`app/not-found.tsx`](../../app/not-found.tsx)）
 - `template.tsx`: テンプレートコンポーネント - **このアプリでは未使用**
 
@@ -280,14 +309,8 @@ export default function Home() {
 
 ```typescript
 // app/(public)/HomeContent.tsx
-const MIN_LOADING_TIME_MS = 1000;
-
 export default async function HomeContent() {
-  // データ取得と最低表示時間を並列で待機
-  const [data] = await Promise.all([
-    getPublishedProductsByCategory(),
-    new Promise((resolve) => setTimeout(resolve, MIN_LOADING_TIME_MS)),
-  ]);
+  const data = await getPublishedProductsByCategory();
 
   return (
     <div className="min-h-screen bg-background overflow-x-hidden">
@@ -303,71 +326,59 @@ export default async function HomeContent() {
 
 2. **[`app/(public)/faq/page.tsx`](../../app/(public)/faq/page.tsx) (`FAQPage`コンポーネント)** - FAQ ページ（Server Component）
 
+FAQデータは `data.ts` に分離されており、`FAQSection` 共通コンポーネントを使用して表示します。
+
 ```typescript
-  /**
-   * FAQデータ
-   * 質問と回答のペアを配列で定義
-   */
-  const faqs = [
-    {
-      question: "かき氷の販売は夏だけですか？",
-      answer:
-        "通年で営業しており、季節ごとに異なるメニューもご用意しています。",
-    },
-    // ... 他のFAQデータ
-  ];
+// app/(public)/faq/data.ts
+export const faqItems: FAQItem[] = [
+  {
+    question: "かき氷の販売は夏だけですか？",
+    answer: "通年で営業しており、季節ごとに異なるメニューもご用意しています。",
+  },
+  // ... 他のFAQデータ
+];
 
+// app/(public)/faq/page.tsx
+import { faqItems } from "./data";
+import FAQSection from "@/app/components/FAQSection";
+
+export default function FAQPage() {
   return (
-    <div className="min-h-screen bg-white">
-      {/* ヘッダー */}
-      <Header />
-
-      {/* メインコンテンツ */}
-      <main className="mx-auto max-w-4xl px-4 py-8 md:px-8 md:py-12 lg:px-12 lg:py-16">
-        <h1 className="mb-8 text-2xl font-bold text-gray-900 md:text-3xl lg:text-4xl">
-          よくある質問
-        </h1>
-
-        <div className="space-y-6">
-          {faqs.map((faq, index) => (
-            <div
-              key={index}
-              className="border-b border-gray-200 pb-6 last:border-b-0"
-            >
-              <h2 className="mb-3 text-lg font-semibold text-gray-900 md:text-xl">
-                {faq.question}
-              </h2>
-              <p className="text-sm leading-relaxed text-gray-700 md:text-base">
-                {faq.answer}
-              </p>
-            </div>
-          ))}
-        </div>
+    <div className="min-h-screen bg-background overflow-x-hidden">
+      <FixedHeader />
+      {/* ... */}
+      <main>
+        <FAQSection items={faqItems} />
       </main>
-
-      {/* フッター */}
       <Footer />
     </div>
   );
 }
 ```
 
-3. **[`app/dashboard/page.tsx`](../../app/dashboard/page.tsx) (`DashboardPage`コンポーネント)** - ダッシュボード（Server Component）
+3. **[`app/dashboard/page.tsx`](../../app/dashboard/page.tsx)** - ダッシュボードルート（リダイレクト）
+
+`/dashboard` へのアクセスは `/dashboard/homepage` にリダイレクトされます。実際のダッシュボード本体は [`app/dashboard/homepage/page.tsx`](../../app/dashboard/homepage/page.tsx) にあります。
 
 ```typescript
-  const { categories, products } = await getDashboardData();
+// app/dashboard/page.tsx
+import { redirect } from "next/navigation";
 
-  return (
-    <div className="min-h-screen bg-gray-50 py-8">
-      <div className="mx-auto max-w-4xl px-4">
-        <h1 className="mb-8 text-3xl font-bold">商品管理ダッシュボード</h1>
-
-        <DashboardContent categories={categories} initialProducts={products} />
-      </div>
-    </div>
-  );
+export default function DashboardPage() {
+  redirect("/dashboard/homepage");
 }
 ```
+
+**[`app/dashboard/homepage/page.tsx`](../../app/dashboard/homepage/page.tsx)** - ダッシュボード本体（Server Component）
+
+```typescript
+const data = await getDashboardData();
+const { categories, products } = data;
+
+return <DashboardContent categories={categories} initialProducts={products} />;
+```
+
+認証チェックとヘッダーは [`dashboard/layout.tsx`](../../app/dashboard/layout.tsx) で処理されます。
 
 ### Client Components
 
@@ -384,6 +395,10 @@ export default async function HomeContent() {
 
 - [`app/components/ProductGrid.tsx`](../../app/components/ProductGrid.tsx): 商品グリッド（モーダル表示などのインタラクティブ機能）
 - [`app/components/ProductModal.tsx`](../../app/components/ProductModal.tsx): 商品詳細モーダル（開閉状態の管理）
+- [`app/components/ProductCategoryTabs.tsx`](../../app/components/ProductCategoryTabs.tsx): カテゴリータブ切り替え
+- [`app/components/MobileMenu.tsx`](../../app/components/MobileMenu.tsx): モバイルメニュー（Sheet使用）
+- [`app/components/LazyGoogleMap.tsx`](../../app/components/LazyGoogleMap.tsx): 遅延読み込みGoogle Map
+- [`app/(public)/about-ice/AboutIceContent.tsx`](../../app/(public)/about-ice/AboutIceContent.tsx): 天然氷紹介（スクロールアニメーション）
 - [`app/dashboard/homepage/components/DashboardContent.tsx`](../../app/dashboard/homepage/components/DashboardContent.tsx): ダッシュボードコンテンツ（フォーム送信、状態管理）
 
 **Server Components と Client Components の使い分け**:
@@ -430,7 +445,7 @@ async function getPublishedProductsByCategory(): Promise<
 }
 ```
 
-2. **[`app/dashboard/page.tsx`](../../app/dashboard/page.tsx) (`getDashboardData`関数)** - ダッシュボードデータを取得
+2. **[`app/dashboard/homepage/page.tsx`](../../app/dashboard/homepage/page.tsx) (`getDashboardData`関数)** - ダッシュボードデータを取得
 
 ```typescript
 async function getDashboardData() {
@@ -475,54 +490,27 @@ async function getDashboardData() {
 1. **[`app/dashboard/homepage/components/DashboardContent.tsx`](../../app/dashboard/homepage/components/DashboardContent.tsx) (`refreshProducts`関数)** - 商品一覧の更新
 
 ```typescript
-    try {
-      // キャッシュを完全に無効化するためにタイムスタンプをクエリパラメータに追加
-      // これにより、常に最新のデータを取得できます
-      const response = await fetch(`/api/products?t=${Date.now()}`, {
-        cache: "no-store", // Next.js のキャッシュを無効化
-        headers: {
-          "Cache-Control": "no-cache", // ブラウザのキャッシュを無効化
-        },
-      });
-      const data = await response.json();
-      // 取得した商品一覧で状態を更新
-      setProducts(data.products || []);
-    } catch (error) {
-      console.error("商品一覧の更新に失敗しました:", error);
-    }
-  };
+  const data = await fetchJson<{ products: Product[] }>(
+    `/api/products?t=${Date.now()}`
+  );
+  setProducts(data.products || []);
 ```
 
+`fetchJson`（`lib/client-fetch.ts`）はレスポンスの`ok`チェックとJSONパースを統一的に行います。
 
-2. **[`app/dashboard/homepage/components/list/ProductList.tsx`](../../app/dashboard/homepage/components/list/ProductList.tsx) (`handleDelete`関数)** - 商品の削除
+
+2. **[`app/dashboard/homepage/hooks/useProductDelete.ts`](../../app/dashboard/homepage/hooks/useProductDelete.ts) (`handleDelete`関数)** - 商品の削除
+
+商品削除処理は `useProductDelete` カスタムフックに分離されています。`fetchJson` を使用して API を呼び出し、`sonner` の `toast` で通知します。
 
 ```typescript
-    // 削除前に確認ダイアログを表示
-    if (!confirm("本当にこの商品を削除しますか？")) {
-      return;
-    }
+const { handleDelete } = useProductDelete(refreshProducts);
 
-    try {
-      // DELETE リクエストを送信
-      const response = await fetch(`/api/products/${productId}`, {
-        method: "DELETE",
-      });
-
-      if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.error || "削除に失敗しました");
-      }
-
-      alert("商品を削除しました");
-      // 削除後に商品一覧を更新
-      await refreshProducts();
-    } catch (error) {
-      console.error("削除エラー:", error);
-      alert(
-        error instanceof Error ? error.message : "商品の削除に失敗しました"
-      );
-    }
-  };
+// useProductDelete フック内の実装:
+// 1. 確認ダイアログを表示
+// 2. fetchJson で DELETE リクエストを送信
+// 3. toast.success / toast.error で通知
+// 4. refreshProducts() で商品一覧を更新
 ```
 
 3. **[`app/dashboard/homepage/hooks/useProductReorder.ts`](../../app/dashboard/homepage/hooks/useProductReorder.ts) (`reorderProducts`関数)** - 商品順序の変更
@@ -689,7 +677,7 @@ const handleSubmit = async (e: React.FormEvent) => {
 | ルート | レンダリング方式 | 理由 |
 |--------|-----------------|------|
 | トップページ（`page.tsx`） | ISR + オンデマンド再検証 | 商品データの更新頻度は低く、キャッシュで十分。更新時は`revalidatePath('/')`で無効化 |
-| 管理画面（`dashboard/page.tsx`） | `force-dynamic` | 常に最新データが必要 |
+| 管理画面（`dashboard/homepage/page.tsx`） | `force-dynamic` | 常に最新データが必要 |
 | API Routes（`api/products/`） | `force-dynamic` | 管理画面から常に最新データを返す必要がある |
 
 **トップページのISR + オンデマンド再検証**:
@@ -706,7 +694,7 @@ revalidatePath('/');  // トップページのキャッシュを無効化
 
 **管理画面・API Routesでの動的レンダリング**:
 
-1. **[`app/dashboard/page.tsx`](../../app/dashboard/page.tsx) (`dynamic`エクスポート)** - 動的レンダリングを強制
+1. **[`app/dashboard/homepage/page.tsx`](../../app/dashboard/homepage/page.tsx) (`dynamic`エクスポート)** - 動的レンダリングを強制
 
 ```typescript
 /**
@@ -1102,12 +1090,15 @@ Next.js の `Image` コンポーネントを使用すると、画像の自動最
     <html lang="ja">
       <body className={`${notoSansJP.variable} antialiased`}>
         {children}
+        <Toaster />
         <Analytics />
       </body>
     </html>
   );
 }
 ```
+
+`<Toaster />` は `sonner` のトースト通知コンポーネントです。
 
 ### メタデータ
 
@@ -1142,7 +1133,8 @@ export const metadata: Metadata = {
 ```typescript
   variable: "--font-noto-sans-jp",
   subsets: ["latin"],
-  weight: ["300", "400", "500", "700"],
+  display: "swap",
+  preload: false,
 });
 ```
 

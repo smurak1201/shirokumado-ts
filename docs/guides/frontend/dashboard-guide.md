@@ -163,33 +163,36 @@ app/dashboard/
 
 ## コンポーネント構成
 
-### DashboardPage ([`page.tsx`](../../app/dashboard/page.tsx))
+### DashboardPage
 
-ダッシュボードページのエントリーポイントです。Server Component として実装されています。
+ダッシュボードは2つのファイルで構成されています。
 
-**主な処理**:
+**[`app/dashboard/page.tsx`](../../app/dashboard/page.tsx)** - リダイレクト
 
-- カテゴリーと商品データの取得
-- データの形式変換（Decimal 型 → Number 型、Date 型 → ISO 文字列）
-- Client Component へのデータ受け渡し
+`/dashboard` へのアクセスを `/dashboard/homepage` にリダイレクトします。
 
-**実装例**:
+```typescript
+import { redirect } from "next/navigation";
 
-**注意**: このコード例は簡潔化したものです。実際の実装では、`getDashboardData()`という関数で`Promise.all`と`safePrismaOperation`を使用してデータを取得しています。詳細は [`app/dashboard/page.tsx`](../../app/dashboard/page.tsx) を参照してください。
+export default function DashboardPage() {
+  redirect("/dashboard/homepage");
+}
+```
+
+**[`app/dashboard/homepage/page.tsx`](../../app/dashboard/homepage/page.tsx)** - ダッシュボード本体（Server Component）
+
+カテゴリーと商品データの取得、データの形式変換、Client Component へのデータ受け渡しを行います。
+
+**注意**: このコード例は簡潔化したものです。実際の実装では、`getDashboardData()`という関数で`Promise.all`と`safePrismaOperation`を使用してデータを取得しています。詳細は [`app/dashboard/homepage/page.tsx`](../../app/dashboard/homepage/page.tsx) を参照してください。
 
 ```typescript
 const data = await getDashboardData();
 const { categories, products } = data;
 
-return (
-  <div className="min-h-screen bg-gray-50 py-8">
-    <div className="mx-auto max-w-4xl px-4">
-      <h1 className="mb-8 text-3xl font-bold">商品管理ダッシュボード</h1>
-      <DashboardContent categories={categories} initialProducts={products} />
-    </div>
-  </div>
-);
+return <DashboardContent categories={categories} initialProducts={products} />;
 ```
+
+認証チェックとヘッダーは [`dashboard/layout.tsx`](../../app/dashboard/layout.tsx) で処理されます。
 
 ### DashboardContent ([`components/DashboardContent.tsx`](../../app/dashboard/homepage/components/DashboardContent.tsx))
 
@@ -916,7 +919,7 @@ file: [画像ファイル]
 ### データフェッチング
 
 - **Server Component でデータを取得** - **このアプリで使用中**
-  - [`app/dashboard/page.tsx`](../../app/dashboard/page.tsx): Prisma を使用してデータベースから直接データを取得（`Promise.all`と`safePrismaOperation`を使用して並列取得とエラーハンドリングを実装）
+  - [`app/dashboard/homepage/page.tsx`](../../app/dashboard/homepage/page.tsx): Prisma を使用してデータベースから直接データを取得（`Promise.all`と`safePrismaOperation`を使用して並列取得とエラーハンドリングを実装）
 - **Client Component で API Routes にアクセス** - **このアプリで使用中**
   - [`lib/client-fetch.ts`](../../lib/client-fetch.ts)の`fetchJson`で統一的にAPI呼び出し（レスポンスパース・エラーハンドリング込み）
   - [`app/dashboard/homepage/components/DashboardContent.tsx`](../../app/dashboard/homepage/components/DashboardContent.tsx): `fetchJson` で `/api/products` にアクセス

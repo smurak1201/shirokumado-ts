@@ -81,20 +81,13 @@
 
 ### FAQ ページ ([`app/faq/page.tsx`](../../app/(public)/faq/page.tsx))
 
-よくある質問ページです。静的なコンテンツを表示します。
+よくある質問ページです。FAQデータは [`data.ts`](../../app/(public)/faq/data.ts) に分離され、[`FAQSection`](../../app/components/FAQSection.tsx) 共通コンポーネントを使用して表示します。
 
 **主な機能**:
 
-- 質問と回答の一覧表示
+- 質問と回答の一覧表示（アコーディオン形式）
 - レスポンシブなレイアウト
-
-**構造**:
-
-```typescript
-  { question: "質問", answer: "回答" },
-  // ...
-];
-```
+- `FAQSection` コンポーネントはホームページのFAQセクションでも共用
 
 **注意**: プロジェクト全体のディレクトリ構造の詳細については、[プロジェクト構造ドキュメント](../../project-structure.md)を参照してください。App Router のディレクトリ構造については、[App Router ガイド](./app-router-guide.md#app-router-のディレクトリ構造)を参照してください。
 
@@ -105,25 +98,36 @@
 ```
 ├── types.ts                    # 共通型定義
 ├── hooks/                      # カスタムフック
-│   └── useProductModal.ts    # 商品モーダル管理フック
+│   ├── useInView.ts           # ビューポート交差検知フック
+│   └── useProductModal.ts     # 商品モーダル管理フック
 ├── components/                 # フロントエンド共通コンポーネント
 │   ├── ui/                    # shadcn/ui コンポーネントとラッパーコンポーネント
-│   ├── ErrorBoundary.tsx     # エラーバウンダリーコンポーネント
+│   ├── ErrorBoundary.tsx      # エラーバウンダリーコンポーネント
 │   ├── FixedHeader.tsx        # 固定ヘッダーコンポーネント
+│   ├── MobileMenu.tsx         # モバイルメニュー（Sheet使用）
 │   ├── HeroSection.tsx        # ヒーローセクション
 │   ├── Footer.tsx             # フッターコンポーネント
-│   ├── FAQSection.tsx         # FAQセクション
+│   ├── LazyGoogleMap.tsx      # 遅延読み込みGoogle Map
+│   ├── FAQSection.tsx         # FAQセクション（ホームページ・FAQページ共用）
+│   ├── LoadingScreen.tsx      # 共通ローディング画面
 │   ├── ProductCategoryTabs.tsx # カテゴリーをTabsで切り替えるコンポーネント
 │   ├── ProductGrid.tsx        # 商品グリッドコンポーネント
 │   ├── ProductTile.tsx        # 商品タイルコンポーネント
 │   └── ProductModal.tsx       # 商品詳細モーダルコンポーネント
 ├── page.tsx                    # ホームページ
-└── faq/
-    └── page.tsx               # FAQページ
+├── about-ice/                  # 天然氷紹介ページ
+│   ├── AboutIceContent.tsx    # Client Component（スクロールアニメーション）
+│   ├── data.ts                # コンテンツデータ
+│   └── page.tsx               # ページ
+├── faq/
+│   ├── data.ts                # FAQデータ
+│   └── page.tsx               # FAQページ
+└── shop/
+    └── page.tsx               # ショップページ
 ```
 
 - **`types.ts`**: フロントエンドで使用する型を一元管理（重複を防止）
-- **`hooks/`**: 状態管理や副作用をカスタムフックに分離（再利用可能）
+- **`hooks/`**: 状態管理や副作用をカスタムフックに分離（`useProductModal`, `useInView`）
 - **`components/`**: UI コンポーネントのみを配置（見た目とレイアウト）
 - **`components/ui/`**: shadcn/ui コンポーネントとラッパーコンポーネント
 
@@ -190,12 +194,13 @@ useProductModal();
 
 - ロゴ画像（トップページへのリンク）
 - Instagram アイコン（外部リンク）
-- ナビゲーションリンク（よくある質問）
+- デスクトップ: ナビゲーションリンク（よくある質問、天然氷について、ショップ）
+- モバイル: ハンバーガーメニュー（`MobileMenu` コンポーネント、shadcn/ui の Sheet 使用）
 
 **特徴**:
 
 - `sticky`で固定表示
-- レスポンシブ対応
+- レスポンシブ対応（モバイルではSheet、デスクトップではナビゲーションリンク）
 - ホバーエフェクト
 
 **実装例**:
@@ -213,10 +218,16 @@ useProductModal();
         <Image src="/logo-instagram.svg" alt="Instagram" />
       </a>
     </div>
-    {/* ナビゲーション */}
-    <nav>
+    {/* デスクトップ: ナビゲーションリンク */}
+    <nav className="hidden md:flex">
       <Link href="/faq">よくある質問</Link>
+      <Link href="/about-ice">天然氷について</Link>
+      <Link href="/shop">ショップ</Link>
     </nav>
+    {/* モバイル: ハンバーガーメニュー */}
+    <div className="md:hidden">
+      <MobileMenu />
+    </div>
   </div>
 </header>
 ```
@@ -445,7 +456,7 @@ className = "grid grid-cols-1 md:grid-cols-3";
   - `app/dashboard/homepage/components/form/ProductForm.tsx`: 商品作成・更新時に `/api/products` に POST/PUT リクエスト
   - `app/dashboard/homepage/components/DashboardContent.tsx`: 商品一覧取得時に `/api/products` に GET リクエスト
   - `app/dashboard/homepage/hooks/useProductReorder.ts`: 商品並び替え時に `/api/products/reorder` に POST リクエスト
-  - `app/dashboard/homepage/components/list/ProductList.tsx`: 商品削除時に `/api/products/[id]` に DELETE リクエスト
+  - `app/dashboard/homepage/hooks/useProductDelete.ts`: 商品削除時に `/api/products/[id]` に DELETE リクエスト
   - `app/dashboard/homepage/hooks/useProductForm.ts`: 画像アップロード時に `/api/products/upload` に POST リクエスト
 - **`FormData`**: 画像アップロード時に使用
   - `app/dashboard/homepage/hooks/useProductForm.ts`: 画像ファイルを `FormData` に追加して `/api/products/upload` に送信
@@ -462,7 +473,7 @@ className = "grid grid-cols-1 md:grid-cols-3";
 
 - **Prisma**: データベースに直接アクセス
   - `app/page.tsx`: Prisma を使用して商品データを取得
-  - `app/dashboard/page.tsx`: Prisma を使用して商品データを取得
+  - `app/dashboard/homepage/page.tsx`: Prisma を使用して商品データを取得
   - `app/api/products/route.ts`: Prisma を使用して商品の CRUD 操作を実行
   - [`app/api/products/[id]/route.ts`](../../app/api/products/[id]/route.ts): Prisma を使用して個別商品の操作を実行
   - `app/api/products/reorder/route.ts`: Prisma の `$transaction` を使用して並び替えを実行
