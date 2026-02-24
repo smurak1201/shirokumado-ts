@@ -139,29 +139,28 @@ export default defineConfig({
 [`lib/prisma.ts`](../../lib/prisma.ts) (`createPrismaClient`関数)
 
 ```typescript
-import { PrismaClient } from "@prisma/client";
-import { PrismaNeon } from "@prisma/adapter-neon";
-import { Pool } from "@neondatabase/serverless";
+import { PrismaClient } from '@prisma/client';
+import { PrismaNeon } from '@prisma/adapter-neon';
 
 const createPrismaClient = (): PrismaClient => {
-  // DATABASE_URLを取得
   const databaseUrl = process.env.DATABASE_URL;
 
   if (!databaseUrl) {
-    throw new Error("DATABASE_URL environment variable is not set.");
+    throw new Error(
+      'DATABASE_URL environment variable is not set.\n' +
+      'Please set DATABASE_URL to your PostgreSQL connection string.'
+    );
   }
 
-  // Neonアダプターを使用してPrisma Clientを作成
-  // Vercel + Neon環境では、engineType = "client" を使用するため、アダプターが必要です
-  const pool = new Pool({ connectionString: databaseUrl });
-  const adapter = new PrismaNeon(pool);
+  // Neonアダプターを使用（Vercel + Neon環境での動作に必要）
+  const adapter = new PrismaNeon({ connectionString: databaseUrl });
 
   return new PrismaClient({
     adapter,
     log:
-      process.env.NODE_ENV === "development"
-        ? ["query", "error", "warn"]
-        : ["error"],
+      process.env.NODE_ENV === 'development'
+        ? ['query', 'error', 'warn']
+        : ['error'],
   });
 };
 ```
@@ -173,8 +172,7 @@ const createPrismaClient = (): PrismaClient => {
 
 2. **Neon アダプターの設定**:
 
-   - `@neondatabase/serverless` の `Pool` を使用して接続プールを作成
-   - `@prisma/adapter-neon` の `PrismaNeon` を使用してアダプターを作成
+   - `@prisma/adapter-neon` の `PrismaNeon` に接続文字列を直接渡してアダプターを作成
 
 3. **Prisma Client の作成**:
 
@@ -239,6 +237,8 @@ Prisma 7 では、スキーマファイルの基本的な構造は Prisma 6 と�
 
 **スキーマファイルの構成**:
 
+[`prisma/schema.prisma`](../../prisma/schema.prisma)
+
 ```prisma
 // Generator: Prisma Client の生成設定
 generator client {
@@ -247,10 +247,88 @@ generator client {
 }
 
 // Datasource: データベース接続設定
-// Prisma 7では、接続情報はprisma.config.tsで管理されますが、
-// スキーマファイルではプロバイダーの種類を指定します
 datasource db {
-  provider = "postgresql"  // PostgreSQLデータベースを使用
+  provider = "postgresql"
+}
+
+// ユーザーテーブル（Auth.js用）
+model User {
+  id            String    @id @default(uuid())
+  name          String?
+  email         String?   @unique
+  emailVerified DateTime? @map("email_verified")
+  image         String?
+  roleName      String?   @map("role_name")
+  role          Role?     @relation(fields: [roleName], references: [name])
+  accounts      Account[]
+  sessions      Session[]
+  createdAt     DateTime  @default(now()) @map("created_at")
+  updatedAt     DateTime  @updatedAt @map("updated_at")
+
+  @@map("users")
+}
+
+// OAuthアカウントテーブル（Auth.js用）
+model Account {
+  id                String  @id @default(uuid())
+  userId            String  @map("user_id")
+  type              String
+  provider          String
+  providerAccountId String  @map("provider_account_id")
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@map("accounts")
+}
+
+// セッションテーブル（Auth.js用）
+model Session {
+  id           String   @id @default(uuid())
+  sessionToken String   @unique @map("session_token")
+  userId       String   @map("user_id")
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("sessions")
+}
+
+// メール認証用トークンテーブル（Auth.js用）
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+  @@map("verification_tokens")
+}
+
+// 管理者許可メールアドレステーブル
+model AllowedAdmin {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  roleName  String   @map("role_name")
+  role      Role     @relation(fields: [roleName], references: [name])
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@map("allowed_admins")
+}
+
+// ロールマスターテーブル
+model Role {
+  name          String         @id
+  description   String?
+  users         User[]
+  allowedAdmins AllowedAdmin[]
+  createdAt     DateTime       @default(now()) @map("created_at")
+
+  @@map("roles")
 }
 
 // カテゴリーテーブル
@@ -283,8 +361,6 @@ model Product {
 
   @@map("products")
 }
-[`prisma/schema.prisma`](../prisma/schema.prisma)
-
 ```
 
 1. **Generator**: Prisma Client の生成方法を指定
@@ -296,8 +372,9 @@ model Product {
    - `provider = "postgresql"`: PostgreSQL データベースを使用
 
 3. **Model**: データベーステーブルを定義
-   - `Category`: カテゴリーテーブル
-   - `Product`: 商品テーブル
+   - **Auth.js 関連**: `User`, `Account`, `Session`, `VerificationToken`
+   - **アクセス制御**: `AllowedAdmin`（許可リスト）, `Role`（ロールマスター）
+   - **ビジネスロジック**: `Category`, `Product`
 
 **フィールドの属性**:
 
@@ -324,8 +401,6 @@ model Product {
   priceL      Decimal?  @map("price_l") @db.Decimal(10, 2)  // DECIMAL型を使用
   // ...
 }
-[`prisma/schema.prisma`](../prisma/schema.prisma)
-
 ```
 
 - `@db.Text`: 商品説明などの長いテキストを保存するために使用
@@ -395,9 +470,35 @@ const categories = await prisma.category.findMany({
 });
 ```
 
-- [`app/page.tsx`](../../app/(public)/page.tsx): 商品とカテゴリーを一緒に取得
-- [`app/dashboard/page.tsx`](../../app/dashboard/page.tsx): 商品とカテゴリーを一緒に取得
+- [`app/(public)/page.tsx`](../../app/(public)/page.tsx): 商品とカテゴリーを一緒に取得
 - [`app/api/products/route.ts`](../../app/api/products/route.ts): 商品とカテゴリーを一緒に取得
+
+**Auth.js 関連のリレーション**:
+
+```prisma
+model User {
+  roleName  String?   @map("role_name")
+  role      Role?     @relation(fields: [roleName], references: [name])
+  accounts  Account[]
+  sessions  Session[]
+}
+
+model AllowedAdmin {
+  roleName  String @map("role_name")
+  role      Role   @relation(fields: [roleName], references: [name])
+}
+
+model Role {
+  name          String         @id
+  users         User[]
+  allowedAdmins AllowedAdmin[]
+}
+```
+
+- `User` → `Role`: ユーザーのロール（nullable、多対1）
+- `User` → `Account`: OAuth アカウント（1対多、Cascade 削除）
+- `User` → `Session`: セッション（1対多、Cascade 削除）
+- `AllowedAdmin` → `Role`: 許可リストのロール（多対1）
 
 ### マイグレーション
 

@@ -30,8 +30,10 @@ Auth.js（旧 NextAuth.js）を使用した認証システムの実装ガイド�
   - [クライアントサイドでの認証](#クライアントサイドでの認証)
   - [サーバーサイドでの認証](#サーバーサイドでの認証)
 - [白熊堂プロジェクトでの実装](#白熊堂プロジェクトでの実装)
-  - [推奨構成](#推奨構成)
-  - [Stripe 連携](#stripe-連携)
+  - [実装構成](#実装構成)
+  - [アクセス制御（許可リスト）](#アクセス制御許可リスト)
+  - [ロールベースの権限管理](#ロールベースの権限管理)
+  - [セッションクリーンアップ](#セッションクリーンアップ)
 - [セキュリティのベストプラクティス](#セキュリティのベストプラクティス)
 - [トラブルシューティング](#トラブルシューティング)
 - [参考リンク](#参考リンク)
@@ -161,10 +163,6 @@ AUTH_SECRET=your-secret-key-here
 # Google OAuth
 AUTH_GOOGLE_ID=your-google-client-id
 AUTH_GOOGLE_SECRET=your-google-client-secret
-
-# Apple OAuth
-AUTH_APPLE_ID=your-apple-service-id
-AUTH_APPLE_SECRET=your-apple-client-secret
 ```
 
 `AUTH_SECRET` の生成:
@@ -179,10 +177,9 @@ npx auth secret
 // auth.ts
 import NextAuth from "next-auth";
 import Google from "next-auth/providers/google";
-import Apple from "next-auth/providers/apple";
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
-  providers: [Google, Apple],
+  providers: [Google],
 });
 ```
 
@@ -199,7 +196,9 @@ export const { GET, POST } = handlers;
 
 ## 認証プロバイダー
 
-### OAuth プロバイダー（Google / Apple）
+### OAuth プロバイダー（Google）
+
+> **注意**: このアプリでは現在 **Google OAuth のみ**を使用しています。Apple OAuth は未実装です。
 
 **Google OAuth の設定**:
 
@@ -207,40 +206,20 @@ export const { GET, POST } = handlers;
 2. 「APIとサービス」→「認証情報」→「OAuth 2.0 クライアント ID」を作成
 3. リダイレクト URI: `http://localhost:3000/api/auth/callback/google`
 
-**Apple OAuth の設定**:
+**このアプリでの Google プロバイダー設定**:
 
-Apple の認証設定は Google に比べて複雑です。
-
-1. [Apple Developer](https://developer.apple.com/) に登録（年間 $99）
-2. App ID を作成し「Sign in with Apple」を有効化
-3. Services ID を作成（これが Client ID になる）
-   - Identifier: `com.shirokumado.auth`
-   - Return URL: `http://localhost:3000/api/auth/callback/apple`
-4. 秘密鍵（.p8 ファイル）を作成・ダウンロード
-5. JWT 形式の Client Secret を生成
+[`auth.ts`](../../auth.ts)
 
 ```typescript
-// scripts/generate-apple-secret.ts
-import jwt from "jsonwebtoken";
-import fs from "fs";
-
-const privateKey = fs.readFileSync("path/to/AuthKey.p8", "utf8");
-
-const secret = jwt.sign({}, privateKey, {
-  algorithm: "ES256",
-  expiresIn: "180d",
-  audience: "https://appleid.apple.com",
-  issuer: "YOUR_TEAM_ID",
-  subject: "com.shirokumado.auth",
-  keyid: "KEY_ID",
-});
+Google({
+  authorization: {
+    params: {
+      // ログイン時に毎回アカウント選択画面を表示する
+      prompt: 'select_account',
+    },
+  },
+}),
 ```
-
-**Apple 認証の注意点**:
-
-- Client Secret（JWT）は最大 6 ヶ月で期限切れ → 定期的に再生成が必要
-- 「Hide My Email」でリレーメールアドレスが返される場合がある
-- ユーザー名は初回ログイン時のみ取得可能
 
 ### Credentials プロバイダー
 
@@ -360,26 +339,35 @@ npm install @auth/prisma-adapter
 
 **スキーマ設定**:
 
+このアプリでは、Auth.js 標準テーブルに加えて `AllowedAdmin`（許可リスト）と `Role`（ロールマスター）を追加しています。
+
+[`prisma/schema.prisma`](../../prisma/schema.prisma)
+
 ```prisma
-// prisma/schema.prisma
+// ユーザーテーブル（Auth.js用）
 model User {
-  id             String    @id @default(cuid())
-  name           String?
-  email          String?   @unique
-  emailVerified  DateTime?
-  image          String?
-  hashedPassword String?
-  role           String    @default("user")
-  accounts       Account[]
-  sessions       Session[]
+  id            String    @id @default(uuid())
+  name          String?
+  email         String?   @unique
+  emailVerified DateTime? @map("email_verified")
+  image         String?
+  roleName      String?   @map("role_name")
+  role          Role?     @relation(fields: [roleName], references: [name])
+  accounts      Account[]
+  sessions      Session[]
+  createdAt     DateTime  @default(now()) @map("created_at")
+  updatedAt     DateTime  @updatedAt @map("updated_at")
+
+  @@map("users")
 }
 
+// OAuthアカウントテーブル（Auth.js用）
 model Account {
-  id                String  @id @default(cuid())
-  userId            String
+  id                String  @id @default(uuid())
+  userId            String  @map("user_id")
   type              String
   provider          String
-  providerAccountId String
+  providerAccountId String  @map("provider_account_id")
   refresh_token     String? @db.Text
   access_token      String? @db.Text
   expires_at        Int?
@@ -390,24 +378,61 @@ model Account {
   user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([provider, providerAccountId])
+  @@map("accounts")
 }
 
+// セッションテーブル（Auth.js用）
 model Session {
-  id           String   @id @default(cuid())
-  sessionToken String   @unique
-  userId       String
+  id           String   @id @default(uuid())
+  sessionToken String   @unique @map("session_token")
+  userId       String   @map("user_id")
   expires      DateTime
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("sessions")
 }
 
+// メール認証用トークンテーブル（Auth.js用）
 model VerificationToken {
   identifier String
   token      String   @unique
   expires    DateTime
 
   @@unique([identifier, token])
+  @@map("verification_tokens")
+}
+
+// 管理者許可メールアドレステーブル
+model AllowedAdmin {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  roleName  String   @map("role_name")
+  role      Role     @relation(fields: [roleName], references: [name])
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@map("allowed_admins")
+}
+
+// ロールマスターテーブル
+model Role {
+  name          String         @id
+  description   String?
+  users         User[]
+  allowedAdmins AllowedAdmin[]
+  createdAt     DateTime       @default(now()) @map("created_at")
+
+  @@map("roles")
 }
 ```
+
+**標準スキーマとの主な違い**:
+
+- `@id @default(uuid())`: cuid() ではなく uuid() を使用
+- `@map()`: カラム名をスネークケースにマッピング
+- `@@map()`: テーブル名を明示的に指定
+- `roleName` フィールド: `Role` テーブルとのリレーションでロール管理
+- `AllowedAdmin`: ログイン許可リスト（このテーブルに登録されたメールアドレスのみログイン可能）
+- `Role`: ロールマスター（admin, homepage, shop）
 
 ---
 
@@ -534,94 +559,140 @@ export async function POST(request: Request) {
 
 ## 白熊堂プロジェクトでの実装
 
-### 推奨構成
+### 実装構成
 
-白熊堂プロジェクトでは、Stripe を使った EC サイトの構築を検討しているため、**データベースセッション**を推奨します。
+白熊堂プロジェクトでは、管理画面（ダッシュボード）へのアクセス制御のために **データベースセッション** + **許可リスト** + **ロールベースの権限管理**を採用しています。
 
-**理由**:
+**設計のポイント**:
 
-1. 決済セキュリティ: 不正アクセス検知時に即座にセッションを無効化できる
-2. サブスクリプション管理: 支払い状態の変更をセッションに即時反映できる
-3. マルチデバイス対応: 複数デバイスでのセッション管理が可能
+1. **Google OAuth のみ**: パスワード管理が不要でセキュリティリスクを低減
+2. **許可リスト方式**: `AllowedAdmin` テーブルに登録されたメールアドレスのみログイン可能
+3. **ロールベース権限**: `Role` テーブルで権限を管理（admin, homepage, shop）
+4. **データベースセッション**: セッションの即時無効化が可能
+
+[`auth.ts`](../../auth.ts)
 
 ```typescript
-// auth.ts
-import NextAuth from "next-auth";
-import { PrismaAdapter } from "@auth/prisma-adapter";
-import { prisma } from "@/lib/prisma";
-import Google from "next-auth/providers/google";
-import Apple from "next-auth/providers/apple";
+import NextAuth from 'next-auth';
+import { PrismaAdapter } from '@auth/prisma-adapter';
+import Google from 'next-auth/providers/google';
+import { prisma, safePrismaOperation } from '@/lib/prisma';
+import { isAllowedEmail, getRoleNameByEmail } from '@/lib/auth-config';
+import type { Adapter } from 'next-auth/adapters';
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
-  adapter: PrismaAdapter(prisma),
-  providers: [Google, Apple],
+  adapter: PrismaAdapter(prisma) as Adapter,
+  providers: [
+    Google({
+      authorization: {
+        params: {
+          // ログイン時に毎回アカウント選択画面を表示する
+          prompt: 'select_account',
+        },
+      },
+    }),
+  ],
   session: {
-    strategy: "database",
+    strategy: 'database',
     maxAge: 7 * 24 * 60 * 60, // 1週間
   },
   pages: {
-    signIn: "/auth/signin",
-    error: "/auth/error",
+    signIn: '/auth/signin',
+    error: '/auth/error',
   },
   callbacks: {
+    async signIn({ user }) {
+      const allowed = await isAllowedEmail(user.email);
+      if (!allowed) {
+        return false;
+      }
+      return true;
+    },
     async session({ session, user }) {
       session.user.id = user.id;
-      session.user.role = user.role;
-      session.user.stripeCustomerId = user.stripeCustomerId;
+      session.user.role = user.roleName ?? 'homepage';
       return session;
+    },
+  },
+  events: {
+    // ユーザー新規作成時にAllowedAdminのロールをUserに反映
+    async createUser({ user }) {
+      const roleName = (await getRoleNameByEmail(user.email)) ?? 'homepage';
+      await safePrismaOperation(
+        () => prisma.user.update({
+          where: { id: user.id },
+          data: { roleName },
+        }),
+        'createUser'
+      );
     },
   },
 });
 ```
 
-### Stripe 連携
+### アクセス制御（許可リスト）
 
-**スキーマ拡張**:
-
-```prisma
-model User {
-  // ... 既存フィールド
-  stripeCustomerId String? @unique
-  orders           Order[]
-}
-
-model Order {
-  id                      String   @id @default(cuid())
-  userId                  String
-  user                    User     @relation(fields: [userId], references: [id])
-  stripeCheckoutSessionId String?  @unique
-  status                  String   @default("pending")
-  total                   Int
-  createdAt               DateTime @default(now())
-}
-```
-
-**Stripe Customer の自動作成**:
+[`lib/auth-config.ts`](../../lib/auth-config.ts) で、ログイン許可リストのチェックとロール取得を行います。
 
 ```typescript
-// lib/stripe.ts
-import Stripe from "stripe";
+import { prisma, safePrismaOperation } from '@/lib/prisma';
 
-export const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
+// メールアドレスがログイン許可リストに含まれているかチェック
+export async function isAllowedEmail(email: string | null | undefined): Promise<boolean> {
+  if (!email) return false;
 
-export async function getOrCreateStripeCustomer(userId: string) {
-  const user = await prisma.user.findUnique({ where: { id: userId } });
+  const allowedAdmin = await safePrismaOperation(
+    () => prisma.allowedAdmin.findUnique({
+      where: { email },
+    }),
+    'isAllowedEmail'
+  );
 
-  if (user?.stripeCustomerId) return user.stripeCustomerId;
+  return !!allowedAdmin;
+}
 
-  const customer = await stripe.customers.create({
-    email: user?.email ?? undefined,
-    metadata: { userId },
-  });
+// AllowedAdminテーブルからメールアドレスに対応するロール名を取得
+export async function getRoleNameByEmail(email: string | null | undefined): Promise<string | null> {
+  if (!email) return null;
 
-  await prisma.user.update({
-    where: { id: userId },
-    data: { stripeCustomerId: customer.id },
-  });
+  const allowedAdmin = await safePrismaOperation(
+    () => prisma.allowedAdmin.findUnique({
+      where: { email },
+    }),
+    'getRoleNameByEmail'
+  );
 
-  return customer.id;
+  return allowedAdmin?.roleName ?? null;
 }
 ```
+
+**認証フローの流れ**:
+
+1. ユーザーが Google でログイン
+2. `signIn` コールバックで `AllowedAdmin` テーブルを確認
+3. 許可リストに含まれていない場合はログインを拒否（`return false`）
+4. 初回ログイン時、`createUser` イベントで `AllowedAdmin` のロールを `User` に反映
+5. `session` コールバックでセッションにユーザー ID とロールを含める
+
+### ロールベースの権限管理
+
+ロールは `Role` テーブルで管理されており、シードデータで以下の 3 種類が定義されています：
+
+| ロール名   | 説明                               |
+| ---------- | ---------------------------------- |
+| `admin`    | すべてのダッシュボード機能にアクセス可能 |
+| `homepage` | ホームページ関連の機能のみ         |
+| `shop`     | ECサイト関連の機能のみ             |
+
+### セッションクリーンアップ
+
+期限切れセッションを定期的に削除する Cron ジョブが実装されています。
+
+[`app/api/cron/cleanup-sessions/route.ts`](../../app/api/cron/cleanup-sessions/route.ts)
+
+- **実行タイミング**: Vercel Cron から毎月 1 日 UTC 15:00（日本時間 0:00）に呼び出し
+- **認証**: `CRON_SECRET` 環境変数による Bearer トークン認証
+- **処理**: `expires` が現在時刻より前のセッションを `deleteMany` で一括削除
 
 ---
 
@@ -687,23 +758,27 @@ const ratelimit = new Ratelimit({
 
 **型の拡張例**:
 
-```typescript
-// types/next-auth.d.ts
-import { DefaultSession } from "next-auth";
+[`types/next-auth.d.ts`](../../types/next-auth.d.ts)
 
-declare module "next-auth" {
+```typescript
+import { DefaultSession } from 'next-auth';
+
+declare module 'next-auth' {
   interface Session {
     user: {
       id: string;
       role: string;
-    } & DefaultSession["user"];
+    } & DefaultSession['user'];
   }
 
   interface User {
-    role: string;
+    roleName: string | null;
   }
 }
 ```
+
+- `Session.user.role`: `session` コールバック内で `user.roleName ?? 'homepage'` として設定
+- `User.roleName`: Prisma スキーマの `User.roleName` フィールドに対応
 
 ---
 
@@ -713,4 +788,3 @@ declare module "next-auth" {
 - [Auth.js v5 Migration Guide](https://authjs.dev/getting-started/migrating-to-v5)
 - [Next.js Authentication](https://nextjs.org/docs/app/building-your-application/authentication)
 - [Prisma Adapter](https://authjs.dev/getting-started/adapters/prisma)
-- [Stripe + Next.js](https://stripe.com/docs/stripe-js/react)
