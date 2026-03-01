@@ -1,11 +1,12 @@
 import { notFound } from "next/navigation";
-import { getProductById } from "@/lib/products";
 import ProductModalRoute from "./ProductModalRoute";
 
 interface Props {
   params: Promise<{ id: string }>;
 }
 
+// サイト内遷移時はクライアントキャッシュから商品データを取得するため、
+// Server Component側でのDB問い合わせは行わない
 export default async function InterceptedMenuPage({ params }: Props) {
   const { id } = await params;
   const productId = parseInt(id);
@@ -14,11 +15,5 @@ export default async function InterceptedMenuPage({ params }: Props) {
     notFound();
   }
 
-  const product = await getProductById(productId);
-
-  if (!product) {
-    notFound();
-  }
-
-  return <ProductModalRoute product={product} />;
+  return <ProductModalRoute productId={productId} />;
 }

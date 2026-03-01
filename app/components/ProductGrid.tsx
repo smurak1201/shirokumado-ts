@@ -9,6 +9,7 @@ import ProductTile from "./ProductTile";
 import type { Category, Product } from "../types";
 import { useInView } from "../hooks/useInView";
 import { scrollAnimationClass } from "@/lib/animation";
+import { TooltipProvider } from "./ui/tooltip";
 
 interface ProductGridProps {
   category: Category;
@@ -44,25 +45,28 @@ export default function ProductGrid({
         </div>
       )}
 
-      <div
-        ref={gridRef}
-        className="grid grid-cols-3 gap-4 md:gap-6 lg:gap-8"
-      >
-        {products.map((product, index) => (
-          <div
-            key={product.id}
-            className={scrollAnimationClass(gridInView, index)}
-          >
-            <ProductTile
-              product={{
-                id: product.id,
-                name: product.name,
-                imageUrl: product.imageUrl,
-              }}
-            />
-          </div>
-        ))}
-      </div>
+      {/* TooltipProviderをグリッド全体で1つだけ提供し、タイルごとの生成を回避 */}
+      <TooltipProvider>
+        <div
+          ref={gridRef}
+          className="grid grid-cols-3 gap-4 md:gap-6 lg:gap-8"
+        >
+          {products.map((product, index) => (
+            <div
+              key={product.id}
+              className={scrollAnimationClass(gridInView, index)}
+            >
+              <ProductTile
+                product={{
+                  id: product.id,
+                  name: product.name,
+                  imageUrl: product.imageUrl,
+                }}
+              />
+            </div>
+          ))}
+        </div>
+      </TooltipProvider>
     </section>
   );
 }
