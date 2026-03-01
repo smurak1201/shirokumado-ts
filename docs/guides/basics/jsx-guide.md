@@ -157,14 +157,10 @@ HTML では小文字の属性名（`onclick`）を使用し、文字列で JavaS
 
 **このアプリでの使用例**:
 
-[`app/components/ProductModal.tsx`](../../app/components/ProductModal.tsx) (`ProductModal`コンポーネントのイベントハンドラー)
+[`app/(public)/@modal/(.)menu/[id]/ProductModalRoute.tsx`](../../app/(public)/@modal/(.)menu/[id]/ProductModalRoute.tsx) (`ProductModalRoute`コンポーネントのイベントハンドラー)
 
 ```tsx
-<button
-  onClick={onClose}
-  className="rounded-full bg-white/90 p-2"
-  aria-label="閉じる"
->
+<Dialog open onOpenChange={handleClose}>
 ```
 
 ### 3. 自己閉じタグの必須性
@@ -616,7 +612,7 @@ JSX では、条件に応じて要素を表示/非表示できます。
 
 **詳細な使用例**: このアプリでの条件付きレンダリングの実装例（三項演算子、論理 AND 演算子など）については、[このアプリでの JSX の使用例](#このアプリでの-jsx-の使用例)セクションを参照してください。
 
-**このアプリでの使用例**: [`app/components/ProductModal.tsx`](../../app/components/ProductModal.tsx) (`ProductModal`コンポーネント)
+**このアプリでの使用例**: [`app/(public)/@modal/(.)menu/[id]/ProductModalRoute.tsx`](../../app/(public)/@modal/(.)menu/[id]/ProductModalRoute.tsx) (`ProductModalRoute`コンポーネント)
 
 ### リストのレンダリング
 
