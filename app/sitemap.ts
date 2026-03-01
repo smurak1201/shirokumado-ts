@@ -1,9 +1,10 @@
 import type { MetadataRoute } from "next";
+import { getPublishedProductsByCategory } from "@/lib/products";
 
 const BASE_URL = process.env.SITE_URL!;
 
-export default function sitemap(): MetadataRoute.Sitemap {
-  return [
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  const staticPages: MetadataRoute.Sitemap = [
     {
       url: BASE_URL,
       lastModified: new Date(),
@@ -29,4 +30,22 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.5,
     },
   ];
+
+  // 公開中の商品ページを動的に追加
+  let productPages: MetadataRoute.Sitemap = [];
+  try {
+    const categories = await getPublishedProductsByCategory();
+    const products = categories.flatMap((c) => c.products);
+    productPages = products.map((product) => ({
+      url: `${BASE_URL}/menu/${product.id}`,
+      lastModified: new Date(),
+      changeFrequency: "weekly" as const,
+      priority: 0.6,
+    }));
+  } catch {
+    // 商品データ取得失敗時は静的ページのみのsitemapを返す
+    productPages = [];
+  }
+
+  return [...staticPages, ...productPages];
 }
