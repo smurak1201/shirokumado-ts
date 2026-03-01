@@ -34,6 +34,13 @@ export const metadata: Metadata = {
       },
     ],
   },
+  twitter: {
+    card: "summary_large_image",
+    title: "よくある質問（FAQ） | 白熊堂",
+    description:
+      "白熊堂への営業時間、予約、お支払い方法などのよくある質問と回答をまとめています。",
+    images: ["/og-image.png"],
+  },
 };
 
 const faqJsonLd = {

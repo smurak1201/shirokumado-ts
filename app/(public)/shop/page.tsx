@@ -30,6 +30,13 @@ export const metadata: Metadata = {
       },
     ],
   },
+  twitter: {
+    card: "summary_large_image",
+    title: "オンラインショップ | 白熊堂",
+    description:
+      "白熊堂のオンラインショップは現在準備中です。もうしばらくお待ちください。",
+    images: ["/og-image.png"],
+  },
 };
 
 export default function ShopPage() {
