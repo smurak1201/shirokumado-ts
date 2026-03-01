@@ -37,7 +37,6 @@ export const config = {
   // フロントエンドの表示設定
   displayConfig: {
     GRID_COLUMNS: 3,
-    MODAL_CLOSE_DELAY_MS: 300, // モーダルの閉じるアニメーション時間
   },
 
   // ドラッグ&ドロップの設定
