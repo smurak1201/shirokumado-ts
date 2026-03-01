@@ -136,11 +136,10 @@ console.log(state); // '初期値'
 
 **このアプリでの使用例**:
 
-[`app/hooks/useProductModal.ts`](../../app/hooks/useProductModal.ts) (useState)
+[`app/hooks/useInView.ts`](../../app/hooks/useInView.ts) (useState)
 
 ```typescript
-const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
-const [isModalOpen, setIsModalOpen] = useState(false);
+const [isInView, setIsInView] = useState(false);
 ```
 
 ### デフォルト値付き分割代入
