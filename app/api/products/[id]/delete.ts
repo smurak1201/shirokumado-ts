@@ -46,6 +46,7 @@ export async function deleteProduct(
 
   // トップページのISRキャッシュを無効化
   revalidatePath('/');
+  revalidatePath(`/menu/${productId}`);
 
   return apiSuccess({ message: '商品を削除しました' });
 }
