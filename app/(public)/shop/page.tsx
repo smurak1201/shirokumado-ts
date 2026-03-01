@@ -42,7 +42,7 @@ export const metadata: Metadata = {
 
 export default function ShopPage() {
   return (
-    <main className="flex flex-1 items-center justify-center">
+    <main className="flex min-h-[60svh] flex-1 items-center justify-center">
       <div className="text-center">
         <div className="mb-6">
           <Store className="mx-auto h-16 w-16 text-gray-400" />
