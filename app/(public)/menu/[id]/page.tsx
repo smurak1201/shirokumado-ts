@@ -3,6 +3,7 @@ import Image from "next/image";
 import { notFound } from "next/navigation";
 import { getProductById } from "@/lib/products";
 import { formatPrice } from "@/lib/product-utils";
+import ScrollToTop from "./ScrollToTop";
 import FixedHeader from "@/app/components/FixedHeader";
 import Footer from "@/app/components/Footer";
 import { Separator } from "@/app/components/ui/separator";
@@ -72,6 +73,7 @@ export default async function MenuItemPage({ params }: Props) {
 
   return (
     <div className="min-h-screen bg-background overflow-x-hidden">
+      <ScrollToTop />
       <FixedHeader />
 
       {/* position:fixed のヘッダーに対応するスペーサー */}
