@@ -25,7 +25,7 @@ export default function ProductDetail({ product, headerSlot }: ProductDetailProp
       <div className="transition-transform duration-300 md:hover:scale-[1.02]">
         <ModalImageCard>
           <ModalCardHeader>
-            <div className="relative h-[40vh] min-h-50 max-h-112.5 md:h-[45vh] md:max-h-125 overflow-hidden bg-muted">
+            <div className="relative h-[40svh] min-h-50 max-h-112.5 md:h-[45svh] md:max-h-125 overflow-hidden bg-muted">
               {product.imageUrl ? (
                 <div className="relative h-full w-full flex items-center justify-center p-4 md:p-6 transition-transform duration-400 md:hover:scale-105">
                   <Image
