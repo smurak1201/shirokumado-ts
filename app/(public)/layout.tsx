@@ -16,7 +16,7 @@ export default function PublicLayout({
   modal: React.ReactNode;
 }) {
   return (
-    <div className="min-h-screen bg-background overflow-x-hidden">
+    <div className="flex min-h-screen flex-col bg-background overflow-x-hidden">
       <FixedHeader />
       {/*
        * position:fixed のヘッダーに対応するスペーサー
@@ -24,7 +24,9 @@ export default function PublicLayout({
        * 下のコンテンツがヘッダーの裏に隠れてしまう
        */}
       <div style={{ height: "var(--header-height)" }} />
-      {children}
+      <div className="flex flex-1 flex-col">
+        {children}
+      </div>
       <Footer />
       {modal}
     </div>
