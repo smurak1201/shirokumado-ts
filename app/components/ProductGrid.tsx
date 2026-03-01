@@ -8,6 +8,7 @@
 import ProductTile from "./ProductTile";
 import type { Category, Product } from "../types";
 import { useInView } from "../hooks/useInView";
+import { scrollAnimationClass } from "@/lib/animation";
 
 interface ProductGridProps {
   category: Category;
@@ -32,7 +33,7 @@ export default function ProductGrid({
       {showCategoryTitle && (
         <div
           ref={titleRef}
-          className={`animate-on-scroll mb-8 flex items-center justify-center md:mb-12 lg:mb-16 ${titleInView ? "is-visible" : ""}`}
+          className={`${scrollAnimationClass(titleInView)} mb-8 flex items-center justify-center md:mb-12 lg:mb-16`}
         >
           <div className="flex flex-col items-center gap-3 md:gap-4">
             <h2 className="text-center text-xl font-normal tracking-wide text-muted-foreground md:text-4xl lg:text-5xl">
@@ -50,7 +51,7 @@ export default function ProductGrid({
         {products.map((product, index) => (
           <div
             key={product.id}
-            className={`animate-on-scroll stagger-delay-${Math.min(index + 1, 8)} ${gridInView ? "is-visible" : ""}`}
+            className={scrollAnimationClass(gridInView, index)}
           >
             <ProductTile
               product={{
