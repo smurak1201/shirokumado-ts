@@ -245,14 +245,17 @@ app/
 
 **オンデマンド再検証（revalidatePath）**:
 
-トップページはISR + オンデマンド再検証でキャッシュを管理しています。管理画面から商品を変更した際に`revalidatePath('/')`でキャッシュを無効化し、次のリクエストで再レンダリングします。
+トップページと商品個別ページはISR + オンデマンド再検証でキャッシュを管理しています。管理画面から商品を変更した際に`revalidatePath`でキャッシュを無効化し、次のリクエストで再レンダリングします。
 
 ```typescript
-// 商品変更API（POST/PUT/DELETE/reorder）で呼び出し
 import { revalidatePath } from 'next/cache';
 
-// トップページのISRキャッシュを無効化
+// 全API（POST/PUT/DELETE/reorder）で呼び出し
 revalidatePath('/');
+
+// PUT/DELETE では商品個別ページも無効化
+revalidatePath('/');
+revalidatePath(`/menu/${productId}`);
 ```
 
 **ローディング表示の動作まとめ**:
