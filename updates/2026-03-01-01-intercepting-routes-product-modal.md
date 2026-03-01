@@ -29,17 +29,17 @@
 
 ## 進捗状況
 
-| #   | タスク                                          | 優先度 | ステータス | 備考 |
-| --- | ----------------------------------------------- | :----: | :--------: | ---- |
-| 1   | `getProductById`関数の追加                      |   高   |    [ ]     |      |
-| 2   | `(public)/layout.tsx`と`default.tsx`の新規作成   |   高   |    [ ]     |      |
-| 3   | `@modal`スロットの作成                          |   高   |    [ ]     |      |
-| 4   | `menu/[id]/page.tsx`の新規作成（商品詳細ページ） |   高   |    [ ]     |      |
-| 5   | `ProductTile.tsx`の変更                         |   高   |    [ ]     |      |
-| 6   | `ProductGrid.tsx`の変更                         |   高   |    [ ]     |      |
-| 7   | 不要ファイルの削除                              |   中   |    [ ]     |      |
-| 8   | `sitemap.ts`の更新                              |   中   |    [ ]     |      |
-| 9   | 動作確認・ビルドテスト                          |   -    |    [ ]     |      |
+| #   | タスク                                          | 対応課題 | 優先度 | ステータス | 備考 |
+| --- | ----------------------------------------------- | :------: | :----: | :--------: | ---- |
+| 1   | `getProductById`関数の追加                      |  1,2,3   |   高   |    [ ]     |      |
+| 2   | `(public)/layout.tsx`と`default.tsx`の新規作成   |  1,2,3   |   高   |    [ ]     |      |
+| 3   | `@modal`スロットの作成                          |  1,2,3   |   高   |    [ ]     |      |
+| 4   | `menu/[id]/page.tsx`の新規作成（商品詳細ページ） |  1,2,3   |   高   |    [ ]     |      |
+| 5   | `ProductTile.tsx`の変更                         |  1,2,3   |   高   |    [ ]     |      |
+| 6   | `ProductGrid.tsx`の変更                         |  1,2,3   |   高   |    [ ]     |      |
+| 7   | 不要ファイルの削除                              |    -     |   中   |    [ ]     |      |
+| 8   | `sitemap.ts`の更新                              |    1     |   中   |    [ ]     |      |
+| 9   | 動作確認・ビルドテスト                          |    -     |   -    |    [ ]     |      |
 
 **凡例**: `[ ]` 未着手 / `[~]` 作業中 / `[o]` 完了
 
@@ -468,6 +468,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       type: "website",
       images: product.imageUrl ? [{ url: product.imageUrl }] : undefined,
     },
+    twitter: {
+      card: product.imageUrl ? "summary_large_image" : "summary",
+      title: `${product.name} | 白熊堂`,
+      description: product.description || `${product.name} - 白熊堂のメニュー`,
+      images: product.imageUrl ? [product.imageUrl] : undefined,
+    },
   };
 }
 
@@ -857,7 +863,17 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
 ### タスク9: 動作確認・ビルドテスト
 
-**確認項目**:
+**自動確認**（Claudeが実行）:
+
+1. **ビルド確認** (`npm run build`)
+   - ビルドエラーがないこと
+   - TypeScriptエラーがないこと
+
+2. **リント確認** (`npm run lint`)
+   - リントエラーがないこと
+   - 未使用のインポートがないこと
+
+**手動確認**（ユーザーが実行）:
 
 1. **ローカル確認** (`npm run dev`)
    - トップページから商品クリック → モーダル表示 + URLが`/menu/[id]`に変化
@@ -869,14 +885,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
    - ブラウザバック → 正常に元のページに戻る
    - カテゴリータブの切り替え → 正常に動作すること
    - モーダル内のアニメーション（段階的フェードイン） → 正常に動作すること
-
-2. **ビルド確認** (`npm run build`)
-   - ビルドエラーがないこと
-   - TypeScriptエラーがないこと
-
-3. **リント確認** (`npm run lint`)
-   - リントエラーがないこと
-   - 未使用のインポートがないこと
 
 ---
 
