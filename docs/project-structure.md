@@ -88,6 +88,11 @@ Route Group を使用して公開ページをグループ化しています。
 
 ```
 app/(public)/
+├── @modal/               # Parallel Routes: モーダルスロット
+│   ├── (.)menu/[id]/     # Intercepting Route: サイト内遷移時にモーダル表示
+│   │   ├── page.tsx      # データ取得（Server Component）
+│   │   └── ProductModalRoute.tsx # モーダルUI（Client Component）
+│   └── default.tsx       # モーダル非表示時のfallback
 ├── about-ice/            # アイスについてページ
 │   ├── AboutIceContent.tsx # コンテンツ（Client Component）
 │   ├── data.ts           # データ
@@ -95,10 +100,15 @@ app/(public)/
 ├── faq/                  # FAQページ
 │   ├── data.ts           # FAQデータ
 │   └── page.tsx          # FAQページ（Server Component）
+├── menu/[id]/            # 商品詳細ページ（直接アクセス時のフルページ表示）
+│   ├── page.tsx          # 商品詳細（Server Component、SEO/OGP対応）
+│   └── ScrollToTop.tsx   # スクロール位置リセット（Client Component）
 ├── shop/                 # ショップページ
 │   └── page.tsx          # ショップページ（Server Component）
 │
+├── default.tsx           # childrenスロットのfallback（Parallel Routes用）
 ├── error.tsx             # エラーページ
+├── layout.tsx            # 公開サイト用レイアウト（@modalスロット受け取り）
 ├── HomeContent.tsx       # ホームページのコンテンツ（Client Component）
 └── page.tsx              # ホームページ（Server Component）
 ```
@@ -180,8 +190,7 @@ app/components/
 ├── MobileMenu.tsx            # モバイルメニュー（Client Component）
 ├── ProductCategoryTabs.tsx   # カテゴリータブ切り替え（Client Component）
 ├── ProductGrid.tsx           # 商品グリッド表示（Client Component）
-├── ProductModal.tsx          # 商品詳細モーダル
-└── ProductTile.tsx           # 商品タイル
+└── ProductTile.tsx           # 商品タイル（Linkで/menu/[id]に遷移）
 ```
 
 **設計の特徴**:
@@ -281,8 +290,7 @@ app/dashboard/homepage/
 
 ```
 app/hooks/
-├── useInView.ts          # 要素の表示状態を監視（Intersection Observer）
-└── useProductModal.ts    # 商品モーダル管理フック（状態管理）
+└── useInView.ts          # 要素の表示状態を監視（Intersection Observer）
 ```
 
 #### [`app/types.ts`](../app/types.ts) - フロントエンド共通型定義
