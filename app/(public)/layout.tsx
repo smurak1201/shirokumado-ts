@@ -7,6 +7,7 @@
  */
 import FixedHeader from "@/app/components/FixedHeader";
 import Footer from "@/app/components/Footer";
+import { ProductCacheProvider } from "@/app/contexts/ProductCacheContext";
 
 export default function PublicLayout({
   children,
@@ -16,19 +17,21 @@ export default function PublicLayout({
   modal: React.ReactNode;
 }) {
   return (
-    <div className="flex min-h-screen flex-col bg-background overflow-x-hidden">
-      <FixedHeader />
-      {/*
-       * position:fixed のヘッダーに対応するスペーサー
-       * fixedは通常フローから外れるため、このスペーサーがないと
-       * 下のコンテンツがヘッダーの裏に隠れてしまう
-       */}
-      <div style={{ height: "var(--header-height)" }} />
-      <div className="flex flex-1 flex-col">
-        {children}
+    <ProductCacheProvider>
+      <div className="flex min-h-screen flex-col bg-background overflow-x-hidden">
+        <FixedHeader />
+        {/*
+         * position:fixed のヘッダーに対応するスペーサー
+         * fixedは通常フローから外れるため、このスペーサーがないと
+         * 下のコンテンツがヘッダーの裏に隠れてしまう
+         */}
+        <div style={{ height: "var(--header-height)" }} />
+        <div className="flex flex-1 flex-col">
+          {children}
+        </div>
+        <Footer />
+        {modal}
       </div>
-      <Footer />
-      {modal}
-    </div>
+    </ProductCacheProvider>
   );
 }

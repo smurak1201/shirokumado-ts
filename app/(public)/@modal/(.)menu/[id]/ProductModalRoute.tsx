@@ -2,12 +2,16 @@
  * Intercepting Route用モーダルコンポーネント
  *
  * サイト内遷移時に商品詳細をモーダルとして表示する。
- * router.back()でモーダルを閉じ、元のページのURLに戻す。
+ * クライアントキャッシュから商品データを取得し、DBへの再問い合わせを回避。
+ * キャッシュにない場合はAPIからフェッチする（他ページからの遷移時など）。
  */
 "use client";
 
 import { useRouter } from "next/navigation";
+import { useState, useEffect } from "react";
 import type { Product } from "@/app/types";
+import { useProductCache } from "@/app/contexts/ProductCacheContext";
+import { fetchJson } from "@/lib/client-fetch";
 import {
   Dialog,
   DialogContent,
@@ -19,15 +23,41 @@ import { ScrollArea } from "@/app/components/ui/scroll-area";
 import ProductDetail from "@/app/components/ProductDetail";
 
 interface ProductModalRouteProps {
-  product: Product;
+  productId: number;
 }
 
-export default function ProductModalRoute({ product }: ProductModalRouteProps) {
+export default function ProductModalRoute({ productId }: ProductModalRouteProps) {
   const router = useRouter();
+  const { getProduct } = useProductCache();
+  const cachedProduct = getProduct(productId);
+  const [fetchedProduct, setFetchedProduct] = useState<Product | null>(null);
+
+  // キャッシュにない場合のみAPIからフェッチ（他ページからの遷移時など）
+  useEffect(() => {
+    if (cachedProduct) return;
+
+    fetchJson<{ product: Product }>(`/api/products/${productId}`)
+      .then(({ product }) => setFetchedProduct(product))
+      .catch(() => router.back());
+  }, [cachedProduct, productId, router]);
+
+  const product = cachedProduct ?? fetchedProduct;
 
   const handleClose = () => {
     router.back();
   };
+
+  if (!product) {
+    return (
+      <Dialog open onOpenChange={handleClose}>
+        <DialogContent className="max-h-[90vh] w-[calc(100vw-2rem)] max-w-2xl p-0 overflow-hidden sm:rounded-lg">
+          <div className="flex h-64 items-center justify-center">
+            <div className="h-8 w-8 animate-spin rounded-full border-2 border-muted-foreground border-t-transparent" />
+          </div>
+        </DialogContent>
+      </Dialog>
+    );
+  }
 
   return (
     <Dialog open onOpenChange={handleClose}>

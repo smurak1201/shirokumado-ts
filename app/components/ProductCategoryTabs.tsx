@@ -5,10 +5,11 @@
  */
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import dynamic from "next/dynamic";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
 import type { CategoryWithProducts } from "@/lib/products";
+import { useProductCache } from "@/app/contexts/ProductCacheContext";
 
 // ProductGrid は比較的大きなコンポーネントのため、
 // 動的インポートを使用してコード分割を行い初回読み込みを高速化
@@ -38,6 +39,14 @@ export default function ProductCategoryTabs({
   const [activeTab, setActiveTab] = useState<string>(
     categoriesWithProducts[0]?.category.id.toString() || ""
   );
+  const { setProducts } = useProductCache();
+
+  // トップページで取得済みの商品データをキャッシュに保存し、
+  // Intercepting Routeのモーダル表示時にDBへの再問い合わせを回避する
+  useEffect(() => {
+    const allProducts = categoriesWithProducts.flatMap((c) => c.products);
+    setProducts(allProducts);
+  }, [categoriesWithProducts, setProducts]);
 
   if (categoriesWithProducts.length === 0) {
     return (

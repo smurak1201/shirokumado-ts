@@ -16,7 +16,7 @@ export function ProductCard({ className, ...props }: ProductCardProps) {
   return (
     <Card
       className={cn(
-        "group relative w-full cursor-pointer overflow-hidden transition-all duration-500",
+        "group relative w-full cursor-pointer overflow-hidden transition-[shadow,transform,border-color] duration-500",
         "hover:shadow-2xl hover:shadow-primary/10 hover:-translate-y-2",
         "hover:border-primary/40 border-border/60",
         "focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2",

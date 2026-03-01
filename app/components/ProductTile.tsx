@@ -16,7 +16,6 @@ import { AspectRatio } from "./ui/aspect-ratio";
 import {
   Tooltip,
   TooltipContent,
-  TooltipProvider,
   TooltipTrigger,
 } from "./ui/tooltip";
 
@@ -50,20 +49,18 @@ function ProductTile({ product }: ProductTileProps) {
         </ProductCardHeader>
 
         <ProductCardContent>
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <div className="flex min-h-[2.5em] cursor-pointer items-center justify-center md:min-h-[3.25em]">
-                  <h3 className="line-clamp-2 whitespace-pre-wrap text-center text-[10px] font-normal leading-relaxed transition-colors duration-300 group-hover:text-foreground md:text-base lg:text-lg">
-                    {product.name}
-                  </h3>
-                </div>
-              </TooltipTrigger>
-              <TooltipContent>
-                <p className="whitespace-pre-wrap">{product.name}</p>
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <div className="flex min-h-[2.5em] cursor-pointer items-center justify-center md:min-h-[3.25em]">
+                <h3 className="line-clamp-2 whitespace-pre-wrap text-center text-[10px] font-normal leading-relaxed transition-colors duration-300 group-hover:text-foreground md:text-base lg:text-lg">
+                  {product.name}
+                </h3>
+              </div>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p className="whitespace-pre-wrap">{product.name}</p>
+            </TooltipContent>
+          </Tooltip>
         </ProductCardContent>
       </ProductCard>
     </Link>
