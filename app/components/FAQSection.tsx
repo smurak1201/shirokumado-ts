@@ -15,6 +15,7 @@ import { QuestionBadge } from "./ui/badge-question";
 import { Separator } from "./ui/separator";
 import { cn } from "@/lib/utils";
 import { useInView } from "../hooks/useInView";
+import { scrollAnimationClass } from "@/lib/animation";
 
 export interface FAQ {
   question: string;
@@ -38,7 +39,7 @@ export default function FAQSection({
       {showTitle && (
         <div
           ref={titleRef}
-          className={`animate-on-scroll mb-10 flex flex-col items-center gap-4 md:mb-12 ${titleInView ? "is-visible" : ""}`}
+          className={`${scrollAnimationClass(titleInView)} mb-10 flex flex-col items-center gap-4 md:mb-12`}
         >
           <h1
             id="faq-title"
@@ -55,7 +56,7 @@ export default function FAQSection({
           {faqs.map((faq, index) => (
             <div
               key={faq.question}
-              className={`animate-on-scroll stagger-delay-${Math.min(index + 1, 8)} ${listInView ? "is-visible" : ""}`}
+              className={scrollAnimationClass(listInView, index)}
             >
               <AccordionItem
                 value={`faq-${index}`}
