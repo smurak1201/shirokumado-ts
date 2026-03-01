@@ -363,43 +363,25 @@ export function formatPrice(value: string | number | null | undefined): string {
 }
 ```
 
-2. **[`app/hooks/useProductModal.ts`](../../app/hooks/useProductModal.ts) (`useProductModal`フック)** - カスタムフックの戻り値の型
+2. **[`app/(public)/@modal/(.)menu/[id]/ProductModalRoute.tsx`](../../app/(public)/@modal/(.)menu/[id]/ProductModalRoute.tsx) (`ProductModalRoute`コンポーネント)** - propsの型定義
 
 ```typescript
-  // 選択された商品を管理（モーダル表示用）
-  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
-  // モーダルの開閉状態を管理
-  const [isModalOpen, setIsModalOpen] = useState(false);
+interface ProductModalRouteProps {
+  product: Product;
+}
 
-  /**
-   * 商品タイルクリック時のハンドラー
-   * 選択された商品を設定してモーダルを開きます
-   *
-   * @param product - クリックされた商品
-   */
-  const handleProductClick = (product: Product) => {
-    setSelectedProduct(product);
-    setIsModalOpen(true);
+export default function ProductModalRoute({ product }: ProductModalRouteProps) {
+  const router = useRouter();
+
+  const handleClose = () => {
+    router.back();
   };
 
-  /**
-   * モーダル閉じる時のハンドラー
-   * モーダルを閉じ、アニメーション完了後に選択をクリアします
-   */
-  const handleCloseModal = () => {
-    setIsModalOpen(false);
-    // モーダルが閉じた後に選択をクリア（アニメーション完了を待つ）
-    setTimeout(() => {
-      setSelectedProduct(null);
-    }, 300);
-  };
-
-  return {
-    selectedProduct,
-    isModalOpen,
-    handleProductClick,
-    handleCloseModal,
-  };
+  return (
+    <Dialog open onOpenChange={handleClose}>
+      {/* ... */}
+    </Dialog>
+  );
 }
 ```
 
