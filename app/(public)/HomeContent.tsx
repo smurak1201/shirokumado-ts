@@ -12,8 +12,6 @@ import {
   type CategoryWithProducts,
 } from "@/lib/products";
 import ProductCategoryTabs from "@/app/components/ProductCategoryTabs";
-import FixedHeader from "@/app/components/FixedHeader";
-import Footer from "@/app/components/Footer";
 import HeroSection from "@/app/components/HeroSection";
 import { log } from "@/lib/logger";
 
@@ -69,19 +67,11 @@ export default async function HomeContent() {
   }
 
   return (
-    <div className="min-h-screen bg-background overflow-x-hidden">
+    <>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(localBusinessJsonLd) }}
       />
-      <FixedHeader />
-
-      {/*
-       * position:fixed のヘッダーに対応するスペーサー
-       * fixedは通常フローから外れるため、このスペーサーがないと
-       * 下のコンテンツがヘッダーの裏に隠れてしまう
-       */}
-      <div style={{ height: "var(--header-height)" }} />
 
       <HeroSection />
 
@@ -118,8 +108,6 @@ export default async function HomeContent() {
           <ProductCategoryTabs categoriesWithProducts={categoriesWithProducts} />
         </div>
       </main>
-
-      <Footer />
-    </div>
+    </>
   );
 }
