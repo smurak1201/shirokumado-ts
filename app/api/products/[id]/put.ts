@@ -113,7 +113,7 @@ export async function putProduct(
     throw new NotFoundError('商品');
   }
 
-  // トップページのISRキャッシュを無効化
+  // ISRキャッシュを無効化（トップページ + 商品個別ページ）
   revalidatePath('/');
   revalidatePath(`/menu/${productId}`);
 
