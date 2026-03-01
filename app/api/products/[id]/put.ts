@@ -115,6 +115,7 @@ export async function putProduct(
 
   // トップページのISRキャッシュを無効化
   revalidatePath('/');
+  revalidatePath(`/menu/${productId}`);
 
   return apiSuccess({ product });
 }
