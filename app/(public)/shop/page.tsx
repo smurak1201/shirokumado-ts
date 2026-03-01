@@ -5,6 +5,7 @@
  */
 import type { Metadata } from "next";
 import Link from "next/link";
+import { Store } from "lucide-react";
 
 const BASE_URL = process.env.SITE_URL!;
 
@@ -41,9 +42,11 @@ export const metadata: Metadata = {
 
 export default function ShopPage() {
   return (
-    <main className="flex min-h-screen items-center justify-center bg-gray-50">
+    <main className="flex flex-1 items-center justify-center">
       <div className="text-center">
-        <div className="mb-6 text-6xl">🏪</div>
+        <div className="mb-6">
+          <Store className="mx-auto h-16 w-16 text-gray-400" />
+        </div>
         <h1 className="mb-4 text-2xl font-bold text-gray-900">
           オンラインショップ
         </h1>
