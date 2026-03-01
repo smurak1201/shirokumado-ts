@@ -24,7 +24,6 @@
   - [タスク9: 動作確認・ビルドテスト](#タスク9-動作確認ビルドテスト)
 - [変更対象ファイル一覧](#変更対象ファイル一覧)
 - [備考](#備考)
-- [実装後の更新](#実装後の更新)
 
 ---
 
@@ -64,32 +63,6 @@
 - **URL形式**: `/menu/[id]`（将来のECサイト`/shop/products/`との棲み分けを考慮）
 - **既存UIの維持**: モーダルの見た目・アニメーションは現在のものを踏襲
 - **SEO対策**: `generateMetadata`によるtitle, description, OGP, canonical URLの生成
-
-### CLAUDE.md準拠事項
-
-本改修では以下のルールに従うこと。
-
-**設計原則**:
-
-- **YAGNI**: 構造化データ（JSON-LD）は今回のスコープ外。メタデータのみ実装する
-- **KISS**: `ProductModalContent`のような共通化コンポーネントは作らない。モーダルとフルページで表示要件が異なる（DialogHeader等のアクセシビリティ制約）ため、それぞれ独立して実装する
-- **DRY**: UI部品（`ModalImageCard`, `PriceBadge`等）は既存コンポーネントを再利用する
-
-**コード品質**:
-
-- 未使用のインポートは削除すること
-- 関数の引数と返り値には型を付けること
-- リントエラーを解消すること（`npm run lint`）
-
-**Server/Client Components**:
-
-- デフォルトで Server Components を使用
-- モーダル制御（`router.back()`）が必要な`ProductModalRoute.tsx`のみ`"use client"`
-
-**Prisma**:
-
-- すべての操作は`safePrismaOperation`でラップすること
-- 公開状態チェックは`calculatePublishedStatus`を使用すること
 
 ---
 
@@ -164,13 +137,6 @@ export async function getProductById(id: number): Promise<Product | null> {
 
 </details>
 
-**チェックリスト**:
-
-- [ ] `getProductById`関数を`lib/products.ts`に追加
-- [ ] 既存の`convertPrice`と`calculatePublishedStatus`を再利用していること
-- [ ] `safePrismaOperation`でラップしていること
-- [ ] 非公開商品に対してnullを返すこと
-
 ---
 
 ### タスク2: `(public)/layout.tsx`と`default.tsx`の新規作成
@@ -227,13 +193,6 @@ export default function Default() {
 ```
 
 </details>
-
-**チェックリスト**:
-
-- [ ] `app/(public)/layout.tsx`を新規作成
-- [ ] `app/(public)/default.tsx`を新規作成
-- [ ] `layout.tsx`が`modal`プロップを受け取っていること
-- [ ] `"use client"`は不要（Server Componentのままでよい）
 
 ---
 
@@ -436,15 +395,6 @@ export default function ProductModalRoute({ product }: ProductModalRouteProps) {
 
 </details>
 
-**チェックリスト**:
-
-- [ ] `@modal/default.tsx`がnullを返すこと
-- [ ] `@modal/(.)menu/[id]/page.tsx`がServer Componentであること
-- [ ] `ProductModalRoute.tsx`が`"use client"`であること
-- [ ] モーダルの見た目が現在の`ProductModal.tsx`と同じであること
-- [ ] `router.back()`でモーダルが閉じること
-- [ ] 存在しないIDで`notFound()`が呼ばれること
-
 ---
 
 ### タスク4: `menu/[id]/page.tsx`の新規作成（商品詳細ページ）
@@ -633,15 +583,6 @@ export default async function MenuItemPage({ params }: Props) {
 
 </details>
 
-**チェックリスト**:
-
-- [ ] `menu/[id]/page.tsx`を新規作成
-- [ ] `generateMetadata`でtitle, description, OGP, canonicalを生成していること
-- [ ] `FixedHeader`と`Footer`を含むこと
-- [ ] Dialog専用コンポーネントを使わず、セマンティックHTML（`h1`, `p`）を使用していること
-- [ ] 存在しないIDで`notFound()`が呼ばれること
-- [ ] 非公開商品で`notFound()`が呼ばれること
-
 ---
 
 ### タスク5: `ProductTile.tsx`の変更
@@ -720,16 +661,6 @@ function ProductTile({ product }: ProductTileProps) {
 ```
 
 </details>
-
-**チェックリスト**:
-
-- [ ] `onClick`プロップを削除
-- [ ] `Link`で`/menu/[id]`に遷移する実装に変更
-- [ ] `role="button"`, `tabIndex`, `onKeyDown`を削除
-- [ ] `aria-label`は`ProductCard`に維持
-- [ ] `import Link from "next/link"`を追加
-- [ ] `ProductTileProps`インターフェースから`onClick`を削除
-- [ ] 内部の表示構造（画像、商品名、Tooltip）は変更しない
 
 ---
 
@@ -827,16 +758,6 @@ export default function ProductGrid({
 
 </details>
 
-**チェックリスト**:
-
-- [ ] `useProductModal`のインポートと使用を削除
-- [ ] `dynamic`インポートの`ProductModal`を削除
-- [ ] `ProductModal`コンポーネントの描画を削除
-- [ ] `ProductTile`の`onClick`プロップを削除
-- [ ] `<>...</>`を`<section>...</section>`に変更
-- [ ] `dynamic`と`next/dynamic`のインポートを削除
-- [ ] 表示レイアウト（タイトル、グリッド）は変更しない
-
 ---
 
 ### タスク7: 不要ファイルの削除
@@ -854,13 +775,6 @@ Intercepting Routesへの移行により、以下のファイルが不要にな�
 - `useProductModal.ts`: クライアント側のモーダル状態管理が不要になった
 
 `lib/config.ts`の`MODAL_CLOSE_DELAY_MS`は、削除後に他で参照されていなければ削除する。ただし他の設定値と同じオブジェクト内にあるため、プロパティの削除のみ行う。
-
-**チェックリスト**:
-
-- [ ] `app/components/ProductModal.tsx`を削除
-- [ ] `app/hooks/useProductModal.ts`を削除
-- [ ] 他のファイルから`ProductModal`や`useProductModal`をインポートしている箇所がないことを確認
-- [ ] `MODAL_CLOSE_DELAY_MS`への参照がなければ`lib/config.ts`から削除
 
 ---
 
@@ -939,14 +853,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
 </details>
 
-**チェックリスト**:
-
-- [ ] `sitemap()`を`async`関数に変更
-- [ ] `getPublishedProductsByCategory`をインポート
-- [ ] 商品ページのURLが`/menu/[id]`形式であること
-- [ ] エラー時に静的ページのみのsitemapが返ること
-- [ ] 既存の静的ページはそのまま維持
-
 ---
 
 ### タスク9: 動作確認・ビルドテスト
@@ -954,25 +860,23 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 **確認項目**:
 
 1. **ローカル確認** (`npm run dev`)
-   - [ ] トップページから商品クリック → モーダル表示 + URLが`/menu/[id]`に変化
-   - [ ] モーダルを閉じる → 元のURL（`/`）に戻る
-   - [ ] `/menu/[id]`に直接アクセス → フルページで商品詳細表示（FixedHeader/Footer含む）
-   - [ ] フルページでリロード → 商品詳細ページが正常表示
-   - [ ] 存在しないIDでアクセス（`/menu/99999`） → 404表示
-   - [ ] `/about-ice`ページから`/menu/[id]`へ遷移 → モーダル表示
-   - [ ] ブラウザバック → 正常に元のページに戻る
-   - [ ] カテゴリータブの切り替え → 正常に動作すること
-   - [ ] モーダル内のアニメーション（段階的フェードイン） → 正常に動作すること
+   - トップページから商品クリック → モーダル表示 + URLが`/menu/[id]`に変化
+   - モーダルを閉じる → 元のURL（`/`）に戻る
+   - `/menu/[id]`に直接アクセス → フルページで商品詳細表示（FixedHeader/Footer含む）
+   - フルページでリロード → 商品詳細ページが正常表示
+   - 存在しないIDでアクセス（`/menu/99999`） → 404表示
+   - `/about-ice`ページから`/menu/[id]`へ遷移 → モーダル表示
+   - ブラウザバック → 正常に元のページに戻る
+   - カテゴリータブの切り替え → 正常に動作すること
+   - モーダル内のアニメーション（段階的フェードイン） → 正常に動作すること
 
 2. **ビルド確認** (`npm run build`)
-   - [ ] ビルドエラーがないこと
-   - [ ] TypeScriptエラーがないこと
+   - ビルドエラーがないこと
+   - TypeScriptエラーがないこと
 
-3. **品質チェックリスト**（CLAUDE.md準拠）
-   - [ ] 未使用のインポートは削除したか
-   - [ ] リントエラーは解消したか（`npm run lint`）
-   - [ ] 関数の引数と返り値に型が付いているか
-   - [ ] `safePrismaOperation`でDB操作をラップしているか
+3. **リント確認** (`npm run lint`)
+   - リントエラーがないこと
+   - 未使用のインポートがないこと
 
 ---
 
@@ -1000,6 +904,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
 ### 注意事項
 
+- **共通化コンポーネントは作らない**: モーダルとフルページで表示要件が異なる（DialogHeader等のアクセシビリティ制約）ため、それぞれ独立して実装する。UI部品（`ModalImageCard`, `PriceBadge`等）は既存コンポーネントを再利用する
+- **構造化データ（JSON-LD）は今回のスコープ外**: メタデータのみ実装する
+- **Server Componentをデフォルトにする**: モーダル制御（`router.back()`）が必要な`ProductModalRoute.tsx`のみ`"use client"`
 - **Intercepting Routeの規約**: `(.)` は「同じルートセグメントレベル」を意味する。`@modal`（スロット）と`(public)`（Route Group）はルートセグメントとしてカウントされないため、`@modal/(.)menu/[id]` で正しく `(public)/menu/[id]` をインターセプトできる
 - **Next.js 16の要件**: すべてのParallel Routeスロットに`default.tsx`が必須。ないとビルドが失敗する
 - **`params`の型**: Next.js 15以降、動的ルートの`params`は`Promise<{ id: string }>`型であり、`await`が必要
@@ -1029,30 +936,9 @@ Intercepting Routesの設計上、フルページ（`menu/[id]/page.tsx`）が�
 
 ## 実装後の更新
 
-各タスクの進捗に応じて以下を更新する:
+タスク完了時に進捗状況テーブルを更新する:
 
-**状態遷移ルール**（共通）:
+- `[ ]` → `[~]`: 作業開始時
+- `[~]` → `[o]`: 作業完了時
 
-- `[ ]` 未着手 / `[~]` 作業中 / `[o]` 完了
-
-1. **進捗状況テーブル**
-   - 上記の状態遷移ルールに従って更新
-   - 備考欄に補足情報があれば記載
-
-2. **タスクの見出し**
-   - 完了時に「[完了]」を追記する（例: `### タスク1: ... [完了]`）
-
-3. **タスク内のチェックリスト**
-   - `[ ]` 未着手 / `[~]` 作業中 / `[o]` 完了
-
-### 完了時の更新
-
-1. ステータスを「完了」に変更
-2. 完了日を追記
-3. チェックリストを更新
-4. 仕様書ファイルを `updates/completed/` ディレクトリに移動してよいか確認し、許可があれば移動
-
-```markdown
-**ステータス**: 完了
-**完了日**: YYYY-MM-DD
-```
+全タスク完了後、ヘッダーのステータスを「完了」に変更し、完了日を追記する。
