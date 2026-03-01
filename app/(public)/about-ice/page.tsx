@@ -4,8 +4,6 @@
  * 白熊堂が使用する天然氷のこだわりやストーリーを伝えるページ。
  */
 import type { Metadata } from "next";
-import FixedHeader from "@/app/components/FixedHeader";
-import Footer from "@/app/components/Footer";
 import AboutIceContent from "./AboutIceContent";
 
 const baseUrl = process.env.SITE_URL!;
@@ -64,16 +62,12 @@ const articleJsonLd = {
 
 export default function AboutIcePage() {
   return (
-    <div className="min-h-screen bg-background">
+    <>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(articleJsonLd) }}
       />
-      <FixedHeader />
-      {/* position:fixed のヘッダーに対応するスペーサー */}
-      <div style={{ height: "var(--header-height)" }} />
       <AboutIceContent />
-      <Footer />
-    </div>
+    </>
   );
 }
