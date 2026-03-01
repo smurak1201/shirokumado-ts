@@ -100,7 +100,7 @@ import { motion } from "framer-motion";
 
 export default function HeroSection() {
   return (
-    <section className="relative h-[40vh] min-h-[75px] w-full overflow-hidden md:h-[60vh] md:min-h-[125px] lg:h-[70vh] lg:min-h-[150px]">
+    <section className="relative h-[40vh] min-h-18.75 w-full overflow-hidden md:h-[60vh] md:min-h-31.25 lg:h-[70vh] lg:min-h-37.5">
       <motion.div
         initial={{ opacity: 0, scale: 1.1 }}
         animate={{ opacity: 1, scale: 1 }}
