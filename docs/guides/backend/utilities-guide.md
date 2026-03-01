@@ -985,7 +985,6 @@ export const config = {
   },
   displayConfig: {
     GRID_COLUMNS: 3,
-    MODAL_CLOSE_DELAY_MS: 300,   // モーダルの閉じるアニメーション時間
   },
   dndConfig: {
     POINTER_ACTIVATION_DISTANCE: 5,  // クリックとドラッグを区別する最小移動距離
