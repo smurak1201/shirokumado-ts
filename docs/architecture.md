@@ -123,10 +123,16 @@ HomePage (Server Component)
   ├── HeroSection (Server Component)
   └── ProductCategoryTabs (Client Component)
       └── ProductGrid (Client Component)
-          ├── useProductModal (カスタムフック)
-          ├── ProductTile
-          └── ProductModal
-              └── formatPrice (ユーティリティ関数)
+          └── ProductTile (Link → /menu/[id])
+
+MenuItemPage (Server Component) ← /menu/[id] 直接アクセス時
+  ├── ScrollToTop (Client Component)
+  ├── FixedHeader (Server Component)
+  └── Footer (Server Component)
+
+InterceptedMenuPage (Server Component) ← サイト内遷移時（Intercepting Route）
+  └── ProductModalRoute (Client Component)
+      └── formatPrice (ユーティリティ関数)
 
 FAQPage (Server Component)
   ├── FixedHeader (Server Component)
@@ -289,16 +295,6 @@ const {
 
 #### フロントエンド用フック
 
-##### `useProductModal`
-
-[`app/hooks/useProductModal.ts`](../app/hooks/useProductModal.ts) (`useProductModal`フック)
-
-```typescript
-// 商品モーダルの状態管理
-const { selectedProduct, isModalOpen, handleProductClick, handleCloseModal } =
-  useProductModal();
-```
-
 ##### `useInView`
 
 [`app/hooks/useInView.ts`](../app/hooks/useInView.ts) (`useInView`フック)
@@ -406,7 +402,6 @@ export const config = {
   },
   displayConfig: {
     GRID_COLUMNS: 3,
-    MODAL_CLOSE_DELAY_MS: 300,
   },
   dndConfig: {
     POINTER_ACTIVATION_DISTANCE: 5,
