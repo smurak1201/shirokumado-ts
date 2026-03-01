@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { aboutIceSections, type AboutIceSection } from "./data";
 import { useInView } from "@/app/hooks/useInView";
+import { scrollAnimationClass } from "@/lib/animation";
 
 /**
  * コンテンツセクション
@@ -28,7 +29,7 @@ function ContentSection({
         {/* テキスト */}
         <div className={isReversed ? "md:order-2" : ""}>
           <h2
-            className={`animate-on-scroll mb-6 text-lg font-normal tracking-wide text-foreground md:text-xl lg:text-2xl ${isInView ? "is-visible" : ""}`}
+            className={`${scrollAnimationClass(isInView)} mb-6 text-lg font-normal tracking-wide text-foreground md:text-xl lg:text-2xl`}
           >
             {section.title}
           </h2>
@@ -36,7 +37,7 @@ function ContentSection({
             {section.paragraphs.map((paragraph, i) => (
               <p
                 key={i}
-                className={`animate-on-scroll stagger-delay-${Math.min(i + 1, 8)} text-sm leading-loose text-muted-foreground md:text-base ${isInView ? "is-visible" : ""}`}
+                className={`${scrollAnimationClass(isInView, i)} text-sm leading-loose text-muted-foreground md:text-base`}
               >
                 {paragraph}
               </p>
@@ -46,7 +47,7 @@ function ContentSection({
 
         {/* 画像 */}
         <div
-          className={`animate-on-scroll stagger-delay-${Math.min(section.paragraphs.length + 1, 8)} ${isReversed ? "md:order-1" : ""} ${isInView ? "is-visible" : ""}`}
+          className={`${scrollAnimationClass(isInView, section.paragraphs.length)} ${isReversed ? "md:order-1" : ""}`}
         >
           {section.images.map((image) => (
             <div
