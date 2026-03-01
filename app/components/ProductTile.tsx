@@ -26,7 +26,7 @@ interface ProductTileProps {
 
 function ProductTile({ product }: ProductTileProps) {
   return (
-    <Link href={`/menu/${product.id}`}>
+    <Link href={`/menu/${product.id}`} scroll={false}>
       <ProductCard aria-label={`${product.name}の詳細を見る`}>
         <ProductCardHeader>
           <AspectRatio ratio={1} className="w-full overflow-hidden">
