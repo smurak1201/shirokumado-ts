@@ -19,11 +19,14 @@
   - [Client Components](#client-components)
 - [データフェッチング](#データフェッチング)
   - [Server Components でのデータフェッチング](#server-components-でのデータフェッチング)
-  - [Client Components でのデータフェッチング（fetch API）](#client-components-でのデータフェッチング（fetch-api）)
+  - [Client Components でのデータフェッチング](#client-components-でのデータフェッチング)
   - [動的レンダリングの設定](#動的レンダリングとisrの設定)
 - [動的ルーティング](#動的ルーティング)
+- [Parallel Routes と Intercepting Routes](#parallel-routes-と-intercepting-routes)
+  - [Parallel Routes](#parallel-routes)
+  - [Intercepting Routes](#intercepting-routes)
 - [API Routes](#api-routes)
-  - [Server Actions（このアプリでは未使用）](#server-actions（このアプリでは未使用）)
+  - [Server Actions](#server-actions)
 - [画像最適化](#画像最適化)
 - [レイアウトとテンプレート](#レイアウトとテンプレート)
   - [ルートレイアウト](#ルートレイアウト)
@@ -464,7 +467,7 @@ async function getDashboardData() {
 
 **async/await と Promise.all の詳細な使用方法は [Async/Await ガイド](../basics/async-await-guide.md) を参照してください。**
 
-### Client Components でのデータフェッチング（fetch API）
+### Client Components でのデータフェッチング
 
 **説明**: Client Components では、ユーザーの操作（商品の追加・更新・削除など）に応じて動的にデータを取得する必要があります。この場合、`fetch` API を使用して API Routes を呼び出します。
 
@@ -766,6 +769,112 @@ import { parseProductId } from '@/lib/api-helpers';
 - `[...slug]`: キャッチオールルート（複数のセグメントをキャッチ）
 - `[[...slug]]`: オプショナルキャッチオールルート
 
+## Parallel Routes と Intercepting Routes
+
+### Parallel Routes
+
+**説明**: Parallel Routes は、同じレイアウト内で複数のページ（スロット）を同時に描画する仕組み。`@` プレフィックス付きのフォルダがスロットになり、親の `layout.tsx` がそれらを props として受け取る。
+
+```
+app/(public)/
+├── @modal/           # ← スロット（URLには影響しない）
+│   └── default.tsx   # モーダルが表示されていない時のfallback
+├── layout.tsx        # children と modal を並列に描画
+├── default.tsx       # children スロットのfallback
+└── page.tsx          # children スロットの中身
+```
+
+```tsx
+// app/(public)/layout.tsx
+export default function PublicLayout({
+  children,
+  modal,
+}: {
+  children: React.ReactNode;
+  modal: React.ReactNode;
+}) {
+  return (
+    <>
+      {children}
+      {modal}
+    </>
+  );
+}
+```
+
+**ポイント**:
+
+- `@modal` はスロット名で、URLセグメントにはならない
+- `layout.tsx` の props 名（`modal`）は `@modal` のフォルダ名と一致させる
+- すべてのスロットに `default.tsx` が必要（ないとビルドエラー）。暗黙の `children` スロットも含む
+
+### Intercepting Routes
+
+**説明**: Intercepting Routes は、サイト内のリンククリック（ソフトナビゲーション）時に、本来のルートの代わりに別のコンポーネント（モーダルなど）を表示する仕組み。直接URLアクセスやリロード時は本来のルートが表示される。
+
+```
+サイト内クリック: / → /menu/1  → @modal/(.)menu/[id] のモーダルが表示される
+直接アクセス:     /menu/1     → menu/[id]/page.tsx のフルページが表示される
+```
+
+**インターセプトの規約**:
+
+| 規約 | 意味 | 例 |
+|---|---|---|
+| `(.)` | 同じルートセグメントレベル | `@modal/(.)menu` → `menu` をインターセプト |
+| `(..)` | 1つ上のレベル | `(..)photo` → 親の `photo` をインターセプト |
+| `(...)` | ルートレベル | `(...)photo` → app直下の `photo` をインターセプト |
+
+`@modal`（スロット）と `(public)`（Route Group）はルートセグメントとしてカウントされないため、`@modal/(.)menu/[id]` で `(public)/menu/[id]` を正しくインターセプトできる。
+
+**このアプリでの使用箇所**:
+
+```
+app/(public)/
+├── @modal/
+│   ├── (.)menu/[id]/
+│   │   ├── page.tsx              # Server Component: getProductByIdでデータ取得
+│   │   └── ProductModalRoute.tsx # Client Component: Dialogでモーダル表示、router.back()で閉じる
+│   └── default.tsx               # モーダル非表示時はnullを返す
+├── menu/[id]/
+│   ├── page.tsx                  # フルページ表示（SEO/OGP対応、generateMetadata）
+│   └── ScrollToTop.tsx           # リロード時のスクロール位置リセット
+├── layout.tsx                    # children + modal を並列描画
+└── default.tsx                   # childrenスロットのfallback
+```
+
+**モーダル側（Intercepting Route）の実装パターン**:
+
+```tsx
+// @modal/(.)menu/[id]/page.tsx - Server Component
+export default async function InterceptedMenuPage({ params }: Props) {
+  const { id } = await params;
+  const product = await getProductById(parseInt(id));
+  if (!product) notFound();
+  return <ProductModalRoute product={product} />;
+}
+```
+
+```tsx
+// @modal/(.)menu/[id]/ProductModalRoute.tsx - Client Component
+"use client";
+export default function ProductModalRoute({ product }: { product: Product }) {
+  const router = useRouter();
+  return (
+    <Dialog open onOpenChange={() => router.back()}>
+      <DialogContent>{/* 商品情報 */}</DialogContent>
+    </Dialog>
+  );
+}
+```
+
+**注意点**:
+
+- モーダルを閉じるには `router.back()` を使用する（URLが元に戻る）
+- `Link` に `scroll={false}` を指定しないと、モーダル表示時に背景のスクロール位置がリセットされる
+- フルページ側ではリロード時のブラウザスクロール復元対策が必要（`ScrollToTop` コンポーネント）
+- モーダル側は `"use client"` が必要（`router.back()` を使うため）。データ取得の `page.tsx` は Server Component のまま
+
 ## API Routes
 
 **説明**: API Routes を使用すると、Next.js アプリケーション内で RESTful API を実装できます。`app/api/` ディレクトリ内に `route.ts` ファイルを配置することで、HTTP メソッド（GET、POST、PUT、DELETE など）をエクスポートできます。
@@ -993,7 +1102,7 @@ import { parseProductId } from '@/lib/api-helpers';
 - 型安全なリクエスト・レスポンス処理
 - 日本語対応: `apiSuccess`、`apiError`、`handleApiError`関数は自動的に`Content-Type: application/json; charset=utf-8`ヘッダーを設定し、日本語を含む JSON の文字化けを防止
 
-### Server Actions（このアプリでは未使用）
+### Server Actions
 
 **説明**: Server Actions は、Client Component から直接サーバー側の関数を呼び出すことができる機能です。`'use server'`ディレクティブを使用してサーバー側の関数を定義し、フォーム送信やボタンクリックなどから直接呼び出せます。
 
