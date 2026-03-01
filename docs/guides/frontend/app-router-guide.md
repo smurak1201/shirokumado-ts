@@ -42,7 +42,7 @@
 
 Next.js App Router は、Next.js 13 以降で導入された新しいルーティングシステムです。ファイルベースのルーティングと、React Server Components を活用したサーバーサイドレンダリングを提供します。
 
-このアプリケーションでは、Next.js 16.1.1 の App Router を使用して、ホームページ、FAQ ページ、ダッシュボード、API Routes を実装しています。
+このアプリケーションでは、Next.js 16.1.1 の App Router を使用して、ホームページ、FAQ ページ、天然氷紹介ページ、商品詳細ページ（Parallel Routes + Intercepting Routes によるモーダル表示）、ダッシュボード、API Routes を実装しています。
 
 ## App Router とは
 
@@ -67,7 +67,14 @@ App Router では、`app/` ディレクトリ内のファイル構造がその�
 
 ```
 ├── (public)/          # 公開ページ用ルートグループ
-│   ├── error.tsx      # エラーUI
+│   ├── @modal/        # Parallel Routes（モーダル用スロット）
+│   │   ├── (.)menu/[id]/
+│   │   │   ├── page.tsx              # Server Component: データ取得
+│   │   │   └── ProductModalRoute.tsx # Client Component: Dialogでモーダル表示
+│   │   └── default.tsx # モーダル非表示時のfallback
+│   ├── menu/[id]/     # 商品詳細ページ（/menu/[id]）
+│   │   ├── page.tsx   # フルページ表示（SEO/OGP対応、generateMetadata）
+│   │   └── ScrollToTop.tsx # リロード時のスクロール位置リセット
 │   ├── about-ice/     # 天然氷紹介ページ（/about-ice）
 │   │   ├── AboutIceContent.tsx # Client Component（スクロールアニメーション）
 │   │   ├── data.ts    # コンテンツデータ
@@ -75,10 +82,13 @@ App Router では、`app/` ディレクトリ内のファイル構造がその�
 │   ├── faq/
 │   │   ├── data.ts    # FAQデータ
 │   │   └── page.tsx   # FAQページ（/faq）
+│   ├── shop/
+│   │   └── page.tsx   # ショップページ（/shop）
+│   ├── default.tsx    # childrenスロットのfallback
+│   ├── error.tsx      # エラーUI
+│   ├── layout.tsx     # 公開ページレイアウト（children + modal並列描画）
 │   ├── HomeContent.tsx # ホームページのメインコンテンツ（Server Component）
-│   ├── page.tsx       # ホームページ（/）
-│   └── shop/
-│       └── page.tsx   # ショップページ（/shop）
+│   └── page.tsx       # ホームページ（/）
 ├── api/               # API Routes
 │   ├── auth/
 │   │   └── [...nextauth]/
@@ -102,12 +112,20 @@ App Router では、`app/` ディレクトリ内のファイル構造がその�
 │   ├── error/
 │   │   └── page.tsx   # 認証エラーページ
 │   └── signin/
-│       └── page.tsx   # サインインページ
+│       ├── page.tsx   # サインインページ
+│       └── WebViewGuard.tsx # WebView検出コンポーネント
 ├── components/        # 共通コンポーネント
+│   ├── ErrorBoundary.tsx # エラーバウンダリー
+│   ├── FAQSection.tsx # FAQセクション（ホームページ・FAQページ共用）
+│   ├── FixedHeader.tsx # 固定ヘッダー
+│   ├── Footer.tsx     # フッター
+│   ├── HeroSection.tsx # ヒーローセクション
+│   ├── LazyGoogleMap.tsx # 遅延読み込みGoogle Map
 │   ├── LoadingScreen.tsx # 共通ローディング画面
 │   ├── MobileMenu.tsx # モバイルメニュー（Sheet使用）
-│   ├── LazyGoogleMap.tsx # 遅延読み込みGoogle Map
-│   ├── FAQSection.tsx # FAQセクション（ホームページ・FAQページ共用）
+│   ├── ProductCategoryTabs.tsx # カテゴリータブ
+│   ├── ProductGrid.tsx # 商品グリッド
+│   ├── ProductTile.tsx # 商品タイル（memo化）
 │   └── ui/            # shadcn/uiコンポーネント
 ├── dashboard/         # 管理用ページ（ルートグループ外）
 │   ├── page.tsx       # /dashboard → /dashboard/homepage へリダイレクト
@@ -116,15 +134,24 @@ App Router では、`app/` ディレクトリ内のファイル構造がその�
 │   ├── components/    # 共通コンポーネント
 │   │   └── DashboardHeader.tsx
 │   ├── homepage/      # 商品管理ページ
-│   │   └── page.tsx   # ダッシュボード本体（/dashboard/homepage）
+│   │   ├── page.tsx   # ダッシュボード本体（/dashboard/homepage）
+│   │   ├── types.ts   # 型定義
+│   │   ├── components/
+│   │   │   ├── DashboardContent.tsx
+│   │   │   ├── form/  # フォーム関連コンポーネント
+│   │   │   ├── list/  # 一覧表示関連コンポーネント
+│   │   │   └── layout/ # レイアウト管理関連コンポーネント
+│   │   ├── hooks/     # カスタムフック
+│   │   └── utils/     # ユーティリティ関数
 │   └── shop/          # ショップ管理ページ
 │       └── page.tsx
 ├── globals.css        # グローバルスタイル
 ├── hooks/             # カスタムフック
-│   ├── useInView.ts   # ビューポート交差検知フック
-│   └── useProductModal.ts # 商品モーダル管理フック
+│   └── useInView.ts   # ビューポート交差検知フック
 ├── layout.tsx         # ルートレイアウト（全ページ共通）
 ├── not-found.tsx      # 404ページ
+├── robots.ts          # robots.txt生成
+├── sitemap.ts         # サイトマップ生成
 └── types.ts           # 型定義
 ```
 
@@ -158,10 +185,12 @@ App Router では、`app/` ディレクトリ内のファイル構造がその�
 
 **このアプリでの方針**:
 
-このアプリでは`loading.tsx`を使用せず、**Suspenseを使って各ページで個別にローディング制御**しています。これにより以下のメリットがあります：
+公開ページでは`loading.tsx`を使用せず、**Suspenseを使って各ページで個別にローディング制御**しています。これにより以下のメリットがあります：
 
 - 初回ロード/リロード時にもローディング画面が表示される
 - 静的なページ（FAQ等）では不要なローディングを省略できる
+
+ダッシュボード（`dashboard/loading.tsx`）ではページ遷移時のローディング表示として使用しています。
 
 **共通ローディングコンポーネント**:
 
@@ -333,7 +362,7 @@ FAQデータは `data.ts` に分離されており、`FAQSection` 共通コン�
 
 ```typescript
 // app/(public)/faq/data.ts
-export const faqItems: FAQItem[] = [
+export const faqs: FAQ[] = [
   {
     question: "かき氷の販売は夏だけですか？",
     answer: "通年で営業しており、季節ごとに異なるメニューもご用意しています。",
@@ -342,7 +371,7 @@ export const faqItems: FAQItem[] = [
 ];
 
 // app/(public)/faq/page.tsx
-import { faqItems } from "./data";
+import { faqs } from "./data";
 import FAQSection from "@/app/components/FAQSection";
 
 export default function FAQPage() {
@@ -351,7 +380,7 @@ export default function FAQPage() {
       <FixedHeader />
       {/* ... */}
       <main>
-        <FAQSection items={faqItems} />
+        <FAQSection items={faqs} />
       </main>
       <Footer />
     </div>
@@ -396,11 +425,13 @@ return <DashboardContent categories={categories} initialProducts={products} />;
 
 **このアプリでの使用箇所**:
 
-- [`app/components/ProductGrid.tsx`](../../app/components/ProductGrid.tsx): 商品グリッド（モーダル表示などのインタラクティブ機能）
-- [`app/components/ProductModal.tsx`](../../app/components/ProductModal.tsx): 商品詳細モーダル（開閉状態の管理）
+- [`app/components/ProductGrid.tsx`](../../app/components/ProductGrid.tsx): 商品グリッド（アニメーション制御）
+- [`app/components/ProductTile.tsx`](../../app/components/ProductTile.tsx): 商品タイル（Linkによるページ遷移、memo化）
 - [`app/components/ProductCategoryTabs.tsx`](../../app/components/ProductCategoryTabs.tsx): カテゴリータブ切り替え
 - [`app/components/MobileMenu.tsx`](../../app/components/MobileMenu.tsx): モバイルメニュー（Sheet使用）
 - [`app/components/LazyGoogleMap.tsx`](../../app/components/LazyGoogleMap.tsx): 遅延読み込みGoogle Map
+- [`app/(public)/@modal/(.)menu/[id]/ProductModalRoute.tsx`](../../app/(public)/@modal/(.)menu/[id]/ProductModalRoute.tsx): 商品モーダル表示（Intercepting Routes、Dialog使用）
+- [`app/(public)/menu/[id]/ScrollToTop.tsx`](../../app/(public)/menu/[id]/ScrollToTop.tsx): スクロール位置リセット
 - [`app/(public)/about-ice/AboutIceContent.tsx`](../../app/(public)/about-ice/AboutIceContent.tsx): 天然氷紹介（スクロールアニメーション）
 - [`app/dashboard/homepage/components/DashboardContent.tsx`](../../app/dashboard/homepage/components/DashboardContent.tsx): ダッシュボードコンテンツ（フォーム送信、状態管理）
 
@@ -448,7 +479,11 @@ async function getPublishedProductsByCategory(): Promise<
 }
 ```
 
-2. **[`app/dashboard/homepage/page.tsx`](../../app/dashboard/homepage/page.tsx) (`getDashboardData`関数)** - ダッシュボードデータを取得
+2. **[`lib/products.ts`](../../lib/products.ts) (`getProductById`関数)** - 商品IDから単一商品を取得
+
+商品詳細ページ（`menu/[id]/page.tsx`）やIntercepting Route（`@modal/(.)menu/[id]/page.tsx`）から呼び出されます。
+
+3. **[`app/dashboard/homepage/page.tsx`](../../app/dashboard/homepage/page.tsx) (`getDashboardData`関数)** - ダッシュボードデータを取得
 
 ```typescript
 async function getDashboardData() {
@@ -1176,9 +1211,10 @@ Next.js の `Image` コンポーネントを使用すると、画像の自動最
 
 **このアプリでの使用箇所**:
 
-- **[`app/(public)/page.tsx`](../../app/(public)/page.tsx)**: ヒーロー画像の最適化
+- **[`app/(public)/HomeContent.tsx`](../../app/(public)/HomeContent.tsx)**: ヒーロー画像の最適化
 - **[`app/components/ProductTile.tsx`](../../app/components/ProductTile.tsx)**: 商品画像の最適化
-- **[`app/components/ProductModal.tsx`](../../app/components/ProductModal.tsx)**: モーダル内の商品画像
+- **[`app/(public)/@modal/(.)menu/[id]/ProductModalRoute.tsx`](../../app/(public)/@modal/(.)menu/[id]/ProductModalRoute.tsx)**: モーダル内の商品画像
+- **[`app/(public)/menu/[id]/page.tsx`](../../app/(public)/menu/[id]/page.tsx)**: 商品詳細ページの画像
 
 ## レイアウトとテンプレート
 
@@ -1271,9 +1307,20 @@ export const metadata: Metadata = {
    - Server Component
    - 準備中メッセージを表示
 
+4. **商品詳細ページ** ([`app/(public)/menu/[id]/page.tsx`](../../app/(public)/menu/[id]/page.tsx))
+
+   - Server Component + 動的ルーティング
+   - `generateMetadata`でSEO/OGP対応
+   - サイト内リンクからはIntercepting Routeでモーダル表示
+   - 直接アクセス・リロード時はフルページ表示
+
+5. **天然氷紹介ページ** ([`app/(public)/about-ice/page.tsx`](../../app/(public)/about-ice/page.tsx))
+
+   - Server Component + Client Component（スクロールアニメーション）
+
 **管理ページ** (ルートグループ外):
 
-4. **ダッシュボード** ([`app/dashboard/page.tsx`](../../app/dashboard/page.tsx))
+6. **ダッシュボード** ([`app/dashboard/page.tsx`](../../app/dashboard/page.tsx))
    - Server Component
    - データベースから商品とカテゴリーを取得
    - Client Component にデータを渡す
@@ -1285,7 +1332,7 @@ export const metadata: Metadata = {
 
    - `GET /api/products`: 商品一覧取得
    - `POST /api/products`: 商品作成
-   - `GET /api/products/[id]`: 個別商品取得（**未使用** - 将来的に商品詳細ページや外部 API 連携が必要になった場合に使用する可能性があります）
+   - `GET /api/products/[id]`: 個別商品取得（商品詳細モーダル・商品詳細ページで`getProductById`経由で使用）
    - `PUT /api/products/[id]`: 商品更新
    - `DELETE /api/products/[id]`: 商品削除
    - `POST /api/products/upload`: 画像アップロード
