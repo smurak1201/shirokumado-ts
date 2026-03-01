@@ -14,7 +14,7 @@
 - [改修の目的](#改修の目的)
 - [タスク詳細](#タスク詳細)
   - [タスク1: getProductById関数の追加](#タスク1-getproductbyid関数の追加)
-  - [タスク2: (public)/layout.txとdefault.tsxの新規作成](#タスク2-publiclayouttsxとdefaulttsxの新規作成)
+  - [タスク2: (public)/layout.tsxとdefault.tsxの新規作成](#タスク2-publiclayouttsxとdefaulttsxの新規作成)
   - [タスク3: @modalスロットの作成](#タスク3-modalスロットの作成)
   - [タスク4: menu/[id]/page.tsxの新規作成（商品詳細ページ）](#タスク4-menuidpagetsxの新規作成商品詳細ページ)
   - [タスク5: ProductTile.tsxの変更](#タスク5-producttiletsxの変更)
@@ -978,21 +978,21 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
 ## 変更対象ファイル一覧
 
-| ファイル                                              | 変更内容                                  | ステータス |
-| ----------------------------------------------------- | ----------------------------------------- | :--------: |
-| `lib/products.ts`                                     | `getProductById`関数を追加                |    [ ]     |
-| `app/(public)/layout.tsx`                             | **新規作成** - @modalスロット受け取り     |    [ ]     |
-| `app/(public)/default.tsx`                            | **新規作成** - childrenスロットfallback    |    [ ]     |
-| `app/(public)/@modal/default.tsx`                     | **新規作成** - モーダルスロットfallback    |    [ ]     |
-| `app/(public)/@modal/(.)menu/[id]/page.tsx`           | **新規作成** - Intercepting Route         |    [ ]     |
-| `app/(public)/@modal/(.)menu/[id]/ProductModalRoute.tsx` | **新規作成** - モーダルUI（Client Component） | [ ]    |
-| `app/(public)/menu/[id]/page.tsx`                     | **新規作成** - 商品詳細ページ（SSR）      |    [ ]     |
-| `app/components/ProductTile.tsx`                      | `onClick` → `Link`に変更                  |    [ ]     |
-| `app/components/ProductGrid.tsx`                      | モーダル依存を削除                        |    [ ]     |
-| `app/components/ProductModal.tsx`                     | **削除**                                  |    [ ]     |
-| `app/hooks/useProductModal.ts`                        | **削除**                                  |    [ ]     |
-| `app/sitemap.ts`                                      | 商品ページを動的追加（async化）           |    [ ]     |
-| `lib/config.ts`                                       | `MODAL_CLOSE_DELAY_MS`削除（参照確認後）  |    [ ]     |
+| ファイル                                                 | 変更内容                                      |
+| -------------------------------------------------------- | --------------------------------------------- |
+| `lib/products.ts`                                        | `getProductById`関数を追加                     |
+| `app/(public)/layout.tsx`                                | **新規作成** - @modalスロット受け取り          |
+| `app/(public)/default.tsx`                               | **新規作成** - childrenスロットfallback         |
+| `app/(public)/@modal/default.tsx`                        | **新規作成** - モーダルスロットfallback         |
+| `app/(public)/@modal/(.)menu/[id]/page.tsx`              | **新規作成** - Intercepting Route              |
+| `app/(public)/@modal/(.)menu/[id]/ProductModalRoute.tsx` | **新規作成** - モーダルUI（Client Component）  |
+| `app/(public)/menu/[id]/page.tsx`                        | **新規作成** - 商品詳細ページ（SSR）           |
+| `app/components/ProductTile.tsx`                         | `onClick` → `Link`に変更                       |
+| `app/components/ProductGrid.tsx`                         | モーダル依存を削除                             |
+| `app/components/ProductModal.tsx`                        | **削除**                                       |
+| `app/hooks/useProductModal.ts`                           | **削除**                                       |
+| `app/sitemap.ts`                                         | 商品ページを動的追加（async化）                |
+| `lib/config.ts`                                          | `MODAL_CLOSE_DELAY_MS`削除（参照確認後）       |
 
 ---
 
