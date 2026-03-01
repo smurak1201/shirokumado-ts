@@ -152,3 +152,49 @@ export async function getPublishedProductsByCategory(): Promise<
     throw error;
   }
 }
+
+/**
+ * IDを指定して公開中の商品を1件取得
+ *
+ * 非公開の商品はnullを返す（404扱い）
+ */
+export async function getProductById(id: number): Promise<Product | null> {
+  try {
+    const product = await safePrismaOperation(
+      () =>
+        prisma.product.findUnique({
+          where: { id },
+          include: { category: true },
+        }),
+      `getProductById(${id})`
+    );
+
+    if (!product) {
+      return null;
+    }
+
+    // 公開状態チェック
+    if (product.publishedAt || product.endedAt) {
+      if (!calculatePublishedStatus(product.publishedAt, product.endedAt)) {
+        return null;
+      }
+    } else if (!product.published) {
+      return null;
+    }
+
+    return {
+      id: product.id,
+      name: product.name,
+      description: product.description,
+      imageUrl: product.imageUrl,
+      priceS: convertPrice(product.priceS),
+      priceL: convertPrice(product.priceL),
+    };
+  } catch (error) {
+    log.error("商品の取得に失敗しました", {
+      context: `getProductById(${id})`,
+      error,
+    });
+    throw error;
+  }
+}
