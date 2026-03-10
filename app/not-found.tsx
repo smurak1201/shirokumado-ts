@@ -8,6 +8,9 @@ import Link from 'next/link';
 import FixedHeader from './components/FixedHeader';
 import Footer from './components/Footer';
 
+const BASE_URL = process.env.SITE_URL!;
+const ogImageUrl = `${BASE_URL}/api/og/404`;
+
 export const metadata: Metadata = {
   title: "ページが見つかりません",
   description: "お探しのページは存在しないか、移動した可能性があります。",
@@ -22,7 +25,7 @@ export const metadata: Metadata = {
     siteName: "白熊堂",
     images: [
       {
-        url: "/api/og/404",
+        url: ogImageUrl,
         width: 1200,
         height: 630,
         alt: "404 - ページが見つかりません",
@@ -33,7 +36,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "ページが見つかりません | 白熊堂",
     description: "お探しのページは存在しないか、移動した可能性があります。",
-    images: ["/api/og/404"],
+    images: [ogImageUrl],
   },
 };
 
