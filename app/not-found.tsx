@@ -10,8 +10,30 @@ import Footer from './components/Footer';
 
 export const metadata: Metadata = {
   title: "ページが見つかりません",
+  description: "お探しのページは存在しないか、移動した可能性があります。",
   robots: {
     index: false,
+  },
+  openGraph: {
+    title: "ページが見つかりません | 白熊堂",
+    description: "お探しのページは存在しないか、移動した可能性があります。",
+    type: "website",
+    locale: "ja_JP",
+    siteName: "白熊堂",
+    images: [
+      {
+        url: "/api/og/404",
+        width: 1200,
+        height: 630,
+        alt: "404 - ページが見つかりません",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "ページが見つかりません | 白熊堂",
+    description: "お探しのページは存在しないか、移動した可能性があります。",
+    images: ["/api/og/404"],
   },
 };
 

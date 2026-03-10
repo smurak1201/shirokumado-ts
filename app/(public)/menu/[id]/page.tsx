@@ -14,14 +14,30 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { id } = await params;
   const productId = parseInt(id);
 
+  const notFoundMetadata: Metadata = {
+    title: "商品が見つかりません",
+    description: "お探しのページは存在しないか、移動した可能性があります。",
+    openGraph: {
+      title: "ページが見つかりません | 白熊堂",
+      description: "お探しのページは存在しないか、移動した可能性があります。",
+      images: [{ url: "/api/og/404", width: 1200, height: 630 }],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: "ページが見つかりません | 白熊堂",
+      description: "お探しのページは存在しないか、移動した可能性があります。",
+      images: ["/api/og/404"],
+    },
+  };
+
   if (isNaN(productId)) {
-    return { title: "商品が見つかりません" };
+    return notFoundMetadata;
   }
 
   const product = await getProductById(productId);
 
   if (!product) {
-    return { title: "商品が見つかりません" };
+    return notFoundMetadata;
   }
 
   return {
