@@ -14,21 +14,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { id } = await params;
   const productId = parseInt(id);
 
-  const ogImageUrl = `${BASE_URL}/api/og/404`;
   const notFoundMetadata: Metadata = {
     title: "商品が見つかりません",
     description: "お探しのページは存在しないか、移動した可能性があります。",
-    openGraph: {
-      title: "ページが見つかりません | 白熊堂",
-      description: "お探しのページは存在しないか、移動した可能性があります。",
-      images: [{ url: ogImageUrl, width: 1200, height: 630 }],
-    },
-    twitter: {
-      card: "summary_large_image",
-      title: "ページが見つかりません | 白熊堂",
-      description: "お探しのページは存在しないか、移動した可能性があります。",
-      images: [ogImageUrl],
-    },
   };
 
   if (isNaN(productId)) {
