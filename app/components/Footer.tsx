@@ -84,7 +84,7 @@ export default function Footer() {
               <a
                 href="mailto:shirokumado.co.jp@mail.com"
                 className={cn(
-                  "block font-normal transition-all active:scale-95",
+                  "block break-all font-normal transition-all active:scale-95",
                   "hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded-sm"
                 )}
               >
