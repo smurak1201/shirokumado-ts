@@ -17,6 +17,7 @@ import { cn } from "@/lib/utils";
 type NavLink = {
   href: string;
   label: string;
+  external?: boolean;
 };
 
 interface MobileMenuProps {
@@ -60,18 +61,33 @@ export default function MobileMenu({ navLinks }: MobileMenuProps) {
           {navLinks.map((link, index) => (
             <div key={link.href} className="mobile-nav-item">
               {index > 0 && <Separator />}
-              <Link
-                href={link.href}
-                onClick={handleLinkClick}
-                className={cn(
-                  "block py-4 text-base font-normal tracking-wide transition-colors",
-                  pathname === link.href
-                    ? "text-primary"
-                    : "text-foreground/70 hover:text-foreground"
-                )}
-              >
-                {link.label}
-              </Link>
+              {link.external ? (
+                <a
+                  href={link.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={handleLinkClick}
+                  className={cn(
+                    "block py-4 text-base font-normal tracking-wide transition-colors",
+                    "text-foreground/70 hover:text-foreground"
+                  )}
+                >
+                  {link.label}
+                </a>
+              ) : (
+                <Link
+                  href={link.href}
+                  onClick={handleLinkClick}
+                  className={cn(
+                    "block py-4 text-base font-normal tracking-wide transition-colors",
+                    pathname === link.href
+                      ? "text-primary"
+                      : "text-foreground/70 hover:text-foreground"
+                  )}
+                >
+                  {link.label}
+                </Link>
+              )}
             </div>
           ))}
 
