@@ -82,13 +82,13 @@ export default function Footer() {
             </p>
             <div className="space-y-0.5 text-[8px] leading-relaxed text-muted-foreground md:text-sm">
               <a
-                href="tel:070-9157-3772"
+                href="mailto:shirokumado.co.jp@mail.com"
                 className={cn(
                   "block font-normal transition-all active:scale-95",
                   "hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded-sm"
                 )}
               >
-                070-9157-3772
+                shirokumado.co.jp@mail.com
               </a>
             </div>
           </div>
