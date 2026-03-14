@@ -15,6 +15,7 @@ import MobileMenu from "./MobileMenu";
 const NAV_LINKS = [
   { href: "/about-ice", label: "天然氷について" },
   { href: "/faq", label: "よくある質問" },
+  { href: "https://shirokumadoshop.stores.jp/", label: "オンラインショップ", external: true },
 ] as const;
 
 const navLinkClassName = cn(
@@ -74,11 +75,23 @@ export default function FixedHeader() {
 
         {/* デスクトップ: 横並びナビ */}
         <nav className="hidden items-center gap-6 md:flex">
-          {NAV_LINKS.map((link) => (
-            <Link key={link.href} href={link.href} className={navLinkClassName}>
-              {link.label}
-            </Link>
-          ))}
+          {NAV_LINKS.map((link) =>
+            "external" in link && link.external ? (
+              <a
+                key={link.href}
+                href={link.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={navLinkClassName}
+              >
+                {link.label}
+              </a>
+            ) : (
+              <Link key={link.href} href={link.href} className={navLinkClassName}>
+                {link.label}
+              </Link>
+            )
+          )}
         </nav>
 
         {/* モバイル: ハンバーガーメニュー */}
