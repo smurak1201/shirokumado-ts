@@ -63,9 +63,7 @@ export default function FAQPage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
       />
 
-      <div className="mx-auto max-w-5xl px-4 pt-8 md:px-6 md:pt-12">
-        <Breadcrumb items={[{ label: "よくある質問" }]} />
-      </div>
+      <Breadcrumb items={[{ label: "よくある質問" }]} />
       <main className="mx-auto max-w-4xl px-4 md:px-6 pb-12 md:pb-16 lg:pb-20">
         <FAQSection faqs={faqs} showTitle={true} />
       </main>
