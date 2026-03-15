@@ -5,6 +5,7 @@
  * データは app/(public)/faq/data.ts から取得。
  */
 import type { Metadata } from "next";
+import Breadcrumb from "@/app/components/Breadcrumb";
 import FAQSection from "@/app/components/FAQSection";
 import { faqs } from "./data";
 
@@ -63,6 +64,7 @@ export default function FAQPage() {
       />
 
       <main className="mx-auto max-w-4xl px-4 py-8 md:px-6 md:py-12 lg:px-8 lg:py-16">
+        <Breadcrumb items={[{ label: "よくある質問" }]} />
         <FAQSection faqs={faqs} showTitle={true} />
       </main>
     </>
