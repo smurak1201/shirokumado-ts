@@ -115,7 +115,7 @@ export default async function HomeContent() {
 
       <main>
         {/* 天然氷紹介: カード形式で白基調に馴染ませる */}
-        <section className="mx-auto max-w-6xl px-4 py-10 md:px-6 md:py-16 lg:px-8">
+        <section className="mx-auto max-w-5xl px-4 py-10 md:px-6 md:py-16">
           <Link
             href="/about-ice"
             className="group relative block h-[28svh] overflow-hidden rounded-xl shadow-md ring-1 ring-border/50 transition-shadow duration-500 hover:shadow-xl md:h-[35vh] lg:h-[40vh]"
@@ -142,7 +142,7 @@ export default async function HomeContent() {
           </Link>
         </section>
 
-        <div className="mx-auto max-w-7xl px-2 py-10 md:px-6 md:py-16 lg:px-8 lg:py-20 overflow-x-hidden">
+        <div className="mx-auto max-w-5xl px-4 py-10 md:px-6 md:py-16 lg:py-20 overflow-x-hidden">
           <ProductCategoryTabs categoriesWithProducts={categoriesWithProducts} />
         </div>
       </main>

@@ -23,7 +23,7 @@ function ContentSection({
   return (
     <section
       ref={ref}
-      className="mx-auto max-w-6xl px-4 py-12 md:px-8 md:py-16 lg:py-20"
+      className="mx-auto max-w-5xl px-4 py-12 md:px-6 md:py-16 lg:py-20"
     >
       <div className="grid gap-8 md:grid-cols-2 md:items-center md:gap-12 lg:gap-16">
         {/* テキスト */}
@@ -73,7 +73,7 @@ export default function AboutIceContent() {
   return (
     <main className="pb-12 md:pb-16">
       {/* ページタイトル: FAQページと統一したスタイル */}
-      <div className="animate-page-title mx-auto flex max-w-6xl flex-col items-center gap-4 px-4 pt-8 md:px-8 md:pt-12">
+      <div className="animate-page-title mx-auto flex max-w-6xl flex-col items-center gap-4 px-4 pt-8 md:px-6 md:pt-12">
         <h1 className="text-center text-2xl font-normal tracking-wide text-muted-foreground md:text-3xl lg:text-4xl">
           天然氷について
         </h1>
