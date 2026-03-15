@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getProductById } from "@/lib/products";
+import Breadcrumb from "@/app/components/Breadcrumb";
 import ScrollToTop from "./ScrollToTop";
 import ProductDetail from "@/app/components/ProductDetail";
 
@@ -69,6 +70,7 @@ export default async function MenuItemPage({ params }: Props) {
       <ScrollToTop />
 
       <main className="mx-auto max-w-2xl px-4 py-8 md:py-12">
+        <Breadcrumb items={[{ label: product.name }]} />
         <div className="flex flex-col gap-4">
           <ProductDetail
             product={product}
