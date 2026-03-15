@@ -142,7 +142,7 @@ export default async function HomeContent() {
           </Link>
         </section>
 
-        <div className="mx-auto max-w-5xl px-4 py-10 md:px-6 md:py-16 lg:py-20 overflow-x-hidden">
+        <div className="mx-auto max-w-5xl px-4 py-10 md:px-6 md:py-16 lg:py-20">
           <ProductCategoryTabs categoriesWithProducts={categoriesWithProducts} />
         </div>
       </main>

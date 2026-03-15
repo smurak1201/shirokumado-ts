@@ -68,7 +68,7 @@ export default function AboutIcePage() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(articleJsonLd) }}
       />
-      <div className="mx-auto w-full max-w-5xl px-4 pt-8 md:px-6 md:pt-12">
+      <div className="mx-auto max-w-5xl px-4 pt-8 md:px-6 md:pt-12">
         <Breadcrumb items={[{ label: "天然氷について" }]} />
       </div>
       <AboutIceContent />

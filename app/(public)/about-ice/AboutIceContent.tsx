@@ -71,7 +71,7 @@ function ContentSection({
 
 export default function AboutIceContent() {
   return (
-    <main className="pb-12 md:pb-16">
+    <main className="pb-12 md:pb-16 lg:pb-20">
       {/* ページタイトル: FAQページと統一したスタイル */}
       <div className="animate-page-title mx-auto flex max-w-5xl flex-col items-center gap-4 px-4 pt-8 md:px-6 md:pt-12">
         <h1 className="text-center text-2xl font-normal tracking-wide text-muted-foreground md:text-3xl lg:text-4xl">
