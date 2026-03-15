@@ -51,6 +51,33 @@ const localBusinessJsonLd = {
   image: `${BASE_URL}/og-image.png`,
 };
 
+function buildMenuJsonLd(
+  categoriesWithProducts: CategoryWithProducts[]
+): object {
+  return {
+    "@context": "https://schema.org",
+    "@type": "Menu",
+    name: "白熊堂 メニュー",
+    hasMenuSection: categoriesWithProducts.map(({ category, products }) => ({
+      "@type": "MenuSection",
+      name: category.name,
+      hasMenuItem: products.map((product) => ({
+        "@type": "MenuItem",
+        name: product.name,
+        ...(product.description && { description: product.description }),
+        ...(product.priceS != null && {
+          offers: {
+            "@type": "Offer",
+            price: product.priceS,
+            priceCurrency: "JPY",
+          },
+        }),
+        ...(product.imageUrl && { image: product.imageUrl }),
+      })),
+    })),
+  };
+}
+
 export default async function HomeContent() {
   let categoriesWithProducts: CategoryWithProducts[] = [];
 
@@ -66,12 +93,23 @@ export default async function HomeContent() {
     categoriesWithProducts = [];
   }
 
+  const menuJsonLd =
+    categoriesWithProducts.length > 0
+      ? buildMenuJsonLd(categoriesWithProducts)
+      : null;
+
   return (
     <>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(localBusinessJsonLd) }}
       />
+      {menuJsonLd && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(menuJsonLd) }}
+        />
+      )}
 
       <HeroSection />
 
