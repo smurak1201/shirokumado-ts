@@ -69,7 +69,7 @@ export default async function MenuItemPage({ params }: Props) {
     <>
       <ScrollToTop />
 
-      <main className="mx-auto max-w-2xl px-4 py-8 md:py-12">
+      <main className="mx-auto max-w-2xl px-4 md:px-6 py-8 md:py-12">
         <Breadcrumb items={[{ label: product.name }]} />
         <div className="flex flex-col gap-4">
           <ProductDetail
