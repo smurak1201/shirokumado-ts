@@ -4,6 +4,7 @@
  * 白熊堂が使用する天然氷のこだわりやストーリーを伝えるページ。
  */
 import type { Metadata } from "next";
+import Breadcrumb from "@/app/components/Breadcrumb";
 import AboutIceContent from "./AboutIceContent";
 
 const baseUrl = process.env.SITE_URL!;
@@ -67,6 +68,9 @@ export default function AboutIcePage() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(articleJsonLd) }}
       />
+      <div className="mx-auto max-w-4xl px-4 pt-6 md:px-6 md:pt-8 lg:px-8">
+        <Breadcrumb items={[{ label: "天然氷について" }]} />
+      </div>
       <AboutIceContent />
     </>
   );
