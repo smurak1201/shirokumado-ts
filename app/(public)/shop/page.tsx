@@ -44,7 +44,7 @@ export const metadata: Metadata = {
 export default function ShopPage() {
   return (
     <main className="flex min-h-[60svh] flex-1 flex-col">
-      <div className="mx-auto w-full max-w-4xl px-4 pt-8 md:px-6">
+      <div className="mx-auto w-full max-w-4xl px-4 pt-8 md:px-6 md:pt-12">
         <Breadcrumb items={[{ label: "オンラインショップ" }]} />
       </div>
       <div className="flex flex-1 items-center justify-center">
