@@ -4,6 +4,7 @@
  * ECサイト機能の準備中メッセージを表示するプレースホルダーページ。
  */
 import type { Metadata } from "next";
+import Breadcrumb from "@/app/components/Breadcrumb";
 import Link from "next/link";
 import { Store } from "lucide-react";
 
@@ -42,7 +43,11 @@ export const metadata: Metadata = {
 
 export default function ShopPage() {
   return (
-    <main className="flex min-h-[60svh] flex-1 items-center justify-center">
+    <main className="flex min-h-[60svh] flex-1 flex-col">
+      <div className="mx-auto w-full max-w-4xl px-4 pt-8 md:px-6">
+        <Breadcrumb items={[{ label: "オンラインショップ" }]} />
+      </div>
+      <div className="flex flex-1 items-center justify-center">
       <div className="text-center">
         <div className="mb-6">
           <Store className="mx-auto h-16 w-16 text-gray-400" />
@@ -61,6 +66,7 @@ export default function ShopPage() {
         >
           トップページに戻る
         </Link>
+      </div>
       </div>
     </main>
   );
