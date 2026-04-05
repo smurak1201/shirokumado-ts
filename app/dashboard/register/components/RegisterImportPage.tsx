@@ -39,9 +39,11 @@ export default function RegisterImportPage({
     setErrors([]);
 
     try {
-      // パス付きファイル名で一意に識別（例: 2023/04/Z001_14 _0001.CSV）
-      // 同じファイル名が異なる月に存在するため、パスを含めて区別する
-      const fileNames = files.map((f) => f.name);
+      // webkitRelativePathはサーバー側FormDataのfile.nameと一致する
+      // file.nameはベースネームのみだが、サーバー側ではパス付きで保存されるため
+      const fileNames = files.map(
+        (f) => f.webkitRelativePath || f.name
+      );
       const diff = await fetchJson<DiffResponse>("/api/register/diff", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -56,7 +58,9 @@ export default function RegisterImportPage({
 
       // 未取り込みファイルのみ抽出
       const pendingSet = new Set(diff.pendingFiles);
-      const filesToUpload = files.filter((f) => pendingSet.has(f.name));
+      const filesToUpload = files.filter(
+        (f) => pendingSet.has(f.webkitRelativePath || f.name)
+      );
       setPendingFiles(filesToUpload);
 
       // アップロード開始
