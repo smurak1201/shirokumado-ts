@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { fetchJson } from "@/lib/client-fetch";
 import { getUserFriendlyMessageJa } from "@/lib/errors";
-import { SETTLEMENT_KEY_PATTERN } from "@/lib/register/csv-types";
 import type { DiffResponse, ImportResponse } from "@/lib/register/csv-types";
 import FolderSelector from "./FolderSelector";
 import ImportProgress from "./ImportProgress";
@@ -16,23 +15,6 @@ interface RegisterImportPageProps {
     totalFiles: number;
     lastImportedAt: string | null;
   };
-}
-
-/** 同一精算のファイルをグループ化（日付+連番部分でグループ化） */
-function groupFilesBySettlement(files: File[]): Map<string, File[]> {
-  const groups = new Map<string, File[]>();
-
-  for (const file of files) {
-    // Z001_16 _0001.CSV → "16 _0001"
-    const match = file.name.match(SETTLEMENT_KEY_PATTERN);
-    const key = match?.[1] ?? file.name;
-
-    const group = groups.get(key) ?? [];
-    group.push(file);
-    groups.set(key, group);
-  }
-
-  return groups;
 }
 
 export default function RegisterImportPage({
@@ -88,27 +70,21 @@ export default function RegisterImportPage({
     }
   }
 
-  /** ファイルアップロード処理 */
+  /** ファイルアップロード処理（1ファイルずつ送信してVercelのボディサイズ制限を回避） */
   async function handleUpload(files: File[]): Promise<void> {
     setState("uploading");
-    const groups = groupFilesBySettlement(files);
-    const totalGroups = groups.size;
-    let currentGroup = 0;
     let totalImported = 0;
     const allErrors: string[] = [];
 
-    setProgress({ current: 0, total: totalGroups });
+    setProgress({ current: 0, total: files.length });
 
-    // 設計判断: 進捗表示の正確さとサーバー負荷軽減のため順次アップロード
-    for (const [, groupFiles] of groups) {
-      currentGroup++;
-      setProgress({ current: currentGroup, total: totalGroups });
+    for (let i = 0; i < files.length; i++) {
+      setProgress({ current: i + 1, total: files.length });
 
       try {
+        const file = files[i]!;
         const formData = new FormData();
-        for (const file of groupFiles) {
-          formData.append("files", file);
-        }
+        formData.append("files", file);
 
         const result = await fetchJson<ImportResponse>(
           "/api/register/import",
@@ -123,9 +99,10 @@ export default function RegisterImportPage({
           allErrors.push(...result.errors);
         }
       } catch (error) {
+        const baseName = files[i]?.name.split("/").pop() ?? "不明";
         const message =
           error instanceof Error ? error.message : "不明なエラー";
-        allErrors.push(message);
+        allErrors.push(`${baseName}: ${message}`);
       }
     }
 
