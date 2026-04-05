@@ -752,7 +752,7 @@ export default function HourlyChart({ hourly }: HourlyChartProps) {
       <h3 className="mb-3 text-sm font-medium text-gray-700">
         時間帯別 売上・客数（期間内平均）
       </h3>
-      <ChartContainer config={chartConfig} className="h-[300px] w-full">
+      <ChartContainer config={chartConfig} className="h-75 w-full">
         <ComposedChart data={data} margin={{ top: 5, right: 20, bottom: 5, left: 20 }}>
           <CartesianGrid vertical={false} />
           <XAxis dataKey="time" tickLine={false} axisLine={false} />
@@ -1066,7 +1066,7 @@ export default function ProductParetoChart({ products }: ProductParetoChartProps
       <h3 className="mb-3 text-sm font-medium text-gray-700">
         ABC分析（売上TOP10 パレート図）
       </h3>
-      <ChartContainer config={chartConfig} className="h-[350px] w-full">
+      <ChartContainer config={chartConfig} className="h-87.5 w-full">
         <ComposedChart data={data} margin={{ top: 5, right: 20, bottom: 60, left: 20 }}>
           <CartesianGrid vertical={false} />
           <XAxis
@@ -1322,7 +1322,7 @@ export default function DepartmentDonutChart({
   return (
     <div className="rounded-lg border border-gray-200 bg-white p-4">
       <h3 className="mb-3 text-sm font-medium text-gray-700">部門別売上構成</h3>
-      <ChartContainer config={chartConfig} className="h-[300px] w-full">
+      <ChartContainer config={chartConfig} className="h-75 w-full">
         <PieChart>
           <Pie
             data={data}
@@ -1418,7 +1418,7 @@ export default function DepartmentTrendChart({
   return (
     <div className="rounded-lg border border-gray-200 bg-white p-4">
       <h3 className="mb-3 text-sm font-medium text-gray-700">部門別推移（積み上げ）</h3>
-      <ChartContainer config={chartConfig} className="h-[300px] w-full">
+      <ChartContainer config={chartConfig} className="h-75 w-full">
         <BarChart data={trend} margin={{ top: 5, right: 20, bottom: 5, left: 20 }}>
           <CartesianGrid vertical={false} />
           <XAxis dataKey="period" tickLine={false} axisLine={false} />
@@ -1631,7 +1631,7 @@ export default function TransactionChart({ timeSeries }: TransactionChartProps) 
   return (
     <div className="rounded-lg border border-gray-200 bg-white p-4">
       <h3 className="mb-3 text-sm font-medium text-gray-700">訂正金額の推移</h3>
-      <ChartContainer config={chartConfig} className="h-[250px] w-full">
+      <ChartContainer config={chartConfig} className="h-62.5 w-full">
         <BarChart data={data} margin={{ top: 5, right: 20, bottom: 5, left: 20 }}>
           <CartesianGrid vertical={false} />
           <XAxis dataKey="period" tickLine={false} axisLine={false} />

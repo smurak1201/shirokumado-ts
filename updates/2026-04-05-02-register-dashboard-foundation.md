@@ -1610,7 +1610,7 @@ export default function DayOfWeekChart({ timeSeries }: DayOfWeekChartProps) {
   return (
     <div className="rounded-lg border border-gray-200 bg-white p-4">
       <h3 className="mb-3 text-sm font-medium text-gray-700">曜日別売上（平均）</h3>
-      <ChartContainer config={chartConfig} className="h-[250px] w-full">
+      <ChartContainer config={chartConfig} className="h-62.5 w-full">
         <BarChart accessibilityLayer data={data} margin={{ top: 5, right: 20, bottom: 5, left: 20 }}>
           <CartesianGrid vertical={false} />
           <XAxis dataKey="day" tickLine={false} axisLine={false} />
@@ -1687,7 +1687,7 @@ export default function SalesBreakdownDonut({
   return (
     <div className="rounded-lg border border-gray-200 bg-white p-4">
       <h3 className="mb-3 text-sm font-medium text-gray-700">売上内訳</h3>
-      <ChartContainer config={chartConfig} className="h-[300px] w-full">
+      <ChartContainer config={chartConfig} className="h-75 w-full">
         <PieChart>
           <Pie
             data={data}

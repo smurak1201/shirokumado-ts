@@ -151,7 +151,7 @@ export default function SalesTrendChart({
   return (
     <div className="rounded-lg border border-gray-200 bg-white p-4">
       <h3 className="mb-3 text-sm font-medium text-gray-700">売上推移</h3>
-      <ChartContainer config={chartConfig} className="h-[300px] w-full">
+      <ChartContainer config={chartConfig} className="h-75 w-full">
         <ComposedChart data={data} margin={{ top: 5, right: 20, bottom: 5, left: 20 }}>
           <CartesianGrid vertical={false} />
           <XAxis dataKey="period" tickFormatter={formatXLabel} tickLine={false} axisLine={false} />
@@ -280,7 +280,7 @@ export default function CustomerTrendChart({
   return (
     <div className="rounded-lg border border-gray-200 bg-white p-4">
       <h3 className="mb-3 text-sm font-medium text-gray-700">客数・客単価推移</h3>
-      <ChartContainer config={chartConfig} className="h-[300px] w-full">
+      <ChartContainer config={chartConfig} className="h-75 w-full">
         <ComposedChart data={data} margin={{ top: 5, right: 20, bottom: 5, left: 20 }}>
           <CartesianGrid vertical={false} />
           <XAxis dataKey="period" tickFormatter={formatXLabel} tickLine={false} axisLine={false} />
