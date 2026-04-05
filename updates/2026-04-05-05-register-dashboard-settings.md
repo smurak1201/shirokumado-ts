@@ -384,7 +384,7 @@ export default function PeriodPresets({
 3. `PUT /api/register/machines/names` で名称変更するAPIを作成する
 4. `DELETE /api/register/machines/names?id=N` で削除するAPIを作成する
 5. `useMachineNames` フックでCRUD操作を管理する
-6. `MachineNameSettings` コンポーネントで歯車アイコンからDialog表示し、テーブルで一覧管理する
+6. `MachineNameSettings` コンポーネントで歯車アイコンからDialog表示し、テーブルで一覧管理する。レジ番号はDBに取り込み済みのレジ番号一覧（`machines` props）からセレクトボックスで選択する方式とする（手入力ではない）
 
 <details>
 <summary>app/api/register/machines/names/route.ts（新規作成）（クリックで展開）</summary>
@@ -634,8 +634,16 @@ import {
   TableRow,
 } from "@/app/components/ui/table";
 import { useMachineNames } from "./hooks/useMachineNames";
+import type { MachineInfo } from "../../../types";
 
-export default function MachineNameSettings() {
+interface MachineNameSettingsProps {
+  /** DB内の取り込み済みレジ番号一覧（GET /api/register/machines から取得） */
+  machines: MachineInfo[];
+}
+
+export default function MachineNameSettings({
+  machines,
+}: MachineNameSettingsProps) {
   const {
     machineNames,
     isLoading,
@@ -649,8 +657,14 @@ export default function MachineNameSettings() {
   const [editingId, setEditingId] = useState<number | null>(null);
   const [editingName, setEditingName] = useState("");
 
+  // 名称未登録のレジ番号のみを選択肢として表示
+  const registeredNos = new Set(machineNames.map((mn) => mn.machineNo));
+  const unregisteredMachines = machines.filter(
+    (m) => !registeredNos.has(m.machineNo)
+  );
+
   const handleCreate = async () => {
-    if (!newMachineNo.trim() || !newName.trim()) return;
+    if (!newMachineNo || !newName.trim()) return;
     const success = await createMachineName(newMachineNo, newName);
     if (success) {
       setNewMachineNo("");
@@ -690,29 +704,42 @@ export default function MachineNameSettings() {
         </DialogHeader>
         <div className="space-y-4">
           {/* 新規登録フォーム */}
-          <div className="flex items-end gap-2">
-            <div className="flex-1">
-              <Label htmlFor="machine-no">レジ番号</Label>
-              <Input
-                id="machine-no"
-                value={newMachineNo}
-                onChange={(e) => setNewMachineNo(e.target.value)}
-                placeholder="例: 14"
-              />
+          {unregisteredMachines.length > 0 ? (
+            <div className="flex items-end gap-2">
+              <div className="flex-1">
+                <Label htmlFor="machine-no">レジ番号</Label>
+                <select
+                  id="machine-no"
+                  value={newMachineNo}
+                  onChange={(e) => setNewMachineNo(e.target.value)}
+                  className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm"
+                >
+                  <option value="">選択してください</option>
+                  {unregisteredMachines.map((m) => (
+                    <option key={m.machineNo} value={m.machineNo}>
+                      レジ {m.machineNo}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div className="flex-1">
+                <Label htmlFor="machine-name">表示名</Label>
+                <Input
+                  id="machine-name"
+                  value={newName}
+                  onChange={(e) => setNewName(e.target.value)}
+                  placeholder="例: 入口レジ"
+                />
+              </div>
+              <Button onClick={handleCreate} size="sm">
+                追加
+              </Button>
             </div>
-            <div className="flex-1">
-              <Label htmlFor="machine-name">表示名</Label>
-              <Input
-                id="machine-name"
-                value={newName}
-                onChange={(e) => setNewName(e.target.value)}
-                placeholder="例: 入口レジ"
-              />
+          ) : (
+            <div className="text-sm text-gray-500">
+              全てのレジ番号に名称が登録済みです
             </div>
-            <Button onClick={handleCreate} size="sm">
-              追加
-            </Button>
-          </div>
+          )}
 
           {/* 一覧テーブル */}
           {isLoading ? (
@@ -1622,7 +1649,7 @@ import { useDashboardSettings } from "./hooks/useDashboardSettings";
           />
           </div>
           <div className="flex flex-wrap items-center gap-2">
-            <MachineNameSettings />
+            <MachineNameSettings machines={machines} />
             <SalesTargetSettings />
             <DashboardSettings />
           </div>
