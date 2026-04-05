@@ -227,3 +227,45 @@ model RegisterHourlySale {
   @@unique([settlementId, recordNo])
   @@map("reg_hourly_sales")
 }
+
+// 期間プリセット（カスタム期間に名前を付けて保存）
+model RegisterPeriodPreset {
+  id        Int      @id @default(autoincrement())
+  name      String
+  dateFrom  DateTime @map("date_from") @db.Date
+  dateTo    DateTime @map("date_to") @db.Date
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@map("reg_period_presets")
+}
+
+// レジ番号の表示名（例: 14 → "入口レジ"）
+model RegisterMachineName {
+  id        Int      @id @default(autoincrement())
+  machineNo String   @unique @map("machine_no")
+  name      String
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@map("reg_machine_names")
+}
+
+// 月間売上目標
+model RegisterSalesTarget {
+  id        Int      @id @default(autoincrement())
+  year      Int
+  month     Int
+  amount    Int
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@unique([year, month])
+  @@map("reg_sales_targets")
+}
+
+// ダッシュボード表示設定（key-value形式）
+model RegisterDashboardSetting {
+  id    Int    @id @default(autoincrement())
+  key   String @unique
+  value String
+
+  @@map("reg_dashboard_settings")
+}
