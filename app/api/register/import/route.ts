@@ -27,18 +27,21 @@ export const POST = withErrorHandling(async (request: NextRequest) => {
   }
 
   let imported = 0;
-  let skipped = 0;
+  const skipped = 0;
   const errors: string[] = [];
 
   for (const file of files) {
-    if (!isValidCsvFileName(file.name)) {
-      errors.push(`ファイル名が不正です: ${file.name}`);
+    // webkitdirectory経由だとパス付きで送られる場合があるためベースネームを使用
+    const baseName = file.name.split("/").pop() ?? file.name;
+
+    if (!isValidCsvFileName(baseName)) {
+      errors.push(`ファイル名が不正です: ${baseName}`);
       continue;
     }
 
     try {
       const buffer = await file.arrayBuffer();
-      const result = parseCsvFile(buffer, file.name);
+      const result = parseCsvFile(buffer, baseName);
       const { metadata, fileType, rows } = result;
 
       await safePrismaOperation(async () => {
@@ -114,20 +117,20 @@ export const POST = withErrorHandling(async (request: NextRequest) => {
           // ファイル管理テーブルに登録
           await tx.registerImportFile.create({
             data: {
-              fileName: file.name,
+              fileName: baseName,
               fileType,
               settlementId: settlement.id,
             },
           });
         });
-      }, `register/import - ${file.name}`);
+      }, `register/import - ${baseName}`);
 
       imported++;
     } catch (error) {
       const message =
         error instanceof Error ? error.message : "不明なエラー";
-      errors.push(`${file.name}: ${message}`);
-      log.error(`CSV取り込みエラー: ${file.name}`, {
+      errors.push(`${baseName}: ${message}`);
+      log.error(`CSV取り込みエラー: ${baseName}`, {
         context: "register/import",
         error,
       });
