@@ -1,11 +1,19 @@
 "use client";
 
 import { useRef } from "react";
+import { toast } from "sonner";
 import { isValidCsvFileName } from "@/lib/register/csv-types";
 
 interface FolderSelectorProps {
   onFilesSelected: (files: File[]) => void;
   disabled: boolean;
+}
+
+/** XZ_BKUPフォルダが直接選択されているか判定 */
+function isXzBkupSelected(fileList: FileList): boolean {
+  const first = fileList[0];
+  if (!first) return false;
+  return first.webkitRelativePath.startsWith("XZ_BKUP/");
 }
 
 /** 対象CSVファイルのみフィルタ */
@@ -15,9 +23,7 @@ function filterCsvFiles(fileList: FileList): File[] {
   for (let i = 0; i < fileList.length; i++) {
     const file = fileList[i];
     if (!file) continue;
-    // パス付きファイル名からベースネームを取得してバリデーション
-    const baseName = file.name.split("/").pop() ?? file.name;
-    if (isValidCsvFileName(baseName)) {
+    if (isValidCsvFileName(file.name)) {
       files.push(file);
     }
   }
@@ -34,6 +40,12 @@ export default function FolderSelector({
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     const fileList = e.target.files;
     if (!fileList || fileList.length === 0) return;
+
+    if (!isXzBkupSelected(fileList)) {
+      toast.error("XZ_BKUPフォルダを選択してください");
+      if (inputRef.current) inputRef.current.value = "";
+      return;
+    }
 
     const csvFiles = filterCsvFiles(fileList);
     onFilesSelected(csvFiles);
