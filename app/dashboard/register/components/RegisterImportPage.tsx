@@ -70,21 +70,45 @@ export default function RegisterImportPage({
     }
   }
 
-  /** ファイルアップロード処理（1ファイルずつ送信してVercelのボディサイズ制限を回避） */
+  /** ファイルをVercelのボディサイズ制限（4.5MB）に収まるバッチに分割 */
+  function createBatches(files: File[]): File[][] {
+    const MAX_BATCH_SIZE = 3.5 * 1024 * 1024;
+    const batches: File[][] = [];
+    let currentBatch: File[] = [];
+    let currentSize = 0;
+
+    for (const file of files) {
+      if (currentBatch.length > 0 && currentSize + file.size > MAX_BATCH_SIZE) {
+        batches.push(currentBatch);
+        currentBatch = [];
+        currentSize = 0;
+      }
+      currentBatch.push(file);
+      currentSize += file.size;
+    }
+    if (currentBatch.length > 0) {
+      batches.push(currentBatch);
+    }
+
+    return batches;
+  }
+
+  /** ファイルアップロード処理（サイズベースでバッチ送信） */
   async function handleUpload(files: File[]): Promise<void> {
     setState("uploading");
     let totalImported = 0;
     const allErrors: string[] = [];
+    const batches = createBatches(files);
+    let processedFiles = 0;
 
     setProgress({ current: 0, total: files.length });
 
-    for (let i = 0; i < files.length; i++) {
-      setProgress({ current: i + 1, total: files.length });
-
+    for (const batch of batches) {
       try {
-        const file = files[i]!;
         const formData = new FormData();
-        formData.append("files", file);
+        for (const file of batch) {
+          formData.append("files", file);
+        }
 
         const result = await fetchJson<ImportResponse>(
           "/api/register/import",
@@ -99,11 +123,16 @@ export default function RegisterImportPage({
           allErrors.push(...result.errors);
         }
       } catch (error) {
-        const baseName = files[i]?.name.split("/").pop() ?? "不明";
+        const names = batch
+          .map((f) => f.name.split("/").pop() ?? "不明")
+          .join(", ");
         const message =
           error instanceof Error ? error.message : "不明なエラー";
-        allErrors.push(`${baseName}: ${message}`);
+        allErrors.push(`${names}: ${message}`);
       }
+
+      processedFiles += batch.length;
+      setProgress({ current: processedFiles, total: files.length });
     }
 
     setErrors(allErrors);
