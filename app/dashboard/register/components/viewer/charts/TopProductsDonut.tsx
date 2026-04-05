@@ -1,0 +1,140 @@
+"use client";
+
+import { PieChart, Pie, Cell } from "recharts";
+import {
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+  type ChartConfig,
+} from "@/app/components/ui/chart";
+import type { AggregatedEntry } from "../../../types";
+
+interface TopProductsDonutProps {
+  products: AggregatedEntry[];
+}
+
+// 10色すべて異なる色相で区別しやすいパレット
+const COLORS = [
+  "hsl(221, 83%, 53%)",  // 青
+  "hsl(142, 71%, 45%)",  // 緑
+  "hsl(38, 92%, 50%)",   // オレンジ
+  "hsl(0, 84%, 60%)",    // 赤
+  "hsl(262, 83%, 58%)",  // 紫
+  "hsl(186, 72%, 42%)",  // シアン
+  "hsl(330, 70%, 55%)",  // ピンク
+  "hsl(60, 70%, 44%)",   // 黄緑
+  "hsl(20, 80%, 52%)",   // 茶
+  "hsl(200, 60%, 50%)",  // スカイブルー
+];
+
+function formatAmount(amount: number): string {
+  return amount.toLocaleString("ja-JP");
+}
+
+export default function TopProductsDonut({ products }: TopProductsDonutProps) {
+  if (products.length === 0) return null;
+
+  const total = products.reduce((sum, e) => sum + e.totalAmount, 0);
+
+  const chartConfig = products.reduce<Record<string, { label: string; color: string }>>(
+    (acc, entry, i) => {
+      acc[entry.itemName] = {
+        label: entry.itemName,
+        color: COLORS[i]!,
+      };
+      return acc;
+    },
+    {}
+  ) satisfies ChartConfig;
+
+  return (
+    <div className="rounded-lg border border-gray-200 bg-white p-4">
+      <h3 className="mb-3 text-sm font-medium text-gray-700">売上上位10商品</h3>
+      <ChartContainer config={chartConfig} className="mx-auto h-62.5 w-full">
+        <PieChart>
+          <Pie
+            data={products}
+            dataKey="totalAmount"
+            nameKey="itemName"
+            cx="50%"
+            cy="50%"
+            innerRadius={70}
+            outerRadius={110}
+            cornerRadius={3}
+            startAngle={90}
+            endAngle={-270}
+          >
+            {products.map((_, i) => (
+              <Cell key={i} fill={COLORS[i]} />
+            ))}
+          </Pie>
+          <ChartTooltip
+            content={
+              <ChartTooltipContent
+                formatter={(value) => `${Number(value).toLocaleString("ja-JP")}円`}
+              />
+            }
+          />
+        </PieChart>
+      </ChartContainer>
+
+      {/* 凡例テーブル */}
+      <table className="mt-4 w-full text-sm">
+        <thead>
+          <tr className="border-b border-gray-100 text-xs text-gray-400">
+            <th className="pb-2 text-center font-normal">#</th>
+            <th className="pb-2 text-center font-normal">商品名</th>
+            <th className="pb-2 text-center font-normal">単価</th>
+            <th className="pb-2 text-center font-normal">個数</th>
+            <th className="pb-2 text-center font-normal">売上</th>
+            <th className="pb-2 text-center font-normal">割合</th>
+          </tr>
+        </thead>
+        <tbody>
+          {products.map((entry, i) => {
+            const pct = total > 0 ? Math.round((entry.totalAmount / total) * 100) : 0;
+            return (
+              <tr key={entry.itemName} className="border-b border-gray-50">
+                <td className="py-1.5 text-center text-gray-400">{i + 1}</td>
+                <td className="py-1.5">
+                  <div className="flex items-center gap-1.5">
+                    <span
+                      className="size-2.5 shrink-0 rounded-full"
+                      style={{ backgroundColor: COLORS[i] }}
+                    />
+                    <span className="truncate text-gray-700">{entry.itemName}</span>
+                  </div>
+                </td>
+                <td className="py-1.5 pr-4 text-right tabular-nums text-gray-700">
+                  {entry.totalQuantity > 0
+                    ? `${formatAmount(Math.round(entry.totalAmount / entry.totalQuantity))}円`
+                    : "-"}
+                </td>
+                <td className="py-1.5 pr-4 text-right tabular-nums text-gray-700">
+                  {formatAmount(entry.totalQuantity)}
+                </td>
+                <td className="py-1.5 text-right tabular-nums text-gray-700">
+                  {formatAmount(entry.totalAmount)}円
+                </td>
+                <td className="py-1.5 text-right tabular-nums text-gray-400">
+                  {pct}%
+                </td>
+              </tr>
+            );
+          })}
+        </tbody>
+        <tfoot>
+          <tr className="border-t border-gray-200">
+            <td colSpan={4} className="py-2 font-medium text-gray-500">
+              上位10商品 合計
+            </td>
+            <td className="py-2 text-right tabular-nums font-medium text-gray-700">
+              {formatAmount(total)}円
+            </td>
+            <td />
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+  );
+}

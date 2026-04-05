@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import { prisma, safePrismaOperation } from "@/lib/prisma";
 import { log } from "@/lib/logger";
-import RegisterImportPage from "./components/RegisterImportPage";
+import type { ImportSummary } from "./types";
+import RegisterPageTabs from "./components/RegisterPageTabs";
 
 export const metadata: Metadata = {
   title: "レジデータ",
@@ -10,10 +11,7 @@ export const metadata: Metadata = {
 
 export const dynamic = "force-dynamic";
 
-async function getImportSummary(): Promise<{
-  totalFiles: number;
-  lastImportedAt: string | null;
-}> {
+async function getImportSummary(): Promise<ImportSummary> {
   try {
     const result = await safePrismaOperation(
       () =>
@@ -40,5 +38,5 @@ async function getImportSummary(): Promise<{
 export default async function RegisterPage() {
   const summary = await getImportSummary();
 
-  return <RegisterImportPage initialSummary={summary} />;
+  return <RegisterPageTabs initialSummary={summary} />;
 }
