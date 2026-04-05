@@ -15,7 +15,9 @@ function filterCsvFiles(fileList: FileList): File[] {
   for (let i = 0; i < fileList.length; i++) {
     const file = fileList[i];
     if (!file) continue;
-    if (isValidCsvFileName(file.name)) {
+    // パス付きファイル名からベースネームを取得してバリデーション
+    const baseName = file.name.split("/").pop() ?? file.name;
+    if (isValidCsvFileName(baseName)) {
       files.push(file);
     }
   }
