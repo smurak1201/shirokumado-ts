@@ -47,3 +47,4 @@ next-env.d.ts
 
 # サンプルデータ（レジのバックアップ）
 /sample-data
+!/sample-data/README.md
