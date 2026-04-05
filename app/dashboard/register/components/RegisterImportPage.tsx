@@ -39,11 +39,8 @@ export default function RegisterImportPage({
     setErrors([]);
 
     try {
-      // webkitRelativePathはサーバー側FormDataのfile.nameと一致する
-      // file.nameはベースネームのみだが、サーバー側ではパス付きで保存されるため
-      const fileNames = files.map(
-        (f) => f.webkitRelativePath || f.name
-      );
+      // XZ_BKUPが直接選択されている前提なので、webkitRelativePathをそのまま使用
+      const fileNames = files.map((f) => f.webkitRelativePath || f.name);
       const diff = await fetchJson<DiffResponse>("/api/register/diff", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -58,8 +55,8 @@ export default function RegisterImportPage({
 
       // 未取り込みファイルのみ抽出
       const pendingSet = new Set(diff.pendingFiles);
-      const filesToUpload = files.filter(
-        (f) => pendingSet.has(f.webkitRelativePath || f.name)
+      const filesToUpload = files.filter((f) =>
+        pendingSet.has(f.webkitRelativePath || f.name)
       );
       setPendingFiles(filesToUpload);
 
