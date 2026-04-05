@@ -1,6 +1,8 @@
 {
   // Tailwind CSS v4 の新しいアットルール（@import, @theme）のリントエラーを抑制
   "css.lint.unknownAtRules": "ignore",
+  // Shift_JIS のCSVファイル等を自動判定して正しく表示
+  "files.autoGuessEncoding": true,
   // CSS ファイルを PostCSS として認識（Tailwind CSS v4 構文に対応）
   "files.associations": {
     "*.css": "postcss"
