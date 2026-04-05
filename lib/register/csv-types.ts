@@ -2,8 +2,8 @@
 export const VALID_FILE_TYPES = ["Z001", "Z002", "Z004", "Z005", "Z009"] as const;
 export type FileType = (typeof VALID_FILE_TYPES)[number];
 
-/** ファイル名パターン: Z{種別}_{日}{A?} _{連番}.CSV */
-export const FILE_NAME_PATTERN = /^Z(\d{3})_(\d{2}A?) _(\d{4})\.CSV$/;
+/** ファイル名パターン: Z{種別}_{日}{A?}{区切り}_{連番}.CSV */
+export const FILE_NAME_PATTERN = /^Z(\d{3})_(\d{2}A?)[ _]_?(\d{4})\.CSV$/;
 
 /** メタデータ行数 */
 export const METADATA_LINE_COUNT = 6;
