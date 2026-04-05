@@ -132,7 +132,7 @@ DBテーブル名には `reg_` プレフィックスをつける。
 | settlement_id | Int (FK) | 精算ヘッダーID |
 | imported_at | DateTime | 取り込み日時 |
 
-#### 3. 売上明細: `SalesSummary` → `reg_sales_summaries`（Z001）
+#### 3. 売上明細: `RegisterSalesSummary` → `reg_sales_summaries`（Z001）
 
 28行固定、全行登録。
 
@@ -147,7 +147,7 @@ DBテーブル名には `reg_` プレフィックスをつける。
 
 - ユニーク制約: `[settlementId, recordNo]`
 
-#### 4. 取引キー: `TransactionKey` → `reg_transaction_keys`（Z002）
+#### 4. 取引キー: `RegisterTransactionKey` → `reg_transaction_keys`（Z002）
 
 空白行は除外。
 
@@ -162,7 +162,7 @@ DBテーブル名には `reg_` プレフィックスをつける。
 
 - ユニーク制約: `[settlementId, recordNo]`
 
-#### 5. 商品売上: `ProductSale` → `reg_product_sales`（Z004）
+#### 5. 商品売上: `RegisterProductSale` → `reg_product_sales`（Z004）
 
 個数・金額ともに0の行は除外。
 
@@ -178,7 +178,7 @@ DBテーブル名には `reg_` プレフィックスをつける。
 
 - ユニーク制約: `[settlementId, recordNo]`
 
-#### 6. 部門売上: `DepartmentSale` → `reg_department_sales`（Z005）
+#### 6. 部門売上: `RegisterDepartmentSale` → `reg_department_sales`（Z005）
 
 個数・金額ともに0の行は除外。
 
@@ -193,7 +193,7 @@ DBテーブル名には `reg_` プレフィックスをつける。
 
 - ユニーク制約: `[settlementId, recordNo]`
 
-#### 7. 時間帯別売上: `HourlySale` → `reg_hourly_sales`（Z009）
+#### 7. 時間帯別売上: `RegisterHourlySale` → `reg_hourly_sales`（Z009）
 
 件数・金額ともに0の行は除外。
 

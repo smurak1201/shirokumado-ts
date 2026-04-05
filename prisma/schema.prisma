@@ -120,3 +120,110 @@ model Product {
 
   @@map("products")
 }
+
+// ===== レジCSVデータ取り込み関連テーブル =====
+
+// 精算ヘッダーテーブル（全種別CSVの共通メタデータ）
+// 設計判断: 5種別のCSVが同じメタデータを共有するため、親テーブルとして集約
+model RegisterSettlement {
+  id              Int      @id @default(autoincrement())
+  machineNo       String   @map("machine_no")
+  settlementCount Int      @map("settlement_count")
+  date            DateTime @db.Date
+  time            String
+  createdAt       DateTime @default(now()) @map("created_at")
+
+  salesSummaries  RegisterSalesSummary[]
+  transactionKeys RegisterTransactionKey[]
+  productSales    RegisterProductSale[]
+  departmentSales RegisterDepartmentSale[]
+  hourlySales     RegisterHourlySale[]
+  importFiles     RegisterImportFile[]
+
+  @@unique([machineNo, settlementCount, date, time])
+  @@map("reg_settlements")
+}
+
+// 取り込み済みファイル管理テーブル（差分判定に使用）
+model RegisterImportFile {
+  id           Int                @id @default(autoincrement())
+  fileName     String             @unique @map("file_name")
+  fileType     String             @map("file_type")
+  settlementId Int                @map("settlement_id")
+  settlement   RegisterSettlement @relation(fields: [settlementId], references: [id], onDelete: Cascade)
+  importedAt   DateTime           @default(now()) @map("imported_at")
+
+  @@map("reg_import_files")
+}
+
+// Z001: 売上明細テーブル（28行固定、全行登録）
+model RegisterSalesSummary {
+  id           Int                @id @default(autoincrement())
+  settlementId Int                @map("settlement_id")
+  settlement   RegisterSettlement @relation(fields: [settlementId], references: [id], onDelete: Cascade)
+  recordNo     Int                @map("record_no")
+  itemName     String             @map("item_name")
+  quantity     Int
+  amount       Int
+
+  @@unique([settlementId, recordNo])
+  @@map("reg_sales_summaries")
+}
+
+// Z002: 取引キーテーブル（空白行は除外）
+model RegisterTransactionKey {
+  id           Int                @id @default(autoincrement())
+  settlementId Int                @map("settlement_id")
+  settlement   RegisterSettlement @relation(fields: [settlementId], references: [id], onDelete: Cascade)
+  recordNo     Int                @map("record_no")
+  itemName     String             @map("item_name")
+  quantity     Int
+  amount       Int
+
+  @@unique([settlementId, recordNo])
+  @@map("reg_transaction_keys")
+}
+
+// Z004: 商品売上テーブル（個数・金額ともに0の行は除外）
+model RegisterProductSale {
+  id           Int                @id @default(autoincrement())
+  settlementId Int                @map("settlement_id")
+  settlement   RegisterSettlement @relation(fields: [settlementId], references: [id], onDelete: Cascade)
+  recordNo     Int                @map("record_no")
+  itemCode     String             @map("item_code")
+  itemName     String             @map("item_name")
+  quantity     Int
+  amount       Int
+
+  @@unique([settlementId, recordNo])
+  @@map("reg_product_sales")
+}
+
+// Z005: 部門売上テーブル（個数・金額ともに0の行は除外）
+model RegisterDepartmentSale {
+  id           Int                @id @default(autoincrement())
+  settlementId Int                @map("settlement_id")
+  settlement   RegisterSettlement @relation(fields: [settlementId], references: [id], onDelete: Cascade)
+  recordNo     Int                @map("record_no")
+  itemName     String             @map("item_name")
+  quantity     Int
+  amount       Int
+
+  @@unique([settlementId, recordNo])
+  @@map("reg_department_sales")
+}
+
+// Z009: 時間帯別売上テーブル（件数・金額ともに0の行は除外）
+model RegisterHourlySale {
+  id           Int                @id @default(autoincrement())
+  settlementId Int                @map("settlement_id")
+  settlement   RegisterSettlement @relation(fields: [settlementId], references: [id], onDelete: Cascade)
+  recordNo     Int                @map("record_no")
+  startTime    String             @map("start_time")
+  endTime      String             @map("end_time")
+  quantity     Int
+  amount       Int
+
+  @@unique([settlementId, recordNo])
+  @@map("reg_hourly_sales")
+}
