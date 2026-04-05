@@ -101,6 +101,10 @@ Z{種別コード}_{日} _{連番}.CSV
 
 DBテーブル名には `reg_` プレフィックスをつける。
 
+テーブル見出しの記法: `Prismaモデル名` → `DBテーブル名`
+- Prismaモデル名（PascalCase）: コード上で `prisma.registerSettlement.findMany()` のように使う
+- DBテーブル名（snake_case）: PostgreSQLの実際のテーブル名。`@@map()` で指定する
+
 #### 1. 精算ヘッダー: `RegisterSettlement` → `reg_settlements`
 
 5種別CSVの共通メタデータを集約する親テーブル。
