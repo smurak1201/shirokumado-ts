@@ -42,7 +42,7 @@
 - **課題1**: 売上推移タブがプレースホルダー（「売上推移（準備中）」）のまま未実装
 - **課題2**: 売上金額の時系列推移を棒グラフで確認でき、前年同期との比較ができる必要がある
 - **課題3**: 客数・客単価の推移を確認できる必要がある（Z009のquantity合計 = 客数）
-- **課題4**: 売上概要タブのKPIカードに表示する客数（totalCustomers）が仕様書02で仮に0を渡したまま未実装
+- **課題4**: 売上推移タブの客数・客単価推移グラフにZ009データが必要
 
 ### 設計方針
 
@@ -458,32 +458,15 @@ export default function SalesTrendTab({ data }: SalesTrendTabProps) {
 
 1. 「売上推移」タブがプレースホルダーのまま
 2. `useRegisterData`に`compareLastYear=true`を渡していないため、前年同期データが取得されない
-3. 売上概要タブのKPIカードに渡す`totalCustomers`が仕様書02で仮に0を渡したまま。Z009のquantity合計から客数を取得する改修が必要
 
 **修正内容**:
 
-#### 4-1. useRegisterDataフックの変更（客数取得の追加）
+#### 4-1. useRegisterDataフックの変更（compareLastYear追加）
 
-`useRegisterData`フックの返り値に`totalCustomers`と`previousCustomers`を追加する。`fetchData`内でZ001データの取得と並行して、Z009データからの客数集計も行う。
-
-**stateの追加**:
+`fetchData`内のparamsに`compareLastYear: "true"`を追加する。
 
 ```tsx
-// 変更前（state定義部分）
-  const [data, setData] = useState<RegisterDataResponse | null>(null);
-  const [dataByMachine, setDataByMachine] = useState<RegisterDataByMachineResponse | null>(null);
-
-// 変更後
-  const [data, setData] = useState<RegisterDataResponse | null>(null);
-  const [dataByMachine, setDataByMachine] = useState<RegisterDataByMachineResponse | null>(null);
-  const [totalCustomers, setTotalCustomers] = useState(0);
-  const [previousCustomers, setPreviousCustomers] = useState(0);
-```
-
-**fetchData内の変更（compareLastYear追加 + Z009客数取得の並列実行）**:
-
-```tsx
-// 変更前
+// 変更前（params定義部分）
       const params = new URLSearchParams({
         type: initialType,
         dateFrom: dateRange.from,
@@ -492,21 +475,6 @@ export default function SalesTrendTab({ data }: SalesTrendTabProps) {
         groupBy,
         granularity,
       });
-      if (machineNo) params.set("machineNo", machineNo);
-
-      if (groupBy === "machine") {
-        const result = await fetchJson<RegisterDataByMachineResponse>(
-          `/api/register/data?${params}`
-        );
-        setDataByMachine(result);
-        setData(null);
-      } else {
-        const result = await fetchJson<RegisterDataResponse>(
-          `/api/register/data?${params}`
-        );
-        setData(result);
-        setDataByMachine(null);
-      }
 
 // 変更後
       const params = new URLSearchParams({
@@ -518,95 +486,6 @@ export default function SalesTrendTab({ data }: SalesTrendTabProps) {
         granularity,
         compareLastYear: "true",
       });
-      if (machineNo) params.set("machineNo", machineNo);
-
-      // Z009から客数を取得するためのパラメータ
-      const z009Params = new URLSearchParams({
-        type: "Z009",
-        dateFrom: dateRange.from,
-        dateTo: dateRange.to,
-        view: "summary",
-        groupBy: "combined",
-        granularity,
-      });
-      if (machineNo) z009Params.set("machineNo", machineNo);
-
-      if (groupBy === "machine") {
-        const result = await fetchJson<RegisterDataByMachineResponse>(
-          `/api/register/data?${params}`
-        );
-        setDataByMachine(result);
-        setData(null);
-        setTotalCustomers(0);
-        setPreviousCustomers(0);
-      } else {
-        // Z001データとZ009客数データを並列取得
-        const [z001Result, z009Result] = await Promise.all([
-          fetchJson<RegisterDataResponse>(`/api/register/data?${params}`),
-          fetchJson<RegisterDataResponse>(`/api/register/data?${z009Params}`),
-        ]);
-        setData(z001Result);
-        setDataByMachine(null);
-
-        // Z009のtotalQuantity合計 = 客数
-        const customers = z009Result.timeSeries.reduce(
-          (sum, e) => sum + e.totalQuantity, 0
-        );
-        setTotalCustomers(customers);
-
-        // 前期客数（previousPeriodが存在する場合）
-        setPreviousCustomers(
-          z009Result.previousPeriod?.totalQuantity ?? 0
-        );
-      }
-```
-
-**返り値に追加**:
-
-```tsx
-// 変更前（return文）
-  return {
-    // ...既存の返り値
-    data,
-    dataByMachine,
-    machines,
-    isLoading,
-    refetch: fetchData,
-  };
-
-// 変更後
-  return {
-    // ...既存の返り値
-    data,
-    dataByMachine,
-    machines,
-    isLoading,
-    totalCustomers,
-    previousCustomers,
-    refetch: fetchData,
-  };
-```
-
-**UseRegisterDataReturn型にも追加**:
-
-```tsx
-// 変更前
-  // データ
-  data: RegisterDataResponse | null;
-  dataByMachine: RegisterDataByMachineResponse | null;
-  machines: MachineInfo[];
-  isLoading: boolean;
-
-// 変更後
-  // データ
-  data: RegisterDataResponse | null;
-  dataByMachine: RegisterDataByMachineResponse | null;
-  machines: MachineInfo[];
-  isLoading: boolean;
-  /** Z009から取得した客数合計 */
-  totalCustomers: number;
-  /** 前期の客数合計 */
-  previousCustomers: number;
 ```
 
 #### 4-2. RegisterDataViewerの変更
@@ -621,37 +500,6 @@ import SalesOverviewTab from "./tabs/SalesOverviewTab";
 import SalesOverviewTab from "./tabs/SalesOverviewTab";
 import SalesTrendTab from "./tabs/SalesTrendTab";
 ```
-
-**useRegisterDataの分割代入に追加**:
-
-```tsx
-// 変更前
-  } = useRegisterData("Z001");
-
-// 変更後（totalCustomers, previousCustomersを追加）
-  const {
-    // ...既存の分割代入
-    totalCustomers,
-    previousCustomers,
-  } = useRegisterData("Z001");
-```
-
-**SalesOverviewTabに渡す客数を仮値から実値に変更**:
-
-```tsx
-// 変更前
-              <SalesOverviewTab
-                data={data}
-                totalCustomers={0}
-                previousCustomers={0}
-              />
-
-// 変更後
-              <SalesOverviewTab
-                data={data}
-                totalCustomers={totalCustomers}
-                previousCustomers={previousCustomers}
-              />
 ```
 
 **TabsContent部分の変更（売上推移タブ）**:
@@ -711,7 +559,7 @@ import SalesTrendTab from "./tabs/SalesTrendTab";
 | `app/dashboard/register/components/viewer/charts/CustomerTrendChart.tsx`        | **新規作成**                                                   |
 | `app/dashboard/register/components/viewer/tabs/SalesTrendTab.tsx`              | **新規作成**                                                   |
 | `app/dashboard/register/components/viewer/hooks/useRegisterData.ts`            | compareLastYear追加、Z009客数取得の並列実行、返り値に客数追加  |
-| `app/dashboard/register/components/viewer/RegisterDataViewer.tsx`              | SalesTrendTab統合、客数の仮値(0)を実値に変更                   |
+| `app/dashboard/register/components/viewer/RegisterDataViewer.tsx`              | SalesTrendTab統合                                             |
 
 ## 備考
 
@@ -720,7 +568,7 @@ import SalesTrendTab from "./tabs/SalesTrendTab";
 - 既存の「売上概要」タブ（`SalesOverviewTab.tsx`）は変更しないこと
 - 既存のグラフコンポーネント（`DayOfWeekChart.tsx`, `SalesBreakdownDonut.tsx`）は変更しないこと
 - `useRegisterData`フックの変更は`fetchData`内のURLパラメータ追加のみ。フックの公開インターフェース（引数・返り値の型）は変更しない
-- 客数の定義: Z009（時間帯別売上）のquantity合計。本仕様書のタスク4でuseRegisterDataフックにZ009客数取得を追加し、仕様書02で仮に0を渡していたtotalCustomersを実値に置き換える
+- 客数の定義: Z009（時間帯別売上）のquantity合計。仕様書02のuseRegisterDataフックでZ009客数取得が実装済み
 - 売上推移タブではtimeSeriesのtotalQuantityを直接使用する（Z001のquantityベース）。売上概要タブのKPIカードではZ009ベースの客数を使用する
 
 ### 参考

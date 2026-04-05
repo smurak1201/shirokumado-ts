@@ -938,6 +938,8 @@ export interface UseRegisterDataReturn {
   data: RegisterDataResponse | null;
   dataByMachine: RegisterDataByMachineResponse | null;
   machines: MachineInfo[];
+  totalCustomers: number;
+  previousCustomers: number;
   isLoading: boolean;
 
   // 手動リフレッシュ
@@ -956,6 +958,8 @@ export function useRegisterData(
   const [data, setData] = useState<RegisterDataResponse | null>(null);
   const [dataByMachine, setDataByMachine] = useState<RegisterDataByMachineResponse | null>(null);
   const [machines, setMachines] = useState<MachineInfo[]>([]);
+  const [totalCustomers, setTotalCustomers] = useState(0);
+  const [previousCustomers, setPreviousCustomers] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
 
   // レジ一覧を取得（初回のみ）
@@ -991,6 +995,22 @@ export function useRegisterData(
         );
         setData(result);
         setDataByMachine(null);
+
+        // Z009から客数を取得（売上概要のKPIカード用）
+        const z009Params = new URLSearchParams({
+          type: "Z009",
+          dateFrom: dateRange.from,
+          dateTo: dateRange.to,
+          view: "summary",
+          groupBy: "combined",
+          granularity,
+        });
+        if (machineNo) z009Params.set("machineNo", machineNo);
+        const z009Result = await fetchJson<RegisterDataResponse>(
+          `/api/register/data?${z009Params}`
+        );
+        setTotalCustomers(z009Result.summary.totalQuantity);
+        setPreviousCustomers(z009Result.previousPeriod?.totalQuantity ?? 0);
       }
     } catch (err) {
       toast.error(getUserFriendlyMessageJa(err));
@@ -1066,6 +1086,8 @@ export function useRegisterData(
     data,
     dataByMachine,
     machines,
+    totalCustomers,
+    previousCustomers,
     isLoading,
     refetch: fetchData,
   };
@@ -1862,6 +1884,8 @@ export default function RegisterDataViewer() {
     groupBy,
     machines,
     data,
+    totalCustomers,
+    previousCustomers,
     isLoading,
     setPeriodType,
     setDateFrom,
@@ -1917,8 +1941,8 @@ export default function RegisterDataViewer() {
             {data ? (
               <SalesOverviewTab
                 data={data}
-                totalCustomers={0}
-                previousCustomers={0}
+                totalCustomers={totalCustomers}
+                previousCustomers={previousCustomers}
               />
             ) : (
               <div className="rounded-lg border border-gray-200 bg-white p-6 text-center text-sm text-gray-400">
@@ -2053,7 +2077,7 @@ import RegisterDataViewer from "./viewer/RegisterDataViewer";
 - 既存の取り込み機能（`RegisterImportPage.tsx`, `FolderSelector.tsx`, `ImportProgress.tsx`）は変更しないこと
 - 既存のAPIルート（`/api/register/diff`, `/api/register/import`）は変更しないこと
 - shadcn/ui Chartのグラフコンポーネントは必ず`next/dynamic`で動的インポートすること（内部のrechartsがSSR非対応）
-- `totalCustomers`（客数）はZ009のquantity合計から取得する。本仕様書では仮に0を渡しており、仕様書03（2026-04-05-03-register-dashboard-sales-trend.md）のタスク4でZ009データの取得ロジックを`useRegisterData`フックに組み込み、実値に置き換える
+- `totalCustomers`（客数）はZ009のquantity合計から取得する。`useRegisterData`フック内でZ001と並行してZ009のデータも取得し、客数・前期客数をステートで管理する
 
 ### 参考
 
