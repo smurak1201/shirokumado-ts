@@ -43,8 +43,9 @@ export const POST = withErrorHandling(async (request: NextRequest) => {
   const errors: string[] = [];
 
   for (const file of files) {
-    // webkitdirectory経由だとパス付きで送られる場合があるためベースネームを使用
-    const baseName = file.name.split("/").pop() ?? file.name;
+    // パス付きファイル名で一意に識別（例: 2023/04/Z001_14 _0001.CSV）
+    const fileName = file.name;
+    const baseName = fileName.split("/").pop() ?? fileName;
 
     if (!isValidCsvFileName(baseName)) {
       errors.push(`ファイル名が不正です: ${baseName}`);
@@ -61,7 +62,7 @@ export const POST = withErrorHandling(async (request: NextRequest) => {
         await prisma.$transaction(async (tx) => {
           // 取り込み済みファイルはスキップ（差分判定との間のタイミング差を考慮）
           const existing = await tx.registerImportFile.findUnique({
-            where: { fileName: baseName },
+            where: { fileName },
           });
           if (existing) {
             alreadyImported = true;
@@ -136,16 +137,16 @@ export const POST = withErrorHandling(async (request: NextRequest) => {
               break;
           }
 
-          // ファイル管理テーブルに登録
+          // ファイル管理テーブルに登録（パス付きファイル名で一意に管理）
           await tx.registerImportFile.create({
             data: {
-              fileName: baseName,
+              fileName,
               fileType,
               settlementId: settlement.id,
             },
           });
         });
-      }, `register/import - ${baseName}`);
+      }, `register/import - ${fileName}`);
 
       if (alreadyImported) {
         skipped++;
@@ -160,8 +161,8 @@ export const POST = withErrorHandling(async (request: NextRequest) => {
       const message =
         error instanceof Error ? error.message : "不明なエラー";
       const detail = cause ? `${message} (${cause})` : message;
-      errors.push(`${baseName}: ${detail}`);
-      log.error(`CSV取り込みエラー: ${baseName}`, {
+      errors.push(`${fileName}: ${detail}`);
+      log.error(`CSV取り込みエラー: ${fileName}`, {
         context: "register/import",
         error,
       });
