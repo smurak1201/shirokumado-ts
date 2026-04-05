@@ -78,7 +78,7 @@
 
 **問題点**:
 
-rechartsとshadcn/ui Tableが未導入。期間プリセット・レジ名称・売上目標・ダッシュボード設定のDBテーブルが未定義。
+shadcn/ui ChartとTableが未導入。期間プリセット・レジ名称・売上目標・ダッシュボード設定のDBテーブルが未定義。
 
 **修正内容**:
 
@@ -1548,7 +1548,7 @@ export default function DataTable<T extends Record<string, unknown>>({
 
 **修正内容**:
 
-rechartsを使用して、曜日別の売上・客数棒グラフと、売上内訳のドーナツチャート（中央に合計金額表示）を作成する。SSR非対応のため`next/dynamic`で動的インポートする。
+shadcn/ui Chartを使用して、曜日別の売上・客数棒グラフと、売上内訳のドーナツチャート（中央に合計金額表示）を作成する。内部で使用するrechartsがSSR非対応のため`next/dynamic`で動的インポートする。
 
 <details>
 <summary>DayOfWeekChart.tsx 実装例（クリックで展開）</summary>
@@ -2052,7 +2052,7 @@ import RegisterDataViewer from "./viewer/RegisterDataViewer";
 
 - 既存の取り込み機能（`RegisterImportPage.tsx`, `FolderSelector.tsx`, `ImportProgress.tsx`）は変更しないこと
 - 既存のAPIルート（`/api/register/diff`, `/api/register/import`）は変更しないこと
-- rechartsのグラフコンポーネントは必ず`next/dynamic`で動的インポートすること（SSR非対応）
+- shadcn/ui Chartのグラフコンポーネントは必ず`next/dynamic`で動的インポートすること（内部のrechartsがSSR非対応）
 - `totalCustomers`（客数）はZ009のquantity合計から取得する。本仕様書では仮に0を渡しており、仕様書03（2026-04-05-03-register-dashboard-sales-trend.md）のタスク4でZ009データの取得ロジックを`useRegisterData`フックに組み込み、実値に置き換える
 
 ### 参考

@@ -66,7 +66,7 @@
 
 **修正内容**:
 
-rechartsのComposedChartを使用し、当年データを棒グラフ（Bar）、前年データを半透明の破線折れ線（Line, strokeDasharray="5 5"）で重ね合わせるグラフコンポーネントを作成する。ResponsiveContainerでレスポンシブ対応し、`next/dynamic`でSSRを回避する。
+shadcn/ui ChartのChartContainerとrechartsのComposedChartを使用し、当年データを棒グラフ（Bar）、前年データを半透明の破線折れ線（Line, strokeDasharray="5 5"）で重ね合わせるグラフコンポーネントを作成する。`next/dynamic`でSSRを回避する。
 
 前年同期データは`lastYearTimeSeries`として渡される。当年と前年の期間ラベルが異なるため、インデックスベースで突き合わせて1つのデータ配列にマージする。
 
@@ -200,7 +200,7 @@ export default function SalesTrendChart({
 
 **修正内容**:
 
-rechartsのComposedChartで二軸グラフを作成する。左Y軸に客数（折れ線、indigo系）、右Y軸に客単価（折れ線、emerald系）を表示する。客単価はtimeSeriesの各エントリから `totalAmount / totalQuantity` で計算する。`totalQuantity`が0の期間は客単価0とする。
+shadcn/ui ChartのChartContainerとrechartsのComposedChartで二軸グラフを作成する。左Y軸に客数（折れ線）、右Y軸に客単価（折れ線）を表示する。色はChartConfigのCSS変数で管理する。客単価はtimeSeriesの各エントリから `totalAmount / totalQuantity` で計算する。`totalQuantity`が0の期間は客単価0とする。
 
 <details>
 <summary>実装例（クリックで展開）</summary>

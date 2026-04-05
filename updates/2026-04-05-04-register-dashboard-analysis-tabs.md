@@ -2203,8 +2203,8 @@ import RawDataTab from "./tabs/RawDataTab";
 - 既存の取り込み機能（`RegisterImportPage.tsx`, `FolderSelector.tsx`, `ImportProgress.tsx`）は変更しないこと
 - 既存のAPIルート（`/api/register/diff`, `/api/register/import`）は変更しないこと
 - 既存のグラフコンポーネント（`DayOfWeekChart.tsx`, `SalesBreakdownDonut.tsx`）は変更しないこと
-- rechartsのグラフコンポーネントは必ず`next/dynamic`で動的インポートすること（SSR非対応）
-- `HourlyHeatmap`はrechartsではなくdivベースのグリッドで実装する（rechartsにヒートマップの標準コンポーネントがないため）
+- shadcn/ui Chartのグラフコンポーネントは必ず`next/dynamic`で動的インポートすること（内部のrechartsがSSR非対応）
+- `HourlyHeatmap`はグラフライブラリではなくdivベースのグリッドで実装する（ヒートマップの標準コンポーネントがないため）
 - APIの`type`パラメータに`Z009_DETAIL`や`RAW_Z001`〜`RAW_Z009`を使用するが、これらは`RegisterDataType`型（`"Z001" | "Z002" | "Z004" | "Z005" | "Z009"`）には含まれない。APIルートのGETハンドラでは文字列として直接比較するため型定義の変更は不要だが、明細データタブの`RawDataTab.tsx`では`RegisterDataType`型のセレクトボックスから選択した値に`RAW_`プレフィックスを付けてAPIに送信する設計としている
 
 ### データ構造の対応表
