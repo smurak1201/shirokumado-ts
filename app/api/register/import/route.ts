@@ -17,7 +17,14 @@ import { log } from "@/lib/logger";
 export const dynamic = "force-dynamic";
 
 export const POST = withErrorHandling(async (request: NextRequest) => {
-  const formData = await request.formData();
+  let formData: FormData;
+  try {
+    formData = await request.formData();
+  } catch (error) {
+    log.error("FormDataのパースに失敗", { context: "register/import", error });
+    throw new ValidationError("ファイルデータの読み取りに失敗しました");
+  }
+
   const files = formData.getAll("files").filter(
     (entry): entry is File => entry instanceof File
   );
@@ -25,6 +32,11 @@ export const POST = withErrorHandling(async (request: NextRequest) => {
   if (files.length === 0) {
     throw new ValidationError("ファイルが指定されていません");
   }
+
+  log.info(`取り込み開始: ${files.length}ファイル`, {
+    context: "register/import",
+    metadata: { fileNames: files.map((f) => f.name) },
+  });
 
   let imported = 0;
   let skipped = 0;
@@ -141,9 +153,14 @@ export const POST = withErrorHandling(async (request: NextRequest) => {
       }
       imported++;
     } catch (error) {
+      // causeに元のPrismaエラーが含まれる場合は詳細を表示
+      const cause = error instanceof Error && error.cause instanceof Error
+        ? error.cause.message
+        : undefined;
       const message =
         error instanceof Error ? error.message : "不明なエラー";
-      errors.push(`${baseName}: ${message}`);
+      const detail = cause ? `${message} (${cause})` : message;
+      errors.push(`${baseName}: ${detail}`);
       log.error(`CSV取り込みエラー: ${baseName}`, {
         context: "register/import",
         error,
