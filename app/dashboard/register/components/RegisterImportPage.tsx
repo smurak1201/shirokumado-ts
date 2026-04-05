@@ -57,8 +57,10 @@ export default function RegisterImportPage({
     setErrors([]);
 
     try {
-      // 差分判定
-      const fileNames = files.map((f) => f.name);
+      // webkitdirectory経由だとfile.nameにパスが含まれる場合があるためベースネームを使用
+      const fileNames = files.map(
+        (f) => f.name.split("/").pop() ?? f.name
+      );
       const diff = await fetchJson<DiffResponse>("/api/register/diff", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -73,7 +75,9 @@ export default function RegisterImportPage({
 
       // 未取り込みファイルのみ抽出
       const pendingSet = new Set(diff.pendingFiles);
-      const filesToUpload = files.filter((f) => pendingSet.has(f.name));
+      const filesToUpload = files.filter((f) =>
+        pendingSet.has(f.name.split("/").pop() ?? f.name)
+      );
       setPendingFiles(filesToUpload);
 
       // アップロード開始
