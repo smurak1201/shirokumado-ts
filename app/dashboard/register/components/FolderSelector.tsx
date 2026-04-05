@@ -43,7 +43,42 @@ export default function FolderSelector({
   }
 
   return (
-    <div>
+    <div className="space-y-3">
+      <div className="rounded-lg border border-gray-200 bg-gray-50 px-4 py-3 text-sm text-gray-600">
+        <p className="mb-2 font-medium text-gray-700">
+          以下のフォルダを選択してください
+        </p>
+        <div className="font-mono text-xs leading-relaxed">
+          <p>SDカード</p>
+          <p className="ml-3">
+            <span className="text-gray-400">└─</span> CASIO
+          </p>
+          <p className="ml-9">
+            <span className="text-gray-400">└─</span>{" "}
+            <span className="border-b border-dashed border-gray-400">
+              レジの機種名
+            </span>
+            <span className="ml-1 font-sans text-gray-400">
+              (例: SR500_550_4000)
+            </span>
+          </p>
+          <p className="ml-16">
+            <span className="text-gray-400">├─</span>{" "}
+            <span className="text-gray-400">BACKUP</span>
+          </p>
+          <p className="ml-16">
+            <span className="text-gray-400">├─</span>{" "}
+            <span className="text-gray-400">XZ</span>
+          </p>
+          <p className="ml-16">
+            <span className="text-gray-400">└─</span>{" "}
+            <span className="rounded bg-gray-900 px-1.5 py-0.5 font-bold text-white">
+              XZ_BKUP
+            </span>
+          </p>
+        </div>
+      </div>
+
       <input
         type="file"
         ref={inputRef}
