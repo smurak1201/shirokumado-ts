@@ -3,6 +3,8 @@
   "css.lint.unknownAtRules": "ignore",
   // Shift_JIS のCSVファイル等を自動判定して正しく表示
   "files.autoGuessEncoding": true,
+  // 自動判定の候補にShift_JISを含めて検出精度を向上
+  "files.candidateGuessEncodings": ["shiftjis"],
   // CSS ファイルを PostCSS として認識（Tailwind CSS v4 構文に対応）
   "files.associations": {
     "*.css": "postcss"
