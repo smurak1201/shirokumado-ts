@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { fetchJson } from "@/lib/client-fetch";
 import { getUserFriendlyMessageJa } from "@/lib/errors";
@@ -142,6 +142,18 @@ export default function RegisterImportPage({
   }
 
   const isProcessing = state === "checking" || state === "uploading";
+
+  // アップロード中にページ離脱・リロードすると一部グループが未処理になるため警告を表示
+  useEffect(() => {
+    if (!isProcessing) return;
+
+    const handleBeforeUnload = (e: BeforeUnloadEvent): void => {
+      e.preventDefault();
+    };
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+    return () => window.removeEventListener("beforeunload", handleBeforeUnload);
+  }, [isProcessing]);
 
   return (
     <div className="space-y-6">
