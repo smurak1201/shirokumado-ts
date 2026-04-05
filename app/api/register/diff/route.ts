@@ -2,7 +2,6 @@ import { NextRequest } from "next/server";
 import { withErrorHandling, apiSuccess } from "@/lib/api-helpers";
 import { ValidationError } from "@/lib/errors";
 import { prisma, safePrismaOperation } from "@/lib/prisma";
-import { isValidCsvFileName } from "@/lib/register/csv-types";
 import type { DiffResponse } from "@/lib/register/csv-types";
 
 export const dynamic = "force-dynamic";
@@ -19,27 +18,25 @@ export const POST = withErrorHandling(async (request: NextRequest) => {
     throw new ValidationError("ファイル名は文字列で指定してください");
   }
 
-  const validFileNames = fileNames.filter(isValidCsvFileName);
-
   // 取り込み済みファイル名を取得
   const importedFiles = await safePrismaOperation(
     () =>
       prisma.registerImportFile.findMany({
-        where: { fileName: { in: validFileNames } },
+        where: { fileName: { in: fileNames } },
         select: { fileName: true },
       }),
     "register/diff"
   );
 
   const importedSet = new Set(importedFiles.map((f) => f.fileName));
-  const pendingFiles = validFileNames.filter(
-    (name) => !importedSet.has(name)
+  const pendingFiles = fileNames.filter(
+    (name: string) => !importedSet.has(name)
   );
 
   const response: DiffResponse = {
     pendingFiles,
     importedCount: importedSet.size,
-    totalCount: validFileNames.length,
+    totalCount: fileNames.length,
   };
 
   return apiSuccess(response);
