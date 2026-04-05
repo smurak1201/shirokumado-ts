@@ -19,6 +19,7 @@ interface DashboardHeaderProps {
 
 const tabs = [
   { href: '/dashboard/homepage', label: 'ホームページ' },
+  { href: '/dashboard/register', label: 'レジデータ' },
   { href: '/dashboard/shop', label: 'ECサイト' },
 ] as const;
 
