@@ -27,7 +27,7 @@ export const POST = withErrorHandling(async (request: NextRequest) => {
   }
 
   let imported = 0;
-  const skipped = 0;
+  let skipped = 0;
   const errors: string[] = [];
 
   for (const file of files) {
@@ -44,8 +44,18 @@ export const POST = withErrorHandling(async (request: NextRequest) => {
       const result = parseCsvFile(buffer, baseName);
       const { metadata, fileType, rows } = result;
 
+      let alreadyImported = false;
       await safePrismaOperation(async () => {
         await prisma.$transaction(async (tx) => {
+          // 取り込み済みファイルはスキップ（差分判定との間のタイミング差を考慮）
+          const existing = await tx.registerImportFile.findUnique({
+            where: { fileName: baseName },
+          });
+          if (existing) {
+            alreadyImported = true;
+            return;
+          }
+
           // 精算ヘッダーの upsert
           const settlement = await tx.registerSettlement.upsert({
             where: {
@@ -125,6 +135,10 @@ export const POST = withErrorHandling(async (request: NextRequest) => {
         });
       }, `register/import - ${baseName}`);
 
+      if (alreadyImported) {
+        skipped++;
+        continue;
+      }
       imported++;
     } catch (error) {
       const message =
