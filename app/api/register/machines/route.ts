@@ -31,8 +31,9 @@ export const GET = withErrorHandling(async () => {
         nameMap.set(n.machineNo, n.name);
       }
     }
-  } catch {
+  } catch (error) {
     // 名称テーブルが取得できなくても続行
+    console.error("レジ名取得エラー:", error);
   }
 
   // データがある最新の日付を取得
