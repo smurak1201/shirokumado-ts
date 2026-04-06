@@ -33,14 +33,17 @@ export const POST = withErrorHandling(async (request: NextRequest) => {
     throw new ValidationError("ファイルが指定されていません");
   }
 
+  const registerName = formData.get("registerName");
+
   log.info(`取り込み開始: ${files.length}ファイル`, {
     context: "register/import",
-    metadata: { fileNames: files.map((f) => f.name) },
+    metadata: { fileNames: files.map((f) => f.name), registerName },
   });
 
   let imported = 0;
   let skipped = 0;
   const errors: string[] = [];
+  const importedMachineNos = new Set<string>();
 
   for (const file of files) {
     // パス付きファイル名で一意に識別（例: 2023/04/Z001_14 _0001.CSV）
@@ -153,6 +156,7 @@ export const POST = withErrorHandling(async (request: NextRequest) => {
         continue;
       }
       imported++;
+      importedMachineNos.add(metadata.machineNo);
     } catch (error) {
       // causeに元のPrismaエラーが含まれる場合は詳細を表示
       const cause = error instanceof Error && error.cause instanceof Error
@@ -166,6 +170,21 @@ export const POST = withErrorHandling(async (request: NextRequest) => {
         context: "register/import",
         error,
       });
+    }
+  }
+
+  // レジ名の自動登録（未登録のmachineNoにデフォルト名としてフォルダ名を設定）
+  if (typeof registerName === "string" && registerName && importedMachineNos.size > 0) {
+    for (const machineNo of importedMachineNos) {
+      try {
+        await prisma.registerMachineName.upsert({
+          where: { machineNo },
+          create: { machineNo, name: registerName },
+          update: {},
+        });
+      } catch {
+        // レジ名の登録失敗は取り込み結果に影響しないため続行
+      }
     }
   }
 

@@ -17,6 +17,13 @@ interface RegisterImportPageProps {
   };
 }
 
+/** webkitRelativePathから先頭のレジ名セグメントを除去（例: SR500/XZ_BKUP/... → XZ_BKUP/...） */
+function stripRegisterName(file: File): string {
+  const path = file.webkitRelativePath || file.name;
+  const slashIndex = path.indexOf("/");
+  return slashIndex >= 0 ? path.slice(slashIndex + 1) : path;
+}
+
 export default function RegisterImportPage({
   initialSummary,
 }: RegisterImportPageProps) {
@@ -28,7 +35,7 @@ export default function RegisterImportPage({
   const [summary, setSummary] = useState(initialSummary);
 
   /** フォルダ選択後の処理 */
-  async function handleFilesSelected(files: File[]): Promise<void> {
+  async function handleFilesSelected(files: File[], selectedRegisterName: string): Promise<void> {
     if (files.length === 0) {
       toast.error("対象のCSVファイルが見つかりませんでした");
       return;
@@ -39,8 +46,8 @@ export default function RegisterImportPage({
     setErrors([]);
 
     try {
-      // XZ_BKUPが直接選択されている前提なので、webkitRelativePathをそのまま使用
-      const fileNames = files.map((f) => f.webkitRelativePath || f.name);
+      // レジ名セグメントを除去してDB保存形式に合わせる（例: XZ_BKUP/2026/03/Z001_01_0001.CSV）
+      const fileNames = files.map(stripRegisterName);
       const diff = await fetchJson<DiffResponse>("/api/register/diff", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -56,12 +63,12 @@ export default function RegisterImportPage({
       // 未取り込みファイルのみ抽出
       const pendingSet = new Set(diff.pendingFiles);
       const filesToUpload = files.filter((f) =>
-        pendingSet.has(f.webkitRelativePath || f.name)
+        pendingSet.has(stripRegisterName(f))
       );
       setPendingFiles(filesToUpload);
 
       // アップロード開始
-      await handleUpload(filesToUpload);
+      await handleUpload(filesToUpload, selectedRegisterName);
     } catch (error) {
       toast.error(getUserFriendlyMessageJa(error));
       setState("idle");
@@ -92,7 +99,7 @@ export default function RegisterImportPage({
   }
 
   /** ファイルアップロード処理（サイズベースでバッチ送信） */
-  async function handleUpload(files: File[]): Promise<void> {
+  async function handleUpload(files: File[], uploadRegisterName: string): Promise<void> {
     setState("uploading");
     let totalImported = 0;
     const allErrors: string[] = [];
@@ -104,8 +111,10 @@ export default function RegisterImportPage({
     for (const batch of batches) {
       try {
         const formData = new FormData();
+        formData.append("registerName", uploadRegisterName);
         for (const file of batch) {
-          formData.append("files", file);
+          // ファイル名をレジ名除去済みの形式で送信（DB保存形式と一致させる）
+          formData.append("files", file, stripRegisterName(file));
         }
 
         const result = await fetchJson<ImportResponse>(

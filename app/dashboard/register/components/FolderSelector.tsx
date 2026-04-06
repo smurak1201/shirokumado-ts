@@ -5,25 +5,39 @@ import { toast } from "sonner";
 import { isValidCsvFileName } from "@/lib/register/csv-types";
 
 interface FolderSelectorProps {
-  onFilesSelected: (files: File[]) => void;
+  onFilesSelected: (files: File[], registerName: string) => void;
   disabled: boolean;
 }
 
-/** XZ_BKUPフォルダが直接選択されているか判定 */
-function isXzBkupSelected(fileList: FileList): boolean {
-  const first = fileList[0];
-  if (!first) return false;
-  return first.webkitRelativePath.startsWith("XZ_BKUP/");
+/** 選択されたフォルダ内にXZ_BKUPサブフォルダがあるか判定 */
+function hasXzBkupDir(fileList: FileList): boolean {
+  for (let i = 0; i < fileList.length; i++) {
+    const file = fileList[i];
+    if (!file) continue;
+    const parts = file.webkitRelativePath.split("/");
+    if (parts.length >= 2 && parts[1] === "XZ_BKUP") {
+      return true;
+    }
+  }
+  return false;
 }
 
-/** 対象CSVファイルのみフィルタ */
+/** 選択されたフォルダのレジ名（先頭セグメント）を取得 */
+function getRegisterName(fileList: FileList): string | null {
+  const first = fileList[0];
+  if (!first) return null;
+  return first.webkitRelativePath.split("/")[0] ?? null;
+}
+
+/** XZ_BKUP内の対象CSVファイルのみフィルタ */
 function filterCsvFiles(fileList: FileList): File[] {
   const files: File[] = [];
 
   for (let i = 0; i < fileList.length; i++) {
     const file = fileList[i];
     if (!file) continue;
-    if (isValidCsvFileName(file.name)) {
+    const parts = file.webkitRelativePath.split("/");
+    if (parts.length >= 2 && parts[1] === "XZ_BKUP" && isValidCsvFileName(file.name)) {
       files.push(file);
     }
   }
@@ -41,14 +55,21 @@ export default function FolderSelector({
     const fileList = e.target.files;
     if (!fileList || fileList.length === 0) return;
 
-    if (!isXzBkupSelected(fileList)) {
-      toast.error("XZ_BKUPフォルダを選択してください");
+    if (!hasXzBkupDir(fileList)) {
+      toast.error("選択されたフォルダ内にXZ_BKUPフォルダが見つかりません");
+      if (inputRef.current) inputRef.current.value = "";
+      return;
+    }
+
+    const registerName = getRegisterName(fileList);
+    if (!registerName) {
+      toast.error("フォルダ名を取得できませんでした");
       if (inputRef.current) inputRef.current.value = "";
       return;
     }
 
     const csvFiles = filterCsvFiles(fileList);
-    onFilesSelected(csvFiles);
+    onFilesSelected(csvFiles, registerName);
 
     // 同じフォルダを再選択できるようにリセット
     if (inputRef.current) {
@@ -69,25 +90,11 @@ export default function FolderSelector({
           </p>
           <p className="ml-9">
             <span className="text-gray-400">└─</span>{" "}
-            <span className="border-b border-dashed border-gray-400">
-              レジの機種名
+            <span className="rounded bg-gray-900 px-1.5 py-0.5 font-bold text-white">
+              レジ名
             </span>
             <span className="ml-1 font-sans text-gray-400">
               (例: SR500_550_4000)
-            </span>
-          </p>
-          <p className="ml-16">
-            <span className="text-gray-400">├─</span>{" "}
-            <span className="text-gray-400">BACKUP</span>
-          </p>
-          <p className="ml-16">
-            <span className="text-gray-400">├─</span>{" "}
-            <span className="text-gray-400">XZ</span>
-          </p>
-          <p className="ml-16">
-            <span className="text-gray-400">└─</span>{" "}
-            <span className="rounded bg-gray-900 px-1.5 py-0.5 font-bold text-white">
-              XZ_BKUP
             </span>
           </p>
         </div>
@@ -109,7 +116,7 @@ export default function FolderSelector({
         disabled={disabled}
         className="rounded-lg bg-gray-900 px-6 py-3 text-sm font-medium text-white transition-all hover:bg-gray-800 disabled:opacity-50 cursor-pointer active:scale-95"
       >
-        XZ_BKUPフォルダを選択
+        レジフォルダを選択
       </button>
     </div>
   );
