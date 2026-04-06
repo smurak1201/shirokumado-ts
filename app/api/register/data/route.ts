@@ -24,17 +24,6 @@ function cachedSuccess<T>(data: T) {
   return res;
 }
 
-/** 期間内の全日付を生成（定休日を0埋めするため） */
-function generateDateRange(from: Date, to: Date): string[] {
-  const dates: string[] = [];
-  const current = new Date(from);
-  while (current <= to) {
-    dates.push(current.toISOString().split("T")[0]!);
-    current.setDate(current.getDate() + 1);
-  }
-  return dates;
-}
-
 /** 日付を粒度に応じたキーに変換 */
 function toGranularityKey(dateStr: string, granularity: Granularity): string {
   const date = new Date(dateStr);
@@ -53,20 +42,6 @@ function toGranularityKey(dateStr: string, granularity: Granularity): string {
     case "year":
       return `${date.getFullYear()}`;
   }
-}
-
-/** 粒度に応じた期間キーの全リストを生成 */
-function generatePeriodKeys(
-  dateFrom: string,
-  dateTo: string,
-  granularity: Granularity
-): string[] {
-  const allDates = generateDateRange(new Date(dateFrom), new Date(dateTo));
-  const keySet = new Set<string>();
-  for (const d of allDates) {
-    keySet.add(toGranularityKey(d, granularity));
-  }
-  return [...keySet].sort();
 }
 
 /** 前年同期の日付範囲を計算 */
@@ -88,7 +63,7 @@ function calculateSummary(
   totalQuantity: number,
   recordCount: number
 ): DataSummary {
-  // 0を除外したエントリ（定休日を除く）
+  // 売上ゼロの期間を除外（max/min計算用）
   const nonZeroAmount = timeSeries.filter((e) => e.totalAmount > 0);
   const nonZeroQuantity = timeSeries.filter((e) => e.totalQuantity > 0);
   const periodCount = timeSeries.length || 1;
@@ -189,34 +164,93 @@ async function fetchZ004Data(
   );
 }
 
-/** 行データから時系列を構築（粒度に応じて集約、0埋め） */
+/** Z005 部門売上データを取得 */
+async function fetchZ005Data(
+  dateFrom: Date,
+  dateTo: Date,
+  machineNo: string | null
+): Promise<
+  Array<{ itemName: string; quantity: number; amount: number; date: Date; machineNo: string }>
+> {
+  const where = {
+    settlement: {
+      date: { gte: dateFrom, lte: dateTo },
+      ...(machineNo ? { machineNo } : {}),
+    },
+  };
+
+  return safePrismaOperation(
+    () =>
+      prisma.registerDepartmentSale.findMany({
+        where,
+        include: { settlement: { select: { date: true, machineNo: true } } },
+      }),
+    "GET /api/register/data (Z005)"
+  ).then((rows) =>
+    rows.map((r) => ({
+      itemName: r.itemName,
+      quantity: r.quantity,
+      amount: r.amount,
+      date: r.settlement.date,
+      machineNo: r.settlement.machineNo,
+    }))
+  );
+}
+
+/** Z009 時間帯別売上データを取得 */
+async function fetchZ009Data(
+  dateFrom: Date,
+  dateTo: Date,
+  machineNo: string | null
+): Promise<
+  Array<{ startTime: string; endTime: string; quantity: number; amount: number; date: Date; machineNo: string }>
+> {
+  const where = {
+    settlement: {
+      date: { gte: dateFrom, lte: dateTo },
+      ...(machineNo ? { machineNo } : {}),
+    },
+  };
+
+  return safePrismaOperation(
+    () =>
+      prisma.registerHourlySale.findMany({
+        where,
+        include: { settlement: { select: { date: true, machineNo: true } } },
+      }),
+    "GET /api/register/data (Z009)"
+  ).then((rows) =>
+    rows.map((r) => ({
+      startTime: r.startTime,
+      endTime: r.endTime,
+      quantity: r.quantity,
+      amount: r.amount,
+      date: r.settlement.date,
+      machineNo: r.settlement.machineNo,
+    }))
+  );
+}
+
+/** 行データから時系列を構築（粒度に応じて集約、実データのみ） */
 function buildTimeSeries(
   rows: Array<{ amount: number; quantity: number; date: Date }>,
-  dateFrom: string,
-  dateTo: string,
   granularity: Granularity
 ): TimeSeriesEntry[] {
-  const periodKeys = generatePeriodKeys(dateFrom, dateTo, granularity);
   const map = new Map<string, { totalAmount: number; totalQuantity: number }>();
-
-  for (const key of periodKeys) {
-    map.set(key, { totalAmount: 0, totalQuantity: 0 });
-  }
 
   for (const row of rows) {
     const dateStr = row.date.toISOString().split("T")[0]!;
     const key = toGranularityKey(dateStr, granularity);
-    const entry = map.get(key);
-    if (entry) {
-      entry.totalAmount += row.amount;
-      entry.totalQuantity += row.quantity;
-    }
+    const entry = map.get(key) ?? { totalAmount: 0, totalQuantity: 0 };
+    entry.totalAmount += row.amount;
+    entry.totalQuantity += row.quantity;
+    map.set(key, entry);
   }
 
-  return periodKeys.map((key) => ({
+  return [...map.keys()].sort().map((key) => ({
     period: key,
-    totalAmount: map.get(key)?.totalAmount ?? 0,
-    totalQuantity: map.get(key)?.totalQuantity ?? 0,
+    totalAmount: map.get(key)!.totalAmount,
+    totalQuantity: map.get(key)!.totalQuantity,
   }));
 }
 
@@ -262,8 +296,6 @@ export const GET = withErrorHandling(async (request: NextRequest) => {
 
     const timeSeries = buildTimeSeries(
       z004Rows.map((r) => ({ amount: r.amount, quantity: r.quantity, date: r.date })),
-      dateFrom,
-      dateTo,
       granularity
     );
 
@@ -279,20 +311,18 @@ export const GET = withErrorHandling(async (request: NextRequest) => {
     return cachedSuccess(response);
   }
 
-  if (type === "Z001" || type === "Z009") {
+  if (type === "Z005") {
     if (groupBy === "machine") {
       // レジ別集計
-      const z001Rows = await fetchZ001Data(from, to, null);
-      const machineNos = [...new Set(z001Rows.map((r) => r.machineNo))];
+      const z005Rows = await fetchZ005Data(from, to, null);
+      const machineNos = [...new Set(z005Rows.map((r) => r.machineNo))];
 
       const byMachine: Record<string, RegisterDataResponse> = {};
 
       for (const mNo of machineNos) {
-        const machineRows = z001Rows.filter((r) => r.machineNo === mNo);
+        const machineRows = z005Rows.filter((r) => r.machineNo === mNo);
         const timeSeries = buildTimeSeries(
           machineRows.map((r) => ({ amount: r.amount, quantity: r.quantity, date: r.date })),
-          dateFrom,
-          dateTo,
           granularity
         );
 
@@ -323,9 +353,112 @@ export const GET = withErrorHandling(async (request: NextRequest) => {
     }
 
     // 合算集計
+    const z005Rows = await fetchZ005Data(from, to, machineNo);
+
+    // 部門別集計
+    const itemMap = new Map<string, { q: number; a: number }>();
+    for (const r of z005Rows) {
+      const existing = itemMap.get(r.itemName) ?? { q: 0, a: 0 };
+      existing.q += r.quantity;
+      existing.a += r.amount;
+      itemMap.set(r.itemName, existing);
+    }
+    const aggregated: AggregatedEntry[] = [];
+    for (const [name, val] of itemMap) {
+      aggregated.push({ itemName: name, totalQuantity: val.q, totalAmount: val.a });
+    }
+
+    const timeSeries = buildTimeSeries(
+      z005Rows.map((r) => ({ amount: r.amount, quantity: r.quantity, date: r.date })),
+      granularity
+    );
+
+    const totalAmount = z005Rows.reduce((s, r) => s + r.amount, 0);
+    const totalQuantity = z005Rows.reduce((s, r) => s + r.quantity, 0);
+
+    // 前年同期比
+    let previousPeriod: { totalAmount: number; totalQuantity: number } | undefined;
+    const lastYear = getLastYearRange(dateFrom, dateTo);
+    const prevRows = await fetchZ005Data(lastYear.from, lastYear.to, machineNo);
+    if (prevRows.length > 0) {
+      previousPeriod = {
+        totalAmount: prevRows.reduce((s, r) => s + r.amount, 0),
+        totalQuantity: prevRows.reduce((s, r) => s + r.quantity, 0),
+      };
+    }
+
+    // 前年同期時系列
+    let lastYearTimeSeries: TimeSeriesEntry[] | undefined;
+    if (compareLastYear) {
+      const ly = getLastYearRange(dateFrom, dateTo);
+      const lyRows = await fetchZ005Data(ly.from, ly.to, machineNo);
+      lastYearTimeSeries = buildTimeSeries(
+        lyRows.map((r) => ({ amount: r.amount, quantity: r.quantity, date: r.date })),
+        granularity
+      );
+    }
+
+    const response: RegisterDataResponse = {
+      aggregated,
+      timeSeries,
+      summary: calculateSummary(timeSeries, totalAmount, totalQuantity, z005Rows.length),
+      previousPeriod,
+      lastYearTimeSeries,
+    };
+
+    return cachedSuccess(response);
+  }
+
+  if (type === "Z009") {
+    const z009Rows = await fetchZ009Data(from, to, machineNo);
+
+    // 時間帯別集計
+    const itemMap = new Map<string, { q: number; a: number }>();
+    for (const r of z009Rows) {
+      const label = `${r.startTime}-${r.endTime}`;
+      const existing = itemMap.get(label) ?? { q: 0, a: 0 };
+      existing.q += r.quantity;
+      existing.a += r.amount;
+      itemMap.set(label, existing);
+    }
+    const aggregated: AggregatedEntry[] = [];
+    for (const [name, val] of itemMap) {
+      aggregated.push({ itemName: name, totalQuantity: val.q, totalAmount: val.a });
+    }
+
+    const timeSeries = buildTimeSeries(
+      z009Rows.map((r) => ({ amount: r.amount, quantity: r.quantity, date: r.date })),
+      granularity
+    );
+
+    const totalAmount = z009Rows.reduce((s, r) => s + r.amount, 0);
+    const totalQuantity = z009Rows.reduce((s, r) => s + r.quantity, 0);
+
+    // 前年同期比
+    let previousPeriod: { totalAmount: number; totalQuantity: number } | undefined;
+    const lastYear = getLastYearRange(dateFrom, dateTo);
+    const prevRows = await fetchZ009Data(lastYear.from, lastYear.to, machineNo);
+    if (prevRows.length > 0) {
+      previousPeriod = {
+        totalAmount: prevRows.reduce((s, r) => s + r.amount, 0),
+        totalQuantity: prevRows.reduce((s, r) => s + r.quantity, 0),
+      };
+    }
+
+    const response: RegisterDataResponse = {
+      aggregated,
+      timeSeries,
+      summary: calculateSummary(timeSeries, totalAmount, totalQuantity, z009Rows.length),
+      previousPeriod,
+    };
+
+    return cachedSuccess(response);
+  }
+
+  if (type === "Z001") {
+    // Z001は分析には使用しないが、個別参照用に残す
     const z001Rows = await fetchZ001Data(from, to, machineNo);
 
-    // 項目別集計
     const itemMap = new Map<string, { q: number; a: number }>();
     for (const r of z001Rows) {
       const existing = itemMap.get(r.itemName) ?? { q: 0, a: 0 };
@@ -338,49 +471,18 @@ export const GET = withErrorHandling(async (request: NextRequest) => {
       aggregated.push({ itemName: name, totalQuantity: val.q, totalAmount: val.a });
     }
 
-    // 時系列（日別売上推移用）
     const timeSeries = buildTimeSeries(
       z001Rows.map((r) => ({ amount: r.amount, quantity: r.quantity, date: r.date })),
-      dateFrom,
-      dateTo,
       granularity
     );
 
     const totalAmount = z001Rows.reduce((s, r) => s + r.amount, 0);
     const totalQuantity = z001Rows.reduce((s, r) => s + r.quantity, 0);
 
-    // 前年同期比
-    let previousPeriod: { totalAmount: number; totalQuantity: number } | undefined;
-    const lastYear = getLastYearRange(dateFrom, dateTo);
-    const prevRows = await fetchZ001Data(lastYear.from, lastYear.to, machineNo);
-    if (prevRows.length > 0) {
-      previousPeriod = {
-        totalAmount: prevRows.reduce((s, r) => s + r.amount, 0),
-        totalQuantity: prevRows.reduce((s, r) => s + r.quantity, 0),
-      };
-    }
-
-    // 前年同期
-    let lastYearTimeSeries: TimeSeriesEntry[] | undefined;
-    if (compareLastYear) {
-      const ly = getLastYearRange(dateFrom, dateTo);
-      const lyDateFrom = ly.from.toISOString().split("T")[0]!;
-      const lyDateTo = ly.to.toISOString().split("T")[0]!;
-      const lyRows = await fetchZ001Data(ly.from, ly.to, machineNo);
-      lastYearTimeSeries = buildTimeSeries(
-        lyRows.map((r) => ({ amount: r.amount, quantity: r.quantity, date: r.date })),
-        lyDateFrom,
-        lyDateTo,
-        granularity
-      );
-    }
-
     const response: RegisterDataResponse = {
       aggregated,
       timeSeries,
       summary: calculateSummary(timeSeries, totalAmount, totalQuantity, z001Rows.length),
-      previousPeriod,
-      lastYearTimeSeries,
     };
 
     return cachedSuccess(response);

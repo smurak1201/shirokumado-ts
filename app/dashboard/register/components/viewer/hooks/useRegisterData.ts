@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { fetchJson } from "@/lib/client-fetch";
 import { getUserFriendlyMessageJa } from "@/lib/errors";
@@ -10,6 +10,7 @@ import type {
   MachinesResponse,
   MachineInfo,
   AggregatedEntry,
+  TimeSeriesEntry,
   PeriodType,
   Granularity,
   GroupBy,
@@ -89,6 +90,8 @@ export interface UseRegisterDataReturn {
   totalCustomers: number;
   previousCustomers: number;
   topProducts: AggregatedEntry[];
+  /** 曜日別チャート用の日別timeSeries（granularityがdayでない場合に別途取得） */
+  dailyTimeSeries: TimeSeriesEntry[];
   isLoading: boolean;
 
   // 手動リフレッシュ
@@ -96,7 +99,7 @@ export interface UseRegisterDataReturn {
 }
 
 export function useRegisterData(
-  initialType: string = "Z001"
+  initialType: string = "Z005"
 ): UseRegisterDataReturn {
   const [periodType, setPeriodTypeState] = useState<PeriodType>("month");
   const [dateRange, setDateRange] = useState(() => getDefaultDateRange("month"));
@@ -110,8 +113,10 @@ export function useRegisterData(
   const [totalCustomers, setTotalCustomers] = useState(0);
   const [previousCustomers, setPreviousCustomers] = useState(0);
   const [topProducts, setTopProducts] = useState<AggregatedEntry[]>([]);
+  const [dailyTimeSeries, setDailyTimeSeries] = useState<TimeSeriesEntry[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [ready, setReady] = useState(false);
+  const latestDateRef = useRef<Date | undefined>(undefined);
 
   // レジ一覧と最新データ日付を取得（初回のみ）
   useEffect(() => {
@@ -120,6 +125,7 @@ export function useRegisterData(
         setMachines(res.machines);
         if (res.latestDate) {
           const base = new Date(res.latestDate);
+          latestDateRef.current = base;
           setDateRange(getDefaultDateRange("month", base));
         }
       })
@@ -170,14 +176,40 @@ export function useRegisterData(
           z004Params.set("machineNo", machineNo);
         }
 
-        const [z009Result, z004Result] = await Promise.all([
+        // granularityがdayでない場合、曜日別チャート用に日別データも取得
+        const needsDailyFetch = granularity !== "day";
+        const dailyParams = needsDailyFetch
+          ? new URLSearchParams({
+              type: initialType,
+              dateFrom: dateRange.from,
+              dateTo: dateRange.to,
+              view: "summary",
+              groupBy,
+              granularity: "day",
+            })
+          : null;
+        if (dailyParams && machineNo) dailyParams.set("machineNo", machineNo);
+
+        const fetches: Promise<RegisterDataResponse>[] = [
           fetchJson<RegisterDataResponse>(`/api/register/data?${z009Params}`),
           fetchJson<RegisterDataResponse>(`/api/register/data?${z004Params}`),
-        ]);
+        ];
+        if (dailyParams) {
+          fetches.push(
+            fetchJson<RegisterDataResponse>(`/api/register/data?${dailyParams}`)
+          );
+        }
+
+        const results = await Promise.all(fetches);
+        const z009Result = results[0]!;
+        const z004Result = results[1]!;
 
         setTotalCustomers(z009Result.summary.totalQuantity);
         setPreviousCustomers(z009Result.previousPeriod?.totalQuantity ?? 0);
         setTopProducts(z004Result.aggregated.slice(0, 10));
+        setDailyTimeSeries(
+          needsDailyFetch ? results[2]!.timeSeries : result.timeSeries
+        );
       }
     } catch (err) {
       toast.error(getUserFriendlyMessageJa(err));
@@ -193,11 +225,11 @@ export function useRegisterData(
     return () => clearTimeout(timer);
   }, [ready, fetchData]);
 
-  // 期間タイプ変更
+  // 期間タイプ変更（最新データの日付を基準にする）
   const setPeriodType = useCallback((type: PeriodType) => {
     setPeriodTypeState(type);
     if (type !== "custom") {
-      setDateRange(getDefaultDateRange(type));
+      setDateRange(getDefaultDateRange(type, latestDateRef.current));
       setGranularity(getDefaultGranularity(type));
     }
   }, []);
@@ -259,6 +291,7 @@ export function useRegisterData(
     totalCustomers,
     previousCustomers,
     topProducts,
+    dailyTimeSeries,
     isLoading,
     refetch: fetchData,
   };

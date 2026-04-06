@@ -19,6 +19,7 @@ export default function RegisterDataViewer() {
     totalCustomers,
     previousCustomers,
     topProducts,
+    dailyTimeSeries,
     isLoading,
     setPeriodType,
     setDateFrom,
@@ -26,7 +27,7 @@ export default function RegisterDataViewer() {
     setMachineNo,
     setGroupBy,
     navigatePeriod,
-  } = useRegisterData("Z001");
+  } = useRegisterData("Z005");
 
   return (
     <div className="space-y-4">
@@ -77,6 +78,7 @@ export default function RegisterDataViewer() {
                 totalCustomers={totalCustomers}
                 previousCustomers={previousCustomers}
                 topProducts={topProducts}
+                dailyTimeSeries={dailyTimeSeries}
               />
             ) : (
               <div className="rounded-lg border border-gray-200 bg-white p-6 text-center text-sm text-gray-400">
