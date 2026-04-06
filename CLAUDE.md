@@ -198,6 +198,15 @@
 - **`dangerouslySetInnerHTML`は原則使用禁止**
 - **環境変数の`NEXT_PUBLIC_`プレフィックスの有無を意識すること**
 
+## デザインシステム
+
+- デジタル庁デザインシステムbeta版を参考にしている（詳細: `docs/design-system.md`）
+- 余白: 8pxの倍数（8, 16, 24, 32, 40, 48, 64）
+- タッチターゲット: 44px以上（`min-h-11`）
+- コントラスト比: テキスト4.5:1以上、コンポーネント背景3:1以上
+- カラー: `@digital-go-jp/tailwind-theme-plugin` のトークンを使用
+- border-radius: `rounded-8`(カード), `rounded-6`(ボタン/フォーム)
+
 ## Tailwind CSS
 
 ### Tailwind CSS v4の特徴
@@ -205,6 +214,7 @@
 - **CSS-based設定**: `@import "tailwindcss"`でインポート
 - **`@theme inline`ブロック**: CSS変数からTailwindテーマへマッピング
 - **設定ファイル不要**: `tailwind.config.js`は使用しない
+- **`@plugin`**: `@digital-go-jp/tailwind-theme-plugin`でデジタル庁DSトークンを利用
 
 ### 基本ルール
 
@@ -212,11 +222,15 @@
 - **動的クラス名（`bg-${color}-500`）を避けること**
 - **モバイルファースト**: `sm:`, `md:`, `lg:` で拡張
 - **カスタムスタイルはCSS変数で管理**: `globals.css`の`:root`で定義し、`@theme inline`でマッピング
+- **ニュートラルカラー**: `solid-gray-*`を使用（Tailwindデフォルトの`gray-*`ではなくDSトークン）
+- **セマンティックカラー**: `success-1`(緑), `error-1`(赤), `warning-orange-1`(橙)を使用
 
 ## アクセシビリティ
 
-- **セマンティックHTML**: 適切なタグ（`<header>`, `<main>`, `<nav>`等）を使用すること
-- **aria属性**: アイコンボタンには`aria-label`を設定すること
+- **セマンティックHTML**: 適切なタグ（`<header>`, `<main>`, `<nav>`, `<section>`, `<dl>`等）を使用すること
+- **aria属性**: アイコンボタンには`aria-label`、トグルボタンには`aria-pressed`を設定すること
+- **ボタングループ**: `role="group" aria-label="..."`で意味を明示すること
+- **フォーカスリング**: カスタムボタンには`focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus-blue`を設定すること
 
 ## 画像
 
