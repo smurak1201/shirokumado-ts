@@ -25,7 +25,7 @@ function calcChangeRate(current: number, previous: number): number | null {
 function ChangeIndicator({ rate }: { rate: number | null }) {
   if (rate === null) return <span className="text-xs text-gray-400">--</span>;
   const isPositive = rate > 0;
-  const color = isPositive ? "text-green-600" : rate < 0 ? "text-red-600" : "text-gray-500";
+  const color = isPositive ? "text-[#259D63]" : rate < 0 ? "text-[#FE3939]" : "text-gray-400";
   const arrow = isPositive ? "+" : "";
   return <span className={`text-xs font-medium ${color}`}>前年比 {arrow}{rate}%</span>;
 }

@@ -13,18 +13,18 @@ interface TopProductsDonutProps {
   products: AggregatedEntry[];
 }
 
-// 10色すべて異なる色相で区別しやすいパレット
+// デジタル庁デザインシステム準拠のパレット（600番台を基本に使用）
 const COLORS = [
-  "hsl(221, 83%, 53%)",  // 青
-  "hsl(142, 71%, 45%)",  // 緑
-  "hsl(38, 92%, 50%)",   // オレンジ
-  "hsl(0, 84%, 60%)",    // 赤
-  "hsl(262, 83%, 58%)",  // 紫
-  "hsl(186, 72%, 42%)",  // シアン
-  "hsl(330, 70%, 55%)",  // ピンク
-  "hsl(60, 70%, 44%)",   // 黄緑
-  "hsl(20, 80%, 52%)",   // 茶
-  "hsl(200, 60%, 50%)",  // スカイブルー
+  "#3460FB",  // Blue 600
+  "#008BF2",  // LightBlue 600
+  "#259D63",  // Green 600
+  "#FB5B01",  // Orange 600
+  "#00A3BF",  // Cyan 600
+  "#FE3939",  // Red 600
+  "#0055AD",  // LightBlue 900
+  "#115A36",  // Green 900
+  "#AC3E00",  // Orange 900
+  "#006F83",  // Cyan 900
 ];
 
 function formatAmount(amount: number): string {
