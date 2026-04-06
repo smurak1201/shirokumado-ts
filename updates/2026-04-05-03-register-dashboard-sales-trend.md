@@ -42,13 +42,13 @@
 - **課題1**: 売上推移タブがプレースホルダー（「売上推移（準備中）」）のまま未実装
 - **課題2**: 売上金額の時系列推移を棒グラフで確認でき、前年同期との比較ができる必要がある
 - **課題3**: 客数・客単価の推移を確認できる必要がある（Z009のquantity合計 = 客数）
-- **課題4**: 売上推移タブの客数・客単価推移グラフにZ009データが必要
+- **課題4**: 売上はZ005（部門別）のtotalAmount、客数はZ009（時間帯別）のtotalQuantityを使用する
 
 ### 設計方針
 
 - **方針1**: shadcn/ui Chart（内部でrecharts使用）のComposedChartを使用し、棒グラフ（当年売上）と折れ線グラフ（前年同期）を重ね合わせ表示する
 - **方針2**: 客数・客単価は二軸の折れ線グラフで1つのチャートにまとめる
-- **方針3**: 客単価はtimeSeriesのamount / quantity（Z009ベース）で算出する。quantityが0の期間は客単価0とする
+- **方針3**: 売上はZ005のtimeSeries.totalAmount、客数はZ009のtimeSeries.totalQuantityを使用する。客単価 = Z005のtotalAmount / Z009のtotalQuantity。quantityが0の期間は客単価0とする
 - **方針4**: rechartsがSSR非対応のため、グラフコンポーネントは`next/dynamic`で動的インポートする
 - **方針5**: useRegisterDataに`compareLastYear=true`を渡して前年同期データを取得する
 
@@ -547,7 +547,7 @@ import SalesTrendTab from "./tabs/SalesTrendTab";
    - 前年同期データがある場合、半透明の破線折れ線で重ね合わせ表示されること
    - 客数・客単価推移グラフが二軸折れ線で表示されること（左: 客数、右: 客単価）
    - 売上推移データテーブルに期間・売上金額・客数・客単価が表示されること
-   - 定休日（データなし）の期間は売上0で表示されること
+   - 定休日（データなし）の期間はtimeSeriesに含まれない。グラフ表示で0埋めが必要な場合はフロント側で対応する
    - 期間セレクター（日/週/月/年）を切り替えるとグラフの粒度が変わること
    - 既存の「売上概要」タブが引き続き正常に動作すること
 
@@ -569,7 +569,8 @@ import SalesTrendTab from "./tabs/SalesTrendTab";
 - 既存のグラフコンポーネント（`DayOfWeekChart.tsx`, `SalesBreakdownDonut.tsx`）は変更しないこと
 - `useRegisterData`フックの変更は`fetchData`内のURLパラメータ追加のみ。フックの公開インターフェース（引数・返り値の型）は変更しない
 - 客数の定義: Z009（時間帯別売上）のquantity合計。仕様書02のuseRegisterDataフックでZ009客数取得が実装済み
-- 売上推移タブではtimeSeriesのtotalQuantityを直接使用する（Z001のquantityベース）。売上概要タブのKPIカードではZ009ベースの客数を使用する
+- 売上推移タブでは売上にZ005のtimeSeries.totalAmount、客数にZ009のtimeSeries.totalQuantityを使用する。売上概要タブのKPIカードも同じデータソースを使用する
+- buildTimeSeriesは0埋めを行わず、実データのみ返す。シグネチャ: `buildTimeSeries(rows, granularity)`（dateFrom/dateTo引数は廃止済み）
 
 ### 参考
 

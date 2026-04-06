@@ -284,7 +284,7 @@ ExportButtonとPrintButtonがダッシュボードに配置されていない。
 **修正内容**:
 
 1. `RegisterDataViewer.tsx`のフィルタバーの右端にPrintButtonを配置する
-2. `SalesOverviewTab.tsx`の項目別テーブルの上にExportButtonを配置する
+2. `SalesOverviewTab.tsx`の部門別テーブルの上にExportButtonを配置する
 
 **RegisterDataViewer.tsx の変更**:
 
@@ -341,25 +341,25 @@ import type { ColumnDef } from "../DataTable";
 import ExportButton from "../ExportButton";
 ```
 
-項目別テーブルの見出しの横にExportButtonを配置:
+部門別テーブルの見出しの横にExportButtonを配置:
 
 ```tsx
 // 変更前
-      {/* 項目別テーブル */}
+      {/* 部門別テーブル */}
       <div>
-        <h3 className="mb-2 text-sm font-medium text-gray-700">項目別集計</h3>
+        <h3 className="mb-2 text-sm font-medium text-gray-700">部門別売上合計</h3>
         <DataTable columns={aggregatedColumns} data={data.aggregated} />
       </div>
 
 // 変更後
-      {/* 項目別テーブル */}
+      {/* 部門別テーブル */}
       <div>
         <div className="mb-2 flex items-center justify-between">
-          <h3 className="text-sm font-medium text-gray-700">項目別集計</h3>
+          <h3 className="text-sm font-medium text-gray-700">部門別売上合計</h3>
           <ExportButton
             data={data.aggregated}
             columns={aggregatedColumns}
-            fileName={`売上概要_項目別集計_${getToday()}`}
+            fileName={`売上概要_部門別売上合計_${getToday()}`}
           />
         </div>
         <DataTable columns={aggregatedColumns} data={data.aggregated} />
@@ -461,14 +461,14 @@ export default function SalesOverviewTab({
         />
       </div>
 
-      {/* 項目別テーブル */}
+      {/* 部門別テーブル */}
       <div>
         <div className="mb-2 flex items-center justify-between">
-          <h3 className="text-sm font-medium text-gray-700">項目別集計</h3>
+          <h3 className="text-sm font-medium text-gray-700">部門別売上合計</h3>
           <ExportButton
             data={data.aggregated}
             columns={aggregatedColumns}
-            fileName={`売上概要_項目別集計_${getToday()}`}
+            fileName={`売上概要_部門別売上合計_${getToday()}`}
           />
         </div>
         <DataTable columns={aggregatedColumns} data={data.aggregated} />
@@ -498,8 +498,8 @@ export default function SalesOverviewTab({
 
 1. **ローカル確認** (`npm run dev`)
    - `/dashboard/register` にアクセスし、売上分析タブを表示する
-   - 売上概要タブの項目別集計テーブルの上に「CSVダウンロード」ボタンが表示されること
-   - 「CSVダウンロード」ボタンをクリックし、`売上概要_項目別集計_YYYY-MM-DD.csv`がダウンロードされること
+   - 売上概要タブの部門別売上合計テーブルの上に「CSVダウンロード」ボタンが表示されること
+   - 「CSVダウンロード」ボタンをクリックし、`売上概要_部門別売上合計_YYYY-MM-DD.csv`がダウンロードされること
    - ダウンロードしたCSVファイルをExcelで開き、日本語が文字化けしないこと
    - データが0件の場合、「CSVダウンロード」ボタンがdisabled状態になること
    - フィルタバーの右端に「印刷」ボタンが表示されること

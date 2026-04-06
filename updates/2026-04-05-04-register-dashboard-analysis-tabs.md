@@ -653,8 +653,6 @@ async function fetchRawData(
       rows
         .filter((r) => r.itemName.includes("訂正"))
         .map((r) => ({ amount: r.amount, quantity: r.quantity, date: r.date })),
-      dateFrom,
-      dateTo,
       granularity
     );
 

@@ -1744,12 +1744,12 @@ KPIカードの上部にTargetProgressBarを配置する:
       <KpiCards
 
 // 変更後
-      {/* 売上目標プログレスバー */}
+      {/* 売上目標プログレスバー（data.summary.totalAmountはZ005ベースの売上合計） */}
       {monthlyTarget && (
         <TargetProgressBar
           currentAmount={data.summary.totalAmount}
           targetAmount={monthlyTarget.amount}
-          label={`${targetYear}年${targetMonth}月 売上目標`}
+          label={`${targetYear}年${targetMonth}月 売上目標（売上合計ベース）`}
         />
       )}
 
