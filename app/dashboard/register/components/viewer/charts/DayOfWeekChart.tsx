@@ -17,7 +17,7 @@ const DAY_LABELS = ["月", "火", "水", "木", "金", "土", "日"];
 
 const chartConfig = {
   avgAmount: {
-    label: "売上",
+    label: "平均売上",
     color: "var(--color-chart-1)",
   },
 } satisfies ChartConfig;
@@ -76,8 +76,8 @@ export default function DayOfWeekChart({ timeSeries }: DayOfWeekChartProps) {
         <thead>
           <tr className="border-b border-gray-100 text-sm text-gray-400">
             <th className="w-1/3 pb-2 text-center font-normal">曜日</th>
-            <th className="w-1/3 pb-2 text-center font-normal">売上</th>
-            <th className="w-1/3 pb-2 text-center font-normal">客数</th>
+            <th className="w-1/3 pb-2 text-center font-normal">平均売上</th>
+            <th className="w-1/3 pb-2 text-center font-normal">平均客数</th>
           </tr>
         </thead>
         <tbody>

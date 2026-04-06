@@ -1,7 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import type { RegisterDataResponse, AggregatedEntry } from "../../../types";
+import type { RegisterDataResponse, AggregatedEntry, TimeSeriesEntry } from "../../../types";
 import KpiCards from "../KpiCards";
 import DataTable from "../DataTable";
 import type { ColumnDef } from "../DataTable";
@@ -23,19 +23,21 @@ interface SalesOverviewTabProps {
   previousCustomers?: number;
   /** Z004から取得した上位10商品 */
   topProducts: AggregatedEntry[];
+  /** 曜日別チャート用の日別timeSeries */
+  dailyTimeSeries: TimeSeriesEntry[];
 }
 
 const aggregatedColumns: ColumnDef<AggregatedEntry>[] = [
-  { key: "itemName", label: "項目名" },
+  { key: "itemName", label: "部門名" },
   {
     key: "totalQuantity",
-    label: "数量",
+    label: "数量合計",
     align: "right",
     format: (v) => (v as number).toLocaleString("ja-JP"),
   },
   {
     key: "totalAmount",
-    label: "金額",
+    label: "売上合計",
     align: "right",
     format: (v) => `${(v as number).toLocaleString("ja-JP")}円`,
   },
@@ -46,6 +48,7 @@ export default function SalesOverviewTab({
   totalCustomers,
   previousCustomers,
   topProducts,
+  dailyTimeSeries,
 }: SalesOverviewTabProps) {
   return (
     <div className="space-y-6">
@@ -59,13 +62,13 @@ export default function SalesOverviewTab({
 
       {/* グラフエリア */}
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-        <DayOfWeekChart timeSeries={data.timeSeries} />
+        <DayOfWeekChart timeSeries={dailyTimeSeries} />
         <TopProductsDonut products={topProducts} />
       </div>
 
-      {/* 項目別テーブル */}
+      {/* 部門別テーブル */}
       <div>
-        <h3 className="mb-2 text-sm font-medium text-gray-700">項目別集計</h3>
+        <h3 className="mb-2 text-sm font-medium text-gray-700">部門別売上合計</h3>
         <DataTable columns={aggregatedColumns} data={data.aggregated} />
       </div>
     </div>

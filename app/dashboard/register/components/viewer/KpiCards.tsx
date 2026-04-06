@@ -49,15 +49,15 @@ export default function KpiCards({
       change: previousPeriod
         ? calcChangeRate(summary.totalAmount, previousPeriod.totalAmount)
         : null,
-      sub: `平均: ${formatAmount(summary.avgAmount)}円`,
+      sub: `日平均: ${formatAmount(summary.avgAmount)}円`,
     },
     {
-      label: "客数",
+      label: "客数合計",
       value: `${formatAmount(totalCustomers)}人`,
       change: previousCustomers
         ? calcChangeRate(totalCustomers, previousCustomers)
         : null,
-      sub: `平均: ${formatAmount(summary.avgQuantity)}人`,
+      sub: `日平均: ${formatAmount(summary.avgQuantity)}人`,
     },
     {
       label: "客単価",
@@ -88,14 +88,14 @@ export default function KpiCards({
       {/* トップ/ボトム */}
       {summary.maxAmount.period && (
         <div className="col-span-1 rounded-lg border border-gray-200 bg-white p-4 sm:col-span-3">
-          <div className="flex flex-wrap gap-6 text-xs text-gray-500">
+          <div className="flex flex-wrap gap-6 text-sm text-gray-500">
             <span>
-              最高売上: <strong className="text-gray-800">{summary.maxAmount.period}</strong>{" "}
-              ({formatAmount(summary.maxAmount.value)}円)
+              最高売上: <strong className="text-base text-gray-800">{summary.maxAmount.period}</strong>{" "}
+              <span className="text-base font-medium text-gray-700">({formatAmount(summary.maxAmount.value)}円)</span>
             </span>
             <span>
-              最低売上: <strong className="text-gray-800">{summary.minAmount.period}</strong>{" "}
-              ({formatAmount(summary.minAmount.value)}円)
+              最低売上: <strong className="text-base text-gray-800">{summary.minAmount.period}</strong>{" "}
+              <span className="text-base font-medium text-gray-700">({formatAmount(summary.minAmount.value)}円)</span>
             </span>
           </div>
         </div>

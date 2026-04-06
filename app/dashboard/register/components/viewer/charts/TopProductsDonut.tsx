@@ -86,7 +86,7 @@ export default function TopProductsDonut({ products }: TopProductsDonutProps) {
             <th className="pb-2 text-center font-normal">商品名</th>
             <th className="pb-2 text-center font-normal">単価</th>
             <th className="pb-2 text-center font-normal">個数</th>
-            <th className="pb-2 text-center font-normal">売上</th>
+            <th className="pb-2 text-center font-normal">売上合計</th>
             <th className="pb-2 text-center font-normal">割合</th>
           </tr>
         </thead>
