@@ -48,8 +48,8 @@ export default function TopProductsDonut({ products }: TopProductsDonutProps) {
   ) satisfies ChartConfig;
 
   return (
-    <div className="rounded-lg border border-gray-200 bg-white p-4">
-      <h3 className="mb-3 text-sm font-medium text-gray-700">売上上位10商品</h3>
+    <section className="rounded-8 border border-solid-gray-200 bg-white p-4" aria-label="売上上位10商品">
+      <h3 className="mb-4 text-sm font-medium text-solid-gray-700">売上上位10商品</h3>
       <ChartContainer config={chartConfig} className="mx-auto h-62.5 w-full">
         <PieChart>
           <Pie
@@ -80,8 +80,9 @@ export default function TopProductsDonut({ products }: TopProductsDonutProps) {
 
       {/* 凡例テーブル */}
       <table className="mt-4 w-full text-sm">
+        <caption className="sr-only">商品別売上ランキング</caption>
         <thead>
-          <tr className="border-b border-gray-100 text-xs text-gray-400">
+          <tr className="border-b border-solid-gray-100 text-sm text-solid-gray-536">
             <th className="pb-2 text-center font-normal">#</th>
             <th className="pb-2 text-center font-normal">商品名</th>
             <th className="pb-2 text-center font-normal">単価</th>
@@ -94,29 +95,29 @@ export default function TopProductsDonut({ products }: TopProductsDonutProps) {
           {products.map((entry, i) => {
             const pct = total > 0 ? Math.round((entry.totalAmount / total) * 100) : 0;
             return (
-              <tr key={entry.itemName} className="border-b border-gray-50">
-                <td className="py-1.5 text-center text-gray-400">{i + 1}</td>
-                <td className="py-1.5">
-                  <div className="flex items-center gap-1.5">
+              <tr key={entry.itemName} className="border-b border-solid-gray-50">
+                <td className="py-2 text-center text-solid-gray-536">{i + 1}</td>
+                <td className="py-2">
+                  <div className="flex items-center gap-2">
                     <span
                       className="size-2.5 shrink-0 rounded-full"
                       style={{ backgroundColor: COLORS[i] }}
                     />
-                    <span className="truncate text-gray-700">{entry.itemName}</span>
+                    <span className="truncate text-solid-gray-700">{entry.itemName}</span>
                   </div>
                 </td>
-                <td className="py-1.5 pr-4 text-right tabular-nums text-gray-700">
+                <td className="py-2 pr-4 text-right tabular-nums text-solid-gray-700">
                   {entry.totalQuantity > 0
                     ? `${formatAmount(Math.round(entry.totalAmount / entry.totalQuantity))}円`
                     : "-"}
                 </td>
-                <td className="py-1.5 pr-4 text-right tabular-nums text-gray-700">
+                <td className="py-2 pr-4 text-right tabular-nums text-solid-gray-700">
                   {formatAmount(entry.totalQuantity)}
                 </td>
-                <td className="py-1.5 text-right tabular-nums text-gray-700">
+                <td className="py-2 text-right tabular-nums text-solid-gray-700">
                   {formatAmount(entry.totalAmount)}円
                 </td>
-                <td className="py-1.5 text-right tabular-nums text-gray-400">
+                <td className="py-2 text-right tabular-nums text-solid-gray-536">
                   {pct}%
                 </td>
               </tr>
@@ -124,17 +125,17 @@ export default function TopProductsDonut({ products }: TopProductsDonutProps) {
           })}
         </tbody>
         <tfoot>
-          <tr className="border-t border-gray-200">
-            <td colSpan={4} className="py-2 font-medium text-gray-500">
+          <tr className="border-t border-solid-gray-200">
+            <td colSpan={4} className="py-2 font-medium text-solid-gray-536">
               上位10商品 合計
             </td>
-            <td className="py-2 text-right tabular-nums font-medium text-gray-700">
+            <td className="py-2 text-right tabular-nums font-medium text-solid-gray-700">
               {formatAmount(total)}円
             </td>
             <td />
           </tr>
         </tfoot>
       </table>
-    </div>
+    </section>
   );
 }

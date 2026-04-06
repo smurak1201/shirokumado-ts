@@ -29,8 +29,8 @@ export default function DepartmentBarChart({ departments }: DepartmentBarChartPr
   const sorted = [...departments].sort((a, b) => b.totalAmount - a.totalAmount);
 
   return (
-    <div className="rounded-lg border border-gray-200 bg-white p-4">
-      <h3 className="mb-3 text-sm font-medium text-gray-700">部門別売上合計</h3>
+    <section className="rounded-8 border border-solid-gray-200 bg-white p-4" aria-label="部門別売上">
+      <h3 className="mb-4 text-sm font-medium text-solid-gray-700">部門別売上合計</h3>
       <ChartContainer config={chartConfig} className="w-full" style={{ height: sorted.length * 48 + 20 }}>
         <BarChart
           accessibilityLayer
@@ -60,12 +60,12 @@ export default function DepartmentBarChart({ departments }: DepartmentBarChartPr
             radius={[0, 4, 4, 0]}
             label={{
               position: "right",
-              className: "fill-gray-600 text-sm",
+              className: "fill-solid-gray-600 text-sm",
               formatter: (v: number) => `${formatAmount(v)}円`,
             }}
           />
         </BarChart>
       </ChartContainer>
-    </div>
+    </section>
   );
 }

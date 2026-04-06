@@ -18,16 +18,17 @@ export default function MachineFilter({
   onGroupByChange,
 }: MachineFilterProps) {
   return (
-    <div className="flex flex-wrap items-center gap-3">
+    <div className="flex flex-wrap items-center gap-4">
       {/* 合算/レジ別 切り替え */}
-      <div className="flex gap-1">
+      <div className="flex gap-2" role="group" aria-label="表示モード">
         <button
           type="button"
           onClick={() => onGroupByChange("combined")}
-          className={`rounded-md px-3 py-1.5 text-sm font-medium transition-colors cursor-pointer active:scale-95 ${
+          aria-pressed={groupBy === "combined"}
+          className={`rounded-6 px-4 py-2.5 text-sm font-medium transition-colors cursor-pointer active:scale-95 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus-blue ${
             groupBy === "combined"
-              ? "bg-gray-900 text-white"
-              : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+              ? "bg-solid-gray-900 text-white"
+              : "bg-solid-gray-50 text-solid-gray-700 hover:bg-solid-gray-100"
           }`}
         >
           合算
@@ -35,10 +36,11 @@ export default function MachineFilter({
         <button
           type="button"
           onClick={() => onGroupByChange("machine")}
-          className={`rounded-md px-3 py-1.5 text-sm font-medium transition-colors cursor-pointer active:scale-95 ${
+          aria-pressed={groupBy === "machine"}
+          className={`rounded-6 px-4 py-2.5 text-sm font-medium transition-colors cursor-pointer active:scale-95 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus-blue ${
             groupBy === "machine"
-              ? "bg-gray-900 text-white"
-              : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+              ? "bg-solid-gray-900 text-white"
+              : "bg-solid-gray-50 text-solid-gray-700 hover:bg-solid-gray-100"
           }`}
         >
           レジ別
@@ -50,7 +52,8 @@ export default function MachineFilter({
         <select
           value={machineNo ?? ""}
           onChange={(e) => onMachineNoChange(e.target.value || null)}
-          className="rounded-md border border-gray-300 px-3 py-1.5 text-sm"
+          aria-label="レジ選択"
+          className="rounded-6 border border-solid-gray-420 px-4 py-2.5 text-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus-blue"
         >
           <option value="">全レジ</option>
           {machines.map((m) => (

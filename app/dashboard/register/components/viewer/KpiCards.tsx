@@ -23,11 +23,11 @@ function calcChangeRate(current: number, previous: number): number | null {
 
 /** 変化率の表示 */
 function ChangeIndicator({ rate }: { rate: number | null }) {
-  if (rate === null) return <span className="text-xs text-gray-400">--</span>;
+  if (rate === null) return <span className="text-sm text-solid-gray-536">--</span>;
   const isPositive = rate > 0;
-  const color = isPositive ? "text-[#259D63]" : rate < 0 ? "text-[#FE3939]" : "text-gray-400";
+  const color = isPositive ? "text-success-1" : rate < 0 ? "text-red-600" : "text-solid-gray-536";
   const arrow = isPositive ? "+" : "";
-  return <span className={`text-xs font-medium ${color}`}>前年比 {arrow}{rate}%</span>;
+  return <span className={`text-sm font-bold ${color}`}>前年比 {arrow}{rate}%</span>;
 }
 
 export default function KpiCards({
@@ -68,38 +68,38 @@ export default function KpiCards({
   ];
 
   return (
-    <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+    <dl className="grid grid-cols-1 gap-4 sm:grid-cols-3">
       {cards.map((card) => (
         <div
           key={card.label}
-          className="rounded-lg border border-gray-200 bg-white p-4"
+          className="rounded-8 border border-solid-gray-200 bg-white p-4"
         >
-          <div className="mb-1 text-xs text-gray-500">{card.label}</div>
-          <div className="flex items-baseline gap-2">
-            <span className="text-xl font-bold text-gray-900">{card.value}</span>
+          <dt className="mb-2 text-sm text-solid-gray-536">{card.label}</dt>
+          <dd className="flex items-baseline gap-2">
+            <span className="text-xl font-bold text-solid-gray-900">{card.value}</span>
             <ChangeIndicator rate={card.change} />
-          </div>
+          </dd>
           {card.sub && (
-            <div className="mt-1 text-xs text-gray-400">{card.sub}</div>
+            <dd className="mt-2 text-sm text-solid-gray-536">{card.sub}</dd>
           )}
         </div>
       ))}
 
       {/* トップ/ボトム */}
       {summary.maxAmount.period && (
-        <div className="col-span-1 rounded-lg border border-gray-200 bg-white p-4 sm:col-span-3">
-          <div className="flex flex-wrap gap-6 text-sm text-gray-500">
+        <div className="col-span-1 rounded-8 border border-solid-gray-200 bg-white p-4 sm:col-span-3">
+          <dd className="flex flex-wrap gap-6 text-sm text-solid-gray-536">
             <span>
-              最高売上: <strong className="text-base text-gray-800">{summary.maxAmount.period}</strong>{" "}
-              <span className="text-base font-medium text-gray-700">({formatAmount(summary.maxAmount.value)}円)</span>
+              最高売上: <strong className="text-base text-solid-gray-800">{summary.maxAmount.period}</strong>{" "}
+              <span className="text-base font-medium text-solid-gray-700">({formatAmount(summary.maxAmount.value)}円)</span>
             </span>
             <span>
-              最低売上: <strong className="text-base text-gray-800">{summary.minAmount.period}</strong>{" "}
-              <span className="text-base font-medium text-gray-700">({formatAmount(summary.minAmount.value)}円)</span>
+              最低売上: <strong className="text-base text-solid-gray-800">{summary.minAmount.period}</strong>{" "}
+              <span className="text-base font-medium text-solid-gray-700">({formatAmount(summary.minAmount.value)}円)</span>
             </span>
-          </div>
+          </dd>
         </div>
       )}
-    </div>
+    </dl>
   );
 }

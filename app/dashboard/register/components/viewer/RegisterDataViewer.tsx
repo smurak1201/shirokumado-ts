@@ -32,8 +32,8 @@ export default function RegisterDataViewer() {
   return (
     <div className="space-y-4">
       {/* フィルタバー */}
-      <div className="rounded-lg border border-gray-200 bg-white p-4">
-        <div className="space-y-3">
+      <div className="rounded-8 border border-solid-gray-200 bg-white p-4" aria-label="データフィルター">
+        <div className="space-y-4">
           <PeriodSelector
             periodType={periodType}
             dateFrom={dateFrom}
@@ -55,8 +55,8 @@ export default function RegisterDataViewer() {
 
       {/* ローディング */}
       {isLoading && (
-        <div className="flex items-center justify-center py-12">
-          <div className="text-sm text-gray-400">読み込み中...</div>
+        <div className="flex items-center justify-center py-12" role="status" aria-live="polite">
+          <div className="text-sm text-solid-gray-536">読み込み中...</div>
         </div>
       )}
 
@@ -81,7 +81,7 @@ export default function RegisterDataViewer() {
                 dailyTimeSeries={dailyTimeSeries}
               />
             ) : (
-              <div className="rounded-lg border border-gray-200 bg-white p-6 text-center text-sm text-gray-400">
+              <div className="rounded-8 border border-solid-gray-200 bg-white p-6 text-center text-sm text-solid-gray-536">
                 データがありません
               </div>
             )}
@@ -89,32 +89,32 @@ export default function RegisterDataViewer() {
 
           {/* 他のタブは後続の仕様書で実装 */}
           <TabsContent value="trend">
-            <div className="rounded-lg border border-gray-200 bg-white p-6 text-center text-gray-500">
+            <div className="rounded-8 border border-solid-gray-200 bg-white p-6 text-center text-solid-gray-536">
               売上推移（準備中）
             </div>
           </TabsContent>
           <TabsContent value="hourly">
-            <div className="rounded-lg border border-gray-200 bg-white p-6 text-center text-gray-500">
+            <div className="rounded-8 border border-solid-gray-200 bg-white p-6 text-center text-solid-gray-536">
               時間帯分析（準備中）
             </div>
           </TabsContent>
           <TabsContent value="product">
-            <div className="rounded-lg border border-gray-200 bg-white p-6 text-center text-gray-500">
+            <div className="rounded-8 border border-solid-gray-200 bg-white p-6 text-center text-solid-gray-536">
               商品分析（準備中）
             </div>
           </TabsContent>
           <TabsContent value="department">
-            <div className="rounded-lg border border-gray-200 bg-white p-6 text-center text-gray-500">
+            <div className="rounded-8 border border-solid-gray-200 bg-white p-6 text-center text-solid-gray-536">
               部門分析（準備中）
             </div>
           </TabsContent>
           <TabsContent value="transaction">
-            <div className="rounded-lg border border-gray-200 bg-white p-6 text-center text-gray-500">
+            <div className="rounded-8 border border-solid-gray-200 bg-white p-6 text-center text-solid-gray-536">
               取引管理（準備中）
             </div>
           </TabsContent>
           <TabsContent value="raw">
-            <div className="rounded-lg border border-gray-200 bg-white p-6 text-center text-gray-500">
+            <div className="rounded-8 border border-solid-gray-200 bg-white p-6 text-center text-solid-gray-536">
               明細データ（準備中）
             </div>
           </TabsContent>

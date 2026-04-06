@@ -53,8 +53,8 @@ export default function DayOfWeekChart({ timeSeries }: DayOfWeekChartProps) {
   const data = aggregateByDayOfWeek(timeSeries);
 
   return (
-    <div className="rounded-lg border border-gray-200 bg-white p-4">
-      <h3 className="mb-3 text-sm font-medium text-gray-700">曜日別売上（平均）</h3>
+    <section className="rounded-8 border border-solid-gray-200 bg-white p-4" aria-label="曜日別売上">
+      <h3 className="mb-4 text-sm font-medium text-solid-gray-700">曜日別売上（平均）</h3>
       <ChartContainer config={chartConfig} className="h-62.5 w-full">
         <BarChart accessibilityLayer data={data} margin={{ top: 5, right: 20, bottom: 5, left: 20 }}>
           <CartesianGrid vertical={false} />
@@ -73,8 +73,9 @@ export default function DayOfWeekChart({ timeSeries }: DayOfWeekChartProps) {
 
       {/* 曜日別テーブル */}
       <table className="mt-4 w-full text-base">
+        <caption className="sr-only">曜日別平均売上と客数</caption>
         <thead>
-          <tr className="border-b border-gray-100 text-sm text-gray-400">
+          <tr className="border-b border-solid-gray-100 text-sm text-solid-gray-536">
             <th className="w-1/3 pb-2 text-center font-normal">曜日</th>
             <th className="w-1/3 pb-2 text-center font-normal">平均売上</th>
             <th className="w-1/3 pb-2 text-center font-normal">平均客数</th>
@@ -82,18 +83,18 @@ export default function DayOfWeekChart({ timeSeries }: DayOfWeekChartProps) {
         </thead>
         <tbody>
           {data.map((d) => (
-            <tr key={d.day} className="border-b border-gray-50">
-              <td className="py-2 text-center font-medium text-gray-500">{d.day}</td>
-              <td className="py-2 text-right tabular-nums text-gray-700">
+            <tr key={d.day} className="border-b border-solid-gray-50">
+              <td className="py-2 text-center font-medium text-solid-gray-536">{d.day}</td>
+              <td className="py-2 text-right tabular-nums text-solid-gray-700">
                 {d.avgAmount > 0 ? `${d.avgAmount.toLocaleString("ja-JP")}円` : "-"}
               </td>
-              <td className="py-2 text-right tabular-nums text-gray-700">
+              <td className="py-2 text-right tabular-nums text-solid-gray-700">
                 {d.avgQuantity > 0 ? `${d.avgQuantity.toLocaleString("ja-JP")}人` : "-"}
               </td>
             </tr>
           ))}
         </tbody>
       </table>
-    </div>
+    </section>
   );
 }

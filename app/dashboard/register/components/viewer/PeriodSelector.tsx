@@ -42,18 +42,19 @@ export default function PeriodSelector({
   onNavigate,
 }: PeriodSelectorProps) {
   return (
-    <div className="space-y-3">
+    <div className="space-y-4">
       {/* 期間タイプ切り替えボタン */}
-      <div className="flex flex-wrap gap-1">
+      <div className="flex flex-wrap gap-2" role="group" aria-label="期間タイプ">
         {PERIOD_TYPES.map((type) => (
           <button
             key={type}
             type="button"
             onClick={() => onPeriodTypeChange(type)}
-            className={`rounded-md px-3 py-1.5 text-sm font-medium transition-colors cursor-pointer active:scale-95 ${
+            aria-pressed={periodType === type}
+            className={`rounded-6 px-4 py-2.5 text-sm font-medium transition-colors cursor-pointer active:scale-95 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus-blue ${
               periodType === type
-                ? "bg-gray-900 text-white"
-                : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                ? "bg-solid-gray-900 text-white"
+                : "bg-solid-gray-50 text-solid-gray-700 hover:bg-solid-gray-100"
             }`}
           >
             {PERIOD_LABELS[type]}
@@ -62,19 +63,19 @@ export default function PeriodSelector({
       </div>
 
       {/* ナビゲーション + 期間表示 */}
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-4">
         {periodType !== "custom" && (
           <button
             type="button"
             onClick={() => onNavigate("prev")}
-            className="rounded-md bg-gray-100 px-2 py-1 text-gray-700 hover:bg-gray-200 cursor-pointer active:scale-95"
+            className="flex min-h-11 min-w-11 items-center justify-center rounded-6 bg-solid-gray-50 text-solid-gray-700 hover:bg-solid-gray-100 cursor-pointer active:scale-95 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus-blue"
             aria-label="前の期間"
           >
             &lt;
           </button>
         )}
 
-        <span className="text-sm font-medium text-gray-800">
+        <span className="text-sm font-medium text-solid-gray-800">
           {formatPeriodLabel(periodType, dateFrom, dateTo)}
         </span>
 
@@ -82,7 +83,7 @@ export default function PeriodSelector({
           <button
             type="button"
             onClick={() => onNavigate("next")}
-            className="rounded-md bg-gray-100 px-2 py-1 text-gray-700 hover:bg-gray-200 cursor-pointer active:scale-95"
+            className="flex min-h-11 min-w-11 items-center justify-center rounded-6 bg-solid-gray-50 text-solid-gray-700 hover:bg-solid-gray-100 cursor-pointer active:scale-95 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus-blue"
             aria-label="次の期間"
           >
             &gt;
@@ -97,14 +98,14 @@ export default function PeriodSelector({
             type="date"
             value={dateFrom}
             onChange={(e) => onDateFromChange(e.target.value)}
-            className="rounded-md border border-gray-300 px-3 py-1.5 text-sm"
+            className="rounded-6 border border-solid-gray-420 px-4 py-2.5 text-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus-blue"
           />
-          <span className="text-sm text-gray-500">~</span>
+          <span className="text-sm text-solid-gray-536">~</span>
           <input
             type="date"
             value={dateTo}
             onChange={(e) => onDateToChange(e.target.value)}
-            className="rounded-md border border-gray-300 px-3 py-1.5 text-sm"
+            className="rounded-6 border border-solid-gray-420 px-4 py-2.5 text-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus-blue"
           />
         </div>
       )}

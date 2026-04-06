@@ -1,6 +1,8 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
+@plugin '@digital-go-jp/tailwind-theme-plugin';
+
 :root {
   /*
    * ヘッダーの高さ
