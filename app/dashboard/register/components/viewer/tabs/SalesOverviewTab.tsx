@@ -14,11 +14,6 @@ const TopProductsDonut = dynamic(() => import("../charts/TopProductsDonut"), {
   loading: () => <div className="h-50 animate-pulse rounded-8 bg-solid-gray-50" />,
 });
 
-const DepartmentBarChart = dynamic(() => import("../charts/DepartmentBarChart"), {
-  ssr: false,
-  loading: () => <div className="h-50 animate-pulse rounded-8 bg-solid-gray-50" />,
-});
-
 interface SalesOverviewTabProps {
   data: RegisterDataResponse;
   /** Z009から取得した客数合計 */
@@ -57,8 +52,6 @@ export default function SalesOverviewTab({
         <TopProductsDonut products={topProducts} />
       </div>
 
-      {/* 部門別横棒グラフ */}
-      <DepartmentBarChart departments={data.aggregated} />
     </section>
   );
 }

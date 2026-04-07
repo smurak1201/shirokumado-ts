@@ -1,8 +1,7 @@
 "use client";
 
 import {
-  ComposedChart,
-  Bar,
+  LineChart,
   Line,
   XAxis,
   YAxis,
@@ -75,7 +74,7 @@ export default function SalesTrendChart({
     <section className="rounded-8 border border-solid-gray-200 bg-white p-4" aria-label="売上推移">
       <h3 className="mb-4 text-sm font-medium text-solid-gray-700">売上推移</h3>
       <ChartContainer config={chartConfig} className="h-75 w-full">
-        <ComposedChart data={data} margin={{ top: 5, right: 20, bottom: 5, left: 20 }}>
+        <LineChart data={data} margin={{ top: 5, right: 20, bottom: 5, left: 20 }}>
           <CartesianGrid vertical={false} />
           <XAxis dataKey="period" tickFormatter={formatXLabel} tickLine={false} axisLine={false} />
           <YAxis tickFormatter={(v: number) => `${(v / 1000).toFixed(0)}千円`} />
@@ -103,7 +102,13 @@ export default function SalesTrendChart({
             labelFormatter={formatXLabel}
           />
           <ChartLegend content={<ChartLegendContent />} />
-          <Bar dataKey="amount" fill="var(--color-amount)" radius={[4, 4, 0, 0]} />
+          <Line
+            dataKey="amount"
+            stroke="var(--color-amount)"
+            strokeWidth={2}
+            dot={{ r: 3 }}
+            activeDot={{ r: 5 }}
+          />
           {lastYearTimeSeries && (
             <Line
               dataKey="lastYearAmount"
@@ -115,7 +120,7 @@ export default function SalesTrendChart({
               connectNulls
             />
           )}
-        </ComposedChart>
+        </LineChart>
       </ChartContainer>
     </section>
   );
