@@ -206,7 +206,15 @@
 - コントラスト比: テキスト4.5:1以上、コンポーネント背景3:1以上
 - カラー: `@digital-go-jp/tailwind-theme-plugin` のトークンを使用
 - チャートカラー: DSプリミティブカラー600番台を使用（`globals.css`の`--chart-*`で定義済み）
-- border-radius: `rounded-8`(カード), `rounded-6`(ボタン/フォーム)
+- border-radius: `rounded-8`(カード), `rounded-6`(ボタン/フォーム), `rounded-4`(小要素)
+
+### UI新規作成時の必須ルール
+
+- **既存の同種コンポーネントを先に読み、パターン（色変数・余白・クラス名）を合わせること**。手順書の実装例より既存コードを優先する
+- **CSS変数は`@theme inline`経由の`--color-*`を使うこと**。`:root`の`--chart-*`はHSL値のみで色として無効
+  - `var(--color-chart-1)` ... 正しい（hsl()でラップ済み）
+  - `var(--chart-1)` ... 黒になる（`230 97% 60%`という文字列）
+- **SVGのstroke/fill属性にDSトークンのCSS変数を使う場合**: `@theme inline`に定義がない色（`success-1`等）はHEX値で直接指定する（例: `#259d63`）
 
 ## Tailwind CSS
 
