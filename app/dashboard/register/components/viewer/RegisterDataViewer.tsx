@@ -57,6 +57,7 @@ export default function RegisterDataViewer() {
     dateTo,
     machineNo,
     groupBy,
+    granularity,
     machines,
     data,
     totalCustomers,
@@ -127,6 +128,7 @@ export default function RegisterDataViewer() {
                   previousCustomers={previousCustomers}
                   topProducts={topProducts}
                   dailyTimeSeries={dailyTimeSeries}
+                  granularity={granularity}
                 />
               ) : (
                 <div className="rounded-8 border border-solid-gray-200 bg-white p-6 text-center text-sm text-solid-gray-536">
@@ -143,6 +145,9 @@ export default function RegisterDataViewer() {
                   data={data}
                   totalCustomers={totalCustomers}
                   previousCustomers={previousCustomers}
+                  dateFrom={dateFrom}
+                  dateTo={dateTo}
+                  granularity={granularity}
                 />
               ) : (
                 <div className="rounded-8 border border-solid-gray-200 bg-white p-6 text-center text-sm text-solid-gray-536">

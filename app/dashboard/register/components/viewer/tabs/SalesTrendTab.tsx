@@ -1,7 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import type { RegisterDataResponse } from "../../../types";
+import type { RegisterDataResponse, TimeSeriesEntry, Granularity } from "../../../types";
 import KpiCards from "../KpiCards";
 import DataTable from "../DataTable";
 import type { ColumnDef } from "../DataTable";
@@ -20,6 +20,78 @@ interface SalesTrendTabProps {
   data: RegisterDataResponse;
   totalCustomers: number;
   previousCustomers?: number;
+  dateFrom: string;
+  dateTo: string;
+  granularity: Granularity;
+}
+
+/** 期間内の全ポイントを生成し、データがない日は0で埋める */
+function fillTimeSeries(
+  timeSeries: TimeSeriesEntry[],
+  dateFrom: string,
+  dateTo: string,
+  granularity: Granularity
+): TimeSeriesEntry[] {
+  const dataMap = new Map(timeSeries.map((e) => [e.period, e]));
+  const periods = generatePeriods(dateFrom, dateTo, granularity);
+  return periods.map((period) => dataMap.get(period) ?? { period, totalAmount: 0, totalQuantity: 0 });
+}
+
+/** dateFrom〜dateToの範囲で粒度に応じた期間ラベルを生成 */
+function generatePeriods(dateFrom: string, dateTo: string, granularity: Granularity): string[] {
+  const periods: string[] = [];
+  const from = new Date(dateFrom);
+  const to = new Date(dateTo);
+
+  switch (granularity) {
+    case "day": {
+      const d = new Date(from);
+      while (d <= to) {
+        periods.push(d.toISOString().split("T")[0]!);
+        d.setDate(d.getDate() + 1);
+      }
+      break;
+    }
+    case "week": {
+      // 週の開始日（月曜）を起点に7日刻み
+      const d = new Date(from);
+      while (d <= to) {
+        periods.push(d.toISOString().split("T")[0]!);
+        d.setDate(d.getDate() + 7);
+      }
+      break;
+    }
+    case "month": {
+      const d = new Date(from);
+      while (d <= to) {
+        const label = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`;
+        periods.push(label);
+        d.setMonth(d.getMonth() + 1);
+      }
+      break;
+    }
+    case "year": {
+      const d = new Date(from);
+      while (d.getFullYear() <= to.getFullYear()) {
+        periods.push(String(d.getFullYear()));
+        d.setFullYear(d.getFullYear() + 1);
+      }
+      break;
+    }
+  }
+  return periods;
+}
+
+/** 前年の同じ期間のdateFrom/dateToを計算 */
+function getLastYearRange(dateFrom: string, dateTo: string): { from: string; to: string } {
+  const from = new Date(dateFrom);
+  const to = new Date(dateTo);
+  from.setFullYear(from.getFullYear() - 1);
+  to.setFullYear(to.getFullYear() - 1);
+  return {
+    from: from.toISOString().split("T")[0]!,
+    to: to.toISOString().split("T")[0]!,
+  };
 }
 
 interface TrendTableRow {
@@ -98,8 +170,26 @@ export default function SalesTrendTab({
   data,
   totalCustomers,
   previousCustomers,
+  dateFrom,
+  dateTo,
+  granularity,
 }: SalesTrendTabProps) {
-  const tableRows = buildTableRows(data);
+  // 期間全体を0埋めした時系列データ
+  const filledTimeSeries = fillTimeSeries(data.timeSeries, dateFrom, dateTo, granularity);
+
+  // 前年も同じ期間分を0埋め
+  const lastYearRange = getLastYearRange(dateFrom, dateTo);
+  const filledLastYear = data.lastYearTimeSeries
+    ? fillTimeSeries(data.lastYearTimeSeries, lastYearRange.from, lastYearRange.to, granularity)
+    : undefined;
+
+  const filledData: RegisterDataResponse = {
+    ...data,
+    timeSeries: filledTimeSeries,
+    lastYearTimeSeries: filledLastYear,
+  };
+
+  const tableRows = buildTableRows(filledData);
 
   return (
     <div className="space-y-6">
@@ -108,14 +198,16 @@ export default function SalesTrendTab({
         totalCustomers={totalCustomers}
         previousPeriod={data.previousPeriod}
         previousCustomers={previousCustomers}
+        granularity={granularity}
+        periodCount={data.timeSeries.length}
       />
 
       <SalesTrendChart
-        timeSeries={data.timeSeries}
-        lastYearTimeSeries={data.lastYearTimeSeries}
+        timeSeries={filledTimeSeries}
+        lastYearTimeSeries={filledLastYear}
       />
 
-      <CustomerTrendChart timeSeries={data.timeSeries} />
+      <CustomerTrendChart timeSeries={filledTimeSeries} />
 
       <div>
         <h3 className="mb-2 text-sm font-medium text-solid-gray-700">売上推移データ</h3>

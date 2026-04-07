@@ -1,7 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import type { RegisterDataResponse, AggregatedEntry, TimeSeriesEntry } from "../../../types";
+import type { RegisterDataResponse, AggregatedEntry, TimeSeriesEntry, Granularity } from "../../../types";
 import KpiCards from "../KpiCards";
 
 const DayOfWeekChart = dynamic(() => import("../charts/DayOfWeekChart"), {
@@ -28,6 +28,7 @@ interface SalesOverviewTabProps {
   topProducts: AggregatedEntry[];
   /** 曜日別チャート用の日別timeSeries */
   dailyTimeSeries: TimeSeriesEntry[];
+  granularity?: Granularity;
 }
 
 export default function SalesOverviewTab({
@@ -36,6 +37,7 @@ export default function SalesOverviewTab({
   previousCustomers,
   topProducts,
   dailyTimeSeries,
+  granularity,
 }: SalesOverviewTabProps) {
   return (
     <section className="space-y-6" aria-label="売上概要">
@@ -45,6 +47,8 @@ export default function SalesOverviewTab({
         totalCustomers={totalCustomers}
         previousPeriod={data.previousPeriod}
         previousCustomers={previousCustomers}
+        granularity={granularity}
+        periodCount={data.timeSeries.length}
       />
 
       {/* グラフエリア */}

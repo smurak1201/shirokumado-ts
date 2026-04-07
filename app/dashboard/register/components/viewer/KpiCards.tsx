@@ -1,6 +1,6 @@
 "use client";
 
-import type { DataSummary } from "../../types";
+import type { DataSummary, Granularity } from "../../types";
 
 interface KpiCardsProps {
   summary: DataSummary;
@@ -8,6 +8,10 @@ interface KpiCardsProps {
   totalCustomers: number;
   previousPeriod?: { totalAmount: number; totalQuantity: number };
   previousCustomers?: number;
+  /** 平均ラベルの切り替えに使用（省略時は「日平均」） */
+  granularity?: Granularity;
+  /** timeSeriesのエントリ数（客数平均の計算に使用） */
+  periodCount?: number;
 }
 
 /** 金額をカンマ区切りでフォーマット */
@@ -30,11 +34,20 @@ function ChangeIndicator({ rate }: { rate: number | null }) {
   return <span className={`text-sm font-bold ${color}`}>前年比 {arrow}{rate}%</span>;
 }
 
+const AVG_LABELS: Record<Granularity, string> = {
+  day: "日平均",
+  week: "週平均",
+  month: "月平均",
+  year: "年平均",
+};
+
 export default function KpiCards({
   summary,
   totalCustomers,
   previousPeriod,
   previousCustomers,
+  granularity = "day",
+  periodCount = 1,
 }: KpiCardsProps) {
   const avgUnitPrice = totalCustomers > 0 ? Math.round(summary.totalAmount / totalCustomers) : 0;
   const prevAvgUnitPrice =
@@ -49,7 +62,7 @@ export default function KpiCards({
       change: previousPeriod
         ? calcChangeRate(summary.totalAmount, previousPeriod.totalAmount)
         : null,
-      sub: `日平均: ${formatAmount(summary.avgAmount)}円`,
+      sub: `${AVG_LABELS[granularity]}: ${formatAmount(summary.avgAmount)}円`,
     },
     {
       label: "客数合計",
@@ -57,7 +70,7 @@ export default function KpiCards({
       change: previousCustomers
         ? calcChangeRate(totalCustomers, previousCustomers)
         : null,
-      sub: `日平均: ${formatAmount(summary.avgQuantity)}人`,
+      sub: `${AVG_LABELS[granularity]}: ${formatAmount(Math.round(totalCustomers / periodCount))}人`,
     },
     {
       label: "客単価",
