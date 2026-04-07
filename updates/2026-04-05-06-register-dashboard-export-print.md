@@ -297,32 +297,20 @@ importの追加:
 import PrintButton from "./PrintButton";
 ```
 
-フィルタバーの最上位divにflexレイアウトを追加し、右端にPrintButtonを配置する:
+フィルタバーのdivにPrintButtonを追加する:
 
 ```tsx
-// 変更前（フィルタバー内の最上位div）
-      <div className="rounded-lg border border-gray-200 bg-white p-4">
-        <div className="space-y-3">
-          <PeriodSelector
-
-// 変更後（flexで囲み、右端にPrintButton��配置）
-      <div className="rounded-lg border border-gray-200 bg-white p-4">
-        <div className="flex items-start justify-between gap-2">
-          <div className="flex-1 space-y-3">
-            <PeriodSelector
-```
-
-フィルタバーの閉じタグの前にPrintButtonを追加:
-
-```tsx
-// 変更前（フィルタバー内の設定ボタン群やPeriodPresetsの閉じタグの後）
-        </div>
+// 変更前
+      <div className="flex flex-wrap items-center gap-x-3 gap-y-3 rounded-8 border border-solid-gray-200 bg-white p-4" aria-label="データフィルター">
+        <PeriodSelector ... />
+        <MachineFilter ... />
       </div>
 
-// 変更後（flex-1のdivを閉じた後にPrintButtonを追加）
-          </div>
-          <PrintButton />
-        </div>
+// 変更後（末尾にPrintButtonを追加）
+      <div className="flex flex-wrap items-center gap-x-3 gap-y-3 rounded-8 border border-solid-gray-200 bg-white p-4" aria-label="データフィルター">
+        <PeriodSelector ... />
+        <MachineFilter ... />
+        <PrintButton />
       </div>
 ```
 
@@ -331,45 +319,16 @@ import PrintButton from "./PrintButton";
 importの追加:
 
 ```tsx
-// 変更前
-import DataTable from "../DataTable";
-import type { ColumnDef } from "../DataTable";
-
-// 変更後
+// 既存のimport文の末尾に追加
 import DataTable from "../DataTable";
 import type { ColumnDef } from "../DataTable";
 import ExportButton from "../ExportButton";
 ```
 
-部門別テーブルの見出しの横にExportButtonを配置:
+`getToday`関数とカラム定義を追加（コンポーネント関数の前に配置）:
 
 ```tsx
-// 変更前
-      {/* 部門別テーブル */}
-      <div>
-        <h3 className="mb-2 text-sm font-medium text-gray-700">部門別売上合計</h3>
-        <DataTable columns={aggregatedColumns} data={data.aggregated} />
-      </div>
-
-// 変更後
-      {/* 部門別テーブル */}
-      <div>
-        <div className="mb-2 flex items-center justify-between">
-          <h3 className="text-sm font-medium text-gray-700">部門別売上合計</h3>
-          <ExportButton
-            data={data.aggregated}
-            columns={aggregatedColumns}
-            fileName={`売上概要_部門別売上合計_${getToday()}`}
-          />
-        </div>
-        <DataTable columns={aggregatedColumns} data={data.aggregated} />
-      </div>
-```
-
-`getToday`関数はExportButtonと同じ日付フォーマットを使用する。SalesOverviewTab内にヘルパー関数を追加する:
-
-```tsx
-// aggregatedColumnsの定義の前に追加
+// SalesOverviewTab関数の前に追加
 /** 現在日付をYYYY-MM-DD形式で返す */
 function getToday(): string {
   const now = new Date();
@@ -378,6 +337,49 @@ function getToday(): string {
   const d = String(now.getDate()).padStart(2, "0");
   return `${y}-${m}-${d}`;
 }
+
+const aggregatedColumns: ColumnDef<AggregatedEntry>[] = [
+  { key: "itemName", label: "項目名" },
+  {
+    key: "totalQuantity",
+    label: "数量",
+    align: "right",
+    format: (v) => (v as number).toLocaleString("ja-JP"),
+  },
+  {
+    key: "totalAmount",
+    label: "金額",
+    align: "right",
+    format: (v) => `${(v as number).toLocaleString("ja-JP")}円`,
+  },
+];
+```
+
+DepartmentBarChartの下にExportButton付き部門別テーブルを追加:
+
+```tsx
+// 変更前
+      {/* 部門別横棒グラフ */}
+      <DepartmentBarChart departments={data.aggregated} />
+    </section>
+
+// 変更後
+      {/* 部門別横棒グラフ */}
+      <DepartmentBarChart departments={data.aggregated} />
+
+      {/* 部門別テーブル */}
+      <div>
+        <div className="mb-2 flex items-center justify-between">
+          <h3 className="text-sm font-medium text-solid-gray-700">部門別売上合計</h3>
+          <ExportButton
+            data={data.aggregated}
+            columns={aggregatedColumns}
+            fileName={`売上概要_部門別売上合計_${getToday()}`}
+          />
+        </div>
+        <DataTable columns={aggregatedColumns} data={data.aggregated} />
+      </div>
+    </section>
 ```
 
 <details>
@@ -388,21 +390,25 @@ function getToday(): string {
 "use client";
 
 import dynamic from "next/dynamic";
-import type { RegisterDataResponse } from "../../../types";
+import type { RegisterDataResponse, AggregatedEntry, TimeSeriesEntry, Granularity } from "../../../types";
 import KpiCards from "../KpiCards";
 import DataTable from "../DataTable";
 import type { ColumnDef } from "../DataTable";
 import ExportButton from "../ExportButton";
-import type { AggregatedEntry } from "../../../types";
 
 const DayOfWeekChart = dynamic(() => import("../charts/DayOfWeekChart"), {
   ssr: false,
-  loading: () => <div className="h-62.5 animate-pulse rounded-lg bg-gray-100" />,
+  loading: () => <div className="h-62.5 animate-pulse rounded-8 bg-solid-gray-50" />,
 });
 
-const SalesBreakdownDonut = dynamic(() => import("../charts/SalesBreakdownDonut"), {
+const TopProductsDonut = dynamic(() => import("../charts/TopProductsDonut"), {
   ssr: false,
-  loading: () => <div className="h-75 animate-pulse rounded-lg bg-gray-100" />,
+  loading: () => <div className="h-50 animate-pulse rounded-8 bg-solid-gray-50" />,
+});
+
+const DepartmentBarChart = dynamic(() => import("../charts/DepartmentBarChart"), {
+  ssr: false,
+  loading: () => <div className="h-50 animate-pulse rounded-8 bg-solid-gray-50" />,
 });
 
 interface SalesOverviewTabProps {
@@ -410,6 +416,11 @@ interface SalesOverviewTabProps {
   /** Z009から取得した客数合計 */
   totalCustomers: number;
   previousCustomers?: number;
+  /** Z004から取得した上位10商品 */
+  topProducts: AggregatedEntry[];
+  /** 曜日別チャート用の日別timeSeries */
+  dailyTimeSeries: TimeSeriesEntry[];
+  granularity?: Granularity;
 }
 
 /** 現在日付をYYYY-MM-DD形式で返す */
@@ -441,30 +452,35 @@ export default function SalesOverviewTab({
   data,
   totalCustomers,
   previousCustomers,
+  topProducts,
+  dailyTimeSeries,
+  granularity,
 }: SalesOverviewTabProps) {
   return (
-    <div className="space-y-6">
+    <section className="space-y-6" aria-label="売上概要">
       {/* KPIカード */}
       <KpiCards
         summary={data.summary}
         totalCustomers={totalCustomers}
         previousPeriod={data.previousPeriod}
         previousCustomers={previousCustomers}
+        granularity={granularity}
+        periodCount={data.timeSeries.length}
       />
 
       {/* グラフエリア */}
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-        <DayOfWeekChart timeSeries={data.timeSeries} />
-        <SalesBreakdownDonut
-          aggregated={data.aggregated}
-          totalAmount={data.summary.totalAmount}
-        />
+        <DayOfWeekChart timeSeries={dailyTimeSeries} />
+        <TopProductsDonut products={topProducts} />
       </div>
+
+      {/* 部門別横棒グラフ */}
+      <DepartmentBarChart departments={data.aggregated} />
 
       {/* 部門別テーブル */}
       <div>
         <div className="mb-2 flex items-center justify-between">
-          <h3 className="text-sm font-medium text-gray-700">部門別売上合計</h3>
+          <h3 className="text-sm font-medium text-solid-gray-700">部門別売上合計</h3>
           <ExportButton
             data={data.aggregated}
             columns={aggregatedColumns}
@@ -473,7 +489,7 @@ export default function SalesOverviewTab({
         </div>
         <DataTable columns={aggregatedColumns} data={data.aggregated} />
       </div>
-    </div>
+    </section>
   );
 }
 ```
@@ -526,6 +542,8 @@ export default function SalesOverviewTab({
 - `RegisterDataViewer.tsx`の変更は差分形式で記述しており、仕様書03/04/05で追加されたimport文やタブコンポーネントはそのまま維持すること
 
 ### 注意事項
+
+- 実装例は仕様書03で行った追加変更（DSトークン、フィルタバー構造、SalesOverviewTab構造等）を反映済み
 
 - PDF生成ライブラリ（jsPDF等）は追加しない。印刷ダイアログからPDF保存する方式とする
 - CSVエクスポートはクライアント側で完結する。APIエンドポイントは不要

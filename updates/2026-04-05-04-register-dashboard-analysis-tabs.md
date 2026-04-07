@@ -746,8 +746,8 @@ export default function HourlyChart({ hourly }: HourlyChartProps) {
   if (data.length === 0) return null;
 
   return (
-    <div className="rounded-lg border border-gray-200 bg-white p-4">
-      <h3 className="mb-3 text-sm font-medium text-gray-700">
+    <div className="rounded-8 border border-solid-gray-200 bg-white p-4">
+      <h3 className="mb-3 text-sm font-medium text-solid-gray-700">
         時間帯別 売上・客数（期間内平均）
       </h3>
       <ChartContainer config={chartConfig} className="h-75 w-full">
@@ -766,11 +766,24 @@ export default function HourlyChart({ hourly }: HourlyChartProps) {
           <ChartTooltip
             content={
               <ChartTooltipContent
-                formatter={(value, name) =>
-                  name === "売上"
-                    ? `${Number(value).toLocaleString("ja-JP")}円`
-                    : `${Number(value).toLocaleString("ja-JP")}人`
-                }
+                formatter={(value, name, item) => (
+                  <>
+                    <div
+                      className="h-2.5 w-2.5 shrink-0 rounded-xs"
+                      style={{ backgroundColor: (item as { payload?: { fill?: string }; color?: string }).payload?.fill || (item as { color?: string }).color }}
+                    />
+                    <div className="flex flex-1 items-center justify-between gap-2 leading-none">
+                      <span className="text-muted-foreground">
+                        {chartConfig[name as keyof typeof chartConfig]?.label ?? name}
+                      </span>
+                      <span className="font-mono font-medium tabular-nums text-foreground">
+                        {name === "売上"
+                          ? `${Number(value).toLocaleString("ja-JP")}円`
+                          : `${Number(value).toLocaleString("ja-JP")}人`}
+                      </span>
+                    </div>
+                  </>
+                )}
               />
             }
           />
@@ -811,7 +824,7 @@ const DAY_LABELS = ["日", "月", "火", "水", "木", "金", "土"];
 
 /** 金額に応じた背景色クラスを返す（濃さ5段階） */
 function getIntensityClass(value: number, maxValue: number): string {
-  if (maxValue === 0 || value === 0) return "bg-gray-50";
+  if (maxValue === 0 || value === 0) return "bg-solid-gray-50";
   const ratio = value / maxValue;
   if (ratio < 0.2) return "bg-indigo-100";
   if (ratio < 0.4) return "bg-indigo-200";
@@ -836,8 +849,8 @@ export default function HourlyHeatmap({ heatmap }: HourlyHeatmapProps) {
   }
 
   return (
-    <div className="rounded-lg border border-gray-200 bg-white p-4">
-      <h3 className="mb-3 text-sm font-medium text-gray-700">
+    <div className="rounded-8 border border-solid-gray-200 bg-white p-4">
+      <h3 className="mb-3 text-sm font-medium text-solid-gray-700">
         曜日 x 時間帯ヒートマップ（売上）
       </h3>
       <div className="overflow-x-auto">
@@ -847,7 +860,7 @@ export default function HourlyHeatmap({ heatmap }: HourlyHeatmapProps) {
           {timeSlots.map((time) => (
             <div
               key={time}
-              className="p-1 text-center text-xs text-gray-500"
+              className="p-1 text-center text-xs text-solid-gray-536"
             >
               {time}
             </div>
@@ -857,7 +870,7 @@ export default function HourlyHeatmap({ heatmap }: HourlyHeatmapProps) {
           {DAY_LABELS.map((dayLabel, dayIndex) => (
             <Fragment key={dayIndex}>
               <div
-                className="flex items-center p-1 text-xs font-medium text-gray-600"
+                className="flex items-center p-1 text-xs font-medium text-solid-gray-600"
               >
                 {dayLabel}
               </div>
@@ -879,10 +892,10 @@ export default function HourlyHeatmap({ heatmap }: HourlyHeatmapProps) {
       </div>
 
       {/* 凡例 */}
-      <div className="mt-3 flex items-center gap-2 text-xs text-gray-500">
+      <div className="mt-3 flex items-center gap-2 text-xs text-solid-gray-536">
         <span>低</span>
         <div className="flex gap-0.5">
-          <div className="h-4 w-4 rounded bg-gray-50" />
+          <div className="h-4 w-4 rounded bg-solid-gray-50" />
           <div className="h-4 w-4 rounded bg-indigo-100" />
           <div className="h-4 w-4 rounded bg-indigo-200" />
           <div className="h-4 w-4 rounded bg-indigo-300" />
@@ -914,12 +927,12 @@ import type { HourlyAnalysisResponse } from "../../../types";
 
 const HourlyChart = dynamic(() => import("../charts/HourlyChart"), {
   ssr: false,
-  loading: () => <div className="h-75 animate-pulse rounded-lg bg-gray-100" />,
+  loading: () => <div className="h-75 animate-pulse rounded-8 bg-solid-gray-100" />,
 });
 
 const HourlyHeatmap = dynamic(() => import("../charts/HourlyHeatmap"), {
   ssr: false,
-  loading: () => <div className="h-75 animate-pulse rounded-lg bg-gray-100" />,
+  loading: () => <div className="h-75 animate-pulse rounded-8 bg-solid-gray-100" />,
 });
 
 interface HourlyAnalysisTabProps {
@@ -964,14 +977,14 @@ export default function HourlyAnalysisTab({
   if (isLoading) {
     return (
       <div className="flex items-center justify-center py-12">
-        <div className="text-sm text-gray-400">読み込み中...</div>
+        <div className="text-sm text-solid-gray-420">読み込み中...</div>
       </div>
     );
   }
 
   if (!data) {
     return (
-      <div className="rounded-lg border border-gray-200 bg-white p-6 text-center text-sm text-gray-400">
+      <div className="rounded-8 border border-solid-gray-200 bg-white p-6 text-center text-sm text-solid-gray-420">
         データがありません
       </div>
     );
@@ -1060,8 +1073,8 @@ export default function ProductParetoChart({ products }: ProductParetoChartProps
   }));
 
   return (
-    <div className="rounded-lg border border-gray-200 bg-white p-4">
-      <h3 className="mb-3 text-sm font-medium text-gray-700">
+    <div className="rounded-8 border border-solid-gray-200 bg-white p-4">
+      <h3 className="mb-3 text-sm font-medium text-solid-gray-700">
         ABC分析（売上TOP10 パレート図）
       </h3>
       <ChartContainer config={chartConfig} className="h-87.5 w-full">
@@ -1087,11 +1100,24 @@ export default function ProductParetoChart({ products }: ProductParetoChartProps
           <ChartTooltip
             content={
               <ChartTooltipContent
-                formatter={(value, name) =>
-                  name === "売上"
-                    ? `${Number(value).toLocaleString("ja-JP")}円`
-                    : `${value}%`
-                }
+                formatter={(value, name, item) => (
+                  <>
+                    <div
+                      className="h-2.5 w-2.5 shrink-0 rounded-xs"
+                      style={{ backgroundColor: (item as { payload?: { fill?: string }; color?: string }).payload?.fill || (item as { color?: string }).color }}
+                    />
+                    <div className="flex flex-1 items-center justify-between gap-2 leading-none">
+                      <span className="text-muted-foreground">
+                        {chartConfig[name as keyof typeof chartConfig]?.label ?? name}
+                      </span>
+                      <span className="font-mono font-medium tabular-nums text-foreground">
+                        {name === "売上"
+                          ? `${Number(value).toLocaleString("ja-JP")}円`
+                          : `${value}%`}
+                      </span>
+                    </div>
+                  </>
+                )}
                 labelFormatter={(label, payload) => {
                   const item = payload?.[0]?.payload;
                   return item?.fullName ?? label;
@@ -1150,7 +1176,7 @@ import type { ColumnDef } from "../DataTable";
 
 const ProductParetoChart = dynamic(() => import("../charts/ProductParetoChart"), {
   ssr: false,
-  loading: () => <div className="h-87.5 animate-pulse rounded-lg bg-gray-100" />,
+  loading: () => <div className="h-87.5 animate-pulse rounded-8 bg-solid-gray-100" />,
 });
 
 interface ProductAnalysisTabProps {
@@ -1219,14 +1245,14 @@ export default function ProductAnalysisTab({
   if (isLoading) {
     return (
       <div className="flex items-center justify-center py-12">
-        <div className="text-sm text-gray-400">読み込み中...</div>
+        <div className="text-sm text-solid-gray-420">読み込み中...</div>
       </div>
     );
   }
 
   if (!data) {
     return (
-      <div className="rounded-lg border border-gray-200 bg-white p-6 text-center text-sm text-gray-400">
+      <div className="rounded-8 border border-solid-gray-200 bg-white p-6 text-center text-sm text-solid-gray-420">
         データがありません
       </div>
     );
@@ -1237,7 +1263,7 @@ export default function ProductAnalysisTab({
       <ProductParetoChart products={data.products} />
 
       <div>
-        <h3 className="mb-2 text-sm font-medium text-gray-700">商品一覧（ABC分析）</h3>
+        <h3 className="mb-2 text-sm font-medium text-solid-gray-700">商品一覧（ABC分析）</h3>
         <DataTable columns={productColumns} data={data.products} />
       </div>
     </div>
@@ -1318,8 +1344,8 @@ export default function DepartmentDonutChart({
   ) satisfies ChartConfig;
 
   return (
-    <div className="rounded-lg border border-gray-200 bg-white p-4">
-      <h3 className="mb-3 text-sm font-medium text-gray-700">部門別売上構成</h3>
+    <div className="rounded-8 border border-solid-gray-200 bg-white p-4">
+      <h3 className="mb-3 text-sm font-medium text-solid-gray-700">部門別売上構成</h3>
       <ChartContainer config={chartConfig} className="h-75 w-full">
         <PieChart>
           <Pie
@@ -1353,7 +1379,22 @@ export default function DepartmentDonutChart({
           <ChartTooltip
             content={
               <ChartTooltipContent
-                formatter={(value) => `${Number(value).toLocaleString("ja-JP")}円`}
+                formatter={(value, name, item) => (
+                  <>
+                    <div
+                      className="h-2.5 w-2.5 shrink-0 rounded-xs"
+                      style={{ backgroundColor: (item as { payload?: { fill?: string }; color?: string }).payload?.fill || (item as { color?: string }).color }}
+                    />
+                    <div className="flex flex-1 items-center justify-between gap-2 leading-none">
+                      <span className="text-muted-foreground">
+                        {chartConfig[name as keyof typeof chartConfig]?.label ?? name}
+                      </span>
+                      <span className="font-mono font-medium tabular-nums text-foreground">
+                        {Number(value).toLocaleString("ja-JP")}円
+                      </span>
+                    </div>
+                  </>
+                )}
               />
             }
           />
@@ -1414,8 +1455,8 @@ export default function DepartmentTrendChart({
   ) satisfies ChartConfig;
 
   return (
-    <div className="rounded-lg border border-gray-200 bg-white p-4">
-      <h3 className="mb-3 text-sm font-medium text-gray-700">部門別推移（積み上げ）</h3>
+    <div className="rounded-8 border border-solid-gray-200 bg-white p-4">
+      <h3 className="mb-3 text-sm font-medium text-solid-gray-700">部門別推移（積み上げ）</h3>
       <ChartContainer config={chartConfig} className="h-75 w-full">
         <BarChart data={trend} margin={{ top: 5, right: 20, bottom: 5, left: 20 }}>
           <CartesianGrid vertical={false} />
@@ -1424,7 +1465,22 @@ export default function DepartmentTrendChart({
           <ChartTooltip
             content={
               <ChartTooltipContent
-                formatter={(value) => `${Number(value).toLocaleString("ja-JP")}円`}
+                formatter={(value, name, item) => (
+                  <>
+                    <div
+                      className="h-2.5 w-2.5 shrink-0 rounded-xs"
+                      style={{ backgroundColor: (item as { payload?: { fill?: string }; color?: string }).payload?.fill || (item as { color?: string }).color }}
+                    />
+                    <div className="flex flex-1 items-center justify-between gap-2 leading-none">
+                      <span className="text-muted-foreground">
+                        {chartConfig[name as keyof typeof chartConfig]?.label ?? name}
+                      </span>
+                      <span className="font-mono font-medium tabular-nums text-foreground">
+                        {Number(value).toLocaleString("ja-JP")}円
+                      </span>
+                    </div>
+                  </>
+                )}
               />
             }
           />
@@ -1464,12 +1520,12 @@ import type { ColumnDef } from "../DataTable";
 
 const DepartmentDonutChart = dynamic(() => import("../charts/DepartmentDonutChart"), {
   ssr: false,
-  loading: () => <div className="h-75 animate-pulse rounded-lg bg-gray-100" />,
+  loading: () => <div className="h-75 animate-pulse rounded-8 bg-solid-gray-100" />,
 });
 
 const DepartmentTrendChart = dynamic(() => import("../charts/DepartmentTrendChart"), {
   ssr: false,
-  loading: () => <div className="h-75 animate-pulse rounded-lg bg-gray-100" />,
+  loading: () => <div className="h-75 animate-pulse rounded-8 bg-solid-gray-100" />,
 });
 
 interface DepartmentAnalysisTabProps {
@@ -1533,14 +1589,14 @@ export default function DepartmentAnalysisTab({
   if (isLoading) {
     return (
       <div className="flex items-center justify-center py-12">
-        <div className="text-sm text-gray-400">読み込み中...</div>
+        <div className="text-sm text-solid-gray-420">読み込み中...</div>
       </div>
     );
   }
 
   if (!data) {
     return (
-      <div className="rounded-lg border border-gray-200 bg-white p-6 text-center text-sm text-gray-400">
+      <div className="rounded-8 border border-solid-gray-200 bg-white p-6 text-center text-sm text-solid-gray-420">
         データがありません
       </div>
     );
@@ -1562,7 +1618,7 @@ export default function DepartmentAnalysisTab({
       </div>
 
       <div>
-        <h3 className="mb-2 text-sm font-medium text-gray-700">部門別集計</h3>
+        <h3 className="mb-2 text-sm font-medium text-solid-gray-700">部門別集計</h3>
         <DataTable columns={departmentColumns} data={data.departments} />
       </div>
     </div>
@@ -1627,8 +1683,8 @@ export default function TransactionChart({ timeSeries }: TransactionChartProps) 
   }));
 
   return (
-    <div className="rounded-lg border border-gray-200 bg-white p-4">
-      <h3 className="mb-3 text-sm font-medium text-gray-700">訂正金額の推移</h3>
+    <div className="rounded-8 border border-solid-gray-200 bg-white p-4">
+      <h3 className="mb-3 text-sm font-medium text-solid-gray-700">訂正金額の推移</h3>
       <ChartContainer config={chartConfig} className="h-62.5 w-full">
         <BarChart data={data} margin={{ top: 5, right: 20, bottom: 5, left: 20 }}>
           <CartesianGrid vertical={false} />
@@ -1637,7 +1693,22 @@ export default function TransactionChart({ timeSeries }: TransactionChartProps) 
           <ChartTooltip
             content={
               <ChartTooltipContent
-                formatter={(value) => `${Number(value).toLocaleString("ja-JP")}円`}
+                formatter={(value, name, item) => (
+                  <>
+                    <div
+                      className="h-2.5 w-2.5 shrink-0 rounded-xs"
+                      style={{ backgroundColor: (item as { payload?: { fill?: string }; color?: string }).payload?.fill || (item as { color?: string }).color }}
+                    />
+                    <div className="flex flex-1 items-center justify-between gap-2 leading-none">
+                      <span className="text-muted-foreground">
+                        {chartConfig[name as keyof typeof chartConfig]?.label ?? name}
+                      </span>
+                      <span className="font-mono font-medium tabular-nums text-foreground">
+                        {Number(value).toLocaleString("ja-JP")}円
+                      </span>
+                    </div>
+                  </>
+                )}
               />
             }
           />
@@ -1669,7 +1740,7 @@ import type { ColumnDef } from "../DataTable";
 
 const TransactionChart = dynamic(() => import("../charts/TransactionChart"), {
   ssr: false,
-  loading: () => <div className="h-62.5 animate-pulse rounded-lg bg-gray-100" />,
+  loading: () => <div className="h-62.5 animate-pulse rounded-8 bg-solid-gray-100" />,
 });
 
 interface TransactionTabProps {
@@ -1733,14 +1804,14 @@ export default function TransactionTab({
   if (isLoading) {
     return (
       <div className="flex items-center justify-center py-12">
-        <div className="text-sm text-gray-400">読み込み中...</div>
+        <div className="text-sm text-solid-gray-420">読み込み中...</div>
       </div>
     );
   }
 
   if (!data) {
     return (
-      <div className="rounded-lg border border-gray-200 bg-white p-6 text-center text-sm text-gray-400">
+      <div className="rounded-8 border border-solid-gray-200 bg-white p-6 text-center text-sm text-solid-gray-420">
         データがありません
       </div>
     );
@@ -1750,14 +1821,14 @@ export default function TransactionTab({
     <div className="space-y-6">
       {/* KPIカード: 訂正合計 */}
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-        <div className="rounded-lg border border-gray-200 bg-white p-4">
-          <div className="mb-1 text-xs text-gray-500">訂正合計件数</div>
+        <div className="rounded-8 border border-solid-gray-200 bg-white p-4">
+          <div className="mb-1 text-xs text-solid-gray-536">訂正合計件数</div>
           <div className="text-xl font-bold text-gray-900">
             {data.correctionCount.toLocaleString("ja-JP")}件
           </div>
         </div>
-        <div className="rounded-lg border border-gray-200 bg-white p-4">
-          <div className="mb-1 text-xs text-gray-500">訂正合計金額</div>
+        <div className="rounded-8 border border-solid-gray-200 bg-white p-4">
+          <div className="mb-1 text-xs text-solid-gray-536">訂正合計金額</div>
           <div className="text-xl font-bold text-gray-900">
             {data.correctionAmount.toLocaleString("ja-JP")}円
           </div>
@@ -1769,7 +1840,7 @@ export default function TransactionTab({
 
       {/* 取引キー全件テーブル（「訂正」を含む行をハイライト） */}
       <div>
-        <h3 className="mb-2 text-sm font-medium text-gray-700">取引キー集計</h3>
+        <h3 className="mb-2 text-sm font-medium text-solid-gray-700">取引キー集計</h3>
         <DataTable
           columns={transactionColumns}
           data={data.transactions}
@@ -1934,11 +2005,11 @@ export default function RawDataTab({
     <div className="space-y-4">
       {/* 種別セレクトボックス */}
       <div className="flex items-center gap-3">
-        <label className="text-sm font-medium text-gray-700">データ種別:</label>
+        <label className="text-sm font-medium text-solid-gray-700">データ種別:</label>
         <select
           value={selectedType}
           onChange={(e) => setSelectedType(e.target.value as RegisterDataType)}
-          className="rounded-md border border-gray-300 px-3 py-1.5 text-sm"
+          className="rounded-6 border border-solid-gray-420 px-3 py-1.5 text-sm"
         >
           {DATA_TYPE_OPTIONS.map((opt) => (
             <option key={opt.value} value={opt.value}>
@@ -1951,14 +2022,14 @@ export default function RawDataTab({
       {/* ローディング */}
       {isLoading && (
         <div className="flex items-center justify-center py-12">
-          <div className="text-sm text-gray-400">読み込み中...</div>
+          <div className="text-sm text-solid-gray-420">読み込み中...</div>
         </div>
       )}
 
       {/* データテーブル */}
       {!isLoading && data && (
         <div>
-          <div className="mb-2 text-xs text-gray-500">{data.rows.length}件</div>
+          <div className="mb-2 text-xs text-solid-gray-536">{data.rows.length}件</div>
           <DataTable columns={columns} data={data.rows} />
         </div>
       )}
@@ -2005,7 +2076,7 @@ import RawDataTab from "./tabs/RawDataTab";
 ```tsx
 // 変更前
           <TabsContent value="hourly">
-            <div className="rounded-lg border border-gray-200 bg-white p-6 text-center text-gray-500">
+            <div className="rounded-8 border border-solid-gray-200 bg-white p-6 text-center text-solid-gray-536">
               時間帯分析（準備中）
             </div>
           </TabsContent>
@@ -2025,7 +2096,7 @@ import RawDataTab from "./tabs/RawDataTab";
 ```tsx
 // 変更前
           <TabsContent value="product">
-            <div className="rounded-lg border border-gray-200 bg-white p-6 text-center text-gray-500">
+            <div className="rounded-8 border border-solid-gray-200 bg-white p-6 text-center text-solid-gray-536">
               商品分析（準備中）
             </div>
           </TabsContent>
@@ -2045,7 +2116,7 @@ import RawDataTab from "./tabs/RawDataTab";
 ```tsx
 // 変更前
           <TabsContent value="department">
-            <div className="rounded-lg border border-gray-200 bg-white p-6 text-center text-gray-500">
+            <div className="rounded-8 border border-solid-gray-200 bg-white p-6 text-center text-solid-gray-536">
               部門分析（準備中）
             </div>
           </TabsContent>
@@ -2066,7 +2137,7 @@ import RawDataTab from "./tabs/RawDataTab";
 ```tsx
 // 変更前
           <TabsContent value="transaction">
-            <div className="rounded-lg border border-gray-200 bg-white p-6 text-center text-gray-500">
+            <div className="rounded-8 border border-solid-gray-200 bg-white p-6 text-center text-solid-gray-536">
               取引管理（準備中）
             </div>
           </TabsContent>
@@ -2087,7 +2158,7 @@ import RawDataTab from "./tabs/RawDataTab";
 ```tsx
 // 変更前
           <TabsContent value="raw">
-            <div className="rounded-lg border border-gray-200 bg-white p-6 text-center text-gray-500">
+            <div className="rounded-8 border border-solid-gray-200 bg-white p-6 text-center text-solid-gray-536">
               明細データ（準備中）
             </div>
           </TabsContent>
@@ -2102,46 +2173,7 @@ import RawDataTab from "./tabs/RawDataTab";
           </TabsContent>
 ```
 
-`useRegisterData`フックから`granularity`も取得する必要がある。既に返り値に含まれているため、分割代入に追加する:
-
-```tsx
-// 変更前
-  const {
-    periodType,
-    dateFrom,
-    dateTo,
-    machineNo,
-    groupBy,
-    machines,
-    data,
-    isLoading,
-    setPeriodType,
-    setDateFrom,
-    setDateTo,
-    setMachineNo,
-    setGroupBy,
-    navigatePeriod,
-  } = useRegisterData("Z001");
-
-// 変更後
-  const {
-    periodType,
-    dateFrom,
-    dateTo,
-    machineNo,
-    groupBy,
-    granularity,
-    machines,
-    data,
-    isLoading,
-    setPeriodType,
-    setDateFrom,
-    setDateTo,
-    setMachineNo,
-    setGroupBy,
-    navigatePeriod,
-  } = useRegisterData("Z001");
-```
+**注**: `useRegisterData`フックからの`granularity`のdestructureは仕様書03で対応済み。追加変更は不要。
 
 ---
 
@@ -2197,6 +2229,7 @@ import RawDataTab from "./tabs/RawDataTab";
 
 ### 注意事項
 
+- 実装例は仕様書03で行った追加変更（DSトークン、withLoadingパターン、ツールチップ改善等）を反映済み
 - 仕様書02（基盤 + 売上概要タブ）および仕様書03（売上推移タブ）が完了していることが前提
 - 既存の取り込み機能（`RegisterImportPage.tsx`, `FolderSelector.tsx`, `ImportProgress.tsx`）は変更しないこと
 - 既存のAPIルート（`/api/register/diff`, `/api/register/import`）は変更しないこと

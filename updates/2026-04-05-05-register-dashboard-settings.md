@@ -300,10 +300,10 @@ export default function PeriodPresets({
         <button
           key={preset.id}
           type="button"
-          className="inline-flex items-center gap-1 rounded-full border border-gray-200 bg-white px-3 py-1 text-sm hover:bg-gray-50"
+          className="inline-flex items-center gap-1 rounded-full border border-solid-gray-200 bg-white px-3 py-1 text-sm hover:bg-solid-gray-50"
           onClick={() => handleApply(preset.dateFrom, preset.dateTo)}
         >
-          <Calendar className="h-3 w-3 text-gray-400" />
+          <Calendar className="h-3 w-3 text-solid-gray-420" />
           <span>{preset.name}</span>
           <span
             role="button"
@@ -321,7 +321,7 @@ export default function PeriodPresets({
             }}
             aria-label={`${preset.name}を削除`}
           >
-            <X className="h-3 w-3 text-gray-400" />
+            <X className="h-3 w-3 text-solid-gray-420" />
           </span>
         </button>
       ))}
@@ -347,7 +347,7 @@ export default function PeriodPresets({
                 placeholder="例: 夏祭りイベント"
               />
             </div>
-            <div className="text-sm text-gray-500">
+            <div className="text-sm text-solid-gray-536">
               保存する期間: {currentDateFrom} ~ {currentDateTo}
             </div>
             <Button onClick={handleSave} className="w-full">
@@ -712,7 +712,7 @@ export default function MachineNameSettings({
                   id="machine-no"
                   value={newMachineNo}
                   onChange={(e) => setNewMachineNo(e.target.value)}
-                  className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm"
+                  className="w-full rounded-6 border border-solid-gray-420 px-3 py-2 text-sm"
                 >
                   <option value="">選択してください</option>
                   {unregisteredMachines.map((m) => (
@@ -736,18 +736,18 @@ export default function MachineNameSettings({
               </Button>
             </div>
           ) : (
-            <div className="text-sm text-gray-500">
+            <div className="text-sm text-solid-gray-536">
               全てのレジ番号に名称が登録済みです
             </div>
           )}
 
           {/* 一覧テーブル */}
           {isLoading ? (
-            <div className="py-4 text-center text-sm text-gray-500">
+            <div className="py-4 text-center text-sm text-solid-gray-536">
               読み込み中...
             </div>
           ) : machineNames.length === 0 ? (
-            <div className="py-4 text-center text-sm text-gray-500">
+            <div className="py-4 text-center text-sm text-solid-gray-536">
               レジ名称が登録されていません
             </div>
           ) : (
@@ -1206,7 +1206,7 @@ export default function SalesTargetSettings() {
 
           {/* 12ヶ月分の入力 */}
           {isLoading ? (
-            <div className="py-4 text-center text-sm text-gray-500">
+            <div className="py-4 text-center text-sm text-solid-gray-536">
               読み込み中...
             </div>
           ) : (
@@ -1286,16 +1286,16 @@ export default function TargetProgressBar({
   };
 
   return (
-    <div className="rounded-lg border border-gray-200 bg-white p-4">
+    <div className="rounded-8 border border-solid-gray-200 bg-white p-4">
       <div className="mb-2 flex items-center justify-between">
-        <span className="text-sm font-medium text-gray-700">{label}</span>
+        <span className="text-sm font-medium text-solid-gray-700">{label}</span>
         <span
-          className={`text-sm font-semibold ${isAchieved ? "text-green-600" : "text-gray-600"}`}
+          className={`text-sm font-semibold ${isAchieved ? "text-green-600" : "text-solid-gray-600"}`}
         >
           {percentage}%
         </span>
       </div>
-      <div className="mb-2 h-3 w-full overflow-hidden rounded-full bg-gray-100">
+      <div className="mb-2 h-3 w-full overflow-hidden rounded-full bg-solid-gray-100">
         <div
           className={`h-full rounded-full transition-all duration-500 ${
             isAchieved ? "bg-green-500" : "bg-blue-500"
@@ -1303,7 +1303,7 @@ export default function TargetProgressBar({
           style={{ width: `${percentage}%` }}
         />
       </div>
-      <div className="flex justify-between text-xs text-gray-500">
+      <div className="flex justify-between text-xs text-solid-gray-536">
         <span>実績: {formatAmount(currentAmount)}円</span>
         <span>目標: {formatAmount(targetAmount)}円</span>
       </div>
@@ -1545,7 +1545,7 @@ export default function DashboardSettings() {
           <DialogTitle>ダッシュボード初期表示設定</DialogTitle>
         </DialogHeader>
         {isLoading ? (
-          <div className="py-4 text-center text-sm text-gray-500">
+          <div className="py-4 text-center text-sm text-solid-gray-536">
             読み込み中...
           </div>
         ) : (
@@ -1567,7 +1567,7 @@ export default function DashboardSettings() {
                   ))}
                 </SelectContent>
               </Select>
-              <p className="text-xs text-gray-500">
+              <p className="text-xs text-solid-gray-536">
                 ダッシュボードを開いた際の初期期間タイプ
               </p>
             </div>
@@ -1589,7 +1589,7 @@ export default function DashboardSettings() {
                   ))}
                 </SelectContent>
               </Select>
-              <p className="text-xs text-gray-500">
+              <p className="text-xs text-solid-gray-536">
                 ダッシュボードを開いた際の初期表示タブ
               </p>
             </div>
@@ -1700,17 +1700,21 @@ propsにフィルタ期間の情報を追加する（目標月をフィルタ期
 // 変更前
 interface SalesOverviewTabProps {
   data: RegisterDataResponse;
-  /** Z009から取得した客数合計 */
   totalCustomers: number;
   previousCustomers?: number;
+  topProducts: AggregatedEntry[];
+  dailyTimeSeries: TimeSeriesEntry[];
+  granularity?: Granularity;
 }
 
 // 変更後
 interface SalesOverviewTabProps {
   data: RegisterDataResponse;
-  /** Z009から取得した客数合計 */
   totalCustomers: number;
   previousCustomers?: number;
+  topProducts: AggregatedEntry[];
+  dailyTimeSeries: TimeSeriesEntry[];
+  granularity?: Granularity;
   /** フィルタの開始日（目標月の特定に使用） */
   dateFrom: string;
 }
@@ -1765,6 +1769,9 @@ KPIカードの上部にTargetProgressBarを配置する:
                 data={data}
                 totalCustomers={totalCustomers}
                 previousCustomers={previousCustomers}
+                topProducts={topProducts}
+                dailyTimeSeries={dailyTimeSeries}
+                granularity={granularity}
               />
 
 // 変更後
@@ -1772,6 +1779,9 @@ KPIカードの上部にTargetProgressBarを配置する:
                 data={data}
                 totalCustomers={totalCustomers}
                 previousCustomers={previousCustomers}
+                topProducts={topProducts}
+                dailyTimeSeries={dailyTimeSeries}
+                granularity={granularity}
                 dateFrom={dateFrom}
               />
 ```
@@ -1842,6 +1852,7 @@ KPIカードの上部にTargetProgressBarを配置する:
 
 ### 注意事項
 
+- 実装例は仕様書03で行った追加変更（DSトークン、KpiCards/SalesOverviewTabのprops変更等）を反映済み
 - 既存のレジフィルター（`MachineFilter.tsx`）のレジ名称表示機能は仕様書02で既に対応済み。本仕様書では `MachineFilter.tsx` を変更しない
 - API Routeでは `export const dynamic = "force-dynamic"` を必ず設定する（キャッシュ防止）
 - shadcn/ui の Dialog、Select、Table、Input、Label、Button は仕様書02で導入済みのため、追加インストールは不要
