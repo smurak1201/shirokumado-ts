@@ -31,7 +31,6 @@ export const ANALYSIS_TABS = [
   { value: "trend", label: "売上推移" },
   { value: "hourly", label: "時間帯分析" },
   { value: "product", label: "商品分析" },
-  { value: "department", label: "部門分析" },
   { value: "transaction", label: "取引管理" },
   { value: "raw", label: "明細データ" },
 ] as const;
@@ -110,4 +109,75 @@ export interface MachinesResponse {
 export interface ImportSummary {
   totalFiles: number;
   lastImportedAt: string | null;
+}
+
+/** Z009 時間帯別データ1件 */
+export interface HourlyEntry {
+  startTime: string;
+  endTime: string;
+  totalQuantity: number;
+  totalAmount: number;
+}
+
+/** Z009 曜日x時間帯ヒートマップ用データ1件 */
+export interface HourlyHeatmapEntry {
+  dayOfWeek: number;
+  startTime: string;
+  totalAmount: number;
+  totalQuantity: number;
+}
+
+/** Z009 時間帯分析レスポンス */
+export interface HourlyAnalysisResponse {
+  hourly: HourlyEntry[];
+  heatmap: HourlyHeatmapEntry[];
+}
+
+/** Z004 商品データ1件 */
+export interface ProductEntry {
+  itemCode: string;
+  itemName: string;
+  totalQuantity: number;
+  totalAmount: number;
+  rank: "A" | "B" | "C";
+  cumulativeRatio: number;
+}
+
+/** Z004 商品分析レスポンス */
+export interface ProductAnalysisResponse {
+  products: ProductEntry[];
+}
+
+/** Z002 取引キーデータ1件 */
+export interface TransactionEntry {
+  itemName: string;
+  totalQuantity: number;
+  totalAmount: number;
+}
+
+/** Z002 取引管理レスポンス */
+export interface TransactionAnalysisResponse {
+  transactions: TransactionEntry[];
+  timeSeries: TimeSeriesEntry[];
+  correctionCount: number;
+  correctionAmount: number;
+}
+
+/** 明細データ1件（全種別共通） */
+export interface RawDataEntry {
+  date: string;
+  time: string;
+  machineNo: string;
+  recordNo: number;
+  itemName: string;
+  itemCode?: string;
+  startTime?: string;
+  endTime?: string;
+  quantity: number;
+  amount: number;
+}
+
+/** 明細データレスポンス */
+export interface RawDataResponse {
+  rows: RawDataEntry[];
 }

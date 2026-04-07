@@ -11,6 +11,15 @@ import type {
   AggregatedEntry,
   DataSummary,
   PeriodStat,
+  HourlyAnalysisResponse,
+  HourlyEntry,
+  HourlyHeatmapEntry,
+  ProductAnalysisResponse,
+  ProductEntry,
+  TransactionAnalysisResponse,
+  TransactionEntry,
+  RawDataResponse,
+  RawDataEntry,
 } from "@/app/dashboard/register/types";
 
 export const dynamic = "force-dynamic";
@@ -137,7 +146,7 @@ async function fetchZ004Data(
   dateTo: Date,
   machineNo: string | null
 ): Promise<
-  Array<{ itemName: string; quantity: number; amount: number; date: Date; machineNo: string }>
+  Array<{ itemCode: string; itemName: string; quantity: number; amount: number; date: Date; machineNo: string }>
 > {
   const where = {
     settlement: {
@@ -155,6 +164,7 @@ async function fetchZ004Data(
     "GET /api/register/data (Z004)"
   ).then((rows) =>
     rows.map((r) => ({
+      itemCode: r.itemCode,
       itemName: r.itemName,
       quantity: r.quantity,
       amount: r.amount,
@@ -229,6 +239,165 @@ async function fetchZ009Data(
       machineNo: r.settlement.machineNo,
     }))
   );
+}
+
+/** Z002 取引キーデータを取得 */
+async function fetchZ002Data(
+  dateFrom: Date,
+  dateTo: Date,
+  machineNo: string | null
+): Promise<
+  Array<{ itemName: string; quantity: number; amount: number; date: Date; machineNo: string }>
+> {
+  const where = {
+    settlement: {
+      date: { gte: dateFrom, lte: dateTo },
+      ...(machineNo ? { machineNo } : {}),
+    },
+  };
+
+  return safePrismaOperation(
+    () =>
+      prisma.registerTransactionKey.findMany({
+        where,
+        include: { settlement: { select: { date: true, machineNo: true } } },
+      }),
+    "GET /api/register/data (Z002)"
+  ).then((rows) =>
+    rows.map((r) => ({
+      itemName: r.itemName,
+      quantity: r.quantity,
+      amount: r.amount,
+      date: r.settlement.date,
+      machineNo: r.settlement.machineNo,
+    }))
+  );
+}
+
+
+/** 明細データを取得（全種別対応） */
+async function fetchRawData(
+  type: string,
+  dateFrom: Date,
+  dateTo: Date,
+  machineNo: string | null
+): Promise<RawDataEntry[]> {
+  const where = {
+    settlement: {
+      date: { gte: dateFrom, lte: dateTo },
+      ...(machineNo ? { machineNo } : {}),
+    },
+  };
+
+  const settlementSelect = { date: true, time: true, machineNo: true } as const;
+
+  switch (type) {
+    case "Z001": {
+      const rows = await safePrismaOperation(
+        () =>
+          prisma.registerSalesSummary.findMany({
+            where,
+            include: { settlement: { select: settlementSelect } },
+            orderBy: [{ settlement: { date: "asc" } }, { recordNo: "asc" }],
+          }),
+        "GET /api/register/data (raw Z001)"
+      );
+      return rows.map((r) => ({
+        date: r.settlement.date.toISOString().split("T")[0]!,
+        time: r.settlement.time,
+        machineNo: r.settlement.machineNo,
+        recordNo: r.recordNo,
+        itemName: r.itemName,
+        quantity: r.quantity,
+        amount: r.amount,
+      }));
+    }
+    case "Z002": {
+      const rows = await safePrismaOperation(
+        () =>
+          prisma.registerTransactionKey.findMany({
+            where,
+            include: { settlement: { select: settlementSelect } },
+            orderBy: [{ settlement: { date: "asc" } }, { recordNo: "asc" }],
+          }),
+        "GET /api/register/data (raw Z002)"
+      );
+      return rows.map((r) => ({
+        date: r.settlement.date.toISOString().split("T")[0]!,
+        time: r.settlement.time,
+        machineNo: r.settlement.machineNo,
+        recordNo: r.recordNo,
+        itemName: r.itemName,
+        quantity: r.quantity,
+        amount: r.amount,
+      }));
+    }
+    case "Z004": {
+      const rows = await safePrismaOperation(
+        () =>
+          prisma.registerProductSale.findMany({
+            where,
+            include: { settlement: { select: settlementSelect } },
+            orderBy: [{ settlement: { date: "asc" } }, { recordNo: "asc" }],
+          }),
+        "GET /api/register/data (raw Z004)"
+      );
+      return rows.map((r) => ({
+        date: r.settlement.date.toISOString().split("T")[0]!,
+        time: r.settlement.time,
+        machineNo: r.settlement.machineNo,
+        recordNo: r.recordNo,
+        itemCode: r.itemCode,
+        itemName: r.itemName,
+        quantity: r.quantity,
+        amount: r.amount,
+      }));
+    }
+    case "Z005": {
+      const rows = await safePrismaOperation(
+        () =>
+          prisma.registerDepartmentSale.findMany({
+            where,
+            include: { settlement: { select: settlementSelect } },
+            orderBy: [{ settlement: { date: "asc" } }, { recordNo: "asc" }],
+          }),
+        "GET /api/register/data (raw Z005)"
+      );
+      return rows.map((r) => ({
+        date: r.settlement.date.toISOString().split("T")[0]!,
+        time: r.settlement.time,
+        machineNo: r.settlement.machineNo,
+        recordNo: r.recordNo,
+        itemName: r.itemName,
+        quantity: r.quantity,
+        amount: r.amount,
+      }));
+    }
+    case "Z009": {
+      const rows = await safePrismaOperation(
+        () =>
+          prisma.registerHourlySale.findMany({
+            where,
+            include: { settlement: { select: settlementSelect } },
+            orderBy: [{ settlement: { date: "asc" } }, { recordNo: "asc" }],
+          }),
+        "GET /api/register/data (raw Z009)"
+      );
+      return rows.map((r) => ({
+        date: r.settlement.date.toISOString().split("T")[0]!,
+        time: r.settlement.time,
+        machineNo: r.settlement.machineNo,
+        recordNo: r.recordNo,
+        itemName: `${r.startTime}-${r.endTime}`,
+        startTime: r.startTime,
+        endTime: r.endTime,
+        quantity: r.quantity,
+        amount: r.amount,
+      }));
+    }
+    default:
+      return [];
+  }
 }
 
 /** 行データから時系列を構築（粒度に応じて集約、実データのみ） */
@@ -485,6 +654,154 @@ export const GET = withErrorHandling(async (request: NextRequest) => {
       summary: calculateSummary(timeSeries, totalAmount, totalQuantity, z001Rows.length),
     };
 
+    return cachedSuccess(response);
+  }
+
+  // Z009_DETAIL: 時間帯分析タブ用
+  if (type === "Z009_DETAIL") {
+    const rows = await fetchZ009Data(from, to, machineNo);
+
+    // 時間帯別集計（期間内平均）
+    const hourlyMap = new Map<string, { totalQuantity: number; totalAmount: number; count: number }>();
+    for (const r of rows) {
+      const key = `${r.startTime}-${r.endTime}`;
+      const entry = hourlyMap.get(key) ?? { totalQuantity: 0, totalAmount: 0, count: 0 };
+      entry.totalQuantity += r.quantity;
+      entry.totalAmount += r.amount;
+      entry.count += 1;
+      hourlyMap.set(key, entry);
+    }
+
+    // 日数を計算（平均に使用）
+    const dateSet = new Set(rows.map((r) => r.date.toISOString().split("T")[0]));
+    const dayCount = dateSet.size || 1;
+
+    const hourly: HourlyEntry[] = [...hourlyMap.entries()]
+      .sort(([a], [b]) => a.localeCompare(b))
+      .map(([key, val]) => {
+        const [startTime, endTime] = key.split("-");
+        return {
+          startTime: startTime!,
+          endTime: endTime!,
+          totalQuantity: Math.round(val.totalQuantity / dayCount),
+          totalAmount: Math.round(val.totalAmount / dayCount),
+        };
+      });
+
+    // 曜日x時間帯ヒートマップ
+    const heatmapMap = new Map<string, { totalAmount: number; totalQuantity: number }>();
+    for (const r of rows) {
+      const dayOfWeek = r.date.getDay();
+      const key = `${dayOfWeek}-${r.startTime}`;
+      const entry = heatmapMap.get(key) ?? { totalAmount: 0, totalQuantity: 0 };
+      entry.totalAmount += r.amount;
+      entry.totalQuantity += r.quantity;
+      heatmapMap.set(key, entry);
+    }
+
+    const heatmap: HourlyHeatmapEntry[] = [...heatmapMap.entries()]
+      .map(([key, val]) => {
+        const [dow, startTime] = key.split("-");
+        return {
+          dayOfWeek: parseInt(dow!, 10),
+          startTime: startTime!,
+          totalAmount: val.totalAmount,
+          totalQuantity: val.totalQuantity,
+        };
+      })
+      .sort((a, b) => a.dayOfWeek - b.dayOfWeek || a.startTime.localeCompare(b.startTime));
+
+    const response: HourlyAnalysisResponse = { hourly, heatmap };
+    return cachedSuccess(response);
+  }
+
+  // Z004_PRODUCT: 商品分析タブ用（既存Z004はRegisterDataResponse形式で売上概要に使用中）
+  if (type === "Z004_PRODUCT") {
+    const rows = await fetchZ004Data(from, to, machineNo);
+
+    // 商品別集計（商品コードが未設定（全桁0）の場合は商品名でグループ化）
+    const productMap = new Map<string, { itemCode: string; itemName: string; quantity: number; amount: number }>();
+    for (const r of rows) {
+      const isCodeEmpty = /^0+$/.test(r.itemCode);
+      const key = isCodeEmpty ? r.itemName : r.itemCode;
+      const entry = productMap.get(key) ?? { itemCode: r.itemCode, itemName: r.itemName, quantity: 0, amount: 0 };
+      entry.quantity += r.quantity;
+      entry.amount += r.amount;
+      productMap.set(key, entry);
+    }
+
+    // 金額降順でソート
+    const sorted = [...productMap.entries()]
+      .map(([, val]) => ({
+        itemCode: val.itemCode,
+        itemName: val.itemName,
+        totalQuantity: val.quantity,
+        totalAmount: val.amount,
+      }))
+      .sort((a, b) => b.totalAmount - a.totalAmount);
+
+    // ABC分析: 累積構成比を計算してランク付け
+    const totalAmount = sorted.reduce((sum, p) => sum + p.totalAmount, 0);
+    let cumulative = 0;
+    const products: ProductEntry[] = sorted.map((p) => {
+      cumulative += p.totalAmount;
+      const ratio = totalAmount > 0 ? Math.round((cumulative / totalAmount) * 1000) / 10 : 0;
+      const rank: "A" | "B" | "C" = ratio <= 70 ? "A" : ratio <= 90 ? "B" : "C";
+      return { ...p, rank, cumulativeRatio: ratio };
+    });
+
+    const response: ProductAnalysisResponse = { products };
+    return cachedSuccess(response);
+  }
+
+  // Z002: 取引管理タブ用
+  if (type === "Z002") {
+    const rows = await fetchZ002Data(from, to, machineNo);
+
+    // 項目別集計
+    const txMap = new Map<string, { quantity: number; amount: number }>();
+    for (const r of rows) {
+      const entry = txMap.get(r.itemName) ?? { quantity: 0, amount: 0 };
+      entry.quantity += r.quantity;
+      entry.amount += r.amount;
+      txMap.set(r.itemName, entry);
+    }
+
+    const transactions: TransactionEntry[] = [...txMap.entries()]
+      .map(([name, val]) => ({
+        itemName: name,
+        totalQuantity: val.quantity,
+        totalAmount: val.amount,
+      }))
+      .sort((a, b) => b.totalAmount - a.totalAmount);
+
+    // 訂正関連の集計
+    const correctionRows = transactions.filter((t) => t.itemName.includes("訂正"));
+    const correctionCount = correctionRows.reduce((sum, t) => sum + t.totalQuantity, 0);
+    const correctionAmount = correctionRows.reduce((sum, t) => sum + t.totalAmount, 0);
+
+    // 訂正件数・金額の時系列推移
+    const correctionTimeSeries = buildTimeSeries(
+      rows
+        .filter((r) => r.itemName.includes("訂正"))
+        .map((r) => ({ amount: r.amount, quantity: r.quantity, date: r.date })),
+      granularity
+    );
+
+    const response: TransactionAnalysisResponse = {
+      transactions,
+      timeSeries: correctionTimeSeries,
+      correctionCount,
+      correctionAmount,
+    };
+    return cachedSuccess(response);
+  }
+
+  // RAW: 明細データタブ用
+  if (type === "RAW_Z001" || type === "RAW_Z002" || type === "RAW_Z004" || type === "RAW_Z005" || type === "RAW_Z009") {
+    const rawType = type.replace("RAW_", "");
+    const rawRows = await fetchRawData(rawType, from, to, machineNo);
+    const response: RawDataResponse = { rows: rawRows };
     return cachedSuccess(response);
   }
 

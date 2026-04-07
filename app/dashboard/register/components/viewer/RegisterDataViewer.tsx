@@ -8,6 +8,10 @@ import PeriodSelector from "./PeriodSelector";
 import MachineFilter from "./MachineFilter";
 import SalesOverviewTab from "./tabs/SalesOverviewTab";
 import SalesTrendTab from "./tabs/SalesTrendTab";
+import HourlyAnalysisTab from "./tabs/HourlyAnalysisTab";
+import ProductAnalysisTab from "./tabs/ProductAnalysisTab";
+import TransactionTab from "./tabs/TransactionTab";
+import RawDataTab from "./tabs/RawDataTab";
 
 /** 横スクロール可能なTabsListに左右フェードを付与 */
 function ScrollableTabsList({ children }: { children: React.ReactNode }) {
@@ -157,31 +161,34 @@ export default function RegisterDataViewer() {
             )}
           </TabsContent>
 
-          {/* 他のタブは後続の仕様書で実装 */}
           <TabsContent value="hourly">
-            <div className="rounded-8 border border-solid-gray-200 bg-white p-6 text-center text-solid-gray-536">
-              時間帯分析（準備中）
-            </div>
+            <HourlyAnalysisTab
+              dateFrom={dateFrom}
+              dateTo={dateTo}
+              machineNo={machineNo}
+            />
           </TabsContent>
           <TabsContent value="product">
-            <div className="rounded-8 border border-solid-gray-200 bg-white p-6 text-center text-solid-gray-536">
-              商品分析（準備中）
-            </div>
-          </TabsContent>
-          <TabsContent value="department">
-            <div className="rounded-8 border border-solid-gray-200 bg-white p-6 text-center text-solid-gray-536">
-              部門分析（準備中）
-            </div>
+            <ProductAnalysisTab
+              dateFrom={dateFrom}
+              dateTo={dateTo}
+              machineNo={machineNo}
+            />
           </TabsContent>
           <TabsContent value="transaction">
-            <div className="rounded-8 border border-solid-gray-200 bg-white p-6 text-center text-solid-gray-536">
-              取引管理（準備中）
-            </div>
+            <TransactionTab
+              dateFrom={dateFrom}
+              dateTo={dateTo}
+              machineNo={machineNo}
+              granularity={granularity}
+            />
           </TabsContent>
           <TabsContent value="raw">
-            <div className="rounded-8 border border-solid-gray-200 bg-white p-6 text-center text-solid-gray-536">
-              明細データ（準備中）
-            </div>
+            <RawDataTab
+              dateFrom={dateFrom}
+              dateTo={dateTo}
+              machineNo={machineNo}
+            />
           </TabsContent>
         </Tabs>
     </div>
