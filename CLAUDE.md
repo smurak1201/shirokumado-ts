@@ -205,6 +205,7 @@
 - タッチターゲット: 44px以上（`min-h-11`）
 - コントラスト比: テキスト4.5:1以上、コンポーネント背景3:1以上
 - カラー: `@digital-go-jp/tailwind-theme-plugin` のトークンを使用
+- チャートカラー: DSプリミティブカラー600番台を使用（`globals.css`の`--chart-*`で定義済み）
 - border-radius: `rounded-8`(カード), `rounded-6`(ボタン/フォーム)
 
 ## Tailwind CSS
