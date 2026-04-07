@@ -89,7 +89,7 @@ export default async function DashboardLayout({ children }: DashboardLayoutProps
   return (
     <div className="min-h-screen bg-gray-50">
       <div>
-        <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-6xl px-4 pb-12 sm:px-6 lg:px-8">
           <DashboardHeader
             title="ダッシュボード"
             session={session}
