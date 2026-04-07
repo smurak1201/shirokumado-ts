@@ -9,7 +9,9 @@ interface HourlyHeatmapProps {
   heatmap: HourlyHeatmapEntry[];
 }
 
-const DAY_LABELS = ["日", "月", "火", "水", "木", "金", "土"];
+const DAY_LABELS = ["月", "火", "水", "木", "金", "土", "日"];
+// 月曜始まりの表示順に対応するdayOfWeek値（0=日,1=月,...6=土）
+const DAY_OF_WEEK_ORDER = [1, 2, 3, 4, 5, 6, 0];
 
 const MODE_CONFIG = {
   amount: {
@@ -114,10 +116,11 @@ function SingleHeatmap({
                 {dayLabel}
               </div>
               {timeSlots.map((time) => {
-                const value = matrix.get(`${dayIndex}-${time}`) ?? 0;
+                const dow = DAY_OF_WEEK_ORDER[dayIndex];
+                const value = matrix.get(`${dow}-${time}`) ?? 0;
                 return (
                   <div
-                    key={`${dayIndex}-${time}`}
+                    key={`${dow}-${time}`}
                     className={`flex items-center justify-center rounded-4 p-1 text-xs ${getIntensityClass(value, maxValue, mode)}`}
                     title={config.formatTooltip(dayLabel, time, value)}
                   >
