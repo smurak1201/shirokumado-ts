@@ -3,46 +3,101 @@
 import { Fragment } from "react";
 import type { HourlyHeatmapEntry } from "../../../types";
 
+type HeatmapMode = "amount" | "quantity";
+
 interface HourlyHeatmapProps {
   heatmap: HourlyHeatmapEntry[];
 }
 
 const DAY_LABELS = ["日", "月", "火", "水", "木", "金", "土"];
 
-/** 金額に応じた背景色クラスを返す（濃さ5段階） */
-function getIntensityClass(value: number, maxValue: number): string {
-  if (maxValue === 0 || value === 0) return "bg-solid-gray-50";
+const MODE_CONFIG = {
+  amount: {
+    title: "曜日 x 時間帯ヒートマップ（売上）",
+    ariaLabel: "曜日別時間帯ヒートマップ（売上）",
+    getValue: (h: HourlyHeatmapEntry) => h.totalAmount,
+    formatCell: (value: number) => `${(value / 1000).toFixed(0)}k`,
+    formatTooltip: (dayLabel: string, time: string, value: number) =>
+      `${dayLabel} ${time}: ${value.toLocaleString("ja-JP")}円`,
+    colorClasses: {
+      zero: "bg-solid-gray-50",
+      levels: [
+        "bg-blue-100",
+        "bg-blue-200",
+        "bg-blue-300",
+        "bg-blue-400",
+        "bg-blue-600 text-white",
+      ],
+    },
+  },
+  quantity: {
+    title: "曜日 x 時間帯ヒートマップ（客数）",
+    ariaLabel: "曜日別時間帯ヒートマップ（客数）",
+    getValue: (h: HourlyHeatmapEntry) => h.totalQuantity,
+    formatCell: (value: number) => `${value}`,
+    formatTooltip: (dayLabel: string, time: string, value: number) =>
+      `${dayLabel} ${time}: ${value.toLocaleString("ja-JP")}人`,
+    colorClasses: {
+      zero: "bg-solid-gray-50",
+      levels: [
+        "bg-orange-100",
+        "bg-orange-200",
+        "bg-orange-300",
+        "bg-orange-400",
+        "bg-orange-600 text-white",
+      ],
+    },
+  },
+} as const;
+
+function getIntensityClass(
+  value: number,
+  maxValue: number,
+  mode: HeatmapMode
+): string {
+  const { zero, levels } = MODE_CONFIG[mode].colorClasses;
+  if (maxValue === 0 || value === 0) return zero;
   const ratio = value / maxValue;
-  if (ratio < 0.2) return "bg-blue-100";
-  if (ratio < 0.4) return "bg-blue-200";
-  if (ratio < 0.6) return "bg-blue-300";
-  if (ratio < 0.8) return "bg-blue-400";
-  return "bg-blue-600 text-white";
+  if (ratio < 0.2) return levels[0];
+  if (ratio < 0.4) return levels[1];
+  if (ratio < 0.6) return levels[2];
+  if (ratio < 0.8) return levels[3];
+  return levels[4];
 }
 
-export default function HourlyHeatmap({ heatmap }: HourlyHeatmapProps) {
-  if (heatmap.length === 0) return null;
+function SingleHeatmap({
+  heatmap,
+  mode,
+}: {
+  heatmap: HourlyHeatmapEntry[];
+  mode: HeatmapMode;
+}) {
+  const config = MODE_CONFIG[mode];
 
-  // 時間帯のリストを取得（ソート済み）
   const timeSlots = [...new Set(heatmap.map((h) => h.startTime))].sort();
 
-  // 最大値を取得（色の正規化に使用）
-  const maxAmount = Math.max(...heatmap.map((h) => h.totalAmount), 1);
+  const maxValue = Math.max(...heatmap.map(config.getValue), 1);
 
-  // 曜日x時間帯のマトリクスを構築
   const matrix = new Map<string, number>();
   for (const h of heatmap) {
-    matrix.set(`${h.dayOfWeek}-${h.startTime}`, h.totalAmount);
+    matrix.set(`${h.dayOfWeek}-${h.startTime}`, config.getValue(h));
   }
 
   return (
-    <section className="rounded-8 border border-solid-gray-200 bg-white p-4" aria-label="曜日別時間帯ヒートマップ">
+    <section
+      className="rounded-8 border border-solid-gray-200 bg-white p-4"
+      aria-label={config.ariaLabel}
+    >
       <h3 className="mb-4 text-sm font-medium text-solid-gray-700">
-        曜日 x 時間帯ヒートマップ（売上）
+        {config.title}
       </h3>
       <div className="overflow-x-auto">
-        <div className="inline-grid gap-0.5" style={{ gridTemplateColumns: `auto repeat(${timeSlots.length}, minmax(2.5rem, 1fr))` }}>
-          {/* ヘッダー行: 時間帯 */}
+        <div
+          className="inline-grid gap-0.5"
+          style={{
+            gridTemplateColumns: `auto repeat(${timeSlots.length}, minmax(2.5rem, 1fr))`,
+          }}
+        >
           <div className="p-1" />
           {timeSlots.map((time) => (
             <div
@@ -53,12 +108,9 @@ export default function HourlyHeatmap({ heatmap }: HourlyHeatmapProps) {
             </div>
           ))}
 
-          {/* データ行: 曜日ごと */}
           {DAY_LABELS.map((dayLabel, dayIndex) => (
             <Fragment key={dayIndex}>
-              <div
-                className="flex items-center p-1 text-xs font-medium text-solid-gray-600"
-              >
+              <div className="flex items-center p-1 text-xs font-medium text-solid-gray-600">
                 {dayLabel}
               </div>
               {timeSlots.map((time) => {
@@ -66,10 +118,10 @@ export default function HourlyHeatmap({ heatmap }: HourlyHeatmapProps) {
                 return (
                   <div
                     key={`${dayIndex}-${time}`}
-                    className={`flex items-center justify-center rounded-4 p-1 text-xs ${getIntensityClass(value, maxAmount)}`}
-                    title={`${dayLabel} ${time}: ${value.toLocaleString("ja-JP")}円`}
+                    className={`flex items-center justify-center rounded-4 p-1 text-xs ${getIntensityClass(value, maxValue, mode)}`}
+                    title={config.formatTooltip(dayLabel, time, value)}
                   >
-                    {value > 0 ? `${(value / 1000).toFixed(0)}k` : ""}
+                    {value > 0 ? config.formatCell(value) : ""}
                   </div>
                 );
               })}
@@ -82,15 +134,24 @@ export default function HourlyHeatmap({ heatmap }: HourlyHeatmapProps) {
       <div className="mt-4 flex items-center gap-2 text-xs text-solid-gray-536">
         <span>低</span>
         <div className="flex gap-0.5">
-          <div className="h-4 w-4 rounded-4 bg-solid-gray-50" />
-          <div className="h-4 w-4 rounded-4 bg-blue-100" />
-          <div className="h-4 w-4 rounded-4 bg-blue-200" />
-          <div className="h-4 w-4 rounded-4 bg-blue-300" />
-          <div className="h-4 w-4 rounded-4 bg-blue-400" />
-          <div className="h-4 w-4 rounded-4 bg-blue-600" />
+          <div className={`h-4 w-4 rounded-4 ${config.colorClasses.zero}`} />
+          {config.colorClasses.levels.map((cls) => (
+            <div key={cls} className={`h-4 w-4 rounded-4 ${cls}`} />
+          ))}
         </div>
         <span>高</span>
       </div>
     </section>
+  );
+}
+
+export default function HourlyHeatmap({ heatmap }: HourlyHeatmapProps) {
+  if (heatmap.length === 0) return null;
+
+  return (
+    <div className="grid gap-6 lg:grid-cols-2">
+      <SingleHeatmap heatmap={heatmap} mode="amount" />
+      <SingleHeatmap heatmap={heatmap} mode="quantity" />
+    </div>
   );
 }
