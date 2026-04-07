@@ -18,14 +18,14 @@ export default function MachineFilter({
   onGroupByChange,
 }: MachineFilterProps) {
   return (
-    <div className="flex flex-wrap items-center gap-4">
+    <div className="ml-auto flex flex-wrap items-center gap-3">
       {/* 合算/レジ別 切り替え */}
       <div className="flex gap-2" role="group" aria-label="表示モード">
         <button
           type="button"
           onClick={() => onGroupByChange("combined")}
           aria-pressed={groupBy === "combined"}
-          className={`rounded-6 px-4 py-2.5 text-sm font-medium transition-colors cursor-pointer active:scale-95 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus-blue ${
+          className={`rounded-6 px-3 py-2.5 text-sm font-medium transition-colors cursor-pointer active:scale-95 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus-blue ${
             groupBy === "combined"
               ? "bg-solid-gray-900 text-white"
               : "bg-solid-gray-50 text-solid-gray-700 hover:bg-solid-gray-100"
@@ -37,7 +37,7 @@ export default function MachineFilter({
           type="button"
           onClick={() => onGroupByChange("machine")}
           aria-pressed={groupBy === "machine"}
-          className={`rounded-6 px-4 py-2.5 text-sm font-medium transition-colors cursor-pointer active:scale-95 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus-blue ${
+          className={`rounded-6 px-3 py-2.5 text-sm font-medium transition-colors cursor-pointer active:scale-95 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus-blue ${
             groupBy === "machine"
               ? "bg-solid-gray-900 text-white"
               : "bg-solid-gray-50 text-solid-gray-700 hover:bg-solid-gray-100"
@@ -53,7 +53,7 @@ export default function MachineFilter({
           value={machineNo ?? ""}
           onChange={(e) => onMachineNoChange(e.target.value || null)}
           aria-label="レジ選択"
-          className="rounded-6 border border-solid-gray-420 px-4 py-2.5 text-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus-blue"
+          className="rounded-6 border border-solid-gray-420 px-3 py-2.5 text-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus-blue"
         >
           <option value="">全レジ</option>
           {machines.map((m) => (
