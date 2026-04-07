@@ -1,12 +1,13 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/app/components/ui/tabs";
-import { ANALYSIS_TABS } from "../../types";
+import { ANALYSIS_TABS, type AnalysisTabValue } from "../../types";
 import { useRegisterData } from "./hooks/useRegisterData";
 import PeriodSelector from "./PeriodSelector";
 import MachineFilter from "./MachineFilter";
 import SalesOverviewTab from "./tabs/SalesOverviewTab";
+import SalesTrendTab from "./tabs/SalesTrendTab";
 
 /** 横スクロール可能なTabsListに左右フェードを付与 */
 function ScrollableTabsList({ children }: { children: React.ReactNode }) {
@@ -71,6 +72,20 @@ export default function RegisterDataViewer() {
     navigatePeriod,
   } = useRegisterData("Z005");
 
+  const [activeTab, setActiveTab] = useState<AnalysisTabValue>("overview");
+
+  /** ローディング中はプレースホルダーを表示するラッパー */
+  function withLoading(content: ReactNode): ReactNode {
+    if (isLoading) {
+      return (
+        <div className="flex items-center justify-center py-12" role="status" aria-live="polite">
+          <div className="text-sm text-solid-gray-536">読み込み中...</div>
+        </div>
+      );
+    }
+    return content;
+  }
+
   return (
     <div className="space-y-4">
       {/* フィルタバー */}
@@ -93,16 +108,8 @@ export default function RegisterDataViewer() {
         />
       </div>
 
-      {/* ローディング */}
-      {isLoading && (
-        <div className="flex items-center justify-center py-12" role="status" aria-live="polite">
-          <div className="text-sm text-solid-gray-536">読み込み中...</div>
-        </div>
-      )}
-
       {/* 第2層タブ */}
-      {!isLoading && (
-        <Tabs defaultValue="overview">
+      <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as AnalysisTabValue)}>
           <ScrollableTabsList>
             {ANALYSIS_TABS.map((tab) => (
               <TabsTrigger key={tab.value} value={tab.value} className="shrink-0">
@@ -112,27 +119,36 @@ export default function RegisterDataViewer() {
           </ScrollableTabsList>
 
           <TabsContent value="overview">
-            {data ? (
-              <SalesOverviewTab
-                data={data}
-                totalCustomers={totalCustomers}
-                previousCustomers={previousCustomers}
-                topProducts={topProducts}
-                dailyTimeSeries={dailyTimeSeries}
-              />
-            ) : (
-              <div className="rounded-8 border border-solid-gray-200 bg-white p-6 text-center text-sm text-solid-gray-536">
-                データがありません
-              </div>
+            {withLoading(
+              data ? (
+                <SalesOverviewTab
+                  data={data}
+                  totalCustomers={totalCustomers}
+                  previousCustomers={previousCustomers}
+                  topProducts={topProducts}
+                  dailyTimeSeries={dailyTimeSeries}
+                />
+              ) : (
+                <div className="rounded-8 border border-solid-gray-200 bg-white p-6 text-center text-sm text-solid-gray-536">
+                  データがありません
+                </div>
+              )
+            )}
+          </TabsContent>
+
+          <TabsContent value="trend">
+            {withLoading(
+              data ? (
+                <SalesTrendTab data={data} />
+              ) : (
+                <div className="rounded-8 border border-solid-gray-200 bg-white p-6 text-center text-sm text-solid-gray-536">
+                  データがありません
+                </div>
+              )
             )}
           </TabsContent>
 
           {/* 他のタブは後続の仕様書で実装 */}
-          <TabsContent value="trend">
-            <div className="rounded-8 border border-solid-gray-200 bg-white p-6 text-center text-solid-gray-536">
-              売上推移（準備中）
-            </div>
-          </TabsContent>
           <TabsContent value="hourly">
             <div className="rounded-8 border border-solid-gray-200 bg-white p-6 text-center text-solid-gray-536">
               時間帯分析（準備中）
@@ -159,7 +175,6 @@ export default function RegisterDataViewer() {
             </div>
           </TabsContent>
         </Tabs>
-      )}
     </div>
   );
 }

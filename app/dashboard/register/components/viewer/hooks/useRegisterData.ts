@@ -144,6 +144,7 @@ export function useRegisterData(
         view: "summary",
         groupBy,
         granularity,
+        compareLastYear: "true",
       });
       if (machineNo) params.set("machineNo", machineNo);
 
