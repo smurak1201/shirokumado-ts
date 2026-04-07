@@ -139,7 +139,11 @@ export default function RegisterDataViewer() {
           <TabsContent value="trend">
             {withLoading(
               data ? (
-                <SalesTrendTab data={data} />
+                <SalesTrendTab
+                  data={data}
+                  totalCustomers={totalCustomers}
+                  previousCustomers={previousCustomers}
+                />
               ) : (
                 <div className="rounded-8 border border-solid-gray-200 bg-white p-6 text-center text-sm text-solid-gray-536">
                   データがありません

@@ -2,6 +2,7 @@
 
 import dynamic from "next/dynamic";
 import type { RegisterDataResponse } from "../../../types";
+import KpiCards from "../KpiCards";
 import DataTable from "../DataTable";
 import type { ColumnDef } from "../DataTable";
 
@@ -17,26 +18,41 @@ const CustomerTrendChart = dynamic(() => import("../charts/CustomerTrendChart"),
 
 interface SalesTrendTabProps {
   data: RegisterDataResponse;
+  totalCustomers: number;
+  previousCustomers?: number;
 }
 
 interface TrendTableRow {
   period: string;
   amount: number;
+  lastYearAmount: number | null;
+  yoyRate: number | null;
   customers: number;
   unitPrice: number;
 }
 
-/** 時系列データからテーブル行を生成 */
+/** 時系列データからテーブル行を生成（前年データ含む） */
 function buildTableRows(data: RegisterDataResponse): TrendTableRow[] {
-  return data.timeSeries.map((entry) => ({
-    period: entry.period,
-    amount: entry.totalAmount,
-    customers: entry.totalQuantity,
-    unitPrice:
-      entry.totalQuantity > 0
-        ? Math.round(entry.totalAmount / entry.totalQuantity)
-        : 0,
-  }));
+  return data.timeSeries.map((entry, i) => {
+    const lastYear = data.lastYearTimeSeries?.[i];
+    const lastYearAmount = lastYear?.totalAmount ?? null;
+    const yoyRate =
+      lastYearAmount !== null && lastYearAmount > 0
+        ? Math.round(((entry.totalAmount - lastYearAmount) / lastYearAmount) * 1000) / 10
+        : null;
+
+    return {
+      period: entry.period,
+      amount: entry.totalAmount,
+      lastYearAmount,
+      yoyRate,
+      customers: entry.totalQuantity,
+      unitPrice:
+        entry.totalQuantity > 0
+          ? Math.round(entry.totalAmount / entry.totalQuantity)
+          : 0,
+    };
+  });
 }
 
 const trendColumns: ColumnDef<TrendTableRow>[] = [
@@ -46,6 +62,23 @@ const trendColumns: ColumnDef<TrendTableRow>[] = [
     label: "売上金額",
     align: "right",
     format: (v) => `${(v as number).toLocaleString("ja-JP")}円`,
+  },
+  {
+    key: "lastYearAmount",
+    label: "前年売上",
+    align: "right",
+    format: (v) => (v !== null ? `${(v as number).toLocaleString("ja-JP")}円` : "--"),
+  },
+  {
+    key: "yoyRate",
+    label: "前年比",
+    align: "right",
+    format: (v) => {
+      if (v === null) return "--";
+      const rate = v as number;
+      const sign = rate > 0 ? "+" : "";
+      return `${sign}${rate}%`;
+    },
   },
   {
     key: "customers",
@@ -61,11 +94,22 @@ const trendColumns: ColumnDef<TrendTableRow>[] = [
   },
 ];
 
-export default function SalesTrendTab({ data }: SalesTrendTabProps) {
+export default function SalesTrendTab({
+  data,
+  totalCustomers,
+  previousCustomers,
+}: SalesTrendTabProps) {
   const tableRows = buildTableRows(data);
 
   return (
     <div className="space-y-6">
+      <KpiCards
+        summary={data.summary}
+        totalCustomers={totalCustomers}
+        previousPeriod={data.previousPeriod}
+        previousCustomers={previousCustomers}
+      />
+
       <SalesTrendChart
         timeSeries={data.timeSeries}
         lastYearTimeSeries={data.lastYearTimeSeries}

@@ -78,13 +78,13 @@ export default function CustomerTrendChart({
           <YAxis
             yAxisId="left"
             tickFormatter={(v: number) => `${v}`}
-            label={{ value: "客数", angle: -90, position: "insideLeft", offset: -5 }}
+            label={{ value: "客数（人）", angle: -90, position: "insideLeft", offset: -5 }}
           />
           <YAxis
             yAxisId="right"
             orientation="right"
             tickFormatter={(v: number) => `${(v / 1000).toFixed(0)}千円`}
-            label={{ value: "客単価", angle: 90, position: "insideRight", offset: -5 }}
+            label={{ value: "客単価（円）", angle: 90, position: "insideRight", offset: -5 }}
           />
           <ChartTooltip
             content={
