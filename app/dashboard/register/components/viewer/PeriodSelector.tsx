@@ -13,7 +13,7 @@ interface PeriodSelectorProps {
   onNavigate: (direction: "prev" | "next") => void;
 }
 
-const PERIOD_TYPES: PeriodType[] = ["day", "week", "month", "year", "custom"];
+const PERIOD_TYPES: PeriodType[] = ["week", "month", "year", "custom"];
 
 /** 表示用の期間ラベル */
 function formatPeriodLabel(periodType: PeriodType, dateFrom: string, dateTo: string): string {
