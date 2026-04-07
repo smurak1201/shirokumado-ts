@@ -79,21 +79,21 @@ export default function FolderSelector({
 
   return (
     <div className="space-y-3">
-      <div className="rounded-lg border border-gray-200 bg-gray-50 px-4 py-3 text-sm text-gray-600">
-        <p className="mb-2 font-medium text-gray-700">
+      <div className="rounded-8 border border-solid-gray-200 bg-solid-gray-50 px-4 py-3 text-sm text-solid-gray-600">
+        <p className="mb-2 font-medium text-solid-gray-700">
           以下のフォルダを選択してください
         </p>
         <div className="font-mono text-xs leading-relaxed">
           <p>SDカード</p>
           <p className="ml-3">
-            <span className="text-gray-400">└─</span> CASIO
+            <span className="text-solid-gray-420">└─</span> CASIO
           </p>
           <p className="ml-9">
-            <span className="text-gray-400">└─</span>{" "}
-            <span className="rounded bg-gray-900 px-1.5 py-0.5 font-bold text-white">
+            <span className="text-solid-gray-420">└─</span>{" "}
+            <span className="rounded bg-solid-gray-900 px-1.5 py-0.5 font-bold text-white">
               レジ名
             </span>
-            <span className="ml-1 font-sans text-gray-400">
+            <span className="ml-1 font-sans text-solid-gray-420">
               (例: SR500_550_4000)
             </span>
           </p>
@@ -114,7 +114,7 @@ export default function FolderSelector({
         type="button"
         onClick={() => inputRef.current?.click()}
         disabled={disabled}
-        className="rounded-lg bg-gray-900 px-6 py-3 text-sm font-medium text-white transition-all hover:bg-gray-800 disabled:opacity-50 cursor-pointer active:scale-95"
+        className="min-h-11 rounded-6 bg-solid-gray-900 px-6 py-3 text-sm font-medium text-white transition-colors hover:bg-solid-gray-800 disabled:opacity-50 cursor-pointer active:scale-95 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus-blue"
       >
         レジフォルダを選択
       </button>

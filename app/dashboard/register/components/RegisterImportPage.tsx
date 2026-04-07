@@ -175,8 +175,8 @@ export default function RegisterImportPage({
   return (
     <div className="space-y-6">
       {/* サマリー */}
-      <div className="rounded-lg border border-gray-200 bg-white p-4">
-        <div className="flex flex-col gap-2 text-sm text-gray-600 sm:flex-row sm:gap-6">
+      <div className="rounded-8 border border-solid-gray-200 bg-white p-4">
+        <div className="flex flex-col gap-2 text-sm text-solid-gray-600 sm:flex-row sm:gap-6">
           <span>取り込み済み: {summary.totalFiles}ファイル</span>
           <span>
             最終取り込み:{" "}
@@ -188,7 +188,7 @@ export default function RegisterImportPage({
       </div>
 
       {/* フォルダ選択 */}
-      <div className="rounded-lg border border-gray-200 bg-white p-6">
+      <div className="rounded-8 border border-solid-gray-200 bg-white p-6">
         <h2 className="mb-4 text-lg font-medium">CSVデータ取り込み</h2>
 
         <FolderSelector
@@ -197,11 +197,11 @@ export default function RegisterImportPage({
         />
 
         {state === "checking" && (
-          <p className="mt-3 text-sm text-gray-500">差分を確認中...</p>
+          <p className="mt-3 text-sm text-solid-gray-536">差分を確認中...</p>
         )}
 
         {allFiles.length > 0 && state !== "checking" && (
-          <p className="mt-3 text-sm text-gray-500">
+          <p className="mt-3 text-sm text-solid-gray-536">
             選択されたCSVファイル: {allFiles.length}件
             {pendingFiles.length > 0 &&
               ` (未取り込み: ${pendingFiles.length}件)`}
@@ -211,7 +211,7 @@ export default function RegisterImportPage({
 
       {/* 進捗 */}
       {state === "uploading" && (
-        <div className="rounded-lg border border-gray-200 bg-white p-6">
+        <div className="rounded-8 border border-solid-gray-200 bg-white p-6">
           <ImportProgress
             current={progress.current}
             total={progress.total}
@@ -222,16 +222,16 @@ export default function RegisterImportPage({
 
       {/* 完了 */}
       {state === "done" && (
-        <div className="rounded-lg border border-gray-200 bg-white p-6">
+        <div className="rounded-8 border border-solid-gray-200 bg-white p-6">
           <h3 className="mb-2 text-sm font-medium">取り込み完了</h3>
           {errors.length > 0 && (
-            <div className="rounded-lg border border-red-200 bg-red-50 p-3">
-              <p className="mb-1 text-sm font-medium text-red-800">
+            <div className="rounded-8 border border-error-1/20 bg-error-1/5 p-3">
+              <p className="mb-1 text-sm font-medium text-error-2">
                 エラー ({errors.length}件)
               </p>
               <ul className="space-y-1">
                 {errors.map((error, i) => (
-                  <li key={i} className="text-xs text-red-600">
+                  <li key={i} className="text-xs text-error-1">
                     {error}
                   </li>
                 ))}
@@ -246,7 +246,7 @@ export default function RegisterImportPage({
               setPendingFiles([]);
               setErrors([]);
             }}
-            className="mt-3 rounded-lg bg-gray-200 px-4 py-2 text-sm text-gray-700 transition-all hover:bg-gray-300 cursor-pointer active:scale-95"
+            className="mt-3 min-h-11 rounded-6 bg-solid-gray-50 px-4 py-2.5 text-sm font-medium text-solid-gray-700 transition-colors hover:bg-solid-gray-100 cursor-pointer active:scale-95 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus-blue"
           >
             新しい取り込みを開始
           </button>

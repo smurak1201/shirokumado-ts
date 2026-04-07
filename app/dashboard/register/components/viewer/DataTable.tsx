@@ -30,14 +30,14 @@ export default function DataTable<T>({
 }: DataTableProps<T>) {
   if (data.length === 0) {
     return (
-      <div className="rounded-lg border border-gray-200 bg-white p-6 text-center text-sm text-gray-400">
+      <div className="rounded-8 border border-solid-gray-200 bg-white p-6 text-center text-sm text-solid-gray-420">
         データがありません
       </div>
     );
   }
 
   return (
-    <div className="overflow-x-auto rounded-lg border border-gray-200">
+    <div className="overflow-x-auto rounded-8 border border-solid-gray-200">
       <Table>
         <TableHeader>
           <TableRow>
@@ -55,7 +55,7 @@ export default function DataTable<T>({
           {data.map((row, i) => (
             <TableRow
               key={i}
-              className={highlightRow?.(row) ? "bg-yellow-50" : undefined}
+              className={highlightRow?.(row) ? "bg-warning-yellow-1/10" : undefined}
             >
               {columns.map((col) => (
                 <TableCell
