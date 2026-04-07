@@ -71,7 +71,21 @@ export default function TopProductsDonut({ products }: TopProductsDonutProps) {
           <ChartTooltip
             content={
               <ChartTooltipContent
-                formatter={(value) => `${Number(value).toLocaleString("ja-JP")}円`}
+                formatter={(value, name, item) => (
+                  <>
+                    <div
+                      className="h-2.5 w-2.5 shrink-0 rounded-xs"
+                      style={{ backgroundColor: (item as { payload?: { fill?: string } }).payload?.fill }}
+                    />
+                    <div className="flex flex-1 items-center justify-between gap-2 leading-none">
+                      <span className="text-muted-foreground">{name}</span>
+                      <span className="font-mono font-medium tabular-nums text-foreground">
+                        {Number(value).toLocaleString("ja-JP")}円
+                      </span>
+                    </div>
+                  </>
+                )}
+                nameKey="itemName"
               />
             }
           />
