@@ -4,9 +4,7 @@ import { ValidationError } from "@/lib/errors";
 import { prisma, safePrismaOperation } from "@/lib/prisma";
 import type {
   RegisterDataResponse,
-  RegisterDataByMachineResponse,
   Granularity,
-  GroupBy,
   TimeSeriesEntry,
   AggregatedEntry,
   DataSummary,
@@ -430,7 +428,6 @@ export const GET = withErrorHandling(async (request: NextRequest) => {
   const dateFrom = searchParams.get("dateFrom");
   const dateTo = searchParams.get("dateTo");
   const machineNo = searchParams.get("machineNo") || null;
-  const groupBy = (searchParams.get("groupBy") || "combined") as GroupBy;
   const granularity = (searchParams.get("granularity") || "day") as Granularity;
   const compareLastYear = searchParams.get("compareLastYear") === "true";
 
@@ -481,47 +478,6 @@ export const GET = withErrorHandling(async (request: NextRequest) => {
   }
 
   if (type === "Z005") {
-    if (groupBy === "machine") {
-      // レジ別集計
-      const z005Rows = await fetchZ005Data(from, to, null);
-      const machineNos = [...new Set(z005Rows.map((r) => r.machineNo))];
-
-      const byMachine: Record<string, RegisterDataResponse> = {};
-
-      for (const mNo of machineNos) {
-        const machineRows = z005Rows.filter((r) => r.machineNo === mNo);
-        const timeSeries = buildTimeSeries(
-          machineRows.map((r) => ({ amount: r.amount, quantity: r.quantity, date: r.date })),
-          granularity
-        );
-
-        const totalAmount = machineRows.reduce((s, r) => s + r.amount, 0);
-        const totalQuantity = machineRows.reduce((s, r) => s + r.quantity, 0);
-
-        const aggregated: AggregatedEntry[] = [];
-        const itemMap = new Map<string, { q: number; a: number }>();
-        for (const r of machineRows) {
-          const existing = itemMap.get(r.itemName) ?? { q: 0, a: 0 };
-          existing.q += r.quantity;
-          existing.a += r.amount;
-          itemMap.set(r.itemName, existing);
-        }
-        for (const [name, val] of itemMap) {
-          aggregated.push({ itemName: name, totalQuantity: val.q, totalAmount: val.a });
-        }
-
-        byMachine[mNo] = {
-          aggregated,
-          timeSeries,
-          summary: calculateSummary(timeSeries, totalAmount, totalQuantity, machineRows.length),
-        };
-      }
-
-      const response: RegisterDataByMachineResponse = { byMachine };
-      return cachedSuccess(response);
-    }
-
-    // 合算集計
     const z005Rows = await fetchZ005Data(from, to, machineNo);
 
     // 部門別集計

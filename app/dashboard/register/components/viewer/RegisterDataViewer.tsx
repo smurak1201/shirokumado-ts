@@ -64,7 +64,6 @@ export default function RegisterDataViewer() {
     dateFrom,
     dateTo,
     machineNo,
-    groupBy,
     granularity,
     machines,
     data,
@@ -78,7 +77,6 @@ export default function RegisterDataViewer() {
     setDateFrom,
     setDateTo,
     setMachineNo,
-    setGroupBy,
     navigatePeriod,
   } = useRegisterData("Z005");
 
@@ -122,9 +120,7 @@ export default function RegisterDataViewer() {
           <MachineFilter
             machines={machines}
             machineNo={machineNo}
-            groupBy={groupBy}
             onMachineNoChange={setMachineNo}
-            onGroupByChange={setGroupBy}
           />
         </div>
         {/* 2列目: 設定・プリセット */}

@@ -10,9 +10,6 @@ export type Granularity = "day" | "week" | "month" | "year";
 /** 表示モード */
 export type ViewMode = "summary" | "detail";
 
-/** レジグループ化 */
-export type GroupBy = "combined" | "machine";
-
 /** フィルタ条件 */
 export interface RegisterFilter {
   type: RegisterDataType;
@@ -20,7 +17,6 @@ export interface RegisterFilter {
   dateTo: string;
   machineNo: string | null;
   view: ViewMode;
-  groupBy: GroupBy;
   granularity: Granularity;
   compareLastYear: boolean;
 }
@@ -87,10 +83,6 @@ export interface RegisterDataResponse {
   lastYearTimeSeries?: TimeSeriesEntry[];
 }
 
-/** データ取得APIレスポンス（レジ別） */
-export interface RegisterDataByMachineResponse {
-  byMachine: Record<string, RegisterDataResponse>;
-}
 
 /** レジ情報 */
 export interface MachineInfo {

@@ -6,14 +6,12 @@ import { fetchJson } from "@/lib/client-fetch";
 import { getUserFriendlyMessageJa } from "@/lib/errors";
 import type {
   RegisterDataResponse,
-  RegisterDataByMachineResponse,
   MachinesResponse,
   MachineInfo,
   AggregatedEntry,
   TimeSeriesEntry,
   PeriodType,
   Granularity,
-  GroupBy,
 } from "../../../types";
 
 /** 期間タイプからデフォルトの日付範囲を計算（baseDate: 基準日、省略時は今日） */
@@ -72,7 +70,6 @@ export interface UseRegisterDataReturn {
   dateFrom: string;
   dateTo: string;
   machineNo: string | null;
-  groupBy: GroupBy;
   granularity: Granularity;
 
   // フィルタ操作
@@ -80,12 +77,10 @@ export interface UseRegisterDataReturn {
   setDateFrom: (date: string) => void;
   setDateTo: (date: string) => void;
   setMachineNo: (no: string | null) => void;
-  setGroupBy: (groupBy: GroupBy) => void;
   navigatePeriod: (direction: "prev" | "next") => void;
 
   // データ
   data: RegisterDataResponse | null;
-  dataByMachine: RegisterDataByMachineResponse | null;
   machines: MachineInfo[];
   totalCustomers: number;
   previousCustomers: number;
@@ -106,11 +101,9 @@ export function useRegisterData(
   const [periodType, setPeriodTypeState] = useState<PeriodType>("month");
   const [dateRange, setDateRange] = useState(() => getDefaultDateRange("month"));
   const [machineNo, setMachineNo] = useState<string | null>(null);
-  const [groupBy, setGroupBy] = useState<GroupBy>("combined");
   const [granularity, setGranularity] = useState<Granularity>("day");
 
   const [data, setData] = useState<RegisterDataResponse | null>(null);
-  const [dataByMachine, setDataByMachine] = useState<RegisterDataByMachineResponse | null>(null);
   const [machines, setMachines] = useState<MachineInfo[]>([]);
   const [totalCustomers, setTotalCustomers] = useState(0);
   const [previousCustomers, setPreviousCustomers] = useState(0);
@@ -145,83 +138,74 @@ export function useRegisterData(
         dateFrom: dateRange.from,
         dateTo: dateRange.to,
         view: "summary",
-        groupBy,
+        groupBy: "combined",
         granularity,
         compareLastYear: "true",
       });
       if (machineNo) params.set("machineNo", machineNo);
 
-      if (groupBy === "machine") {
-        const result = await fetchJson<RegisterDataByMachineResponse>(
-          `/api/register/data?${params}`
-        );
-        setDataByMachine(result);
-        setData(null);
-      } else {
-        const result = await fetchJson<RegisterDataResponse>(
-          `/api/register/data?${params}`
-        );
-        setData(result);
-        setDataByMachine(null);
+      const result = await fetchJson<RegisterDataResponse>(
+        `/api/register/data?${params}`
+      );
+      setData(result);
 
-        // Z009（客数）とZ004（商品売上）を並列取得
-        const commonParams = {
-          dateFrom: dateRange.from,
-          dateTo: dateRange.to,
-          view: "summary",
-          groupBy: "combined",
-          granularity,
-        };
+      // Z009（客数）とZ004（商品売上）を並列取得
+      const commonParams = {
+        dateFrom: dateRange.from,
+        dateTo: dateRange.to,
+        view: "summary",
+        groupBy: "combined",
+        granularity,
+      };
 
-        const z009Params = new URLSearchParams({ ...commonParams, type: "Z009", granularity: "day" });
-        const z004Params = new URLSearchParams({ ...commonParams, type: "Z004" });
-        if (machineNo) {
-          z009Params.set("machineNo", machineNo);
-          z004Params.set("machineNo", machineNo);
-        }
-
-        // granularityがdayでない場合、曜日別チャート用に日別データも取得
-        const needsDailyFetch = granularity !== "day";
-        const dailyParams = needsDailyFetch
-          ? new URLSearchParams({
-              type: initialType,
-              dateFrom: dateRange.from,
-              dateTo: dateRange.to,
-              view: "summary",
-              groupBy,
-              granularity: "day",
-            })
-          : null;
-        if (dailyParams && machineNo) dailyParams.set("machineNo", machineNo);
-
-        const fetches: Promise<RegisterDataResponse>[] = [
-          fetchJson<RegisterDataResponse>(`/api/register/data?${z009Params}`),
-          fetchJson<RegisterDataResponse>(`/api/register/data?${z004Params}`),
-        ];
-        if (dailyParams) {
-          fetches.push(
-            fetchJson<RegisterDataResponse>(`/api/register/data?${dailyParams}`)
-          );
-        }
-
-        const results = await Promise.all(fetches);
-        const z009Result = results[0]!;
-        const z004Result = results[1]!;
-
-        setTotalCustomers(z009Result.summary.totalQuantity);
-        setPreviousCustomers(z009Result.previousPeriod?.totalQuantity ?? 0);
-        setTopProducts(z004Result.aggregated.slice(0, 10));
-        setDailyTimeSeries(
-          needsDailyFetch ? results[2]!.timeSeries : result.timeSeries
-        );
-        setDailyCustomerTimeSeries(z009Result.timeSeries);
+      const z009Params = new URLSearchParams({ ...commonParams, type: "Z009", granularity: "day" });
+      const z004Params = new URLSearchParams({ ...commonParams, type: "Z004" });
+      if (machineNo) {
+        z009Params.set("machineNo", machineNo);
+        z004Params.set("machineNo", machineNo);
       }
+
+      // granularityがdayでない場合、曜日別チャート用に日別データも取得
+      const needsDailyFetch = granularity !== "day";
+      const dailyParams = needsDailyFetch
+        ? new URLSearchParams({
+            type: initialType,
+            dateFrom: dateRange.from,
+            dateTo: dateRange.to,
+            view: "summary",
+            groupBy: "combined",
+            granularity: "day",
+          })
+        : null;
+      if (dailyParams && machineNo) dailyParams.set("machineNo", machineNo);
+
+      const fetches: Promise<RegisterDataResponse>[] = [
+        fetchJson<RegisterDataResponse>(`/api/register/data?${z009Params}`),
+        fetchJson<RegisterDataResponse>(`/api/register/data?${z004Params}`),
+      ];
+      if (dailyParams) {
+        fetches.push(
+          fetchJson<RegisterDataResponse>(`/api/register/data?${dailyParams}`)
+        );
+      }
+
+      const results = await Promise.all(fetches);
+      const z009Result = results[0]!;
+      const z004Result = results[1]!;
+
+      setTotalCustomers(z009Result.summary.totalQuantity);
+      setPreviousCustomers(z009Result.previousPeriod?.totalQuantity ?? 0);
+      setTopProducts(z004Result.aggregated.slice(0, 10));
+      setDailyTimeSeries(
+        needsDailyFetch ? results[2]!.timeSeries : result.timeSeries
+      );
+      setDailyCustomerTimeSeries(z009Result.timeSeries);
     } catch (err) {
       toast.error(getUserFriendlyMessageJa(err));
     } finally {
       setIsLoading(false);
     }
-  }, [initialType, dateRange, machineNo, groupBy, granularity]);
+  }, [initialType, dateRange, machineNo, granularity]);
 
   // レジ一覧取得完了後にデータ取得開始（デバウンス付き）
   useEffect(() => {
@@ -282,16 +266,13 @@ export function useRegisterData(
     dateFrom: dateRange.from,
     dateTo: dateRange.to,
     machineNo,
-    groupBy,
     granularity,
     setPeriodType,
     setDateFrom: (date: string) => setDateRange((prev) => ({ ...prev, from: date })),
     setDateTo: (date: string) => setDateRange((prev) => ({ ...prev, to: date })),
     setMachineNo,
-    setGroupBy,
     navigatePeriod,
     data,
-    dataByMachine,
     machines,
     totalCustomers,
     previousCustomers,
