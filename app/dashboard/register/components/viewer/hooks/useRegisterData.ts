@@ -92,6 +92,8 @@ export interface UseRegisterDataReturn {
   topProducts: AggregatedEntry[];
   /** 曜日別チャート用の日別timeSeries（granularityがdayでない場合に別途取得） */
   dailyTimeSeries: TimeSeriesEntry[];
+  /** 曜日別チャート用の日別客数timeSeries（Z009） */
+  dailyCustomerTimeSeries: TimeSeriesEntry[];
   isLoading: boolean;
 
   // 手動リフレッシュ
@@ -114,6 +116,7 @@ export function useRegisterData(
   const [previousCustomers, setPreviousCustomers] = useState(0);
   const [topProducts, setTopProducts] = useState<AggregatedEntry[]>([]);
   const [dailyTimeSeries, setDailyTimeSeries] = useState<TimeSeriesEntry[]>([]);
+  const [dailyCustomerTimeSeries, setDailyCustomerTimeSeries] = useState<TimeSeriesEntry[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [ready, setReady] = useState(false);
   const latestDateRef = useRef<Date | undefined>(undefined);
@@ -170,7 +173,7 @@ export function useRegisterData(
           granularity,
         };
 
-        const z009Params = new URLSearchParams({ ...commonParams, type: "Z009" });
+        const z009Params = new URLSearchParams({ ...commonParams, type: "Z009", granularity: "day" });
         const z004Params = new URLSearchParams({ ...commonParams, type: "Z004" });
         if (machineNo) {
           z009Params.set("machineNo", machineNo);
@@ -211,6 +214,7 @@ export function useRegisterData(
         setDailyTimeSeries(
           needsDailyFetch ? results[2]!.timeSeries : result.timeSeries
         );
+        setDailyCustomerTimeSeries(z009Result.timeSeries);
       }
     } catch (err) {
       toast.error(getUserFriendlyMessageJa(err));
@@ -293,6 +297,7 @@ export function useRegisterData(
     previousCustomers,
     topProducts,
     dailyTimeSeries,
+    dailyCustomerTimeSeries,
     isLoading,
     refetch: fetchData,
   };

@@ -23,6 +23,8 @@ interface SalesOverviewTabProps {
   topProducts: AggregatedEntry[];
   /** 曜日別チャート用の日別timeSeries */
   dailyTimeSeries: TimeSeriesEntry[];
+  /** 曜日別チャート用の日別客数timeSeries（Z009） */
+  dailyCustomerTimeSeries?: TimeSeriesEntry[];
   granularity?: Granularity;
 }
 
@@ -32,6 +34,7 @@ export default function SalesOverviewTab({
   previousCustomers,
   topProducts,
   dailyTimeSeries,
+  dailyCustomerTimeSeries,
   granularity,
 }: SalesOverviewTabProps) {
   return (
@@ -48,7 +51,7 @@ export default function SalesOverviewTab({
 
       {/* グラフエリア */}
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-        <DayOfWeekChart timeSeries={dailyTimeSeries} />
+        <DayOfWeekChart timeSeries={dailyTimeSeries} customerTimeSeries={dailyCustomerTimeSeries} />
         <TopProductsDonut products={topProducts} />
       </div>
 

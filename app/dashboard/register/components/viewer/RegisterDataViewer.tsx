@@ -68,6 +68,7 @@ export default function RegisterDataViewer() {
     previousCustomers,
     topProducts,
     dailyTimeSeries,
+    dailyCustomerTimeSeries,
     isLoading,
     setPeriodType,
     setDateFrom,
@@ -132,6 +133,7 @@ export default function RegisterDataViewer() {
                   previousCustomers={previousCustomers}
                   topProducts={topProducts}
                   dailyTimeSeries={dailyTimeSeries}
+                  dailyCustomerTimeSeries={dailyCustomerTimeSeries}
                   granularity={granularity}
                 />
               ) : (

@@ -11,6 +11,8 @@ import type { TimeSeriesEntry } from "../../../types";
 
 interface DayOfWeekChartProps {
   timeSeries: TimeSeriesEntry[];
+  /** Z009から取得した日別客数timeSeries（曜日別平均客数の計算に使用） */
+  customerTimeSeries?: TimeSeriesEntry[];
 }
 
 const DAY_LABELS = ["月", "火", "水", "木", "金", "土", "日"];
@@ -24,11 +26,11 @@ const chartConfig = {
 
 /** 時系列データを曜日ごとに集計 */
 function aggregateByDayOfWeek(
-  timeSeries: TimeSeriesEntry[]
+  timeSeries: TimeSeriesEntry[],
+  customerTimeSeries?: TimeSeriesEntry[]
 ): Array<{ day: string; avgAmount: number; avgQuantity: number }> {
   const buckets = Array.from({ length: 7 }, () => ({
     totalAmount: 0,
-    totalQuantity: 0,
     count: 0,
   }));
 
@@ -38,6 +40,19 @@ function aggregateByDayOfWeek(
     const dayIndex = (date.getDay() + 6) % 7;
     const bucket = buckets[dayIndex]!;
     bucket.totalAmount += entry.totalAmount;
+    bucket.count += 1;
+  }
+
+  // 客数はZ009データから集計（販売個数ではなく実際の客数を使用）
+  const customerBuckets = Array.from({ length: 7 }, () => ({
+    totalQuantity: 0,
+    count: 0,
+  }));
+
+  for (const entry of customerTimeSeries ?? timeSeries) {
+    const date = new Date(entry.period);
+    const dayIndex = (date.getDay() + 6) % 7;
+    const bucket = customerBuckets[dayIndex]!;
     bucket.totalQuantity += entry.totalQuantity;
     bucket.count += 1;
   }
@@ -45,12 +60,14 @@ function aggregateByDayOfWeek(
   return buckets.map((b, i) => ({
     day: DAY_LABELS[i]!,
     avgAmount: b.count > 0 ? Math.round(b.totalAmount / b.count) : 0,
-    avgQuantity: b.count > 0 ? Math.round(b.totalQuantity / b.count) : 0,
+    avgQuantity: customerBuckets[i]!.count > 0
+      ? Math.round(customerBuckets[i]!.totalQuantity / customerBuckets[i]!.count)
+      : 0,
   }));
 }
 
-export default function DayOfWeekChart({ timeSeries }: DayOfWeekChartProps) {
-  const data = aggregateByDayOfWeek(timeSeries);
+export default function DayOfWeekChart({ timeSeries, customerTimeSeries }: DayOfWeekChartProps) {
+  const data = aggregateByDayOfWeek(timeSeries, customerTimeSeries);
 
   return (
     <section className="rounded-8 border border-solid-gray-200 bg-white p-4" aria-label="曜日別売上">
