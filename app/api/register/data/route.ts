@@ -430,6 +430,8 @@ export const GET = withErrorHandling(async (request: NextRequest) => {
   const machineNo = searchParams.get("machineNo") || null;
   const granularity = (searchParams.get("granularity") || "day") as Granularity;
   const compareLastYear = searchParams.get("compareLastYear") === "true";
+  const compareFrom = searchParams.get("compareFrom");
+  const compareTo = searchParams.get("compareTo");
 
   if (!type || !dateFrom || !dateTo) {
     throw new ValidationError("type, dateFrom, dateTo は必須です");
@@ -501,10 +503,12 @@ export const GET = withErrorHandling(async (request: NextRequest) => {
     const totalAmount = z005Rows.reduce((s, r) => s + r.amount, 0);
     const totalQuantity = z005Rows.reduce((s, r) => s + r.quantity, 0);
 
-    // 前年同期比
+    // 比較期間データ取得（compareFrom/compareToが指定されていればそれを、なければ前年同期を使用）
     let previousPeriod: { totalAmount: number; totalQuantity: number } | undefined;
-    const lastYear = getLastYearRange(dateFrom, dateTo);
-    const prevRows = await fetchZ005Data(lastYear.from, lastYear.to, machineNo);
+    const compRange = compareFrom && compareTo
+      ? { from: new Date(compareFrom), to: new Date(compareTo) }
+      : getLastYearRange(dateFrom, dateTo);
+    const prevRows = await fetchZ005Data(compRange.from, compRange.to, machineNo);
     if (prevRows.length > 0) {
       previousPeriod = {
         totalAmount: prevRows.reduce((s, r) => s + r.amount, 0),
@@ -512,11 +516,13 @@ export const GET = withErrorHandling(async (request: NextRequest) => {
       };
     }
 
-    // 前年同期時系列
+    // 比較期間時系列
     let lastYearTimeSeries: TimeSeriesEntry[] | undefined;
-    if (compareLastYear) {
-      const ly = getLastYearRange(dateFrom, dateTo);
-      const lyRows = await fetchZ005Data(ly.from, ly.to, machineNo);
+    if (compareLastYear || (compareFrom && compareTo)) {
+      const lyRange = compareFrom && compareTo
+        ? { from: new Date(compareFrom), to: new Date(compareTo) }
+        : getLastYearRange(dateFrom, dateTo);
+      const lyRows = await fetchZ005Data(lyRange.from, lyRange.to, machineNo);
       lastYearTimeSeries = buildTimeSeries(
         lyRows.map((r) => ({ amount: r.amount, quantity: r.quantity, date: r.date })),
         granularity
@@ -559,10 +565,12 @@ export const GET = withErrorHandling(async (request: NextRequest) => {
     const totalAmount = z009Rows.reduce((s, r) => s + r.amount, 0);
     const totalQuantity = z009Rows.reduce((s, r) => s + r.quantity, 0);
 
-    // 前年同期比
+    // 比較期間データ取得
     let previousPeriod: { totalAmount: number; totalQuantity: number } | undefined;
-    const lastYear = getLastYearRange(dateFrom, dateTo);
-    const prevRows = await fetchZ009Data(lastYear.from, lastYear.to, machineNo);
+    const z009CompRange = compareFrom && compareTo
+      ? { from: new Date(compareFrom), to: new Date(compareTo) }
+      : getLastYearRange(dateFrom, dateTo);
+    const prevRows = await fetchZ009Data(z009CompRange.from, z009CompRange.to, machineNo);
     if (prevRows.length > 0) {
       previousPeriod = {
         totalAmount: prevRows.reduce((s, r) => s + r.amount, 0),

@@ -23,6 +23,8 @@ interface SalesTrendTabProps {
   dateFrom: string;
   dateTo: string;
   granularity: Granularity;
+  /** 比較ラベル（省略時は「前年比」） */
+  compareLabel?: string;
 }
 
 /** 期間内の全ポイントを生成し、データがない日は0で埋める */
@@ -173,6 +175,7 @@ export default function SalesTrendTab({
   dateFrom,
   dateTo,
   granularity,
+  compareLabel,
 }: SalesTrendTabProps) {
   // 期間全体を0埋めした時系列データ
   const filledTimeSeries = fillTimeSeries(data.timeSeries, dateFrom, dateTo, granularity);
@@ -200,6 +203,7 @@ export default function SalesTrendTab({
         previousCustomers={previousCustomers}
         granularity={granularity}
         periodCount={data.timeSeries.length}
+        compareLabel={compareLabel}
       />
 
       <SalesTrendChart

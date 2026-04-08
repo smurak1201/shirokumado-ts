@@ -30,6 +30,8 @@ interface SalesOverviewTabProps {
   granularity?: Granularity;
   /** フィルタの開始日（目標月の特定に使用） */
   dateFrom: string;
+  /** 比較ラベル（省略時は「前年比」） */
+  compareLabel?: string;
 }
 
 export default function SalesOverviewTab({
@@ -41,6 +43,7 @@ export default function SalesOverviewTab({
   dailyCustomerTimeSeries,
   granularity,
   dateFrom,
+  compareLabel,
 }: SalesOverviewTabProps) {
   // フィルタの開始日から年月を取得（dateFromは"YYYY-MM-DD"形式）
   const filterDate = new Date(dateFrom);
@@ -68,6 +71,7 @@ export default function SalesOverviewTab({
         previousCustomers={previousCustomers}
         granularity={granularity}
         periodCount={data.timeSeries.length}
+        compareLabel={compareLabel}
       />
 
       {/* グラフエリア */}

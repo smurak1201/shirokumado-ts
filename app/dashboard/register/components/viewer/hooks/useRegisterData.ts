@@ -71,6 +71,8 @@ export interface UseRegisterDataReturn {
   dateTo: string;
   machineNo: string | null;
   granularity: Granularity;
+  /** カスタム比較期間（null=比較なし） */
+  compareRange: { from: string; to: string } | null;
 
   // フィルタ操作
   setPeriodType: (type: PeriodType) => void;
@@ -78,6 +80,7 @@ export interface UseRegisterDataReturn {
   setDateTo: (date: string) => void;
   setMachineNo: (no: string | null) => void;
   navigatePeriod: (direction: "prev" | "next") => void;
+  setCompareRange: (range: { from: string; to: string } | null) => void;
 
   // データ
   data: RegisterDataResponse | null;
@@ -103,6 +106,7 @@ export function useRegisterData(
   const [dateRange, setDateRange] = useState(() => getDefaultDateRange("month"));
   const [machineNo, setMachineNo] = useState<string | null>(null);
   const [granularity, setGranularity] = useState<Granularity>("day");
+  const [compareRange, setCompareRange] = useState<{ from: string; to: string } | null>(null);
 
   const [data, setData] = useState<RegisterDataResponse | null>(null);
   const [machines, setMachines] = useState<MachineInfo[]>([]);
@@ -151,8 +155,15 @@ export function useRegisterData(
         view: "summary",
         groupBy: "combined",
         granularity,
-        compareLastYear: "true",
       });
+      // カスタムモード: 比較プリセット選択時のみ比較データを取得
+      // 週/月/年モード: 常に前年同期を取得
+      if (compareRange) {
+        params.set("compareFrom", compareRange.from);
+        params.set("compareTo", compareRange.to);
+      } else if (periodType !== "custom") {
+        params.set("compareLastYear", "true");
+      }
       if (machineNo) params.set("machineNo", machineNo);
 
       const result = await fetchJson<RegisterDataResponse>(
@@ -171,6 +182,13 @@ export function useRegisterData(
 
       const z009Params = new URLSearchParams({ ...commonParams, type: "Z009", granularity: "day" });
       const z004Params = new URLSearchParams({ ...commonParams, type: "Z004" });
+      // Z009にも比較期間パラメータを渡す（客数の比較に必要）
+      if (compareRange) {
+        z009Params.set("compareFrom", compareRange.from);
+        z009Params.set("compareTo", compareRange.to);
+      } else if (periodType !== "custom") {
+        z009Params.set("compareLastYear", "true");
+      }
       if (machineNo) {
         z009Params.set("machineNo", machineNo);
         z004Params.set("machineNo", machineNo);
@@ -216,7 +234,7 @@ export function useRegisterData(
     } finally {
       setIsLoading(false);
     }
-  }, [initialType, dateRange, machineNo, granularity]);
+  }, [initialType, dateRange, machineNo, granularity, compareRange, periodType]);
 
   // レジ一覧取得完了後にデータ取得開始（デバウンス付き）
   useEffect(() => {
@@ -278,11 +296,13 @@ export function useRegisterData(
     dateTo: dateRange.to,
     machineNo,
     granularity,
+    compareRange,
     setPeriodType,
     setDateFrom: (date: string) => setDateRange((prev) => ({ ...prev, from: date })),
     setDateTo: (date: string) => setDateRange((prev) => ({ ...prev, to: date })),
     setMachineNo,
     navigatePeriod,
+    setCompareRange,
     data,
     machines,
     totalCustomers,

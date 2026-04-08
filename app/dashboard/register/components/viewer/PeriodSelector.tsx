@@ -4,6 +4,13 @@ import type { ReactNode } from "react";
 import type { PeriodType } from "../../types";
 import { PERIOD_LABELS } from "../../types";
 
+interface ComparePreset {
+  id: number;
+  name: string;
+  dateFrom: string;
+  dateTo: string;
+}
+
 interface PeriodSelectorProps {
   periodType: PeriodType;
   dateFrom: string;
@@ -14,6 +21,12 @@ interface PeriodSelectorProps {
   onNavigate: (direction: "prev" | "next") => void;
   /** カスタムモード時に終了日の横に表示するアクション */
   saveAction?: ReactNode;
+  /** 比較用プリセット一覧 */
+  comparePresets?: ComparePreset[];
+  /** 選択中の比較プリセットID（null=比較なし） */
+  selectedComparePresetId?: number | null;
+  /** 比較プリセット選択時のコールバック */
+  onComparePresetChange?: (presetId: number | null) => void;
 }
 
 const PERIOD_TYPES: PeriodType[] = ["week", "month", "year", "custom"];
@@ -44,6 +57,9 @@ export default function PeriodSelector({
   onDateToChange,
   onNavigate,
   saveAction,
+  comparePresets = [],
+  selectedComparePresetId = null,
+  onComparePresetChange,
 }: PeriodSelectorProps) {
   return (
     <>
@@ -81,6 +97,24 @@ export default function PeriodSelector({
             className="rounded-6 border border-solid-gray-420 px-3 py-2.5 text-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus-blue"
           />
           {saveAction}
+          {comparePresets.length > 0 && onComparePresetChange && (
+            <select
+              value={selectedComparePresetId ?? ""}
+              onChange={(e) => {
+                const val = e.target.value;
+                onComparePresetChange(val ? Number(val) : null);
+              }}
+              className="rounded-6 border border-solid-gray-420 bg-white px-3 py-2.5 text-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus-blue"
+              aria-label="比較期間"
+            >
+              <option value="">比較なし</option>
+              {comparePresets.map((p) => (
+                <option key={p.id} value={p.id}>
+                  {p.name}（{p.dateFrom.slice(0, 10)} ~ {p.dateTo.slice(0, 10)}）
+                </option>
+              ))}
+            </select>
+          )}
         </div>
       ) : (
         <div className="flex items-center gap-3">

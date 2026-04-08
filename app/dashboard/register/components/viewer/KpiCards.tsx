@@ -12,6 +12,8 @@ interface KpiCardsProps {
   granularity?: Granularity;
   /** timeSeriesのエントリ数（客数平均の計算に使用） */
   periodCount?: number;
+  /** 比較ラベル（省略時は「前年比」） */
+  compareLabel?: string;
 }
 
 /** 金額をカンマ区切りでフォーマット */
@@ -26,12 +28,12 @@ function calcChangeRate(current: number, previous: number): number | null {
 }
 
 /** 変化率の表示 */
-function ChangeIndicator({ rate }: { rate: number | null }) {
+function ChangeIndicator({ rate, label }: { rate: number | null; label: string }) {
   if (rate === null) return <span className="text-sm text-solid-gray-536">--</span>;
   const isPositive = rate > 0;
   const color = isPositive ? "text-success-1" : rate < 0 ? "text-error-1" : "text-solid-gray-536";
   const arrow = isPositive ? "+" : "";
-  return <span className={`text-sm font-bold ${color}`}>前年比 {arrow}{rate}%</span>;
+  return <span className={`text-sm font-bold ${color}`}>{label} {arrow}{rate}%</span>;
 }
 
 const AVG_LABELS: Record<Granularity, string> = {
@@ -48,6 +50,7 @@ export default function KpiCards({
   previousCustomers,
   granularity = "day",
   periodCount = 1,
+  compareLabel = "前年比",
 }: KpiCardsProps) {
   const avgUnitPrice = totalCustomers > 0 ? Math.round(summary.totalAmount / totalCustomers) : 0;
   const prevAvgUnitPrice =
@@ -90,7 +93,7 @@ export default function KpiCards({
           <dt className="mb-2 text-sm text-solid-gray-536">{card.label}</dt>
           <dd className="flex items-baseline gap-2">
             <span className="text-xl font-bold text-solid-gray-900">{card.value}</span>
-            <ChangeIndicator rate={card.change} />
+            <ChangeIndicator rate={card.change} label={compareLabel} />
           </dd>
           {card.sub && (
             <dd className="mt-2 text-sm text-solid-gray-536">{card.sub}</dd>

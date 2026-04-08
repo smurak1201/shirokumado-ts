@@ -81,12 +81,30 @@ export default function RegisterDataViewer() {
     setMachineNo,
     navigatePeriod,
     refetchMachines,
+    setCompareRange,
   } = useRegisterData("Z005");
 
   const { presets, isLoading: isPresetsLoading, createPreset, deletePreset } = usePeriodPresets();
   const { defaults, isLoading: isSettingsLoading } = useDashboardSettings();
   const [activeTab, setActiveTab] = useState<AnalysisTabValue>("overview");
   const [hasAppliedDefaults, setHasAppliedDefaults] = useState(false);
+  const [selectedComparePresetId, setSelectedComparePresetId] = useState<number | null>(null);
+
+  /** 比較プリセット選択時にcompareRangeを更新 */
+  const handleComparePresetChange = (presetId: number | null) => {
+    setSelectedComparePresetId(presetId);
+    if (presetId === null) {
+      setCompareRange(null);
+      return;
+    }
+    const preset = presets.find((p) => p.id === presetId);
+    if (preset) {
+      setCompareRange({
+        from: preset.dateFrom.slice(0, 10),
+        to: preset.dateTo.slice(0, 10),
+      });
+    }
+  };
 
   // 設定ロード完了後に初回のみデフォルト値を反映（レンダリング中の条件付き更新）
   if (!isSettingsLoading && !hasAppliedDefaults) {
@@ -94,6 +112,11 @@ export default function RegisterDataViewer() {
     setActiveTab(defaults.defaultTab);
     setHasAppliedDefaults(true);
   }
+
+  // 比較ラベル: カスタム比較時はプリセット名、それ以外は「前年比」
+  const compareLabel = selectedComparePresetId
+    ? `${presets.find((p) => p.id === selectedComparePresetId)?.name ?? ""}比`
+    : "前年比";
 
   /** ローディング中はプレースホルダーを表示するラッパー */
   function withLoading(content: ReactNode): ReactNode {
@@ -126,15 +149,11 @@ export default function RegisterDataViewer() {
               onSave={createPreset}
             />
           }
+          comparePresets={presets}
+          selectedComparePresetId={selectedComparePresetId}
+          onComparePresetChange={handleComparePresetChange}
         />
-        <div className="ml-auto">
-          <MachineFilter
-            machines={machines}
-            machineNo={machineNo}
-            onMachineNoChange={setMachineNo}
-          />
-        </div>
-        {/* 2列目: 設定・プリセット */}
+        {/* 2列目: 設定・プリセット・レジ選択 */}
         <div className="flex w-full flex-wrap items-center gap-2">
           <SettingsDialog machines={machines} onMachineNamesChange={refetchMachines} />
           <SalesTargetSettings />
@@ -148,6 +167,13 @@ export default function RegisterDataViewer() {
             }}
             onDelete={deletePreset}
           />
+          <div className="ml-auto">
+            <MachineFilter
+              machines={machines}
+              machineNo={machineNo}
+              onMachineNoChange={setMachineNo}
+            />
+          </div>
         </div>
       </div>
 
@@ -173,6 +199,7 @@ export default function RegisterDataViewer() {
                   dailyCustomerTimeSeries={dailyCustomerTimeSeries}
                   granularity={granularity}
                   dateFrom={dateFrom}
+                  compareLabel={compareLabel}
                 />
               ) : (
                 <div className="rounded-8 border border-solid-gray-200 bg-white p-6 text-center text-sm text-solid-gray-536">
@@ -192,6 +219,7 @@ export default function RegisterDataViewer() {
                   dateFrom={dateFrom}
                   dateTo={dateTo}
                   granularity={granularity}
+                  compareLabel={compareLabel}
                 />
               ) : (
                 <div className="rounded-8 border border-solid-gray-200 bg-white p-6 text-center text-sm text-solid-gray-536">
