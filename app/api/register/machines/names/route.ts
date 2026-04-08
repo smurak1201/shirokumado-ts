@@ -64,7 +64,10 @@ export const PUT = withErrorHandling(async (request: NextRequest) => {
     if (!current) {
       throw new ValidationError("指定されたレジ名が見つかりません");
     }
-    newName = current.defaultName || current.machineNo;
+    if (!current.defaultName) {
+      throw new ValidationError("デフォルト名が未登録です。CSVを再取り込みしてください");
+    }
+    newName = current.defaultName;
   }
 
   const updated = await safePrismaOperation(

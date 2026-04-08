@@ -10,9 +10,11 @@ CREATE TABLE "reg_machine_names_new" (
     CONSTRAINT "reg_machine_names_new_pkey" PRIMARY KEY ("id")
 );
 
--- 既存データを移行
+-- 既存データを移行（default_nameが空の場合はnameで補完）
 INSERT INTO "reg_machine_names_new" ("id", "machine_no", "name", "default_name", "created_at")
-SELECT "id", "machine_no", "name", "default_name", "created_at"
+SELECT "id", "machine_no", "name",
+  CASE WHEN "default_name" = '' THEN "name" ELSE "default_name" END,
+  "created_at"
 FROM "reg_machine_names";
 
 -- シーケンスを引き継ぐ
