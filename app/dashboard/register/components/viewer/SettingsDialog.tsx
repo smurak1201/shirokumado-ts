@@ -44,9 +44,10 @@ const SELECTABLE_PERIOD_TYPES: PeriodType[] = ["day", "week", "month", "year"];
 
 interface SettingsDialogProps {
   machines: MachineInfo[];
+  onMachineNamesChange: () => Promise<void>;
 }
 
-export default function SettingsDialog({ machines }: SettingsDialogProps) {
+export default function SettingsDialog({ machines, onMachineNamesChange }: SettingsDialogProps) {
   const {
     machineNames,
     isLoading: isMachineNamesLoading,
@@ -78,15 +79,17 @@ export default function SettingsDialog({ machines }: SettingsDialogProps) {
     if (success) {
       setNewMachineNo("");
       setNewName("");
+      await onMachineNamesChange();
     }
   };
 
+  // 空欄で保存するとCSV取り込み時のデフォルト名に戻る
   const handleUpdate = async (id: number) => {
-    if (!editingName.trim()) return;
     const success = await updateMachineName(id, editingName);
     if (success) {
       setEditingId(null);
       setEditingName("");
+      await onMachineNamesChange();
     }
   };
 
@@ -187,6 +190,7 @@ export default function SettingsDialog({ machines }: SettingsDialogProps) {
                             <Input
                               value={editingName}
                               onChange={(e) => setEditingName(e.target.value)}
+                              placeholder="空欄で初期名に戻す"
                               className="h-8"
                               onKeyDown={(e) => {
                                 if (e.key === "Enter") handleUpdate(mn.id);
@@ -220,7 +224,7 @@ export default function SettingsDialog({ machines }: SettingsDialogProps) {
                             variant="ghost"
                             size="icon"
                             className="h-7 w-7 text-red-500 hover:text-red-700"
-                            onClick={() => deleteMachineName(mn.id)}
+                            onClick={async () => { const ok = await deleteMachineName(mn.id); if (ok) await onMachineNamesChange(); }}
                             aria-label={`${mn.name}を削除`}
                           >
                             <Trash2 className="h-3 w-3" />

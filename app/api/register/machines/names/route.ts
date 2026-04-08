@@ -51,15 +51,27 @@ export const PUT = withErrorHandling(async (request: NextRequest) => {
   if (!id || typeof id !== "number") {
     throw new ValidationError("有効なIDを指定してください");
   }
-  if (!name || typeof name !== "string" || name.trim().length === 0) {
-    throw new ValidationError("表示名を入力してください");
+
+  // 空欄の場合はデフォルト名（CSV取り込み時のフォルダ名）に戻す
+  const trimmedName = typeof name === "string" ? name.trim() : "";
+
+  let newName = trimmedName;
+  if (!newName) {
+    const current = await safePrismaOperation(
+      () => prisma.registerMachineName.findUnique({ where: { id } }),
+      "PUT /api/register/machines/names (findUnique)"
+    );
+    if (!current) {
+      throw new ValidationError("指定されたレジ名が見つかりません");
+    }
+    newName = current.defaultName || current.machineNo;
   }
 
   const updated = await safePrismaOperation(
     () =>
       prisma.registerMachineName.update({
         where: { id },
-        data: { name: name.trim() },
+        data: { name: newName },
       }),
     "PUT /api/register/machines/names"
   );

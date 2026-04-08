@@ -174,13 +174,14 @@ export const POST = withErrorHandling(async (request: NextRequest) => {
   }
 
   // レジ名の自動登録（未登録のmachineNoにデフォルト名としてフォルダ名を設定）
+  // defaultNameには常に最新のフォルダ名を保存し、名前リセット時に復元できるようにする
   if (typeof registerName === "string" && registerName && importedMachineNos.size > 0) {
     for (const machineNo of importedMachineNos) {
       try {
         await prisma.registerMachineName.upsert({
           where: { machineNo },
-          create: { machineNo, name: registerName },
-          update: {},
+          create: { machineNo, name: registerName, defaultName: registerName },
+          update: { defaultName: registerName },
         });
       } catch {
         // レジ名の登録失敗は取り込み結果に影響しないため続行
