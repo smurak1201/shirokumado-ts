@@ -12,6 +12,7 @@ import SavePeriodPresetButton from "./SavePeriodPresetButton";
 import SettingsDialog from "./SettingsDialog";
 import SalesTargetSettings from "./SalesTargetSettings";
 import { useDashboardSettings } from "./hooks/useDashboardSettings";
+import { useSalesTarget } from "./hooks/useSalesTarget";
 import SalesOverviewTab from "./tabs/SalesOverviewTab";
 import SalesTrendTab from "./tabs/SalesTrendTab";
 import HourlyAnalysisTab from "./tabs/HourlyAnalysisTab";
@@ -86,6 +87,14 @@ export default function RegisterDataViewer() {
 
   const { presets, isLoading: isPresetsLoading, createPreset, deletePreset } = usePeriodPresets();
   const { defaults, isLoading: isSettingsLoading } = useDashboardSettings();
+
+  // メインデータ取得と並列で売上目標を取得（SalesOverviewTab内で呼ぶと直列になり遅延する）
+  const filterDate = new Date(dateFrom);
+  const targetYear = filterDate.getFullYear();
+  const targetMonth = filterDate.getMonth() + 1;
+  const { getTargetForMonth } = useSalesTarget(targetYear);
+  const monthlyTarget = getTargetForMonth(targetMonth);
+
   const [activeTab, setActiveTab] = useState<AnalysisTabValue>("overview");
   const [hasAppliedDefaults, setHasAppliedDefaults] = useState(false);
   const [selectedComparePresetId, setSelectedComparePresetId] = useState<number | null>(null);
@@ -200,6 +209,7 @@ export default function RegisterDataViewer() {
                   granularity={granularity}
                   dateFrom={dateFrom}
                   compareLabel={compareLabel}
+                  monthlyTarget={monthlyTarget}
                 />
               ) : (
                 <div className="rounded-8 border border-solid-gray-200 bg-white p-6 text-center text-sm text-solid-gray-536">

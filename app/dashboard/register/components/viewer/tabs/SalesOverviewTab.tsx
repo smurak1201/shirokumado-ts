@@ -2,9 +2,9 @@
 
 import dynamic from "next/dynamic";
 import type { RegisterDataResponse, AggregatedEntry, TimeSeriesEntry, Granularity } from "../../../types";
+import type { SalesTarget } from "../hooks/useSalesTarget";
 import KpiCards from "../KpiCards";
 import TargetProgressBar from "../charts/TargetProgressBar";
-import { useSalesTarget } from "../hooks/useSalesTarget";
 
 const DayOfWeekChart = dynamic(() => import("../charts/DayOfWeekChart"), {
   ssr: false,
@@ -32,6 +32,8 @@ interface SalesOverviewTabProps {
   dateFrom: string;
   /** 比較ラベル（省略時は「前年比」） */
   compareLabel?: string;
+  /** 親で取得済みの月別売上目標（メインデータと並列取得） */
+  monthlyTarget: SalesTarget | null;
 }
 
 export default function SalesOverviewTab({
@@ -44,13 +46,11 @@ export default function SalesOverviewTab({
   granularity,
   dateFrom,
   compareLabel,
+  monthlyTarget,
 }: SalesOverviewTabProps) {
-  // フィルタの開始日から年月を取得（dateFromは"YYYY-MM-DD"形式）
   const filterDate = new Date(dateFrom);
   const targetYear = filterDate.getFullYear();
   const targetMonth = filterDate.getMonth() + 1;
-  const { getTargetForMonth } = useSalesTarget(targetYear);
-  const monthlyTarget = getTargetForMonth(targetMonth);
 
   return (
     <section className="space-y-6" aria-label="売上概要">
