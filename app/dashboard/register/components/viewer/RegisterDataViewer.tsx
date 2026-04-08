@@ -7,9 +7,8 @@ import { useRegisterData } from "./hooks/useRegisterData";
 import PeriodSelector from "./PeriodSelector";
 import MachineFilter from "./MachineFilter";
 import PeriodPresets from "./PeriodPresets";
-import MachineNameSettings from "./MachineNameSettings";
+import SettingsDialog from "./SettingsDialog";
 import SalesTargetSettings from "./SalesTargetSettings";
-import DashboardSettings from "./DashboardSettings";
 import { useDashboardSettings } from "./hooks/useDashboardSettings";
 import SalesOverviewTab from "./tabs/SalesOverviewTab";
 import SalesTrendTab from "./tabs/SalesTrendTab";
@@ -119,26 +118,28 @@ export default function RegisterDataViewer() {
           onDateToChange={setDateTo}
           onNavigate={navigatePeriod}
         />
-        <MachineFilter
-          machines={machines}
-          machineNo={machineNo}
-          groupBy={groupBy}
-          onMachineNoChange={setMachineNo}
-          onGroupByChange={setGroupBy}
-        />
-        <div className="flex flex-wrap items-center gap-2">
-          <MachineNameSettings machines={machines} />
-          <SalesTargetSettings />
-          <DashboardSettings />
+        <div className="ml-auto">
+          <MachineFilter
+            machines={machines}
+            machineNo={machineNo}
+            groupBy={groupBy}
+            onMachineNoChange={setMachineNo}
+            onGroupByChange={setGroupBy}
+          />
         </div>
-        <PeriodPresets
-          currentDateFrom={dateFrom}
-          currentDateTo={dateTo}
-          onApply={(from, to) => {
-            setDateFrom(from);
-            setDateTo(to);
-          }}
-        />
+        {/* 2列目: 設定・プリセット */}
+        <div className="flex w-full flex-wrap items-center gap-2">
+          <SettingsDialog machines={machines} />
+          <SalesTargetSettings />
+          <PeriodPresets
+            currentDateFrom={dateFrom}
+            currentDateTo={dateTo}
+            onApply={(from, to) => {
+              setDateFrom(from);
+              setDateTo(to);
+            }}
+          />
+        </div>
       </div>
 
       {/* 第2層タブ */}
