@@ -14,13 +14,21 @@ import type {
   Granularity,
 } from "../../../types";
 
+/** ローカルタイムの日付をYYYY-MM-DD形式にフォーマット（toISOString()はUTC変換で日付がずれるため使用しない） */
+function formatLocalDate(d: Date): string {
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  return `${y}-${m}-${day}`;
+}
+
 /** 期間タイプからデフォルトの日付範囲を計算（baseDate: 基準日、省略時は今日） */
 function getDefaultDateRange(
   periodType: PeriodType,
   baseDate?: Date
 ): { from: string; to: string } {
   const base = baseDate ?? new Date();
-  const baseStr = base.toISOString().split("T")[0]!;
+  const baseStr = formatLocalDate(base);
 
   switch (periodType) {
     case "day":
@@ -29,15 +37,15 @@ function getDefaultDateRange(
       const d = new Date(base);
       const day = d.getDay() || 7;
       d.setDate(d.getDate() - day + 1);
-      const weekStart = d.toISOString().split("T")[0]!;
+      const weekStart = formatLocalDate(d);
       d.setDate(d.getDate() + 6);
-      const weekEnd = d.toISOString().split("T")[0]!;
+      const weekEnd = formatLocalDate(d);
       return { from: weekStart, to: weekEnd };
     }
     case "month": {
       const monthStart = `${base.getFullYear()}-${String(base.getMonth() + 1).padStart(2, "0")}-01`;
       const lastDay = new Date(base.getFullYear(), base.getMonth() + 1, 0);
-      const monthEnd = lastDay.toISOString().split("T")[0]!;
+      const monthEnd = formatLocalDate(lastDay);
       return { from: monthStart, to: monthEnd };
     }
     case "year": {
@@ -283,8 +291,8 @@ export function useRegisterData(
       }
 
       setDateRange({
-        from: from.toISOString().split("T")[0]!,
-        to: to.toISOString().split("T")[0]!,
+        from: formatLocalDate(from),
+        to: formatLocalDate(to),
       });
     },
     [dateRange, periodType]
