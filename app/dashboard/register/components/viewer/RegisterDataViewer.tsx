@@ -6,6 +6,11 @@ import { ANALYSIS_TABS, type AnalysisTabValue } from "../../types";
 import { useRegisterData } from "./hooks/useRegisterData";
 import PeriodSelector from "./PeriodSelector";
 import MachineFilter from "./MachineFilter";
+import PeriodPresets from "./PeriodPresets";
+import MachineNameSettings from "./MachineNameSettings";
+import SalesTargetSettings from "./SalesTargetSettings";
+import DashboardSettings from "./DashboardSettings";
+import { useDashboardSettings } from "./hooks/useDashboardSettings";
 import SalesOverviewTab from "./tabs/SalesOverviewTab";
 import SalesTrendTab from "./tabs/SalesTrendTab";
 import HourlyAnalysisTab from "./tabs/HourlyAnalysisTab";
@@ -78,7 +83,16 @@ export default function RegisterDataViewer() {
     navigatePeriod,
   } = useRegisterData("Z005");
 
+  const { defaults, isLoading: isSettingsLoading } = useDashboardSettings();
   const [activeTab, setActiveTab] = useState<AnalysisTabValue>("overview");
+  const [hasAppliedDefaults, setHasAppliedDefaults] = useState(false);
+
+  // 設定ロード完了後に初回のみデフォルト値を反映（レンダリング中の条件付き更新）
+  if (!isSettingsLoading && !hasAppliedDefaults) {
+    setPeriodType(defaults.defaultPeriodType);
+    setActiveTab(defaults.defaultTab);
+    setHasAppliedDefaults(true);
+  }
 
   /** ローディング中はプレースホルダーを表示するラッパー */
   function withLoading(content: ReactNode): ReactNode {
@@ -112,6 +126,19 @@ export default function RegisterDataViewer() {
           onMachineNoChange={setMachineNo}
           onGroupByChange={setGroupBy}
         />
+        <div className="flex flex-wrap items-center gap-2">
+          <MachineNameSettings machines={machines} />
+          <SalesTargetSettings />
+          <DashboardSettings />
+        </div>
+        <PeriodPresets
+          currentDateFrom={dateFrom}
+          currentDateTo={dateTo}
+          onApply={(from, to) => {
+            setDateFrom(from);
+            setDateTo(to);
+          }}
+        />
       </div>
 
       {/* 第2層タブ */}
@@ -135,6 +162,7 @@ export default function RegisterDataViewer() {
                   dailyTimeSeries={dailyTimeSeries}
                   dailyCustomerTimeSeries={dailyCustomerTimeSeries}
                   granularity={granularity}
+                  dateFrom={dateFrom}
                 />
               ) : (
                 <div className="rounded-8 border border-solid-gray-200 bg-white p-6 text-center text-sm text-solid-gray-536">
