@@ -78,6 +78,7 @@ export default function RegisterDataViewer() {
     setDateTo,
     setMachineNo,
     navigatePeriod,
+    refetchMachines,
   } = useRegisterData("Z005");
 
   const { defaults, isLoading: isSettingsLoading } = useDashboardSettings();
@@ -125,7 +126,7 @@ export default function RegisterDataViewer() {
         </div>
         {/* 2列目: 設定・プリセット */}
         <div className="flex w-full flex-wrap items-center gap-2">
-          <SettingsDialog machines={machines} />
+          <SettingsDialog machines={machines} onMachineNamesChange={refetchMachines} />
           <SalesTargetSettings />
           <PeriodPresets
             currentDateFrom={dateFrom}

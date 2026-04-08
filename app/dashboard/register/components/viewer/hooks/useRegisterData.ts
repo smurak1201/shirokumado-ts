@@ -93,6 +93,7 @@ export interface UseRegisterDataReturn {
 
   // 手動リフレッシュ
   refetch: () => void;
+  refetchMachines: () => Promise<void>;
 }
 
 export function useRegisterData(
@@ -114,20 +115,30 @@ export function useRegisterData(
   const [ready, setReady] = useState(false);
   const latestDateRef = useRef<Date | undefined>(undefined);
 
-  // レジ一覧と最新データ日付を取得（初回のみ）
+  // レジ一覧を取得
+  const fetchMachines = useCallback(async () => {
+    try {
+      const res = await fetchJson<MachinesResponse>("/api/register/machines");
+      setMachines(res.machines);
+      return res;
+    } catch (err) {
+      toast.error(getUserFriendlyMessageJa(err));
+      return null;
+    }
+  }, []);
+
+  // 初回: レジ一覧と最新データ日付を取得
   useEffect(() => {
-    fetchJson<MachinesResponse>("/api/register/machines")
+    fetchMachines()
       .then((res) => {
-        setMachines(res.machines);
-        if (res.latestDate) {
+        if (res?.latestDate) {
           const base = new Date(res.latestDate);
           latestDateRef.current = base;
           setDateRange(getDefaultDateRange("month", base));
         }
       })
-      .catch((err) => toast.error(getUserFriendlyMessageJa(err)))
       .finally(() => setReady(true));
-  }, []);
+  }, [fetchMachines]);
 
   // データ取得
   const fetchData = useCallback(async () => {
@@ -281,5 +292,16 @@ export function useRegisterData(
     dailyCustomerTimeSeries,
     isLoading,
     refetch: fetchData,
+    refetchMachines: async () => {
+      try {
+        const res = await fetchJson<MachinesResponse>(
+          "/api/register/machines",
+          { cache: "no-store" }
+        );
+        setMachines(res.machines);
+      } catch (err) {
+        toast.error(getUserFriendlyMessageJa(err));
+      }
+    },
   };
 }
