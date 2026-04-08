@@ -15,8 +15,8 @@ const DAY_OF_WEEK_ORDER = [1, 2, 3, 4, 5, 6, 0];
 
 const MODE_CONFIG = {
   amount: {
-    title: "曜日 x 時間帯ヒートマップ（売上）",
-    ariaLabel: "曜日別時間帯ヒートマップ（売上）",
+    title: "曜日 x 時間帯ヒートマップ（平均売上）",
+    ariaLabel: "曜日別時間帯ヒートマップ（平均売上）",
     getValue: (h: HourlyHeatmapEntry) => h.totalAmount,
     formatCell: (value: number) => `${(value / 1000).toFixed(0)}k`,
     formatTooltip: (dayLabel: string, time: string, value: number) =>
@@ -33,8 +33,8 @@ const MODE_CONFIG = {
     },
   },
   quantity: {
-    title: "曜日 x 時間帯ヒートマップ（客数）",
-    ariaLabel: "曜日別時間帯ヒートマップ（客数）",
+    title: "曜日 x 時間帯ヒートマップ（平均客数）",
+    ariaLabel: "曜日別時間帯ヒートマップ（平均客数）",
     getValue: (h: HourlyHeatmapEntry) => h.totalQuantity,
     formatCell: (value: number) => `${value}`,
     formatTooltip: (dayLabel: string, time: string, value: number) =>
@@ -52,6 +52,8 @@ const MODE_CONFIG = {
   },
 } as const;
 
+// 色の濃淡は表示中データの最大値に対する比率で決定（絶対値ではなく相対評価）
+// 0% → gray, ~20% → レベル1, ~40% → レベル2, ~60% → レベル3, ~80% → レベル4, 80%~ → レベル5
 function getIntensityClass(
   value: number,
   maxValue: number,
@@ -95,7 +97,7 @@ function SingleHeatmap({
       </h3>
       <div className="overflow-x-auto">
         <div
-          className="inline-grid gap-0.5"
+          className="grid gap-0.5"
           style={{
             gridTemplateColumns: `auto repeat(${timeSlots.length}, minmax(2.5rem, 1fr))`,
           }}
@@ -134,15 +136,18 @@ function SingleHeatmap({
       </div>
 
       {/* 凡例 */}
-      <div className="mt-4 flex items-center gap-2 text-xs text-solid-gray-536">
-        <span>低</span>
-        <div className="flex gap-0.5">
-          <div className={`h-4 w-4 rounded-4 ${config.colorClasses.zero}`} />
-          {config.colorClasses.levels.map((cls) => (
-            <div key={cls} className={`h-4 w-4 rounded-4 ${cls}`} />
-          ))}
+      <div className="mt-4 flex flex-col gap-1 text-xs text-solid-gray-536">
+        <div className="flex items-center gap-2">
+          <span>低</span>
+          <div className="flex gap-0.5">
+            <div className={`h-4 w-4 rounded-4 ${config.colorClasses.zero}`} />
+            {config.colorClasses.levels.map((cls) => (
+              <div key={cls} className={`h-4 w-4 rounded-4 ${cls}`} />
+            ))}
+          </div>
+          <span>高</span>
         </div>
-        <span>高</span>
+        <p>色の濃淡は表示期間内の最大値を基準とした相対評価です</p>
       </div>
     </section>
   );

@@ -688,8 +688,10 @@ export const GET = withErrorHandling(async (request: NextRequest) => {
         };
       });
 
-    // 曜日x時間帯ヒートマップ
+    // 曜日x時間帯ヒートマップ（曜日ごとの出現日数で割って平均値を算出）
     const heatmapMap = new Map<string, { totalAmount: number; totalQuantity: number }>();
+    const dayOfWeekCounts = new Map<number, number>();
+    const seenDates = new Map<number, Set<string>>();
     for (const r of rows) {
       const dayOfWeek = r.date.getDay();
       const key = `${dayOfWeek}-${r.startTime}`;
@@ -697,16 +699,26 @@ export const GET = withErrorHandling(async (request: NextRequest) => {
       entry.totalAmount += r.amount;
       entry.totalQuantity += r.quantity;
       heatmapMap.set(key, entry);
+
+      const dateStr = r.date.toISOString().split("T")[0]!;
+      const seen = seenDates.get(dayOfWeek) ?? new Set<string>();
+      seen.add(dateStr);
+      seenDates.set(dayOfWeek, seen);
+    }
+    for (const [dow, dates] of seenDates) {
+      dayOfWeekCounts.set(dow, dates.size);
     }
 
     const heatmap: HourlyHeatmapEntry[] = [...heatmapMap.entries()]
       .map(([key, val]) => {
         const [dow, startTime] = key.split("-");
+        const dowNum = parseInt(dow!, 10);
+        const count = dayOfWeekCounts.get(dowNum) ?? 1;
         return {
-          dayOfWeek: parseInt(dow!, 10),
+          dayOfWeek: dowNum,
           startTime: startTime!,
-          totalAmount: val.totalAmount,
-          totalQuantity: val.totalQuantity,
+          totalAmount: Math.round(val.totalAmount / count),
+          totalQuantity: Math.round(val.totalQuantity / count),
         };
       })
       .sort((a, b) => a.dayOfWeek - b.dayOfWeek || a.startTime.localeCompare(b.startTime));
