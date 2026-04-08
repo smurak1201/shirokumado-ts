@@ -4,9 +4,11 @@ import { useCallback, useEffect, useRef, useState, type ReactNode } from "react"
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/app/components/ui/tabs";
 import { ANALYSIS_TABS, type AnalysisTabValue } from "../../types";
 import { useRegisterData } from "./hooks/useRegisterData";
+import { usePeriodPresets } from "./hooks/usePeriodPresets";
 import PeriodSelector from "./PeriodSelector";
 import MachineFilter from "./MachineFilter";
 import PeriodPresets from "./PeriodPresets";
+import SavePeriodPresetButton from "./SavePeriodPresetButton";
 import SettingsDialog from "./SettingsDialog";
 import SalesTargetSettings from "./SalesTargetSettings";
 import { useDashboardSettings } from "./hooks/useDashboardSettings";
@@ -81,6 +83,7 @@ export default function RegisterDataViewer() {
     refetchMachines,
   } = useRegisterData("Z005");
 
+  const { presets, isLoading: isPresetsLoading, createPreset, deletePreset } = usePeriodPresets();
   const { defaults, isLoading: isSettingsLoading } = useDashboardSettings();
   const [activeTab, setActiveTab] = useState<AnalysisTabValue>("overview");
   const [hasAppliedDefaults, setHasAppliedDefaults] = useState(false);
@@ -116,6 +119,13 @@ export default function RegisterDataViewer() {
           onDateFromChange={setDateFrom}
           onDateToChange={setDateTo}
           onNavigate={navigatePeriod}
+          saveAction={
+            <SavePeriodPresetButton
+              currentDateFrom={dateFrom}
+              currentDateTo={dateTo}
+              onSave={createPreset}
+            />
+          }
         />
         <div className="ml-auto">
           <MachineFilter
@@ -129,12 +139,14 @@ export default function RegisterDataViewer() {
           <SettingsDialog machines={machines} onMachineNamesChange={refetchMachines} />
           <SalesTargetSettings />
           <PeriodPresets
-            currentDateFrom={dateFrom}
-            currentDateTo={dateTo}
+            presets={presets}
+            isLoading={isPresetsLoading}
             onApply={(from, to) => {
+              setPeriodType("custom");
               setDateFrom(from);
               setDateTo(to);
             }}
+            onDelete={deletePreset}
           />
         </div>
       </div>

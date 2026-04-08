@@ -1,5 +1,6 @@
 "use client";
 
+import type { ReactNode } from "react";
 import type { PeriodType } from "../../types";
 import { PERIOD_LABELS } from "../../types";
 
@@ -11,6 +12,8 @@ interface PeriodSelectorProps {
   onDateFromChange: (date: string) => void;
   onDateToChange: (date: string) => void;
   onNavigate: (direction: "prev" | "next") => void;
+  /** カスタムモード時に終了日の横に表示するアクション */
+  saveAction?: ReactNode;
 }
 
 const PERIOD_TYPES: PeriodType[] = ["week", "month", "year", "custom"];
@@ -40,6 +43,7 @@ export default function PeriodSelector({
   onDateFromChange,
   onDateToChange,
   onNavigate,
+  saveAction,
 }: PeriodSelectorProps) {
   return (
     <>
@@ -76,6 +80,7 @@ export default function PeriodSelector({
             onChange={(e) => onDateToChange(e.target.value)}
             className="rounded-6 border border-solid-gray-420 px-3 py-2.5 text-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus-blue"
           />
+          {saveAction}
         </div>
       ) : (
         <div className="flex items-center gap-3">
