@@ -89,7 +89,7 @@ function SingleHeatmap({
 
   return (
     <section
-      className="rounded-8 border border-solid-gray-200 bg-white p-4"
+      className="min-w-0 rounded-8 border border-solid-gray-200 bg-white p-4"
       aria-label={config.ariaLabel}
     >
       <h3 className="mb-4 text-sm font-medium text-solid-gray-700">
@@ -97,9 +97,9 @@ function SingleHeatmap({
       </h3>
       <div className="overflow-x-auto">
         <div
-          className="grid gap-0.5"
+          className="inline-grid min-w-full gap-0.5"
           style={{
-            gridTemplateColumns: `auto repeat(${timeSlots.length}, minmax(2.5rem, 1fr))`,
+            gridTemplateColumns: `auto repeat(${timeSlots.length}, minmax(2.5rem, auto))`,
           }}
         >
           <div className="p-1" />
