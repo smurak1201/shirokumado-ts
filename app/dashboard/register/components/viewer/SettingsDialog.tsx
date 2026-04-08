@@ -125,7 +125,7 @@ export default function SettingsDialog({ machines, onMachineNamesChange }: Setti
           </TabsList>
 
           {/* レジ名称タブ */}
-          <TabsContent value="machine-names" className="space-y-4">
+          <TabsContent value="machine-names" className="min-h-72 space-y-4">
             {unregisteredMachines.length > 0 ? (
               <div className="flex items-end gap-2">
                 <div className="flex-1">
@@ -239,7 +239,7 @@ export default function SettingsDialog({ machines, onMachineNamesChange }: Setti
           </TabsContent>
 
           {/* 表示設定タブ */}
-          <TabsContent value="display">
+          <TabsContent value="display" className="min-h-72">
             {isSettingsLoading ? (
               <div className="py-4 text-center text-sm text-solid-gray-536">
                 読み込み中...
