@@ -4,6 +4,12 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { fetchJson } from "@/lib/client-fetch";
 import { getUserFriendlyMessageJa } from "@/lib/errors";
+import {
+  formatLocalDate,
+  getDefaultDateRange,
+  getDefaultGranularity,
+} from "../../../lib/date";
+import { FETCH_DEBOUNCE_MS } from "../../../lib/constants";
 import type {
   RegisterDataResponse,
   MachinesResponse,
@@ -13,64 +19,6 @@ import type {
   PeriodType,
   Granularity,
 } from "../../../types";
-
-/** ローカルタイムの日付をYYYY-MM-DD形式にフォーマット（toISOString()はUTC変換で日付がずれるため使用しない） */
-function formatLocalDate(d: Date): string {
-  const y = d.getFullYear();
-  const m = String(d.getMonth() + 1).padStart(2, "0");
-  const day = String(d.getDate()).padStart(2, "0");
-  return `${y}-${m}-${day}`;
-}
-
-/** 期間タイプからデフォルトの日付範囲を計算（baseDate: 基準日、省略時は今日） */
-function getDefaultDateRange(
-  periodType: PeriodType,
-  baseDate?: Date
-): { from: string; to: string } {
-  const base = baseDate ?? new Date();
-  const baseStr = formatLocalDate(base);
-
-  switch (periodType) {
-    case "day":
-      return { from: baseStr, to: baseStr };
-    case "week": {
-      const d = new Date(base);
-      const day = d.getDay() || 7;
-      d.setDate(d.getDate() - day + 1);
-      const weekStart = formatLocalDate(d);
-      d.setDate(d.getDate() + 6);
-      const weekEnd = formatLocalDate(d);
-      return { from: weekStart, to: weekEnd };
-    }
-    case "month": {
-      const monthStart = `${base.getFullYear()}-${String(base.getMonth() + 1).padStart(2, "0")}-01`;
-      const lastDay = new Date(base.getFullYear(), base.getMonth() + 1, 0);
-      const monthEnd = formatLocalDate(lastDay);
-      return { from: monthStart, to: monthEnd };
-    }
-    case "year": {
-      return { from: `${base.getFullYear()}-01-01`, to: `${base.getFullYear()}-12-31` };
-    }
-    case "custom":
-      return { from: baseStr, to: baseStr };
-  }
-}
-
-/** 期間タイプに対応するデフォルトの粒度 */
-function getDefaultGranularity(periodType: PeriodType): Granularity {
-  switch (periodType) {
-    case "day":
-      return "day";
-    case "week":
-      return "day";
-    case "month":
-      return "day";
-    case "year":
-      return "month";
-    case "custom":
-      return "day";
-  }
-}
 
 export interface UseRegisterDataReturn {
   // フィルタ状態
@@ -247,7 +195,7 @@ export function useRegisterData(
   // レジ一覧取得完了後にデータ取得開始（デバウンス付き）
   useEffect(() => {
     if (!ready) return;
-    const timer = setTimeout(fetchData, 300);
+    const timer = setTimeout(fetchData, FETCH_DEBOUNCE_MS);
     return () => clearTimeout(timer);
   }, [ready, fetchData]);
 

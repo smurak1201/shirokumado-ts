@@ -1,11 +1,24 @@
-// app/dashboard/register/components/viewer/hooks/useDashboardSettings.ts（新規作成）
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
 import { fetchJson } from "@/lib/client-fetch";
 import { toast } from "sonner";
 import { getUserFriendlyMessageJa } from "@/lib/errors";
-import type { PeriodType, AnalysisTabValue } from "@/app/dashboard/register/types";
+import {
+  ANALYSIS_TABS,
+  type PeriodType,
+  type AnalysisTabValue,
+} from "@/app/dashboard/register/types";
+
+const PERIOD_TYPES: readonly PeriodType[] = ["day", "week", "month", "year", "custom"];
+
+function isPeriodType(v: string | undefined): v is PeriodType {
+  return v !== undefined && (PERIOD_TYPES as readonly string[]).includes(v);
+}
+
+function isAnalysisTab(v: string | undefined): v is AnalysisTabValue {
+  return v !== undefined && ANALYSIS_TABS.some((t) => t.value === v);
+}
 
 interface DashboardSetting {
   id: number;
@@ -42,13 +55,13 @@ export function useDashboardSettings() {
       const settingsMap = new Map(
         data.settings.map((s) => [s.key, s.value])
       );
+      const rawPeriod = settingsMap.get("defaultPeriodType");
+      const rawTab = settingsMap.get("defaultTab");
       setDefaults({
-        defaultPeriodType:
-          (settingsMap.get("defaultPeriodType") as PeriodType) ??
-          DEFAULT_VALUES.defaultPeriodType,
-        defaultTab:
-          (settingsMap.get("defaultTab") as AnalysisTabValue) ??
-          DEFAULT_VALUES.defaultTab,
+        defaultPeriodType: isPeriodType(rawPeriod)
+          ? rawPeriod
+          : DEFAULT_VALUES.defaultPeriodType,
+        defaultTab: isAnalysisTab(rawTab) ? rawTab : DEFAULT_VALUES.defaultTab,
       });
     } catch (error) {
       toast.error(getUserFriendlyMessageJa(error));
