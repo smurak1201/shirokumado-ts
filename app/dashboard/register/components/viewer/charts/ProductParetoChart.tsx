@@ -17,6 +17,7 @@ import {
   type ChartConfig,
 } from "@/app/components/ui/chart";
 import type { ProductEntry } from "../../../types";
+import { formatJpy, formatJpyAxis } from "../../../lib/format";
 
 interface ProductParetoChartProps {
   products: ProductEntry[];
@@ -69,10 +70,7 @@ export default function ProductParetoChart({ products }: ProductParetoChartProps
             dataKey="label"
             tick={{ fontSize: 12 }}
           />
-          <YAxis
-            yAxisId="left"
-            tickFormatter={(v: number) => `${(v / 1000).toFixed(0)}千円`}
-          />
+          <YAxis yAxisId="left" tickFormatter={formatJpyAxis} />
           <YAxis
             yAxisId="right"
             orientation="right"
@@ -110,7 +108,7 @@ export default function ProductParetoChart({ products }: ProductParetoChartProps
                       <div className="flex flex-1 items-center justify-between gap-2 leading-none">
                         <span className="text-muted-foreground">売上</span>
                         <span className="font-mono font-medium tabular-nums text-foreground">
-                          {`${Number(value).toLocaleString("ja-JP")}円`}
+                          {formatJpy(value as number | string)}
                         </span>
                       </div>
                     </>

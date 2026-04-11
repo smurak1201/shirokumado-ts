@@ -16,6 +16,12 @@ import {
   type ChartConfig,
 } from "@/app/components/ui/chart";
 import type { TimeSeriesEntry } from "../../../types";
+import {
+  formatJpy,
+  formatJpyAxis,
+  formatPeriodShortLabel,
+  formatPersons,
+} from "../../../lib/format";
 
 interface CustomerTrendChartProps {
   timeSeries: TimeSeriesEntry[];
@@ -50,17 +56,6 @@ function buildChartData(timeSeries: TimeSeriesEntry[]): ChartDataEntry[] {
   }));
 }
 
-/** X軸ラベルを短縮表示 */
-function formatXLabel(period: string): string {
-  if (period.length === 10) {
-    return `${period.slice(5, 7)}/${period.slice(8, 10)}`;
-  }
-  if (period.length === 7) {
-    return `${parseInt(period.slice(5, 7), 10)}月`;
-  }
-  return period;
-}
-
 export default function CustomerTrendChart({
   timeSeries,
 }: CustomerTrendChartProps) {
@@ -74,7 +69,7 @@ export default function CustomerTrendChart({
       <ChartContainer config={chartConfig} className="h-75 w-full">
         <ComposedChart data={data} margin={{ top: 5, right: 20, bottom: 5, left: 20 }}>
           <CartesianGrid vertical={false} />
-          <XAxis dataKey="period" tickFormatter={formatXLabel} tickLine={false} axisLine={false} />
+          <XAxis dataKey="period" tickFormatter={formatPeriodShortLabel} tickLine={false} axisLine={false} />
           <YAxis
             yAxisId="left"
             tickFormatter={(v: number) => `${v}`}
@@ -83,7 +78,7 @@ export default function CustomerTrendChart({
           <YAxis
             yAxisId="right"
             orientation="right"
-            tickFormatter={(v: number) => `${(v / 1000).toFixed(0)}千円`}
+            tickFormatter={formatJpyAxis}
             label={{ value: "客単価（円）", angle: 90, position: "insideRight", offset: -5 }}
           />
           <ChartTooltip
@@ -100,14 +95,16 @@ export default function CustomerTrendChart({
                         {chartConfig[name as keyof typeof chartConfig]?.label ?? name}
                       </span>
                       <span className="font-mono font-medium tabular-nums text-foreground">
-                        {Number(value).toLocaleString("ja-JP")}{name === "customers" ? "人" : "円"}
+                        {name === "customers"
+                          ? formatPersons(value as number | string)
+                          : formatJpy(value as number | string)}
                       </span>
                     </div>
                   </>
                 )}
               />
             }
-            labelFormatter={formatXLabel}
+            labelFormatter={formatPeriodShortLabel}
           />
           <ChartLegend content={<ChartLegendContent />} />
           <Line

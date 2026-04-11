@@ -2,6 +2,8 @@
 
 import { Fragment } from "react";
 import type { HourlyHeatmapEntry } from "../../../types";
+import { DAY_LABELS_MON_START } from "../../../lib/constants";
+import { formatJpy, formatPersons } from "../../../lib/format";
 
 type HeatmapMode = "amount" | "quantity";
 
@@ -9,7 +11,6 @@ interface HourlyHeatmapProps {
   heatmap: HourlyHeatmapEntry[];
 }
 
-const DAY_LABELS = ["月", "火", "水", "木", "金", "土", "日"];
 // 月曜始まりの表示順に対応するdayOfWeek値（0=日,1=月,...6=土）
 const DAY_OF_WEEK_ORDER = [1, 2, 3, 4, 5, 6, 0];
 
@@ -20,7 +21,7 @@ const MODE_CONFIG = {
     getValue: (h: HourlyHeatmapEntry) => h.totalAmount,
     formatCell: (value: number) => `${(value / 1000).toFixed(0)}k`,
     formatTooltip: (dayLabel: string, time: string, value: number) =>
-      `${dayLabel} ${time}: ${value.toLocaleString("ja-JP")}円`,
+      `${dayLabel} ${time}: ${formatJpy(value)}`,
     colorClasses: {
       zero: "bg-solid-gray-50",
       levels: [
@@ -38,7 +39,7 @@ const MODE_CONFIG = {
     getValue: (h: HourlyHeatmapEntry) => h.totalQuantity,
     formatCell: (value: number) => `${value}`,
     formatTooltip: (dayLabel: string, time: string, value: number) =>
-      `${dayLabel} ${time}: ${value.toLocaleString("ja-JP")}人`,
+      `${dayLabel} ${time}: ${formatPersons(value)}`,
     colorClasses: {
       zero: "bg-solid-gray-50",
       levels: [
@@ -112,7 +113,7 @@ function SingleHeatmap({
             </div>
           ))}
 
-          {DAY_LABELS.map((dayLabel, dayIndex) => (
+          {DAY_LABELS_MON_START.map((dayLabel, dayIndex) => (
             <Fragment key={dayIndex}>
               <div className="flex items-center p-1 text-xs font-medium text-solid-gray-600">
                 {dayLabel}

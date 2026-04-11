@@ -8,6 +8,7 @@ import {
   type ChartConfig,
 } from "@/app/components/ui/chart";
 import type { TimeSeriesEntry } from "../../../types";
+import { formatJpy, formatJpyAxis } from "../../../lib/format";
 
 interface TransactionChartProps {
   timeSeries: TimeSeriesEntry[];
@@ -36,7 +37,7 @@ export default function TransactionChart({ timeSeries }: TransactionChartProps) 
         <BarChart data={data} margin={{ top: 5, right: 20, bottom: 5, left: 20 }}>
           <CartesianGrid vertical={false} />
           <XAxis dataKey="period" tickLine={false} axisLine={false} />
-          <YAxis tickFormatter={(v: number) => `${(v / 1000).toFixed(0)}千円`} />
+          <YAxis tickFormatter={formatJpyAxis} />
           <ChartTooltip
             content={
               <ChartTooltipContent
@@ -51,7 +52,7 @@ export default function TransactionChart({ timeSeries }: TransactionChartProps) 
                         {chartConfig[name as keyof typeof chartConfig]?.label ?? name}
                       </span>
                       <span className="font-mono font-medium tabular-nums text-foreground">
-                        {Number(value).toLocaleString("ja-JP")}円
+                        {formatJpy(value as number | string)}
                       </span>
                     </div>
                   </>

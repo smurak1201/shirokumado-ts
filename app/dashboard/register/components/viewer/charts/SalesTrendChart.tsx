@@ -16,6 +16,7 @@ import {
   type ChartConfig,
 } from "@/app/components/ui/chart";
 import type { TimeSeriesEntry } from "../../../types";
+import { formatJpy, formatJpyAxis, formatPeriodShortLabel } from "../../../lib/format";
 
 interface SalesTrendChartProps {
   timeSeries: TimeSeriesEntry[];
@@ -51,17 +52,6 @@ function mergeTimeSeries(
   }));
 }
 
-/** X軸ラベルを短縮表示（日: MM/DD、月: MM月、年: YYYY） */
-function formatXLabel(period: string): string {
-  if (period.length === 10) {
-    return `${period.slice(5, 7)}/${period.slice(8, 10)}`;
-  }
-  if (period.length === 7) {
-    return `${parseInt(period.slice(5, 7), 10)}月`;
-  }
-  return period;
-}
-
 export default function SalesTrendChart({
   timeSeries,
   lastYearTimeSeries,
@@ -76,8 +66,8 @@ export default function SalesTrendChart({
       <ChartContainer config={chartConfig} className="h-75 w-full">
         <LineChart data={data} margin={{ top: 5, right: 20, bottom: 5, left: 20 }}>
           <CartesianGrid vertical={false} />
-          <XAxis dataKey="period" tickFormatter={formatXLabel} tickLine={false} axisLine={false} />
-          <YAxis tickFormatter={(v: number) => `${(v / 1000).toFixed(0)}千円`} />
+          <XAxis dataKey="period" tickFormatter={formatPeriodShortLabel} tickLine={false} axisLine={false} />
+          <YAxis tickFormatter={formatJpyAxis} />
           <ChartTooltip
             content={
               <ChartTooltipContent
@@ -92,14 +82,14 @@ export default function SalesTrendChart({
                         {chartConfig[name as keyof typeof chartConfig]?.label ?? name}
                       </span>
                       <span className="font-mono font-medium tabular-nums text-foreground">
-                        {Number(value).toLocaleString("ja-JP")}円
+                        {formatJpy(value as number | string)}
                       </span>
                     </div>
                   </>
                 )}
               />
             }
-            labelFormatter={formatXLabel}
+            labelFormatter={formatPeriodShortLabel}
           />
           <ChartLegend content={<ChartLegendContent />} />
           <Line

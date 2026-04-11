@@ -8,14 +8,14 @@ import {
   type ChartConfig,
 } from "@/app/components/ui/chart";
 import type { TimeSeriesEntry } from "../../../types";
+import { DAY_LABELS_MON_START } from "../../../lib/constants";
+import { formatJpy, formatJpyAxis, formatPersons } from "../../../lib/format";
 
 interface DayOfWeekChartProps {
   timeSeries: TimeSeriesEntry[];
   /** Z009から取得した日別客数timeSeries（曜日別平均客数の計算に使用） */
   customerTimeSeries?: TimeSeriesEntry[];
 }
-
-const DAY_LABELS = ["月", "火", "水", "木", "金", "土", "日"];
 
 const chartConfig = {
   avgAmount: {
@@ -58,7 +58,7 @@ function aggregateByDayOfWeek(
   }
 
   return buckets.map((b, i) => ({
-    day: DAY_LABELS[i]!,
+    day: DAY_LABELS_MON_START[i]!,
     avgAmount: b.count > 0 ? Math.round(b.totalAmount / b.count) : 0,
     avgQuantity: customerBuckets[i]!.count > 0
       ? Math.round(customerBuckets[i]!.totalQuantity / customerBuckets[i]!.count)
@@ -76,7 +76,7 @@ export default function DayOfWeekChart({ timeSeries, customerTimeSeries }: DayOf
         <BarChart accessibilityLayer data={data} margin={{ top: 5, right: 20, bottom: 5, left: 20 }}>
           <CartesianGrid vertical={false} />
           <XAxis dataKey="day" tickLine={false} axisLine={false} />
-          <YAxis tickFormatter={(v: number) => `${(v / 1000).toFixed(0)}千円`} />
+          <YAxis tickFormatter={formatJpyAxis} />
           <ChartTooltip
             content={
               <ChartTooltipContent
@@ -91,7 +91,7 @@ export default function DayOfWeekChart({ timeSeries, customerTimeSeries }: DayOf
                         {chartConfig[name as keyof typeof chartConfig]?.label ?? name}
                       </span>
                       <span className="font-mono font-medium tabular-nums text-foreground">
-                        {Number(value).toLocaleString("ja-JP")}円
+                        {formatJpy(value as number | string)}
                       </span>
                     </div>
                   </>
@@ -118,10 +118,10 @@ export default function DayOfWeekChart({ timeSeries, customerTimeSeries }: DayOf
             <tr key={d.day} className="border-b border-solid-gray-50">
               <td className="py-2 text-center font-medium text-solid-gray-536">{d.day}</td>
               <td className="py-2 text-right tabular-nums text-solid-gray-700">
-                {d.avgAmount > 0 ? `${d.avgAmount.toLocaleString("ja-JP")}円` : "-"}
+                {d.avgAmount > 0 ? formatJpy(d.avgAmount) : "-"}
               </td>
               <td className="py-2 text-right tabular-nums text-solid-gray-700">
-                {d.avgQuantity > 0 ? `${d.avgQuantity.toLocaleString("ja-JP")}人` : "-"}
+                {d.avgQuantity > 0 ? formatPersons(d.avgQuantity) : "-"}
               </td>
             </tr>
           ))}

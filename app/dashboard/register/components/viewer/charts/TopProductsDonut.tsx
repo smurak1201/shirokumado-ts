@@ -8,6 +8,7 @@ import {
   type ChartConfig,
 } from "@/app/components/ui/chart";
 import type { AggregatedEntry } from "../../../types";
+import { formatJpy } from "../../../lib/format";
 
 interface TopProductsDonutProps {
   products: AggregatedEntry[];
@@ -26,10 +27,6 @@ const COLORS = [
   "#AC3E00",  // Orange 900
   "#006F83",  // Cyan 900
 ];
-
-function formatAmount(amount: number): string {
-  return amount.toLocaleString("ja-JP");
-}
 
 export default function TopProductsDonut({ products }: TopProductsDonutProps) {
   if (products.length === 0) return null;
@@ -80,7 +77,7 @@ export default function TopProductsDonut({ products }: TopProductsDonutProps) {
                     <div className="flex flex-1 items-center justify-between gap-2 leading-none">
                       <span className="text-muted-foreground">{name}</span>
                       <span className="font-mono font-medium tabular-nums text-foreground">
-                        {Number(value).toLocaleString("ja-JP")}円
+                        {formatJpy(value as number | string)}
                       </span>
                     </div>
                   </>
@@ -122,14 +119,14 @@ export default function TopProductsDonut({ products }: TopProductsDonutProps) {
                 </td>
                 <td className="py-2 pr-4 text-right tabular-nums text-solid-gray-700">
                   {entry.totalQuantity > 0
-                    ? `${formatAmount(Math.round(entry.totalAmount / entry.totalQuantity))}円`
+                    ? formatJpy(Math.round(entry.totalAmount / entry.totalQuantity))
                     : "-"}
                 </td>
                 <td className="py-2 pr-4 text-right tabular-nums text-solid-gray-700">
-                  {formatAmount(entry.totalQuantity)}
+                  {entry.totalQuantity.toLocaleString("ja-JP")}
                 </td>
                 <td className="py-2 text-right tabular-nums text-solid-gray-700">
-                  {formatAmount(entry.totalAmount)}円
+                  {formatJpy(entry.totalAmount)}
                 </td>
                 <td className="py-2 text-right tabular-nums text-solid-gray-536">
                   {pct}%
@@ -144,7 +141,7 @@ export default function TopProductsDonut({ products }: TopProductsDonutProps) {
               上位10商品 合計
             </td>
             <td className="py-2 text-right tabular-nums font-medium text-solid-gray-700">
-              {formatAmount(total)}円
+              {formatJpy(total)}
             </td>
             <td />
           </tr>

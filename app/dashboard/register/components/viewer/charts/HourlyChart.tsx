@@ -17,6 +17,7 @@ import {
   type ChartConfig,
 } from "@/app/components/ui/chart";
 import type { HourlyEntry } from "../../../types";
+import { formatJpy, formatJpyAxis, formatPersons } from "../../../lib/format";
 
 interface HourlyChartProps {
   hourly: HourlyEntry[];
@@ -51,10 +52,7 @@ export default function HourlyChart({ hourly }: HourlyChartProps) {
         <ComposedChart data={data} margin={{ top: 5, right: 20, bottom: 5, left: 20 }}>
           <CartesianGrid vertical={false} />
           <XAxis dataKey="time" tickLine={false} axisLine={false} />
-          <YAxis
-            yAxisId="left"
-            tickFormatter={(v: number) => `${(v / 1000).toFixed(0)}千円`}
-          />
+          <YAxis yAxisId="left" tickFormatter={formatJpyAxis} />
           <YAxis
             yAxisId="right"
             orientation="right"
@@ -75,8 +73,8 @@ export default function HourlyChart({ hourly }: HourlyChartProps) {
                       </span>
                       <span className="font-mono font-medium tabular-nums text-foreground">
                         {name === "売上"
-                          ? `${Number(value).toLocaleString("ja-JP")}円`
-                          : `${Number(value).toLocaleString("ja-JP")}人`}
+                          ? formatJpy(value as number | string)
+                          : formatPersons(value as number | string)}
                       </span>
                     </div>
                   </>
