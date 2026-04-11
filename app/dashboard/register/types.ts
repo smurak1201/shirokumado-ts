@@ -173,3 +173,11 @@ export interface RawDataEntry {
 export interface RawDataResponse {
   rows: RawDataEntry[];
 }
+
+/** 期間プリセット（比較選択用に最低限の形状） */
+export interface ComparePreset {
+  id: number;
+  name: string;
+  dateFrom: string;
+  dateTo: string;
+}

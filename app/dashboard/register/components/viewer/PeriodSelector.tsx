@@ -1,15 +1,8 @@
 "use client";
 
 import type { ReactNode } from "react";
-import type { PeriodType } from "../../types";
 import { PERIOD_LABELS } from "../../types";
-
-interface ComparePreset {
-  id: number;
-  name: string;
-  dateFrom: string;
-  dateTo: string;
-}
+import type { ComparePreset, PeriodType } from "../../types";
 
 interface PeriodSelectorProps {
   periodType: PeriodType;
