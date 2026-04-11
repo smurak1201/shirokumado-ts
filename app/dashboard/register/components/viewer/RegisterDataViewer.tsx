@@ -1,10 +1,11 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/app/components/ui/tabs";
+import { useState, type ReactNode } from "react";
+import { Tabs, TabsTrigger, TabsContent } from "@/app/components/ui/tabs";
 import { ANALYSIS_TABS, type AnalysisTabValue } from "../../types";
 import { useRegisterData } from "./hooks/useRegisterData";
 import { usePeriodPresets } from "./hooks/usePeriodPresets";
+import ScrollableTabsList from "./ScrollableTabsList";
 import PeriodSelector from "./PeriodSelector";
 import MachineFilter from "./MachineFilter";
 import PeriodPresets from "./PeriodPresets";
@@ -19,47 +20,6 @@ import HourlyAnalysisTab from "./tabs/HourlyAnalysisTab";
 import ProductAnalysisTab from "./tabs/ProductAnalysisTab";
 import TransactionTab from "./tabs/TransactionTab";
 import RawDataTab from "./tabs/RawDataTab";
-
-/** 横スクロール可能なTabsListに左右フェードを付与 */
-function ScrollableTabsList({ children }: { children: React.ReactNode }) {
-  const ref = useRef<HTMLDivElement>(null);
-  const [canScrollLeft, setCanScrollLeft] = useState(false);
-  const [canScrollRight, setCanScrollRight] = useState(false);
-
-  const updateScrollState = useCallback(() => {
-    const el = ref.current;
-    if (!el) return;
-    setCanScrollLeft(el.scrollLeft > 0);
-    setCanScrollRight(el.scrollLeft + el.clientWidth < el.scrollWidth - 1);
-  }, []);
-
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    updateScrollState();
-    el.addEventListener("scroll", updateScrollState, { passive: true });
-    const ro = new ResizeObserver(updateScrollState);
-    ro.observe(el);
-    return () => {
-      el.removeEventListener("scroll", updateScrollState);
-      ro.disconnect();
-    };
-  }, [updateScrollState]);
-
-  return (
-    <div className="relative">
-      {canScrollLeft && (
-        <div className="pointer-events-none absolute left-0 top-0 z-10 h-full w-6 bg-linear-to-r from-white to-transparent" />
-      )}
-      <TabsList ref={ref} className="w-full justify-start overflow-x-auto sm:justify-center [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-        {children}
-      </TabsList>
-      {canScrollRight && (
-        <div className="pointer-events-none absolute right-0 top-0 z-10 h-full w-6 bg-linear-to-l from-white to-transparent" />
-      )}
-    </div>
-  );
-}
 
 export default function RegisterDataViewer() {
   const {
